@@ -1,0 +1,28 @@
+#
+# Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
+# This software is subject to the Apache v2.0 License.
+#
+
+Import( '*' )
+
+# fwImage library
+# Project SCons script
+import sys
+from os.path import *
+
+sys.path = lstSysPath
+# import our modules here
+from fwbuild import *
+
+# Setup the path to the constatnts source file
+pthConstCPP = join(oRoot.dctFwVars['pthProjectRoot'], 'common', 'src', 'Const.cpp')
+
+# Project script essentially starts here							
+fwImage      = fwProject(oRoot, 'fwImage', \
+                            LIBS=['fwBase'],   \
+                            LIBPATH=[oRoot.oEnv['FWVARS']['fwBaseBuildDir']])	
+							
+oLib_fwImage = fwImage.initMultipassBuildObjects(lstExtraCPPs=[pthConstCPP], lstExcludes=['Support.cpp'])
+												  							  
+
+Return("oLib_fwImage")

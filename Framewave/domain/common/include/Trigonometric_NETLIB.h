@@ -1,0 +1,2389 @@
+/*
+Portions copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
+*/
+
+/*
+ * ====================================================
+ * Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
+ *
+ * Developed at SunSoft, a Sun Microsystems, Inc. business.
+ * Permission to use, copy, modify, and distribute this
+ * software is freely granted, provided that this notice * is preserved.
+ * ====================================================
+ */
+
+#ifndef __TRIGONOMETRIC_NETLIB_H__
+#define __TRIGONOMETRIC_NETLIB_H__
+
+#include "fe.h"
+
+namespace OPT_LEVEL
+{
+
+///////////////////////////////////////// CONSTANTS ////////////////////////////////////////////
+
+// used by scalbn
+static const double
+two54   =  1.80143985094819840000e+16,  /* 0x43500000, 0x00000000 */
+twom54  =  5.55111512312578270212e-17,  /* 0x3C900000, 0x00000000 */
+huge   = 1.0e+300,
+tiny   = 1.0e-300;
+
+// used by kernel_remainder pi_o_2
+static const int 
+init_jk[] = {2,3,4,6}; /* initial value for jk */
+
+static const double 
+PIo2[] = {
+1.57079625129699707031e+00,				/* 0x3FF921FB, 0x40000000 */
+7.54978941586159635335e-08,				/* 0x3E74442D, 0x00000000 */
+5.39030252995776476554e-15,				/* 0x3CF84698, 0x80000000 */
+3.28200341580791294123e-22,				/* 0x3B78CC51, 0x60000000 */
+1.27065575308067607349e-29,				/* 0x39F01B83, 0x80000000 */
+1.22933308981111328932e-36,				/* 0x387A2520, 0x40000000 */
+2.73370053816464559624e-44,				/* 0x36E38222, 0x80000000 */
+2.16741683877804819444e-51,				/* 0x3569F31D, 0x00000000 */
+};
+
+static const double 
+zero   = 0.0,
+one    = 1.0,
+two24   =  1.67772160000000000000e+07,  /* 0x41700000, 0x00000000 */
+twon24  =  5.96046447753906250000e-08;  /* 0x3E700000, 0x00000000 */
+
+// used by ieee754_remainder_pi_o_2
+/*
+ * Table of constants for 2/pi, 396 Hex digits (476 decimal) of 2/pi */
+static const int 
+two_over_pi[] = {
+0xA2F983, 0x6E4E44, 0x1529FC, 0x2757D1, 0xF534DD, 0xC0DB62,0x95993C, 0x439041, 0xFE5163, 0xABDEBB, 0xC561B7, 0x246E3A,0x424DD2, 0xE00649, 0x2EEA09, 0xD1921C, 0xFE1DEB, 0x1CB129,0xA73EE8, 0x8235F5, 0x2EBB44, 0x84E99C, 0x7026B4, 0x5F7E41,0x3991D6, 0x398353, 0x39F49C, 0x845F8B, 0xBDF928, 0x3B1FF8,0x97FFDE, 0x05980F, 0xEF2F11, 0x8B5A0A, 0x6D1F6D, 0x367ECF,0x27CB09, 0xB74F46, 0x3F669E, 0x5FEA2D, 0x7527BA, 0xC7EBE5,0xF17B3D, 0x0739F7, 0x8A5292, 0xEA6BFB, 0x5FB11F, 0x8D5D08,0x560330, 0x46FC7B, 0x6BABF0, 0xCFBC20, 0x9AF436, 0x1DA9E3,0x91615E, 0xE61B08, 0x659985, 0x5F14A0, 0x68408D, 0xFFD880,0x4D7327, 0x310606, 0x1556CA, 0x73A8C9, 0x60E27B, 0xC08C6B
+};
+
+static const int 
+npio2_hw[] = {
+0x3FF921FB, 0x400921FB, 0x4012D97C, 0x401921FB, 0x401F6A7A, 0x4022D97C,
+0x4025FDBB, 0x402921FB, 0x402C463A, 0x402F6A7A, 0x4031475C, 0x4032D97C,
+0x40346B9C, 0x4035FDBB, 0x40378FDB, 0x403921FB, 0x403AB41B, 0x403C463A,
+0x403DD85A, 0x403F6A7A, 0x40407E4C, 0x4041475C, 0x4042106C, 0x4042D97C,
+0x4043A28C, 0x40446B9C, 0x404534AC, 0x4045FDBB, 0x4046C6CB, 0x40478FDB,
+0x404858EB, 0x404921FB,
+};
+
+/*
+ * invpio2:  53 bits of 2/pi
+ * pio2_1:   first  33 bit of pi/2
+ * pio2_1t:  pi/2 - pio2_1
+ * pio2_2:   second 33 bit of pi/2
+ * pio2_2t:  pi/2 - (pio2_1+pio2_2)
+ * pio2_3:   third  33 bit of pi/2
+ * pio2_3t:  pi/2 - (pio2_1+pio2_2+pio2_3)
+ */
+
+static const double
+//zero =  0.00000000000000000000e+00,   /* 0x00000000, 0x00000000 */
+half =  5.00000000000000000000e-01,     /* 0x3FE00000, 0x00000000 */
+//two24 =  1.67772160000000000000e+07,  /* 0x41700000, 0x00000000 */
+invpio2 =  6.36619772367581382433e-01,  /* 0x3FE45F30, 0x6DC9C883 */
+pio2_1  =  1.57079632673412561417e+00,  /* 0x3FF921FB, 0x54400000 */
+pio2_1t =  6.07710050650619224932e-11,  /* 0x3DD0B461, 0x1A626331 */
+pio2_2  =  6.07710050630396597660e-11,  /* 0x3DD0B461, 0x1A600000 */
+pio2_2t =  2.02226624879595063154e-21,  /* 0x3BA3198A, 0x2E037073 */
+pio2_3  =  2.02226624871116645580e-21,  /* 0x3BA3198A, 0x2E000000 */
+pio2_3t =  8.47842766036889956997e-32;  /* 0x397B839A, 0x252049C1 */
+
+// used by cos
+static const double
+//one =  1.00000000000000000000e+00,    /* 0x3FF00000, 0x00000000 */
+C1_d  = 4.16666666666666019037e-02,		/* 0x3FA55555, 0x5555554C */
+C2_d  =-1.38888888888741095749e-03,		/* 0xBF56C16C, 0x16C15177 */
+C3_d  = 2.48015872894767294178e-05,		/* 0x3EFA01A0, 0x19CB1590 */
+C4_d  =-2.75573143513906633035e-07,		/* 0xBE927E4F, 0x809C52AD */
+C5_d  = 2.08757232129817482790e-09,		/* 0x3E21EE9E, 0xBDB4B1C4 */
+C6_d  =-1.13596475577881948265e-11;		/* 0xBDA8FAE9, 0xBE8838D4 */
+
+// used by sin
+static const double
+//half =  5.00000000000000000000e-01,   /* 0x3FE00000, 0x00000000 */
+S1  =-1.66666666666666324348e-01,		/* 0xBFC55555, 0x55555549 */
+S2  = 8.33333333332248946124e-03,		/* 0x3F811111, 0x1110F8A6 */
+S3  =-1.98412698298579493134e-04,		/* 0xBF2A01A0, 0x19C161D5 */
+S4  = 2.75573137070700676789e-06,		/* 0x3EC71DE3, 0x57B1FE7D */
+S5  =-2.50507602534068634195e-08,		/* 0xBE5AE5E6, 0x8A2B9CEB */
+S6  = 1.58969099521155010221e-10;		/* 0x3DE5D93A, 0x5ACFD57C */
+
+// used by tan
+static const double 
+xxx[] = {
+3.33333333333334091986e-01,				/* 3FD55555, 55555563 */   
+1.33333333333201242699e-01,				/* 3FC11111, 1110FE7A */
+5.39682539762260521377e-02,				/* 3FABA1BA, 1BB341FE */
+2.18694882948595424599e-02,				/* 3F9664F4, 8406D637 */
+8.86323982359930005737e-03,				/* 3F8226E3, E96E8493 */
+3.59207910759131235356e-03,				/* 3F6D6D22, C9560328 */
+1.45620945432529025516e-03,				/* 3F57DBC8, FEE08315 */
+5.88041240820264096874e-04,				/* 3F4344D8, F2F26501 */
+2.46463134818469906812e-04,				/* 3F3026F7, 1A8D1068 */
+7.81794442939557092300e-05,				/* 3F147E88, A03792A6 */
+7.14072491382608190305e-05,				/* 3F12B80F, 32F0A7E9 */
+-1.85586374855275456654e-05,			/* BEF375CB, DB605373 */
+ 2.59073051863633712884e-05,			/* 3EFB2A70, 74BF7AD4 */
+1.00000000000000000000e+00,             /* 3FF00000, 00000000 */ /* one */   
+7.85398163397448278999e-01,             /* 3FE921FB, 54442D18 */	/* pio4 */  
+3.06161699786838301793e-17              /* 3C81A626, 33145C07 */	/* pio4lo */
+};
+#define one    xxx[13]
+#define pio4   xxx[14]
+#define pio4lo xxx[15]
+#define T      xxx
+
+// used by acos
+static const double
+//one_d=  1.00000000000000000000e+00,   /* 0x3FF00000, 0x00000000 */
+//pi_d =  3.14159265358979311600e+00,	/* 0x400921FB, 0x54442D18 */
+pio2_hi_d =  1.57079632679489655800e+00,/* 0x3FF921FB, 0x54442D18 */
+pio2_lo_d =  6.12323399573676603587e-17,/* 0x3C91A626, 0x33145C07 */
+pS0_d =  1.66666666666666657415e-01,	/* 0x3FC55555, 0x55555555 */
+pS1_d = -3.25565818622400915405e-01,	/* 0xBFD4D612, 0x03EB6F7D */
+pS2_d =  2.01212532134862925881e-01,	/* 0x3FC9C155, 0x0E884455 */
+pS3_d = -4.00555345006794114027e-02,	/* 0xBFA48228, 0xB5688F3B */
+pS4_d =  7.91534994289814532176e-04,	/* 0x3F49EFE0, 0x7501B288 */
+pS5_d =  3.47933107596021167570e-05,	/* 0x3F023DE1, 0x0DFDF709 */
+qS1_d = -2.40339491173441421878e+00,	/* 0xC0033A27, 0x1C8A2D4B */
+qS2_d =  2.02094576023350569471e+00,	/* 0x40002AE5, 0x9C598AC8 */
+qS3_d = -6.88283971605453293030e-01,	/* 0xBFE6066C, 0x1B8D0159 */
+qS4_d =  7.70381505559019352791e-02;	/* 0x3FB3B8C5, 0xB12E9282 */
+
+static const float
+//one_f =  1.0000000000e+00F,			/* 0x3F800000 */
+//pi_f =  3.1415925026e+00F,			/* 0x40490fda */
+pio2_hi_f =  1.5707962513e+00F,			/* 0x3fc90fda */
+pio2_lo_f =  7.5497894159e-08F,			/* 0x33a22168 */
+pS0_f =  1.6666667163e-01F,				/* 0x3e2aaaab */
+pS1_f = -3.2556581497e-01F,				/* 0xbea6b090 */
+pS2_f =  2.0121252537e-01F,				/* 0x3e4e0aa8 */
+pS3_f = -4.0055535734e-02F,				/* 0xbd241146 */
+pS4_f =  7.9153501429e-04F,				/* 0x3a4f7f04 */
+pS5_f =  3.4793309169e-05F,				/* 0x3811ef08 */
+qS1_f = -2.4033949375e+00F,				/* 0xc019d139 */
+qS2_f =  2.0209457874e+00F,				/* 0x4001572d */
+qS3_f = -6.8828397989e-01F,				/* 0xbf303361 */
+qS4_f =  7.7038154006e-02F;				/* 0x3d9dc62e */
+
+// used by asin
+static const double
+//huge_d =  1.000e+300,
+pio4_hi_d =  7.85398163397448278999e-01;/* 0x3FE921FB, 0x54442D18 */
+
+static const float
+//huge_f =  1.000e+30F,
+pio4_hi_f =  7.8539812565e-01F;			/* 0x3f490fda */
+
+// used by atan
+SYS_FORCEALIGN_16 static const double 
+atanhi_d[] = {
+0.46364760900080611621425623146121F,	/* atan(0.5)hi 0x3eed6338 */
+0.78539816339744830961566084581988F,	/* atan(1.0)hi 0x3f490fda */
+0.98279372324732906798571061101467F,	/* atan(1.5)hi 0x3f7b985e */
+1.5707963267948966192313216916398F		/* atan(inf)hi 0x3fc90fda */
+};
+
+SYS_FORCEALIGN_16 static const double 
+atanlo_d[] = {
+5.0121586562142562314612144020192e-9F,	/* atan(0.5)lo 0x31ac3769 */
+-2.1855695000384339154180124278986e-8F,	/* atan(1.0)lo 0x33222168 */
+-2.5131424592014289388985333985481e-8F,	/* atan(1.5)lo 0x33140fb4 */
+-0.000000043711389980768678308361F		/* atan(inf)lo 0x33a22168 */
+};
+SYS_FORCEALIGN_16 static const double 
+aT_d[] = {
+0.33333333333333333333333333333333F,	// 1/3
+-2.0e-01F,								// 1/5
+0.14285714285714285714285714285714F,	// 1/7	
+-0.11111111111111111111111111111111F,	// 1/9
+0.090909090909090909090909090909091F,	// ..
+-0.076923076923076923076923076923077F,
+0.066666666666666666666666666666667F,
+-0.058823529411764705882352941176471F,
+0.052631578947368421052631578947368F,
+-0.047619047619047619047619047619048F,
+0.043478260869565217391304347826087F
+};
+
+SYS_FORCEALIGN_16 static const float 
+atanhi_f[] = {
+0.46364760900080611621425623146121F,	/* atan(0.5)hi 0x3eed6338 */
+0.78539816339744830961566084581988F,	/* atan(1.0)hi 0x3f490fda */
+0.98279372324732906798571061101467F,	/* atan(1.5)hi 0x3f7b985e */
+1.5707963267948966192313216916398F		/* atan(inf)hi 0x3fc90fda */
+};
+
+SYS_FORCEALIGN_16 static const float
+atanlo_f[] = {
+9.0008061162142562314612144020192e-9F,	/* atan(0.5)lo 0x31ac3769 */
+-2.6602551690384339154180124278986e-8F,	/* atan(1.0)lo 0x33222168 */
+-2.6752670932014289388985333985481e-8F,	/* atan(1.5)lo 0x33140fb4 */
+-0.000000073205103380768678308361F		/* atan(inf)lo 0x33a22168 */
+};
+SYS_FORCEALIGN_16 static const float
+aT_f[] = {
+0.33333333333333333333333333333333F,	// 1/3
+-2.0e-01F,								// 1/5
+0.14285714285714285714285714285714F,	// 1/7	
+-0.11111111111111111111111111111111F,	// 1/9
+0.090909090909090909090909090909091F,	// ..
+-0.076923076923076923076923076923077F,
+0.066666666666666666666666666666667F,
+-0.058823529411764705882352941176471F,
+0.052631578947368421052631578947368F,
+-0.047619047619047619047619047619048F,
+0.043478260869565217391304347826087F
+};
+
+
+// used by atan2
+SYS_FORCEALIGN_16 static const float  
+huge_f = 1.0e30F,one_f = 1.0F;
+
+SYS_FORCEALIGN_16 static const double
+huge_d = 1.0e300,one_d = 1.0;
+
+SYS_FORCEALIGN_16 static const float
+pi_f      = 3.1415926535897932384626433832795F,
+pi_o_4_f  = 0.78539816339744830961566084581988F,
+pi3_o_4_f = 2.3561944901923449288469825374596F,
+pi_hi_f   = 3.1415926535897932384626433832795F,
+pi_lo_f   = 1.3846264338327950288419716939931e-16F;
+
+SYS_FORCEALIGN_16 static const double
+pi_d      = 3.1415926535897932384626433832795,
+pi_o_4_d  = 0.78539816339744830961566084581988,	
+pi3_o_4_d = 2.3561944901923449288469825374596,							
+pi_hi_d   = 3.1415926535897932384626433832795, 
+pi_lo_d   = 1.3846264338327950288419716939931e-16;
+
+// used by expm1
+static const double
+//one_d           = 1.0,
+//huge_d          = 1.0e+300,
+tiny_d            = 1.0e-300,
+o_threshold_d     = 7.09782712893383973096e+02,/* 0x40862E42, 0xFEFA39EF */
+ln2_hi_d          = 6.93147180369123816490e-01,/* 0x3fe62e42, 0xfee00000 */
+ln2_lo_d          = 1.90821492927058770002e-10,/* 0x3dea39ef, 0x35793c76 */
+invln2_d          = 1.44269504088896338700e+00,/* 0x3ff71547, 0x652b82fe */
+
+/* scaled coefficients related to expm1 */
+Q1_d  =  -3.33333333333331316428e-02,			/* BFA11111 111110F4 */
+Q2_d  =   1.58730158725481460165e-03,			/* 3F5A01A0 19FE5585 */
+Q3_d  =  -7.93650757867487942473e-05,			/* BF14CE19 9EAADBB7 */
+Q4_d  =   4.00821782732936239552e-06,			/* 3ED0CFCA 86E65239 */
+Q5_d  =  -2.01099218183624371326e-07;			/* BE8AFDB7 6E09C32D */
+
+//used by ieee754_exp
+static const double
+halF_d[2] = {0.5,-0.5,},
+twom1000_d= 9.33263618503218878990e-302,		/* 2**-1000=0x01700000,0*/
+u_threshold_d= -7.45133219101941108420e+02,		/* 0xc0874910, 0xD52D3051 */
+ln2HI_d[2]   ={ 6.93147180369123816490e-01,		/* 0x3fe62e42, 0xfee00000 */
+             -6.93147180369123816490e-01,},		/* 0xbfe62e42, 0xfee00000 */
+ln2LO_d[2]   ={ 1.90821492927058770002e-10,		/* 0x3dea39ef, 0x35793c76 */
+             -1.90821492927058770002e-10,},		/* 0xbdea39ef, 0x35793c76 */
+P1_d   =  1.66666666666666019037e-01,			/* 0x3FC55555, 0x5555553E */
+P2_d   = -2.77777777770155933842e-03,			/* 0xBF66C16C, 0x16BEBD93 */
+P3_d   =  6.61375632143793436117e-05,			/* 0x3F11566A, 0xAF25DE2C */
+P4_d   = -1.65339022054652515390e-06,			/* 0xBEBBBD41, 0xC5D26BF1 */
+P5_d   =  4.13813679705723846039e-08;			/* 0x3E663769, 0x72BEA4D0 */
+
+// used by cosh
+static const double half_d=0.5;
+static const float half_f=0.5F;
+
+// used by sinh
+static const double shuge_d = 1.0e307;
+static const float shuge_f = 1.0e37F;
+
+// used by tanh
+static const double two_d = 2.0;
+static const float two_f=2.0;
+
+// used by acosh
+static const float
+//one_f           = 1.0F,
+//huge_f          = 1.0e+30F,
+tiny_f            = 1.0e-30F,
+ln2_hi_f          = 6.9313812256e-01F,			/* 0x3f317180 */
+ln2_lo_f          = 9.0580006145e-06F;			/* 0x3717f7d1 */
+static const double
+ln2_d     = 6.93147180559945286227e-01;			/* 0x3FE62E42, 0xFEFA39EF */
+static const float
+ln2_f     = 6.9314718246e-01F;					/* 0x3f317218 */
+
+// used by log1p
+static const double
+two54_d   =  1.80143985094819840000e+16,		/* 43500000 00000000 */
+Lp1_d = 6.666666666666735130e-01,				/* 3FE55555 55555593 */
+Lp2_d = 3.999999999940941908e-01,				/* 3FD99999 9997FA04 */
+Lp3_d = 2.857142874366239149e-01,				/* 3FD24924 94229359 */
+Lp4_d = 2.222219843214978396e-01,				/* 3FCC71C5 1D8E78AF */
+Lp5_d = 1.818357216161805012e-01,				/* 3FC74664 96CB03DE */
+Lp6_d = 1.531383769920937332e-01,				/* 3FC39A09 D078C69F */
+Lp7_d = 1.479819860511658591e-01;				/* 3FC2F112 DF3E5244 */
+
+static const double zero_d = 0.0;
+
+// used by iee754_log
+static const double
+Lg1_d = 6.666666666666735130e-01,				/* 3FE55555 55555593 */
+Lg2_d = 3.999999999940941908e-01,				/* 3FD99999 9997FA04 */
+Lg3_d = 2.857142874366239149e-01,				/* 3FD24924 94229359 */
+Lg4_d = 2.222219843214978396e-01,				/* 3FCC71C5 1D8E78AF */
+Lg5_d = 1.818357216161805012e-01,				/* 3FC74664 96CB03DE */
+Lg6_d = 1.531383769920937332e-01,				/* 3FC39A09 D078C69F */
+Lg7_d = 1.479819860511658591e-01;				/* 3FC2F112 DF3E5244 */
+
+// used by log1pf
+static const float
+two25_f = 3.355443200e+07F,						/* 0x4c000000 */
+Lp1_f = 6.6666668653e-01F,						/* 3F2AAAAB */
+Lp2_f = 4.0000000596e-01F,						/* 3ECCCCCD */
+Lp3_f = 2.8571429849e-01F,						/* 3E924925 */
+Lp4_f = 2.2222198546e-01F,						/* 3E638E29 */
+Lp5_f = 1.8183572590e-01F,						/* 3E3A3325 */
+Lp6_f = 1.5313838422e-01F,						/* 3E1CD04F */
+Lp7_f = 1.4798198640e-01F;						/* 3E178897 */
+
+static const float zero_f = 0.0;
+
+// used by ieee754_logpf
+static const float
+Lg1_f =      0.66666662693F,					/* 0xaaaaaa.0p-24 */
+Lg2_f =      0.40000972152F,					/* 0xccce13.0p-25 */
+Lg3_f =      0.28498786688F,					/* 0x91e9ee.0p-25 */
+Lg4_f =      0.24279078841F;					/* 0xf89e26.0p-26 */
+
+
+///////////////////////////////////////// MACROS ///////////////////////////////////////////////
+
+IS double __kernel_sin(double x, double y, int iy);
+
+union union_for_double
+{
+	double d;
+	int i[2];			// higher part or lower part depends upon little ndian or big endian
+	unsigned int ui[2]; // for little endian 1 is higher and 0 is lower
+};
+
+union union_for_float
+{
+	float f;	
+	int i;
+	unsigned int ui;	
+};
+
+//#define GET_LOW_WORD(hx, x) hx = *((int*)&x)
+//#define GET_HIGH_WORD(hx, x) hx = *(1+((int*)&x))
+//#define SET_LOW_WORD(x, hx) *((int*)&x) = hx
+//#define SET_HIGH_WORD(x, hx) *(1+((int*)&x)) = hx
+//#define GET_FLOAT_WORD(hx, x) hx = *(int*)&x
+//#define SET_FLOAT_WORD(x, hx) x = *(float*)&hx
+//#define EXTRACT_WORDS(hx,lx,x) hx = *(1+((int*)&x)); lx = *((int*)&x)
+
+
+
+///////////////////////////////////////// COS DOUBLE REF CODE ////////////////////////////////////////////
+
+IS double copysign(double x, double y)
+{
+		//unsigned int hx,hy;
+		union_for_double hx,hy;
+        //GET_HIGH_WORD(hx,x);
+		hx.d = x;
+        //GET_HIGH_WORD(hy,y);
+		hy.d = y;
+        //SET_HIGH_WORD(x,(hx&0x7fffffff)|(hy&0x80000000));
+		hx.ui[1] = ((hx.ui[1]&0x7fffffff)|(hy.ui[1]&0x80000000));
+		x = hx.d;// keep the low part as it is
+        return x;
+}
+
+IS double scalbn (double x, int n)
+{
+        //int k,hx,lx;
+		int k;
+		union_for_double hx;
+        //EXTRACT_WORDS(hx,lx,x);
+		hx.d = x;
+        //k = (hx&0x7ff00000)>>20;                /* extract exponent */
+		k = ((hx.i[1])&0x7ff00000)>>20;                /* extract exponent */
+        if (k==0) {                             /* 0 or subnormal x */
+            //if ((lx|(hx&0x7fffffff))==0) return x; /* +-0 */
+			if (((hx.i[0])|((hx.i[1])&0x7fffffff))==0) return x; /* +-0 */
+            x *= two54;
+            //GET_HIGH_WORD(hx,x);
+			hx.d = x;
+            k = (((hx.i[1])&0x7ff00000)>>20) - 54;
+            if (n< -50000) return tiny*x;       /*underflow*/
+            }
+        if (k==0x7ff) return x+x;               /* NaN or Inf */
+        k = k+n;
+        if (k >  0x7fe) return huge*copysign(huge,x); /* overflow  */
+        if (k > 0)                              /* normal result */
+            {
+				//SET_HIGH_WORD(x,(hx&0x800fffff)|(k<<20));
+				union_for_double temp;
+				temp.d = x;
+				temp.i[1] = ((hx.i[1])&0x800fffff)|(k<<20);
+				x = temp.d;
+				return x;
+			}
+        if (k <= -54)
+            if (n > 50000)      /* in case integer overflow in n+k */
+                return huge*copysign(huge,x);        /*overflow*/
+            else return tiny*copysign(tiny,x);         /*underflow*/
+        k += 54;                                /* subnormal result */
+        //SET_HIGH_WORD(x,(hx&0x800fffff)|(k<<20));
+		union_for_double temp;
+		temp.d = x;
+		temp.i[1] = ((hx.i[1])&0x800fffff)|(k<<20);
+		x = temp.d;
+        return x*twom54;
+}
+
+IS int __kernel_rem_pio2(double *x, double *y, int e0, int nx, int prec, const int *ipio2)
+{
+        int jz,jx,jv,jp,jk,carry,n,iq[20],i,j,k,m,q0,ih;
+        double z,fw,f[20],fq[20],q[20];
+
+    /* initialize jk*/
+        jk = init_jk[prec];
+        jp = jk;
+
+    /* determine jx,jv,q0, note that 3>q0 */
+        jx =  nx-1;
+        jv = (e0-3)/24; if(jv<0) jv=0;
+        q0 =  e0-24*(jv+1);
+
+    /* set up f[0] to f[jx+jk] where f[jx+jk] = ipio2[jv+jk] */
+        j = jv-jx; m = jx+jk;
+        for(i=0;i<=m;i++,j++) f[i] = (j<0)? zero : (double) ipio2[j];
+
+    /* compute q[0],q[1],...q[jk] */
+        for (i=0;i<=jk;i++) {
+            for(j=0,fw=0.0;j<=jx;j++) fw += x[j]*f[jx+i-j]; q[i] = fw;
+        }
+
+        jz = jk;
+recompute:
+    /* distill q[] into iq[] reversingly */
+        for(i=0,j=jz,z=q[jz];j>0;i++,j--) {
+            fw    =  (double)((int)(twon24* z));
+            iq[i] =  (int)(z-two24*fw);
+            z     =  q[j-1]+fw;
+        }
+
+    /* compute n */
+        z  = scalbn(z,q0);                /* actual value of z */
+        z -= 8.0*floor(z*0.125);                /* trim off integer >= 8 */
+        n  = (int) z;
+        z -= (double)n;
+        ih = 0;
+        if(q0>0) {        /* need iq[jz-1] to determine n */
+            i  = (iq[jz-1]>>(24-q0)); n += i;
+            iq[jz-1] -= i<<(24-q0);
+            ih = iq[jz-1]>>(23-q0);
+        }        else if(q0==0) ih = iq[jz-1]>>23;
+        else if(z>=0.5) ih=2;
+
+        if(ih>0) {        /* q > 0.5 */
+            n += 1; carry = 0;
+            for(i=0;i<jz ;i++) {        /* compute 1-q */
+                j = iq[i];
+                if(carry==0) {
+                    if(j!=0) {
+                        carry = 1; iq[i] = 0x1000000- j;
+                    }
+                } else  iq[i] = 0xffffff - j;
+            }
+            if(q0>0) {                /* rare case: chance is 1 in 12 */
+                switch(q0) {
+                case 1:
+                       iq[jz-1] &= 0x7fffff; break;
+                    case 2:
+                       iq[jz-1] &= 0x3fffff; break;
+                }
+            }
+            if(ih==2) {
+                z = one - z;
+                if(carry!=0) z -= scalbn(one,q0);
+            }
+        }
+
+    /* check if recomputation is needed */
+        if(z==zero) {
+            j = 0;
+            for (i=jz-1;i>=jk;i--) j |= iq[i];
+            if(j==0) { /* need recomputation */
+                for(k=1;iq[jk-k]==0;k++);   /* k = no. of terms needed */
+
+                for(i=jz+1;i<=jz+k;i++) {   /* add q[jz+1] to q[jz+k] */
+                    f[jx+i] = (double) ipio2[jv+i];
+                    for(j=0,fw=0.0;j<=jx;j++) fw += x[j]*f[jx+i-j];
+                    q[i] = fw;
+                }
+                jz += k;
+                goto recompute;
+            }
+        }
+
+    /* chop off zero terms */
+        if(z==0.0) {
+            jz -= 1; q0 -= 24;
+            while(iq[jz]==0) { jz--; q0-=24;}
+        } else { /* break z into 24-bit if necessary */
+            z = scalbn(z,-q0);
+            if(z>=two24) {                fw = (double)((int)(twon24*z));
+                iq[jz] = (int)(z-two24*fw);
+                jz += 1; q0 += 24;
+                iq[jz] = (int) fw;
+            } else iq[jz] = (int) z ;
+        }
+
+    /* convert integer "bit" chunk to floating-point value */
+        fw = scalbn(one,q0);
+        for(i=jz;i>=0;i--) {
+            q[i] = fw*(double)iq[i]; fw*=twon24;
+        }
+
+    /* compute PIo2[0,...,jp]*q[jz,...,0] */
+        for(i=jz;i>=0;i--) {
+            for(fw=0.0,k=0;k<=jp&&k<=jz-i;k++) fw += PIo2[k]*q[i+k];
+            fq[jz-i] = fw;
+        }
+
+    /* compress fq[] into y[] */
+        switch(prec) {
+            case 0:
+                fw = 0.0;
+                for (i=jz;i>=0;i--) fw += fq[i];
+                y[0] = (ih==0)? fw: -fw;                break;
+            case 1:
+            case 2:
+                fw = 0.0;
+                for (i=jz;i>=0;i--) fw += fq[i];                y[0] = (ih==0)? fw: -fw;                fw = fq[0]-fw;
+                for (i=1;i<=jz;i++) fw += fq[i];
+                y[1] = (ih==0)? fw: -fw;                break;
+            case 3:        /* painful */
+                for (i=jz;i>0;i--) {
+                    fw      = fq[i-1]+fq[i];                    fq[i]  += fq[i-1]-fw;
+                    fq[i-1] = fw;
+                }
+                for (i=jz;i>1;i--) {
+                    fw      = fq[i-1]+fq[i];                    fq[i]  += fq[i-1]-fw;
+                    fq[i-1] = fw;
+                }
+                for (fw=0.0,i=jz;i>=2;i--) fw += fq[i];                if(ih==0) {
+                    y[0] =  fq[0]; y[1] =  fq[1]; y[2] =  fw;
+                } else {
+                    y[0] = -fq[0]; y[1] = -fq[1]; y[2] = -fw;
+                }
+        }
+        return n&7;
+}
+
+IS int __ieee754_rem_pio2(double x, double *y)
+{
+        double z,w,t,r,fn;
+        double tx[3];
+        //int e0,i,j,nx,n,ix,hx;
+		int e0,i,j,nx,n, ix;
+		union_for_double hx;
+		
+		//unsigned int low;
+		//we will have this already in hx
+
+        //GET_HIGH_WORD(hx,x);                /* high word of x */
+		hx.d = x;
+
+        ix = (hx.i[1])&0x7fffffff;
+        if(ix<=0x3fe921fb)   /* |x| ~<= pi/4 , no need for reduction */
+            {y[0] = x; y[1] = 0; return 0;}
+        if(ix<0x4002d97c) {  /* |x| < 3pi/4, special case with n=+-1 */
+            if((hx.i[1])>0) {                z = x - pio2_1;
+                if(ix!=0x3ff921fb) {         /* 33+53 bit pi is good enough */
+                    y[0] = z - pio2_1t;
+                    y[1] = (z-y[0])-pio2_1t;
+                } else {                /* near pi/2, use 33+33+53 bit pi */
+                    z -= pio2_2;
+                    y[0] = z - pio2_2t;
+                    y[1] = (z-y[0])-pio2_2t;
+                }
+                return 1;
+            } else {        /* negative x */
+                z = x + pio2_1;
+                if(ix!=0x3ff921fb) {         /* 33+53 bit pi is good enough */
+                    y[0] = z + pio2_1t;
+                    y[1] = (z-y[0])+pio2_1t;
+                } else {                /* near pi/2, use 33+33+53 bit pi */
+                    z += pio2_2;
+                    y[0] = z + pio2_2t;
+                    y[1] = (z-y[0])+pio2_2t;
+                }
+                return -1;
+            }
+        }
+        if(ix<=0x413921fb) { /* |x| ~<= 2^19*(pi/2), medium size */
+            t  = fabs(x);
+            n  = (int) (t*invpio2+half);
+            fn = (double)n;
+            r  = t-fn*pio2_1;
+            w  = fn*pio2_1t;        /* 1st round good to 85 bit */
+            if(n<32&&ix!=npio2_hw[n-1]) {                y[0] = r-w;        /* quick check no cancellation */
+            } else {
+                //unsigned int high;
+				union_for_double high;
+                j  = ix>>20;
+                y[0] = r-w;                
+				//GET_HIGH_WORD(high,y[0]);
+				high.d = y[0];
+                //i = j-((high>>20)&0x7ff);
+				i = j-(((high.ui[1])>>20)&0x7ff);
+                if(i>16) {  /* 2nd iteration needed, good to 118 */
+                    t  = r;
+                    w  = fn*pio2_2;                    r  = t-w;
+                    w  = fn*pio2_2t-((t-r)-w);                    y[0] = r-w;
+                    //GET_HIGH_WORD(high,y[0]);
+					high.d = y[0];
+                    i = j-(((high.ui[1])>>20)&0x7ff);
+                    if(i>49)  {        /* 3rd iteration need, 151 bits acc */
+                            t  = r;        /* will cover all possible cases */
+                            w  = fn*pio2_3;                            r  = t-w;
+                            w  = fn*pio2_3t-((t-r)-w);                            y[0] = r-w;
+					}
+				}
+			}
+            y[1] = (r-y[0])-w;
+            if((hx.i[1])<0)         {y[0] = -y[0]; y[1] = -y[1]; return -n;}
+            else         return n;
+        }
+    /*     * all other (large) arguments
+     */
+        if(ix>=0x7ff00000) {                /* x is inf or NaN */
+            y[0]=y[1]=x-x; return 0;
+        }
+    /* set z = scalbn(|x|,ilogb(x)-23) */
+        //GET_LOW_WORD(low,x);
+		// we have this already in hx
+		
+        //SET_LOW_WORD(z,low);
+        //e0         = (ix>>20)-1046;        /* e0 = ilogb(z)-23; */
+        //SET_HIGH_WORD(z, ix - ((int)(e0<<20)));
+		union_for_double temp;
+		temp.d = x;// to get the lower part of x to z;
+		e0     = (ix>>20)-1046;        /* e0 = ilogb(z)-23; */
+		temp.i[1] = ix - ((int)(e0<<20));// compute the high part to put into z;
+		z = temp.d;// copy the original low part of x and new high part
+
+        for(i=0;i<2;i++) {
+                tx[i] = (double)((int)(z));
+                z     = (z-tx[i])*two24;
+        }
+        tx[2] = z;
+        nx = 3;
+        while(tx[nx-1]==zero) nx--;        /* skip zero term */
+        n  =  __kernel_rem_pio2(tx,y,e0,nx,2,two_over_pi);
+        if(hx.i[1]<0) {y[0] = -y[0]; y[1] = -y[1]; return -n;}
+        return n;
+}
+
+IS double __kernel_cos(double x, double y)
+{
+        double hz,z,r,w;
+
+        z  = x*x;
+        r  = z*(C1_d+z*(C2_d+z*(C3_d+z*(C4_d+z*(C5_d+z*C6_d)))));
+        hz = (float)0.5*z;
+        w  = one-hz;
+        return w + (((one-w)-hz) + (z*r-x*y));
+}
+
+IS double Cos_64f(double x)
+{
+        double y[2],z=0.0;
+        int n, ix;
+	    /* High word of x. */
+        //GET_HIGH_WORD(ix,x);
+		union_for_double temp;
+		temp.d = x;
+		ix = temp.i[1];
+
+    /* |x| ~< pi/4 */
+        ix &= 0x7fffffff;
+        if(ix <= 0x3fe921fb) {
+            if(ix<0x3e400000)                        /* if x < 2**-27 */
+                if(((int)x)==0) return 1.0;        /* generate inexact */
+            return __kernel_cos(x,z);
+        }
+
+    /* cos(Inf or NaN) is NaN */
+        else if (ix>=0x7ff00000) return x-x;
+
+    /* argument reduction needed */
+        else {
+            n = __ieee754_rem_pio2(x,y);
+            switch(n&3) {
+                case 0: return  __kernel_cos(y[0],y[1]);
+                case 1: return -__kernel_sin(y[0],y[1],1);
+                case 2: return -__kernel_cos(y[0],y[1]);
+                default:
+                        return  __kernel_sin(y[0],y[1],1);
+            }
+        }
+}
+
+ISV Cos_64f_A53( const double * s, double * d)
+{
+	*d = Cos_64f(*s);	
+}
+
+///////////////////////////////////////// COS FLOAT REF CODE ////////////////////////////////////////////
+
+ISV Cos_32f_A24( const float * s, float * d)
+{
+	*d = (float)Cos_64f(*s);	
+}
+
+///////////////////////////////////////// SIN DOUBLE REF CODE ////////////////////////////////////////////
+
+IS double __kernel_sin(double x, double y, int iy)
+{
+        double z,r,v;
+
+        z        =  x*x;
+        v        =  z*x;
+        r        =  S2+z*(S3+z*(S4+z*(S5+z*S6)));
+        if(iy==0) return x+v*(S1+z*r);
+        else      return x-((z*(half*y-v*r)-y)-v*S1);
+}
+
+IS double Sin_64f(double x)
+{
+        double y[2],z=0.0;
+        int n, ix;
+	    /* High word of x. */
+        //GET_HIGH_WORD(ix,x);
+		union_for_double temp;
+		temp.d = x;
+		ix = temp.i[1];
+ 
+    /* |x| ~< pi/4 */
+        ix &= 0x7fffffff;
+        if(ix <= 0x3fe921fb) {
+            if(ix<0x3e400000)                        /* |x| < 2**-27 */
+               {if((int)x==0) return x;}        /* generate inexact */
+            return __kernel_sin(x,z,0);
+        }
+
+    /* sin(Inf or NaN) is NaN */
+        else if (ix>=0x7ff00000) return x-x;
+
+    /* argument reduction needed */
+        else {
+            n = __ieee754_rem_pio2(x,y);
+            switch(n&3) {
+                case 0: return  __kernel_sin(y[0],y[1],1);
+                case 1: return  __kernel_cos(y[0],y[1]);
+                case 2: return -__kernel_sin(y[0],y[1],1);
+                default:
+                        return -__kernel_cos(y[0],y[1]);
+            }
+        }
+}
+
+ISV Sin_64f_A53( const double * s, double * d)
+{
+	*d = Sin_64f(*s);
+}
+
+///////////////////////////////////////// SIN FLOAT REF CODE ////////////////////////////////////////////
+
+ISV Sin_32f_A24( const float * s, float * d)
+{
+	*d = (float)Sin_64f(*s);
+}
+
+///////////////////////////////////////// SINCOS DOUBLE REF CODE ////////////////////////////////////////////
+
+template<class TD>
+ISV SinCos_64f(const double x, double *d1,double *d2)
+{
+        double y[2],z=0.0;
+        int n, ix;
+
+		/* High word of x. */
+        //GET_HIGH_WORD(ix,x);
+		union_for_double temp;
+		temp.d = x;
+		ix = temp.i[1];
+ 
+    /* |x| ~< pi/4 */
+        ix &= 0x7fffffff;
+        if(ix <= 0x3fe921fb)
+			{
+            if(ix<0x3e400000)                        /* |x| < 2**-27 */
+               {
+			   if((int)x==0)
+				   {
+				   *d1 = (TD)x;
+				   *d2 = (TD)1.0;
+				   return;
+				   }        /* generate inexact */
+				}
+
+            *d1 = (TD) __kernel_sin(x,z,0);
+			*d2 = (TD)__kernel_cos(x,z);
+			return;
+        }
+
+    /* sin(Inf or NaN) is NaN */
+        else if (ix>=0x7ff00000) 
+			{
+			*d1 = *d2 = (TD)(x-x);
+			return;
+			}
+
+    /* argument reduction needed */
+        else {
+            n = __ieee754_rem_pio2(x,y);
+            switch(n&3) {
+                case 0: *d1 = (TD)__kernel_sin(y[0],y[1],1);
+						*d2 = (TD)__kernel_cos(y[0],y[1]);
+						return;
+                case 1: *d1 = (TD)  __kernel_cos(y[0],y[1]);
+						*d2 = (TD) -__kernel_sin(y[0],y[1],1);
+						return;
+                case 2: *d1 = (TD) -__kernel_sin(y[0],y[1],1);
+						*d2 = (TD) -__kernel_cos(y[0],y[1]);
+						return;
+                default:*d1 = (TD) -__kernel_cos(y[0],y[1]);
+						*d2 = (TD)  __kernel_sin(y[0],y[1],1);
+						return;
+            }
+        }
+}
+
+template<class TS, class TD1, class TD2>
+ISV SinCos_64f_A53( TS * s, TD1 * d1, TD2 * d2)
+{
+	s;d1;d2;
+	//SinCos_64f<Fw64f>(*s,d1,d2);
+}
+
+///////////////////////////////////////// SINCOS FLOAT REF CODE ////////////////////////////////////////////
+
+//Needs special attention from foreach 1d , 2 destinations should be taken care.
+template<class TS, class TD1, class TD2>
+ISV SinCos_32f_A24( TS * s, TD1 * d1, TD2 *d2)
+{
+	s;d1;d2;
+	//SinCos_64f<Fw32f>(*s,d1,d2);
+}
+
+///////////////////////////////////////// TAN DOUBLE REF CODE ////////////////////////////////////////////
+
+IS double __kernel_tan(double x, double y, int iy)
+{
+        double z, r, v, w, s;
+        //int ix, hx;
+		int ix;
+		union_for_double hx;
+
+        //GET_HIGH_WORD(hx,x);
+		hx.d =x;
+        ix = hx.i[1] & 0x7fffffff;                        /* high word of |x| */
+        if (ix >= 0x3FE59428) {        /* |x| >= 0.6744 */
+                if (hx.i[1] < 0) {
+                        x = -x;
+                        y = -y;
+                }
+                z = pio4 - x;
+                w = pio4lo - y;
+                x = z + w;
+                y = 0.0;
+        }
+        z = x * x;
+        w = z * z;
+        /*
+         * Break x^5*(T[1]+x^2*T[2]+...) into
+         * x^5(T[1]+x^4*T[3]+...+x^20*T[11]) +
+         * x^5(x^2*(T[2]+x^4*T[4]+...+x^22*[T12]))
+         */
+        r = T[1] + w * (T[3] + w * (T[5] + w * (T[7] + w * (T[9] +
+                w * T[11]))));
+        v = z * (T[2] + w * (T[4] + w * (T[6] + w * (T[8] + w * (T[10] +
+                w * T[12])))));
+        s = z * x;
+        r = y + z * (s * (r + v) + y);
+        r += T[0] * s;
+        w = x + r;
+        if (ix >= 0x3FE59428) {
+                v = (double) iy;
+                return (double) (1 - ((hx.i[1] >> 30) & 2)) *
+                        (v - 2.0 * (x - (w * w / (w + v) - r)));
+        }
+        if (iy == 1)
+                return w;
+        else {
+                /*
+                 * if allow error up to 2 ulp, simply return
+                 * -1.0 / (x+r) here
+                 */
+                /* compute -1.0 / (x+r) accurately */
+                double a, t;
+                z = w;
+                //SET_LOW_WORD(z,0);
+				union_for_double temp;
+				temp.d = z;
+				temp.i[0] = 0;
+				z = temp.d;
+                v = r - (z - x);        /* z+v = r+x */
+                t = a = -1.0 / w;        /* a = -1.0/w */
+                
+				//SET_LOW_WORD(t,0);
+				temp.d = t;
+				temp.i[0] = 0;
+				t = temp.d;
+
+                s = 1.0 + t * z;
+                return t + a * (s + t * v);
+        }
+}
+
+IS double Tan_64f(double x)
+{
+        double y[2],z=0.0;
+        //int n, ix;
+		int n;
+		union_for_double ix;
+
+    /* High word of x. */
+        //GET_HIGH_WORD(ix,x);
+		ix.d =x;
+
+    /* |x| ~< pi/4 */
+        ix.i[1] &= 0x7fffffff;
+        if(ix.i[1] <= 0x3fe921fb) {
+            if(ix.i[1]<0x3e300000)                        /* x < 2**-28 */
+                if((int)x==0) return x;                /* generate inexact */
+            return __kernel_tan(x,z,1);
+        }
+
+    /* tan(Inf or NaN) is NaN */
+        else if (ix.i[1]>=0x7ff00000) return x-x;                /* NaN */
+
+    /* argument reduction needed */
+        else {
+            n = __ieee754_rem_pio2(x,y);
+            return __kernel_tan(y[0],y[1],1-((n&1)<<1)); /*   1 -- n even
+                                                        -1 -- n odd */
+        }
+}
+
+ISV Tan_64f_A53( const double * s, double * d)
+{
+	*d = Tan_64f(*s);
+}
+
+///////////////////////////////////////// TAN FLOAT REF CODE ////////////////////////////////////////////
+
+ISV Tan_32f_A24( const float * s, float * d)
+{
+	*d = (float)Tan_64f(*s);
+}
+
+///////////////////////////////////////// ACOS DOUBLE REF CODE ////////////////////////////////////////////
+
+IS double Acos_64f(double x)
+{
+        //double z,p,q,r,w,s,c,df;
+		double z,p,q,r,w,s,c;
+        //int hx,ix;
+		int ix;
+		union_for_double hx, df;
+        //GET_HIGH_WORD(hx,x);
+		hx.d =x;
+        ix = hx.i[1]&0x7fffffff;
+        if(ix>=0x3ff00000) {        /* |x| >= 1 */
+            //unsigned int lx;
+            //GET_LOW_WORD(lx,x);
+			//low word is already in hx.ui[0]
+
+            if(((ix-0x3ff00000)|hx.ui[0])==0) {        /* |x|==1 */
+                if(hx.i[1]>0) return 0.0;                /* acos(1) = 0  */
+                else return pi_d+2.0*pio2_lo_d;        /* acos(-1)= pi */
+            }
+            return (x-x)/(x-x);                /* acos(|x|>1) is NaN */
+        }
+        if(ix<0x3fe00000) {        /* |x| < 0.5 */
+            if(ix<=0x3c600000) return pio2_hi_d+pio2_lo_d;/*if|x|<2**-57*/
+            z = x*x;
+            p = z*(pS0_d+z*(pS1_d+z*(pS2_d+z*(pS3_d+z*(pS4_d+z*pS5_d)))));
+            q = one_d+z*(qS1_d+z*(qS2_d+z*(qS3_d+z*qS4_d)));
+            r = p/q;
+            return pio2_hi_d - (x - (pio2_lo_d-x*r));
+        } else  if (hx.i[1]<0) {                /* x < -0.5 */
+            z = (one_d+x)*0.5;
+            p = z*(pS0_d+z*(pS1_d+z*(pS2_d+z*(pS3_d+z*(pS4_d+z*pS5_d)))));
+            q = one_d+z*(qS1_d+z*(qS2_d+z*(qS3_d+z*qS4_d)));
+            s = sqrt(z);
+            r = p/q;
+            w = r*s-pio2_lo_d;
+            return pi_d - 2.0*(s+w);
+        } else {                        /* x > 0.5 */
+            z = (one_d-x)*0.5;
+            s = sqrt(z);
+            //df = s;
+			df.d = s;
+            //SET_LOW_WORD(df,0);
+			df.i[0] = 0; 
+            c  = (z-df.d*df.d)/(s+df.d);
+            p = z*(pS0_d+z*(pS1_d+z*(pS2_d+z*(pS3_d+z*(pS4_d+z*pS5_d)))));
+            q = one_d+z*(qS1_d+z*(qS2_d+z*(qS3_d+z*qS4_d)));
+            r = p/q;
+            w = r*s+c;
+            return 2.0*(df.d+w);
+        }
+}
+
+ISV Acos_64f_A53( const double * s, double * d)
+{
+	*d = Acos_64f(*s);	   
+}
+
+///////////////////////////////////////// ACOS FLOAT REF CODE ////////////////////////////////////////////
+
+IS float Acos_32f(float x)
+{
+        float z,p,q,r,w,s,c,df;
+        //int hx,ix;
+		int ix;
+		union_for_float hx;
+        //GET_FLOAT_WORD(hx,x);
+		hx.f = x;
+        ix = hx.i&0x7fffffff;
+        if(ix==0x3f800000) {                /* |x|==1 */
+            if(hx.i>0) return 0.0;        /* acos(1) = 0  */
+            else return pi_f+(float)2.0*pio2_lo_f;        /* acos(-1)= pi */
+        } else if(ix>0x3f800000) {        /* |x| >= 1 */
+            return (x-x)/(x-x);                /* acos(|x|>1) is NaN */
+        }
+        if(ix<0x3f000000) {        /* |x| < 0.5 */
+            if(ix<=0x23000000) return pio2_hi_f+pio2_lo_f;/*if|x|<2**-57*/
+            z = x*x;
+            p = z*(pS0_f+z*(pS1_f+z*(pS2_f+z*(pS3_f+z*(pS4_f+z*pS5_f)))));
+            q = one_f+z*(qS1_f+z*(qS2_f+z*(qS3_f+z*qS4_f)));
+            r = p/q;
+            return pio2_hi_f - (x - (pio2_lo_f-x*r));
+        } else  if (hx.i<0) {                /* x < -0.5 */
+            z = (one_f+x)*(float)0.5;
+            p = z*(pS0_f+z*(pS1_f+z*(pS2_f+z*(pS3_f+z*(pS4_f+z*pS5_f)))));
+            q = one_f+z*(qS1_f+z*(qS2_f+z*(qS3_f+z*qS4_f)));
+            s = sqrt(z);
+            r = p/q;
+            w = r*s-pio2_lo_f;
+            return pi_f - (float)2.0*(s+w);
+        } else {                        /* x > 0.5 */
+            //int idf;
+			union_for_float idf;
+            z = (float)((one_f-x)*(float)0.5);
+            s = sqrt(z);
+            df = s;
+            //GET_FLOAT_WORD(idf,df);
+			idf.f = df;
+			idf.i = idf.i&0xfffff000;
+            //SET_FLOAT_WORD(df,idf);
+			df = idf.f;
+            c  = (z-df*df)/(s+df);
+            p = z*(pS0_f+z*(pS1_f+z*(pS2_f+z*(pS3_f+z*(pS4_f+z*pS5_f)))));
+            q = one_f+z*(qS1_f+z*(qS2_f+z*(qS3_f+z*qS4_f)));
+            r = p/q;
+            w = r*s+c;
+            return (float)2.0*(df+w);
+        }
+}
+
+ISV Acos_32f_A24( const float * s, float * d)
+{
+	*d = Acos_32f(*s);	   
+}
+
+///////////////////////////////////////// ASIN DOUBLE REF CODE ////////////////////////////////////////////
+
+IS double Asin_64f(double x)
+{
+        double t=0.0,w,p,q,c,r,s;
+        //int hx,ix;
+		int ix;
+		union_for_double hx;
+		//GET_HIGH_WORD(hx,x);
+		hx.d = x;
+        ix = hx.i[1]&0x7fffffff;
+        if(ix>= 0x3ff00000) {                /* |x|>= 1 */
+            //unsigned int lx;
+            //GET_LOW_WORD(lx,x);
+			//low word is already in hx.ui[0]
+            if(((ix-0x3ff00000)|hx.ui[0])==0)
+                    /* asin(1)=+-pi/2 with inexact */
+                return x*pio2_hi_d+x*pio2_lo_d;            return (x-x)/(x-x);                /* asin(|x|>1) is NaN */        } else if (ix<0x3fe00000) {        /* |x|<0.5 */
+            if(ix<0x3e400000) {                /* if |x| < 2**-27 */
+                if(huge_d+x>one_d) return x;/* return x with inexact if x!=0*/
+            } else                t = x*x;
+                p = t*(pS0_d+t*(pS1_d+t*(pS2_d+t*(pS3_d+t*(pS4_d+t*pS5_d)))));
+                q = one_d+t*(qS1_d+t*(qS2_d+t*(qS3_d+t*qS4_d)));
+                w = p/q;
+                return x+x*w;
+        }
+        /* 1> |x|>= 0.5 */
+        w = one_d-fabs(x);
+        t = w*0.5;
+        p = t*(pS0_d+t*(pS1_d+t*(pS2_d+t*(pS3_d+t*(pS4_d+t*pS5_d)))));
+        q = one_d+t*(qS1_d+t*(qS2_d+t*(qS3_d+t*qS4_d)));
+        s = sqrt(t);
+        if(ix>=0x3FEF3333) {         /* if |x| > 0.975 */
+            w = p/q;
+            t = pio2_hi_d-(2.0*(s+s*w)-pio2_lo_d);
+        } else {
+			union_for_double temp;
+            //w  = s;
+			temp.d = s;// preserve the low word of s;
+            //SET_LOW_WORD(w,0);
+			temp.i[0] = 0;
+			w = temp.d;
+
+            c  = (t-w*w)/(s+w);
+            r  = p/q;
+            p  = 2.0*s*r-(pio2_lo_d-2.0*c);
+            q  = pio4_hi_d-2.0*w;
+            t  = pio4_hi_d-(p-q);
+        }
+		if(hx.i[1]>0) return t; 
+		else return -t;
+	}
+
+ISV Asin_64f_A53( const double * s,double * d) 
+{
+    *d = Asin_64f(*s);	   
+}
+
+///////////////////////////////////////// ASIN FLOAT REF CODE ////////////////////////////////////////////
+
+IS float Asin_32f(float x)
+{
+        float t=0.0,w,p,q,c,r,s;
+        //int hx,ix;
+		int ix;
+		union_for_float hx;
+        //GET_FLOAT_WORD(hx,x);
+		hx.f = x;
+        ix = hx.i&0x7fffffff;
+        if(ix==0x3f800000) {
+                /* asin(1)=+-pi/2 with inexact */
+            return x*pio2_hi_f+x*pio2_lo_f;
+        } else if(ix> 0x3f800000) {        /* |x|>= 1 */
+            return (x-x)/(x-x);                /* asin(|x|>1) is NaN */
+        } else if (ix<0x3f000000) {        /* |x|<0.5 */
+            if(ix<0x32000000) {                /* if |x| < 2**-27 */
+                if(huge_f+x>one_f) return x;/* return x with inexact if x!=0*/
+            } else
+                t = x*x;
+                p = t*(pS0_f+t*(pS1_f+t*(pS2_f+t*(pS3_f+t*(pS4_f+t*pS5_f)))));
+                q = one_f+t*(qS1_f+t*(qS2_f+t*(qS3_f+t*qS4_f)));
+                w = p/q;
+                return x+x*w;
+        }
+        /* 1> |x|>= 0.5 */
+        w = one_f-fabsf(x);
+        t = w*(float)0.5;
+        p = t*(pS0_f+t*(pS1_f+t*(pS2_f+t*(pS3_f+t*(pS4_f+t*pS5_f)))));
+        q = one_f+t*(qS1_f+t*(qS2_f+t*(qS3_f+t*qS4_f)));
+        s = sqrt(t);
+        if(ix>=0x3F79999A) {         /* if |x| > 0.975 */
+            w = p/q;
+            t = pio2_hi_f-((float)2.0*(s+s*w)-pio2_lo_f);
+        } else {
+            //int iw;
+			union_for_float iw;
+            //w  = s;
+			iw.f =s;
+            //GET_FLOAT_WORD(iw,w);
+			iw.i = iw.i&0xfffff000; 
+            //SET_FLOAT_WORD(w, iw);
+			w = iw.f;
+            c  = (t-w*w)/(s+w);
+            r  = p/q;
+            p  = (float)2.0*s*r-(pio2_lo_f-(float)2.0*c);
+            q  = pio4_hi_f-(float)2.0*w;
+            t  = pio4_hi_f-(p-q);
+        }
+        if(hx.i>0) return t; else return -t;
+}
+
+ISV Asin_32f_A24( const float * s, float * d)
+{
+    *d = Asin_32f(*s);	   
+}
+
+///////////////////////////////////////// ATAN DOUBLE REF CODE ////////////////////////////////////////////
+
+ISV Atan_64f_A53( const double * s, double * d)
+{
+		*d = atan(*s);
+}
+
+ISV Atan_64f_A53_inplace( double * d)
+{
+		*d = atan(*d);
+}
+
+///////////////////////////////////////// ATAN FLOAT REF CODE ////////////////////////////////////////////
+
+ISV Atan_32f_A24( const float * s, float * d)
+{
+	*d = atan(*s);
+}
+
+ISV Atan_32f_A24_inplace( float * d)
+{
+	*d = atan(*d);
+}
+
+///////////////////////////////////////// ATAN2 DOUBLE REF CODE ////////////////////////////////////////////
+
+IS double Atan2_64f(double y, double x)
+{
+	double z;
+	int k,m,ix,iy;
+	union_for_double hx,hy;
+
+	hx.d = x;
+	ix = hx.i[1]&0x7fffffff;
+	
+	hy.d = y;
+	iy = hy.i[1]&0x7fffffff;
+
+//	if(((ix|((lx|-(signed int)lx)>>31))>0x7ff00000)||
+//	   ((iy|((ly|-(signed int)ly)>>31))>0x7ff00000))	/* x or y is NaN */
+//	   return x+y;
+
+//	if((hx-0x3ff00000|lx)==0) return Atan_64f(y);   /* x=1.0 */
+	m = ((hy.i[1]>>31)&1)|((hx.i[1]>>30)&2);	/* 2*sign(x)+sign(y) */
+
+    /* when y = 0 */
+	if((iy|hy.ui[0])==0) {
+	    switch(m) {
+		case 0:
+		case 1: return y; 	 /* atan(+-0,+anything)=+-0 */
+		case 2: return pi_d; // pi_d+tiny_d;/* atan(+0,-anything) = pi */
+		case 3: return -pi_d;//-pi_d-tiny_d;/* atan(-0,-anything) =-pi */
+	    }
+	}
+//    /* when x = 0 */
+//	if((ix|lx)==0) return (hy<0)?  -pi_o_2_d-tiny_d: pi_o_2_d+tiny_d;
+
+    /* when x is INF */
+	if(ix==0x7ff00000) {
+	    if(iy==0x7ff00000) {
+		switch(m) {
+			case 0: return  pi_o_4_d; //pi_o_4_d+tiny_d;/* atan(+INF,+INF) */
+		    case 1: return -pi_o_4_d; //-pi_o_4_d-tiny_d;/* atan(-INF,+INF) */
+		    case 2: return  pi3_o_4_d;//(float)3.0*pi_o_4_d+tiny_d;/*atan(+INF,-INF)*/
+		    case 3: return -pi3_o_4_d;//(float)-3.0*pi_o_4_d-tiny_d;/*atan(-INF,-INF)*/
+		}
+	    } else {
+		switch(m) {
+//		    case 0: return  zero_d  ;	/* atan(+...,+INF) */
+//		    case 1: return -zero_d  ;	/* atan(-...,+INF) */
+		    case 2: return  pi_d;//pi_d+tiny_d  ;	/* atan(+...,-INF) */
+		    case 3: return -pi_d;//-pi_d-tiny_d  ;	/* atan(-...,-INF) */
+		}
+	    }
+	}
+//   /* when y is INF */
+//	if(iy==0x7ff00000) return (hy<0)? -pi_o_2_d-tiny_d: pi_o_2_d+tiny_d;
+
+    /* compute y/x */
+	k = (iy-ix)>>20;
+	//if(k > 60) z=pi_o_2_d+0.5*pi_lo_d; 	/* |y/x| >  2**60 */
+	if(hx.i[1]<0&&k<-60) z=0.0; 	/* |y|/x < -2**60 */
+	else z= atan(fabs(y/x));		/* safe to do y/x */
+	switch (m) {
+	    case 0: return  z;			/* atan(+,+) */
+	    case 1: return -z;			/* atan(-,+) */
+		   	
+	    case 2: return  pi_hi_d-(z-pi_lo_d);/* atan(+,-) */
+	    default: /* case 3 */
+	    	    return  (z-pi_lo_d)-pi_hi_d;/* atan(-,-) */
+	}
+}
+
+ISV Atan2_64f_A53( const double * s1, const double * s2, double * d)
+{
+	*d = Atan2_64f(*s1,*s2);
+}
+
+///////////////////////////////////////// ATAN2 FLOAT REF CODE ////////////////////////////////////////////
+
+IS float Atan2_32f(float y, float x)
+{
+	float z;
+	int k,m,ix,iy;
+	union_for_float hx, hy;
+	hx.f = x;
+	ix = hx.i&0x7fffffff;
+
+	hy.f = y;
+	iy = hy.i&0x7fffffff;
+
+	//if( ix>0x7f800000L||
+	//   iy>0x7f800000L)	/* x or y is NaN */
+	//   return x+y;
+
+	//if(hx==0x3f800000) return Atan_32f(y);   /* x=1.0 */
+
+	m = ((hy.i>>31)&1)|((hx.i>>30)&2);	/* 2*sign(x)+sign(y) */
+
+    /* when y = 0 */
+	if(iy<0x00800000L) {
+	    switch(m) {
+		case 0:
+		case 1: return y; 	 /* atan(+-0,+anything)=+-0 */
+		case 2: return pi_f; // pi_f+tiny_f;/* atan(+0,-anything) = pi */
+		case 3: return -pi_f;//-pi_f-tiny_f;/* atan(-0,-anything) =-pi */
+	    }
+	}
+    /* when x = 0 */
+	//if(ix<0x00800000L) return (hy<0)?  -pi_o_2_f-tiny_f: pi_o_2_f+tiny_f;
+
+    /* when x is INF */
+	if(ix==0x7f800000L) {
+	    if(iy==0x7f800000L) {
+		switch(m) {
+		    case 0: return  pi_o_4_f; //pi_o_4_f+tiny_f;/* atan(+INF,+INF) */
+		    case 1: return -pi_o_4_f; //-pi_o_4_f-tiny_f;/* atan(-INF,+INF) */
+		    case 2: return  pi3_o_4_f;//(float)3.0*pi_o_4_f+tiny_f;/*atan(+INF,-INF)*/
+		    case 3: return -pi3_o_4_f;//(float)-3.0*pi_o_4_f-tiny_f;/*atan(-INF,-INF)*/
+		}
+	    } else {
+		switch(m) {
+		    //case 0: return  zero_f  ;	/* atan(+...,+INF) */
+		    //case 1: return -zero_f  ;	/* atan(-...,+INF) */
+		    case 2: return  pi_f;//pi_f+tiny_f  ;	/* atan(+...,-INF) */
+		    case 3: return -pi_f;//-pi_f-tiny_f  ;	/* atan(-...,-INF) */
+		}
+	    }
+	}
+    /* when y is INF */
+	//if(iy==0x7f800000L) return (hy<0)? -pi_o_2_f-tiny_f: pi_o_2_f+tiny_f;
+
+    /* compute y/x */
+	k = (iy-ix)>>23;
+	//if(k > 60) z=pi_o_2_f+(float)0.5*pi_lo_f; 	/* |y/x| >  2**60 */
+	if(hx.i<0&&k<-60) z=0.0; 	/* |y|/x < -2**60 */
+	else z= atan(fabsf(y/x));	/* safe to do y/x */
+	
+	switch (m) {
+	    case 0: return  z;			/* atan(+,+) */
+	    case 1: return -z;			/* atan(-,+) */
+		   	
+	    case 2: return  pi_hi_f-(z-pi_lo_f);/* atan(+,-) */
+	    default: /* case 3 */
+	    	    return  (z-pi_lo_f)-pi_hi_f;/* atan(-,-) */
+	}
+}
+
+ISV Atan2_32f_A24( const float * s1, const float * s2, float * d)
+{
+	*d = Atan2_32f(*s1,*s2);
+}
+
+///////////////////////////////////////// COSH DOUBLE REF CODE ////////////////////////////////////////////
+
+IS double expm1(double x)
+{
+        double y,hi,lo,c=0,t,e,hxs,hfx,r1;
+        int k,xsb;
+        //unsigned int hx;
+		union_for_double hx;
+
+        //GET_HIGH_WORD(hx,x);
+		hx.d = x;
+        xsb = hx.ui[1]&0x80000000;                /* sign bit of x */
+        if(xsb==0) y=x; else y= -x;        /* y = |x| */
+        hx.ui[1] &= 0x7fffffff;                /* high word of |x| */
+
+    /* filter out huge and non-finite argument */
+        if(hx.ui[1] >= 0x4043687A) {                        /* if |x|>=56*ln2 */
+            if(hx.ui[1] >= 0x40862E42) {                /* if |x|>=709.78... */
+                if(hx.ui[1] >=0x7ff00000) {
+                    //unsigned int low;
+                    //GET_LOW_WORD(low,x);
+					//low word is already in hx.ui[0]
+                    if(((hx.ui[1]&0xfffff)|hx.ui[0])!=0)
+                         return x+x;          /* NaN */
+                    else return (xsb==0)? x:-1.0;/* exp(+-inf)={inf,-1} */
+                }
+                if(x > o_threshold_d) 
+					//return huge_d*huge_d; /* overflow */					
+					return CBL_F64_MAX; /* overflow */					
+            }
+            if(xsb!=0) { /* x < -56*ln2, return -1.0 with inexact */
+                if(x+tiny_d<0.0)                /* raise inexact */
+                return tiny_d-one_d;        /* return -1 */
+            }
+        }
+
+    /* argument reduction */
+        if(hx.ui[1] > 0x3fd62e42) {                /* if  |x| > 0.5 ln2 */
+            if(hx.ui[1] < 0x3FF0A2B2) {        /* and |x| < 1.5 ln2 */
+                if(xsb==0)
+                    {hi = x - ln2_hi_d; lo =  ln2_lo_d;  k =  1;}
+                else
+                    {hi = x + ln2_hi_d; lo = -ln2_lo_d;  k = -1;}
+            } else {
+                k  = (int)(invln2_d*x+((xsb==0)?0.5:-0.5));
+                t  = k;
+                hi = x - t*ln2_hi_d;        /* t*ln2_hi is exact here */
+                lo = t*ln2_lo_d;
+            }
+            x  = hi - lo;
+            c  = (hi-x)-lo;
+        }
+        else if(hx.ui[1] < 0x3c900000) {          /* when |x|<2**-54, return x */
+            t = huge_d+x;        /* return x with inexact flags when x!=0 */
+            return x - (t-(huge_d+x));
+        }
+        else k = 0;
+
+    /* x is now in primary range */
+        hfx = 0.5*x;
+        hxs = x*hfx;
+        r1 = one_d+hxs*(Q1_d+hxs*(Q2_d+hxs*(Q3_d+hxs*(Q4_d+hxs*Q5_d))));
+        t  = 3.0-r1*hfx;
+        e  = hxs*((r1-t)/(6.0 - x*t));
+        if(k==0) return x - (x*e-hxs);                /* c is 0 */
+        else {
+            e  = (x*(e-c)-c);
+            e -= hxs;
+            if(k== -1) return 0.5*(x-e)-0.5;
+            if(k==1)
+                       if(x < -0.25) return -2.0*(e-(x+0.5));
+                       else               return  one_d+2.0*(x-e);
+            if (k <= -2 || k>56) {   /* suffice to return exp(x)-1 */
+                //unsigned int high;
+				union_for_double high;
+                y = one_d-(e-x);
+                //GET_HIGH_WORD(high,y);
+				high.d = y;
+                //SET_HIGH_WORD(y,high+(k<<20));        /* add k to y's exponent */
+				high.ui[1] = high.ui[1]+(k<<20); // preserve the low word for y
+				y = high.d;
+                return y-one_d;
+            }
+            t = (double)one_d;
+            if(k<20) {
+                //unsigned int high;
+				union_for_double high;
+                //SET_HIGH_WORD(t,0x3ff00000 - (0x200000>>k));  /* t=1-2^-k */
+				high.d = t;
+				high.i[1] = 0x3ff00000 - (0x200000>>k);
+				t = high.d;
+                y = t-(e-x);
+                //GET_HIGH_WORD(high,y);
+				high.d = y;
+                //SET_HIGH_WORD(y,high+(k<<20));        /* add k to y's exponent */
+				high.i[1] = high.ui[1]+(k<<20);
+				y = high.d;
+           } else {
+                //unsigned int high;
+			    union_for_double high;
+                //SET_HIGH_WORD(t,((0x3ff-k)<<20));        /* 2^-k */
+				high.d = t;
+				high.i[1] = ((0x3ff-k)<<20);
+				t = high.d;
+                y = x-(e+t);
+                y += one_d;
+                //GET_HIGH_WORD(high,y);
+				high.d = y;
+                //SET_HIGH_WORD(y,high+(k<<20));        /* add k to y's exponent */
+				high.i[1] = high.ui[1] + (k<<20);
+				y = high.d;
+            }
+        }
+        return y;
+}
+
+IS double __ieee754_exp(double x) /* default IEEE double exp */
+{
+        double y,hi=0.0,lo=0.0,c,t;
+        int k=0,xsb;
+        //unsigned int hx;
+		union_for_double hx;
+
+        //GET_HIGH_WORD(hx,x);
+		hx.d = x;
+        xsb = (hx.ui[1]>>31)&1;                /* sign bit of x */
+        hx.ui[1] &= 0x7fffffff;                /* high word of |x| */
+
+    /* filter out non-finite argument */
+        if(hx.ui[1] >= 0x40862E42) {                        /* if |x|>=709.78... */
+            if(hx.ui[1]>=0x7ff00000) {
+                //unsigned int lx;
+                //GET_LOW_WORD(lx,x);
+                if(((hx.ui[1]&0xfffff)|hx.ui[0])!=0)
+                     return x+x;                 /* NaN */
+                else return (xsb==0)? x:0.0;        /* exp(+-inf)={inf,0} */
+            }
+            //if(x > o_threshold_d) return huge_d*huge_d; /* overflow */
+			if(x > o_threshold_d) return CBL_F64_MAX;
+            if(x < u_threshold_d) return twom1000_d*twom1000_d; /* underflow */
+        }
+
+    /* argument reduction */
+        if(hx.ui[1] > 0x3fd62e42) {                /* if  |x| > 0.5 ln2 */            if(hx.ui[1] < 0x3FF0A2B2) {        /* and |x| < 1.5 ln2 */
+                hi = x-ln2HI_d[xsb]; lo=ln2LO_d[xsb]; k = 1-xsb-xsb;
+            } else {
+                k  = (int)(invln2_d*x+halF_d[xsb]);
+                t  = k;
+                hi = x - t*ln2HI_d[0];        /* t*ln2HI is exact here */
+                lo = t*ln2LO_d[0];
+            }
+            x  = hi - lo;
+        }        else if(hx.ui[1] < 0x3e300000)  {        /* when |x|<2**-28 */
+            if(huge_d+x>one_d) return one_d+x;/* trigger inexact */
+        }
+        else k = 0;
+
+    /* x is now in primary range */
+        t  = x*x;
+        c  = x - t*(P1_d+t*(P2_d+t*(P3_d+t*(P4_d+t*P5_d))));
+        if(k==0)         return one_d-((x*c)/(c-2.0)-x);        
+		else             y = one_d-((lo-(x*c)/(2.0-c))-hi);
+        if(k >= -1021) {
+            //unsigned int hy;
+			union_for_double hy;
+            //GET_HIGH_WORD(hy,y);
+			hy.d =y;
+            //SET_HIGH_WORD(y,hy+(k<<20));        /* add k to y's exponent */
+			hy.i[1] = hy.ui[1]+(k<<20);
+			y = hy.d;
+            return y;
+        } else {
+            //unsigned int hy;
+			union_for_double hy;
+            //GET_HIGH_WORD(hy,y);
+			hy.d = y;
+            //SET_HIGH_WORD(y,hy+((k+1000)<<20));        /* add k to y's exponent */
+			hy.i[1] = hy.ui[1] +((k+1000)<<20);
+			y = hy.d;
+            return y*twom1000_d;
+        }
+}
+
+IS double Cosh_64f(double x)
+{
+        double t,w;
+        int ix;
+        //unsigned int lx;
+		union_for_double hx;
+
+    /* High word of |x|. */
+        //GET_HIGH_WORD(hx,x);
+		hx.d = x;
+        ix = hx.i[1]&0x7fffffff;
+
+    /* x is INF or NaN */
+        if(ix>=0x7ff00000) return x*x;
+    /* |x| in [0,0.5*ln2], return 1+expm1(|x|)^2/(2*exp(|x|)) */
+        if(ix<0x3fd62e43) {
+            t = expm1(fabs(x));
+            w = one_d+t;
+            if (ix<0x3c800000) return w;        /* cosh(tiny) = 1 */
+            return one_d+(t*t)/(w+w);
+        }
+
+    /* |x| in [0.5*ln2,22], return (exp(|x|)+1/exp(|x|)/2; */
+        if (ix < 0x40360000) {
+                t = __ieee754_exp(fabs(x));
+                return half_d*t+half_d/t;
+        }
+
+    /* |x| in [22, log(maxdouble)] return half*exp(|x|) */
+        if (ix < 0x40862E42)  return half_d*__ieee754_exp(fabs(x));
+
+    /* |x| in [log(maxdouble), overflowthresold] */
+        //GET_LOW_WORD(lx,x);
+		//low word already in hx.ui[0]
+        if (ix<0x408633CE ||
+              ((ix==0x408633ce)&&((hx.ui[0])<=(unsigned int)0x8fb9f87d))) {
+            w = __ieee754_exp(half_d*fabs(x));
+            t = half_d*w;
+            return t*w;
+        }
+
+    /* |x| > overflowthresold, cosh(x) overflow */
+       // return huge_d*huge_d;
+		return Const::INF_64F;
+}
+
+ISV Cosh_64f_A53( const double * s, double * d)
+{
+    *d = Cosh_64f(*s);	   
+}
+
+///////////////////////////////////////// COSH FLOAT REF CODE ////////////////////////////////////////////
+
+IS float Cosh_32f(float x)
+{
+        float t,w;
+        int ix;
+        //GET_FLOAT_WORD(ix,x);
+		union_for_float temp;
+		temp.f =x;
+		ix = temp.i;
+
+        ix &= 0x7fffffff;
+
+    /* x is INF or NaN */
+        if(ix>=0x7f800000) return x*x;
+
+    /* |x| in [0,0.5*ln2], return 1+expm1(|x|)^2/(2*exp(|x|)) */
+        if(ix<0x3eb17218) {
+            t = (float)expm1(fabsf(x));
+            w = one_f+t;
+            if (ix<0x39800000) return one_f;        /* cosh(tiny) = 1 */
+            return one_f+(t*t)/(w+w);
+        }
+
+    /* |x| in [0.5*ln2,9], return (exp(|x|)+1/exp(|x|))/2; */
+        if (ix < 0x41100000) {
+                t = (float)__ieee754_exp(fabsf(x));
+                return half_f*t+half_f/t;
+        }
+
+    /* |x| in [9, log(maxfloat)] return half*exp(|x|) */
+        if (ix < 0x42b17217)  return (float)(half_f*__ieee754_exp(fabsf(x)));
+
+    /* |x| in [log(maxfloat), overflowthresold] */
+        if (ix<=0x42b2d4fc) {
+            w = (float)__ieee754_exp(half_f*fabsf(x));
+            t = half_f*w;
+            return t*w;
+        }
+
+    /* |x| > overflowthresold, cosh(x) overflow */
+        //return huge_f*huge_f;
+		return Const::INF_32F;
+}
+
+ISV Cosh_32f_A24( const float * s, float * d)
+{
+    *d = Cosh_32f(*s);	   
+}
+
+///////////////////////////////////////// SINH DOUBLE REF CODE ////////////////////////////////////////////
+
+IS double Sinh_64f(double x)
+{
+        double t,w,h;
+        //int ix,hx;
+		int ix;
+        //unsigned int lx;
+		union_for_double hx;
+
+    /* High word of |x|. */
+        //GET_HIGH_WORD(hx,x);
+		hx.d =x;
+        ix = hx.i[1]&0x7fffffff;
+
+    /* x is INF or NaN */
+        if(ix>=0x7ff00000) return x+x;
+        h = 0.5;
+        if (hx.i[1]<0) h = -h;
+    /* |x| in [0,22], return sign(x)*0.5*(E+E/(E+1))) */
+        if (ix < 0x40360000) {                /* |x|<22 */
+            if (ix<0x3e300000)                 /* |x|<2**-28 */
+                if(shuge_d+x>one_d) return x;/* sinh(tiny) = tiny with inexact */
+            t = expm1(fabs(x));
+            if(ix<0x3ff00000) return h*(2.0*t-t*t/(t+one_d));
+            return h*(t+t/(t+one_d));
+        }
+
+    /* |x| in [22, log(maxdouble)] return 0.5*exp(|x|) */
+        if (ix < 0x40862E42)  return h*__ieee754_exp(fabs(x));
+
+    /* |x| in [log(maxdouble), overflowthresold] */
+        //GET_LOW_WORD(lx,x);
+        if (ix<0x408633CE || ((ix==0x408633ce)&&(hx.ui[0]<=(unsigned int)0x8fb9f87d))) {
+            w = __ieee754_exp(0.5*fabs(x));
+            t = h*w;
+            return t*w;
+        }
+
+    /* |x| > overflowthresold, sinh(x) overflow */
+        return x*shuge_d;
+}
+
+ISV Sinh_64f_A53( const double * s, double * d)
+{
+	*d = Sinh_64f(*s);	    
+}
+
+///////////////////////////////////////// SINH FLOAT REF CODE ////////////////////////////////////////////
+
+IS float Sinh_32f(float x)
+{
+        float t,w,h;
+        //int ix,hx;
+		int ix;
+		union_for_float hx;
+
+        //GET_FLOAT_WORD(hx,x);
+		hx.f =x;
+        ix = hx.i&0x7fffffff;
+
+    /* x is INF or NaN */
+        if(ix>=0x7f800000) return x+x;
+
+        h = 0.5;
+        if (hx.i<0) h = -h;
+    /* |x| in [0,9], return sign(x)*0.5*(E+E/(E+1))) */
+        if (ix < 0x41100000) {                /* |x|<9 */
+            if (ix<0x39800000)                 /* |x|<2**-12 */
+                if(shuge_f+x>one_f) return x;/* sinh(tiny) = tiny with inexact */
+            t = (float)expm1(fabsf(x));
+            if(ix<0x3f800000) return h*((float)2.0*t-t*t/(t+one_f));
+            return h*(t+t/(t+one_f));
+        }
+
+    /* |x| in [9, logf(maxfloat)] return 0.5*exp(|x|) */
+        if (ix < 0x42b17217)  return (float)(h*__ieee754_exp(fabsf(x)));
+
+    /* |x| in [logf(maxfloat), overflowthresold] */
+        if (ix<=0x42b2d4fc) {
+            w = (float)__ieee754_exp((float)0.5*fabsf(x));
+            t = h*w;
+            return t*w;
+        }
+
+    /* |x| > overflowthresold, sinh(x) overflow */
+        return x*shuge_f;
+}
+
+ISV Sinh_32f_A24( const float * s, float * d)
+{
+	*d = Sinh_32f(*s);	    
+}
+
+///////////////////////////////////////// TANH DOUBLE REF CODE ////////////////////////////////////////////
+
+IS double Tanh_64f(double x)
+{
+        double t,z;
+        //int hx,ix;
+		int ix;
+		union_for_double hx;
+
+        //GET_HIGH_WORD(hx,x);
+		hx.d = x;
+        ix = hx.i[1]&0x7fffffff;
+
+    /* x is INF or NaN */
+        if(ix>=0x7ff00000) {
+            if (hx.i[1]>=0) return one_d/x+one_d;    /* tanh(+-inf)=+-1 */
+            else       return one_d/x-one_d;    /* tanh(NaN) = NaN */
+        }
+
+    /* |x| < 22 */
+        if (ix < 0x40360000) {                /* |x|<22 */
+            if (ix<0x3e300000) {        /* |x|<2**-28 */
+                if(huge_d+x>one_d) return x; /* tanh(tiny) = tiny with inexact */
+            }
+            if (ix>=0x3ff00000) {        /* |x|>=1  */
+                t = expm1(two_d*fabs(x));
+                z = one_d - two_d/(t+two_d);
+            } else {
+                t = expm1(-two_d*fabs(x));
+                z= -t/(t+two_d);
+            }
+    /* |x| >= 22, return +-1 */
+        } else {
+            z = one_d - tiny_d;                /* raise inexact flag */
+        }
+        return (hx.i[1]>=0)? z: -z;
+}
+
+ISV Tanh_64f_A53( const double * s, double * d)
+{
+	*d = Tanh_64f(*s);   
+}
+
+///////////////////////////////////////// TANH FLOAT REF CODE ////////////////////////////////////////////
+
+IS float Tanh_32f(float x)
+{
+        float t,z;
+        //int hx,ix;
+		int ix;
+		union_for_float hx;
+
+        //GET_FLOAT_WORD(hx,x);
+		hx.f = x;
+        ix = hx.i&0x7fffffff;
+
+    /* x is INF or NaN */
+        if(ix>=0x7f800000) {
+            if (hx.i>=0) return one_f/x+one_f;    /* tanh(+-inf)=+-1 */
+            else       return one_f/x-one_f;    /* tanh(NaN) = NaN */
+        }
+
+    /* |x| < 9 */
+        if (ix < 0x41100000) {                /* |x|<9 */
+            if (ix<0x39800000) {        /* |x|<2**-12 */
+                if(huge_f+x>one_f) return x; /* tanh(tiny) = tiny with inexact */
+            }
+            if (ix>=0x3f800000) {        /* |x|>=1  */
+                t = (float)expm1(two_f*fabsf(x));
+                z = one_f - two_f/(t+two_f);
+            } else {
+                t = (float)expm1(-two_f*fabsf(x));
+                z= -t/(t+two_f);
+            }
+    /* |x| >= 9, return +-1 */
+        } else {
+            z = one_f - tiny_f;                /* raise inexact flag */
+        }
+        return (hx.i>=0)? z: -z;
+}
+
+ISV Tanh_32f_A24( const float * s, float * d)
+{
+	*d = Tanh_32f(*s);   
+}
+
+///////////////////////////////////////// ACOSH DOUBLE REF CODE ////////////////////////////////////////////
+
+IS double log1p(double x)
+{
+        double hfsq,f=0,c=0,s,z,R,u;
+        //int k,hx,hu=0,ax;
+		int k,hu=0,ax;
+		union_for_double hx;
+
+        //GET_HIGH_WORD(hx,x);
+		hx.d = x;
+        ax = hx.i[1]&0x7fffffff;
+
+        k = 1;
+        if (hx.i[1] < 0x3FDA827A) {                        /* 1+x < sqrt(2)+ */
+            if(ax>=0x3ff00000) {                /* x <= -1.0 */
+                //if(x==-1.0) return -two54_d/zero_d; /* log1p(-1)=+inf */
+				if(x==-1.0) return Const::INF_64F;
+                else return (x-x)/(x-x);        /* log1p(x<-1)=NaN */
+            }
+            if(ax<0x3e200000) {                        /* |x| < 2**-29 */
+                if(two54_d+x>zero_d                        /* raise inexact */
+                    &&ax<0x3c900000)                 /* |x| < 2**-54 */
+                    return x;
+                else
+                    return x - x*x*0.5;
+            }
+            if(hx.i[1]>0||hx.i[1]<=((int)0xbfd2bec4)) {
+                k=0;f=x;hu=1;}                /* sqrt(2)/2- <= 1+x < sqrt(2)+ */
+        }
+        if (hx.i[1] >= 0x7ff00000) return x+x;
+        if(k!=0) {
+            if(hx.i[1]<0x43400000) {
+                u  = 1.0+x;
+                //GET_HIGH_WORD(hu,u);
+				union_for_double temp;
+				temp.d = u;
+				hu = temp.i[1];
+                k  = (hu>>20)-1023;
+                c  = (k>0)? 1.0-(u-x):x-(u-1.0);/* correction term */
+                c /= u;
+            } else {
+                u  = x;
+                //GET_HIGH_WORD(hu,u);
+				union_for_double temp;
+				temp.d = u;
+				hu = temp.i[1];
+                k  = (hu>>20)-1023;
+                c  = 0;
+            }
+            hu &= 0x000fffff;
+            /*
+             * The approximation to sqrt(2) used in thresholds is not
+             * critical.  However, the ones used above must give less
+             * strict bounds than the one here so that the k==0 case is
+             * never reached from here, since here we have committed to
+             * using the correction term but don't use it if k==0.
+             */
+            if(hu<0x6a09e) {                        /* u ~< sqrt(2) */
+                //SET_HIGH_WORD(u,hu|0x3ff00000);        /* normalize u */
+				union_for_double temp;
+				temp.d = u;
+				temp.i[1] = hu|0x3ff00000;
+				u = temp.d;
+            } else {
+                k += 1;
+                //SET_HIGH_WORD(u,hu|0x3fe00000);        /* normalize u/2 */
+				union_for_double temp;
+				temp.d = u;
+				temp.i[1] = hu|0x3fe00000;
+				u = temp.d;
+                hu = (0x00100000-hu)>>2;
+            }
+            f = u-1.0;
+        }
+        hfsq=0.5*f*f;
+        if(hu==0) {        /* |f| < 2**-20 */
+            if(f==zero_d) if(k==0) return zero_d;
+                        else {c += k*ln2_lo_d; return k*ln2_hi_d+c;}
+            R = hfsq*(1.0-0.66666666666666666*f);
+            if(k==0) return f-R; else
+                         return k*ln2_hi_d-((R-(k*ln2_lo_d+c))-f);
+        }
+        s = f/(2.0+f);
+        z = s*s;
+        R = z*(Lp1_d+z*(Lp2_d+z*(Lp3_d+z*(Lp4_d+z*(Lp5_d+z*(Lp6_d+z*Lp7_d))))));
+        if(k==0) return f-(hfsq-s*(hfsq+R)); else
+                 return k*ln2_hi_d-((hfsq-(s*(hfsq+R)+(k*ln2_lo_d+c)))-f);
+}
+
+IS double __ieee754_log(double x)
+{
+        double hfsq,f,s,z,R,w,t1,t2,dk;
+        //int k,hx,i,j;
+		int k,i,j;		
+		union_for_double hx;
+        //unsigned int lx;
+        //EXTRACT_WORDS(hx,lx,x);
+		hx.d = x;
+
+        k=0;
+        if (hx.i[1] < 0x00100000) {                        /* x < 2**-1022  */
+            //if (((hx&0x7fffffff)|lx)==0)                return -two54_d/zero_d;                /* log(+-0)=-inf */
+            if (((hx.i[1]&0x7fffffff)|hx.ui[0])==0) return Const::INF_64F;
+			//if (hx<0) return (x-x)/zero_d;        /* log(-#) = NaN */
+			if (hx.i[1]<0) return Const::NAN_64F;
+            k -= 54; x *= two54_d; /* subnormal number, scale up x */
+            //GET_HIGH_WORD(hx,x);
+			hx.d = x;
+        }        if (hx.i[1] >= 0x7ff00000) return x+x;
+        k += (hx.i[1]>>20)-1023;
+        hx.i[1] &= 0x000fffff;
+        i = (hx.i[1]+0x95f64)&0x100000;
+        //SET_HIGH_WORD(x,hx|(i^0x3ff00000));        /* normalize x or x/2 */
+		union_for_double temp;
+		temp.d = x;
+		temp.i[1] = (hx.i[1])|(i^0x3ff00000);
+		x = temp.d;
+
+        k += (i>>20);
+        f = x-1.0;
+        if((0x000fffff&(2+hx.i[1]))<3) {        /* -2**-20 <= f < 2**-20 */
+            if(f==zero_d) if(k==0) return zero_d;  else {dk=(double)k;
+                                 return dk*ln2_hi_d+dk*ln2_lo_d;}
+            R = f*f*(0.5-0.33333333333333333*f);
+            if(k==0) return f-R; else {dk=(double)k;
+                         return dk*ln2_hi_d-((R-dk*ln2_lo_d)-f);}
+        }
+        s = f/(2.0+f);        dk = (double)k;
+        z = s*s;
+        i = hx.i[1]-0x6147a;
+        w = z*z;
+        j = 0x6b851-hx.i[1];
+        t1= w*(Lg2_d+w*(Lg4_d+w*Lg6_d));        t2= z*(Lg1_d+w*(Lg3_d+w*(Lg5_d+w*Lg7_d)));        i |= j;
+        R = t2+t1;
+        if(i>0) {
+            hfsq=0.5*f*f;
+            if(k==0) return f-(hfsq-s*(hfsq+R)); else
+                     return dk*ln2_hi_d-((hfsq-(s*(hfsq+R)+dk*ln2_lo_d))-f);
+        } else {
+            if(k==0) return f-s*(f-R); else
+                     return dk*ln2_hi_d-((s*(f-R)-dk*ln2_lo_d)-f);
+        }
+}
+
+IS double Acosh_64f(double x)
+{
+        double t;
+        int hx;
+        unsigned int lx;
+		//EXTRACT_WORDS(hx,lx,x);
+		union_for_double temp;
+		temp.d = x;
+		hx = temp.i[1];
+		lx = temp.ui[0];
+
+        if(hx<0x3ff00000) {                /* x < 1 */
+            //return (x-x)/(x-x);
+			return Const::NAN_64F;
+        } else if(hx >=0x41b00000) {        /* x > 2**28 */
+            if(hx >=0x7ff00000) {        /* x is inf of NaN */
+                return x+x;
+            } else                return __ieee754_log(x)+ln2_d;        /* acosh(huge)=log(2x) */
+        } else if(((hx-0x3ff00000)|lx)==0) {
+            return 0.0;                        /* acosh(1) = 0 */
+        } else if (hx > 0x40000000) {        /* 2**28 > x > 2 */
+            t=x*x;
+            return __ieee754_log(2.0*x-one_d/(x+sqrt(t-one_d)));
+        } else {                        /* 1<x<2 */
+            t = x-one_d;
+            return log1p(t+sqrt(2.0*t+t*t));
+        }
+}
+
+ISV Acosh_64f_A53( const double * s, double * d)
+{
+	*d = Acosh_64f(*s);
+}
+
+///////////////////////////////////////// ACOSH FLOAT REF CODE ////////////////////////////////////////////
+
+IS float log1pf(float x)
+{
+        float hfsq,f=0,c=0,s,z,R,u;
+        int k,hx,hu=0,ax;
+        //GET_FLOAT_WORD(hx,x);
+		union_for_float temp;
+		temp.f = x;
+		hx = temp.i;
+
+		ax = hx&0x7fffffff;
+
+        k = 1;
+        if (hx < 0x3ed413d0) {                        /* 1+x < sqrt(2)+  */
+            if(ax>=0x3f800000) {                /* x <= -1.0 */
+                //if(x==(float)-1.0) return -two25_f/zero_f; /* log1p(-1)=+inf */
+				if(x==(float)-1.0) return Const::INF_32F;
+                else return (x-x)/(x-x);        /* log1p(x<-1)=NaN */
+            }
+            if(ax<0x31000000) {                        /* |x| < 2**-29 */
+                if(two25_f+x>zero_f                        /* raise inexact */
+                    &&ax<0x24800000)                 /* |x| < 2**-54 */
+                    return x;
+                else
+                    return x - x*x*(float)0.5;
+            }
+            if(hx>0||hx<=((int)0xbe95f619)) {
+                k=0;f=x;hu=1;}                /* sqrt(2)/2- <= 1+x < sqrt(2)+ */
+        }
+        if (hx >= 0x7f800000) return x+x;
+        if(k!=0) {
+            if(hx<0x5a000000) {
+                *(volatile float *)&u = (float)1.0+x;
+                //GET_FLOAT_WORD(hu,u);
+				temp.f = u;
+				hu = temp.i;
+                k  = (hu>>23)-127;
+                /* correction term */
+                c  = (k>0)? (float)1.0-(u-x):x-(u-(float)1.0);
+                c /= u;
+            } else {
+                u  = x;
+                //GET_FLOAT_WORD(hu,u);
+				temp.f = u;
+				hu = temp.i;
+                k  = (hu>>23)-127;
+                c  = 0;
+            }
+            hu &= 0x007fffff;
+            /*
+             * The approximation to sqrt(2) used in thresholds is not
+             * critical.  However, the ones used above must give less
+             * strict bounds than the one here so that the k==0 case is
+             * never reached from here, since here we have committed to
+             * using the correction term but don't use it if k==0.
+             */
+            if(hu<0x3504f4) {                        /* u < sqrt(2) */
+				//int temp = hu|0x3f800000;
+                //SET_FLOAT_WORD(u, temp);/* normalize u */
+				temp.i = hu|0x3f800000;
+				u = temp.f;
+
+            } else {
+                k += 1;
+				//int temp = hu|0x3f000000;
+                //SET_FLOAT_WORD(u,temp);        /* normalize u/2 */
+				temp.i = hu|0x3f000000;
+				u = temp.f;
+                hu = (0x00800000-hu)>>2;
+            }
+            f = u-(float)1.0;
+        }
+        hfsq=(float)0.5*f*f;
+        if(hu==0) {        /* |f| < 2**-20 */
+            if(f==zero_f) if(k==0) return zero_f;
+                        else {c += k*ln2_lo_f; return k*ln2_hi_f+c;}
+            R = hfsq*((float)1.0-(float)0.66666666666666666*f);
+            if(k==0) return f-R; else
+                         return k*ln2_hi_f-((R-(k*ln2_lo_f+c))-f);
+        }
+        s = f/((float)2.0+f);
+        z = s*s;
+        R = z*(Lp1_f+z*(Lp2_f+z*(Lp3_f+z*(Lp4_f+z*(Lp5_f+z*(Lp6_f+z*Lp7_f))))));
+        if(k==0) return f-(hfsq-s*(hfsq+R)); else
+                 return k*ln2_hi_f-((hfsq-(s*(hfsq+R)+(k*ln2_lo_f+c)))-f);
+}
+
+IS float __ieee754_logf(float x)
+{
+        float hfsq,f,s,z,R,w,t1,t2,dk;
+        int k,ix,i,j;
+
+        //GET_FLOAT_WORD(ix,x);
+		union_for_float temp;
+		temp.f = x;
+		ix = temp.i;
+
+        k=0;
+        if (ix < 0x00800000) {                        /* x < 2**-126  */
+            if ((ix&0x7fffffff)==0)
+                //return -two25_f/zero_f;                /* log(+-0)=-inf */
+				return -Const::INF_32F;
+
+           // if (ix<0) return (x-x)/zero_f;        /* log(-#) = NaN */
+			 if (ix<0) return Const::NAN_32F;
+            k -= 25; x *= two25_f; /* subnormal number, scale up x */
+            //GET_FLOAT_WORD(ix,x);
+			union_for_float temp;
+			temp.f = x;
+			ix = temp.i;
+        }
+        if (ix >= 0x7f800000) return x+x;
+        k += (ix>>23)-127;
+        ix &= 0x007fffff;
+        i = (ix+(0x95f64<<3))&0x800000;
+		//int temp = ix|(i^0x3f800000);
+        //SET_FLOAT_WORD(x,temp);        /* normalize x or x/2 */
+		temp.i = ix|(i^0x3f800000);
+		x = temp.f;
+
+        k += (i>>23);
+        f = x-(float)1.0;
+        if((0x007fffff&(0x8000+ix))<0xc000) {        /* -2**-9 <= f < 2**-9 */
+            if(f==zero_f) if(k==0) return zero_f;  else {dk=(float)k;
+                                 return dk*ln2_hi_f+dk*ln2_lo_f;}
+            R = f*f*((float)0.5-(float)0.33333333333333333*f);
+            if(k==0) return f-R; else {dk=(float)k;
+                         return dk*ln2_hi_f-((R-dk*ln2_lo_f)-f);}
+        }
+        s = f/((float)2.0+f);
+        dk = (float)k;
+        z = s*s;
+        i = ix-(0x6147a<<3);
+        w = z*z;
+        j = (0x6b851<<3)-ix;
+        t1= w*(Lg2_f+w*Lg4_f);
+        t2= z*(Lg1_f+w*Lg3_f);
+        i |= j;
+        R = t2+t1;
+        if(i>0) {
+            hfsq=(float)0.5*f*f;
+            if(k==0) return f-(hfsq-s*(hfsq+R)); else
+                     return dk*ln2_hi_f-((hfsq-(s*(hfsq+R)+dk*ln2_lo_f))-f);
+        } else {
+            if(k==0) return f-s*(f-R); else
+                     return dk*ln2_hi_f-((s*(f-R)-dk*ln2_lo_f)-f);
+        }
+}
+
+IS float Acosh_32f(float x)
+{
+        float t;
+        int hx;
+        //GET_FLOAT_WORD(hx,x);
+		union_for_float temp;
+		temp.f = x;
+		hx = temp.i;
+
+        if(hx<0x3f800000) {                /* x < 1 */
+            //return (x-x)/(x-x);
+			return Const::NAN_32F;
+
+        } else if(hx >=0x4d800000) {        /* x > 2**28 */
+            if(hx >=0x7f800000) {        /* x is inf of NaN */
+                return x+x;
+            } else
+                return __ieee754_logf(x)+ln2_f;        /* acosh(huge)=log(2x) */
+        } else if (hx==0x3f800000) {
+            return 0.0;                        /* acosh(1) = 0 */
+        } else if (hx > 0x40000000) {        /* 2**28 > x > 2 */
+            t=x*x;
+            return __ieee754_logf((float)2.0*x-one_f/(x+sqrt(t-one_f)));
+        } else {                        /* 1<x<2 */
+            t = x-one_f;
+            return log1pf(t+sqrt((float)2.0*t+t*t));
+        }
+}
+
+ISV Acosh_32f_A24( const float * s, float * d)
+{
+	*d = Acosh_32f(*s);
+}
+
+///////////////////////////////////////// ASINH DOUBLE REF CODE ////////////////////////////////////////////
+
+IS double Asinh_64f(double x)
+{
+        double t,w;
+        int hx,ix;
+        //GET_HIGH_WORD(hx,x);
+		union_for_double temp;
+		temp.d = x;
+		hx = temp.i[1];
+
+        ix = hx&0x7fffffff;
+        if(ix>=0x7ff00000) return x+x;        /* x is inf or NaN */
+        if(ix< 0x3e300000) {        /* |x|<2**-28 */
+            if(huge_d+x>one_d) return x;        /* return x inexact except 0 */
+        }
+        if(ix>0x41b00000) {        /* |x| > 2**28 */
+            w = __ieee754_log(fabs(x))+ln2_d;
+        } else if (ix>0x40000000) {        /* 2**28 > |x| > 2.0 */
+            t = fabs(x);
+            w = __ieee754_log(2.0*t+one_d/(sqrt(x*x+one_d)+t));
+        } else {                /* 2.0 > |x| > 2**-28 */
+            t = x*x;
+            w =log1p(fabs(x)+t/(one_d+sqrt(one_d+t)));
+        }
+        if(hx>0) return w; else return -w;
+}
+
+ISV Asinh_64f_A53( const double * s, double * d)
+{
+	*d = Asinh_64f(*s);
+}
+
+///////////////////////////////////////// ASINH FLOAT REF CODE ////////////////////////////////////////////
+
+IS float Asinh_32f(float x)
+{
+        float t,w;
+        int hx,ix;
+        //GET_FLOAT_WORD(hx,x);
+		union_for_float temp;
+		temp.f = x;
+		hx = temp.i;
+
+        ix = hx&0x7fffffff;
+        if(ix>=0x7f800000) return x+x;        /* x is inf or NaN */
+        if(ix< 0x31800000) {        /* |x|<2**-28 */
+            if(huge_f+x>one_f) return x;        /* return x inexact except 0 */
+        }
+        if(ix>0x4d800000) {        /* |x| > 2**28 */
+            w = __ieee754_logf(fabsf(x))+ln2_f;
+        } else if (ix>0x40000000) {        /* 2**28 > |x| > 2.0 */
+            t = fabsf(x);
+            w = __ieee754_logf((float)2.0*t+one_f/(sqrt(x*x+one_f)+t));
+        } else {                /* 2.0 > |x| > 2**-28 */
+            t = x*x;
+            w =log1pf(fabsf(x)+t/(one_f+sqrt(one_f+t)));
+        }
+        if(hx>0) return w; else return -w;
+}
+
+ISV Asinh_32f_A24( const float * s, float * d)
+{
+	*d = Asinh_32f(*s);
+}
+
+///////////////////////////////////////// ATANH DOUBLE REF CODE ////////////////////////////////////////////
+
+IS double Atanh_64f(double x)
+{
+        double t;
+        int hx,ix;
+        unsigned int lx;
+        //EXTRACT_WORDS(hx,lx,x);
+		union_for_double temp;
+		temp.d = x;
+		hx = temp.i[1];
+		lx = temp.i[0];
+
+        ix = hx&0x7fffffff;
+        if ((ix|((lx|(-(signed int)lx))>>31))>0x3ff00000) /* |x|>1 */
+            //return (x-x)/(x-x);
+			return Const::NAN_64F;
+        //if(ix==0x3ff00000)            return x/zero_d;
+		if(ix==0x3ff00000) 
+			{
+			if(x>0)
+				return Const::INF_64F;
+			else 
+				return -Const::INF_64F;
+			}
+
+        if(ix<0x3e300000&&(huge_d+x)>zero_d) return x;        /* x<2**-28 */
+        //SET_HIGH_WORD(x,ix);
+		temp.d = x;
+		temp.i[1] = ix;
+		x = temp.d;
+
+        if(ix<0x3fe00000) {                /* x < 0.5 */
+            t = x+x;
+            t = 0.5*log1p(t+t*x/(one_d-x));
+        } else            t = 0.5*log1p((x+x)/(one_d-x));
+        if(hx>=0) return t; else return -t;
+}
+
+ISV Atanh_64f_A53( const double * s, double * d)
+{
+	*d = Atanh_64f(*s);
+}
+
+///////////////////////////////////////// ATANH FLOAT REF CODE ////////////////////////////////////////////
+
+IS float Atanh_32f(float x)
+{
+        float t;
+        int hx,ix;
+        //GET_FLOAT_WORD(hx,x);
+		union_for_float temp;
+		temp.f = x;
+		hx = temp.i;
+
+        ix = hx&0x7fffffff;
+        if (ix>0x3f800000)                 /* |x|>1 */
+            return (x-x)/(x-x);
+			//return Const::NAN_32F;
+        //if(ix==0x3f800000)
+            //return x/zero_f;
+		if(ix==0x3ff00000) 
+		{
+			if(x>0)
+				return Const::INF_32F;
+			else 
+				return -Const::INF_32F;
+		}
+        if(ix<0x31800000&&(huge_f+x)>zero_f) return x;        /* x<2**-28 */
+        //SET_FLOAT_WORD(x,ix);
+		temp.i = ix;
+		x = temp.f;
+        if(ix<0x3f000000) {                /* x < 0.5 */
+            t = x+x;
+            t = (float)0.5*log1pf(t+t*x/(one_f-x));
+        } else
+            t = (float)0.5*log1pf((x+x)/(one_f-x));
+        if(hx>=0) return t; else return -t;
+}
+
+ISV Atanh_32f_A24( const float * s, float * d)
+{
+	*d = Atanh_32f(*s);
+}
+
+} // OPT_LEVEL
+
+#endif
+
+

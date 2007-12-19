@@ -1,0 +1,64 @@
+#
+# Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
+# This software is subject to the Apache v2.0 License.
+#
+
+# Framewave project
+# Root SCons script
+import sys
+from os.path import *
+
+# Add our include directory to the module search path
+sys.path+=[join( abspath('..'), 'BuildTools', 'buildscripts')]
+lstSysPath = sys.path
+# import our modules here
+from fwbuild import *
+
+# Project scripts are specified here
+# Create the root project
+pthBuildRoot   = join(abspath('.'), "build" )
+pthProjectRoot = join(abspath('.'), "domain")
+oRoot = fwBuildRoot(pthProjectRoot, pthBuildRoot)
+
+# Export all the variables we care about using in sub projects
+Export('lstSysPath', 'oRoot')
+
+# Set include paths common to Framewave
+oRoot.oEnv.Append( CPPPATH = [abspath('domain'),                            \
+                              abspath('sdk'),                               \
+                              abspath('domain'+sep+'fwBase'+sep+'include')] )
+
+setupIncludePaths(oRoot.oEnv, join('domain', 'common', 'include'))
+setupIncludePaths(oRoot.oEnv, abspath('sdk'))
+
+chkCommandLine = None
+if (str(COMMAND_LINE_TARGETS)=='') or \
+   (not str(COMMAND_LINE_TARGETS)) or \
+   (COMMAND_LINE_TARGETS==[]) or      \
+   (COMMAND_LINE_TARGETS==['']): chkCommandLine = 1
+
+if ( (sys.platform == 'linux2' or sys.platform == 'sunos5') and ARGUMENTS.get('libtype', 'shared')=='shared'):
+    postAction = fixLinuxSharedLib
+else:
+    postAction = ""
+    
+# fwBase subproject
+oLib_fwBase   = oRoot.subProject('fwBase')
+oLib_fwBase   = Install(buildPath(join(pthBuildRoot,'bin')), oLib_fwBase )
+
+Alias('fwBase', [oLib_fwBase])
+AddPostAction(oLib_fwBase, Action(postAction))
+
+# Other subprojects dependent on fwBase
+lstProjects = [ 'fwImage',  \
+                'fwJPEG',   \
+                'fwSignal', \
+                'fwVideo'   ]
+
+dctFWProjects = {}
+for p in lstProjects:
+    if (chkCommandLine) or (p in BUILD_TARGETS): dctFWProjects[p] = oRoot.subProject(p, [oLib_fwBase])
+    if (chkCommandLine) or (p in BUILD_TARGETS): dctFWProjects[p] = Install(buildPath(join(pthBuildRoot,'bin')), dctFWProjects[p])
+    if (chkCommandLine) or (p in BUILD_TARGETS): Alias(p, [oLib_fwBase, dctFWProjects[p]])
+    if (chkCommandLine) or (p in BUILD_TARGETS): AddPostAction(dctFWProjects[p], Action(postAction))
+ 

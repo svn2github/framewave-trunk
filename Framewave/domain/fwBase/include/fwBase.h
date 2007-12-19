@@ -1,0 +1,662 @@
+/*
+Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
+This software is subject to the Apache v2.0 License.
+*/
+
+#ifndef    __FWBASE_H__
+#define    __FWBASE_H__
+
+#ifndef    OPT_PREFIX
+#define    OPT_PREFIX 
+#endif
+
+#ifndef    OPT_LEVEL
+#define    OPT_LEVEL SSE2
+#endif
+
+//#if      (OPT_LEVEL==1)
+//#undef   OPT_LEVEL
+//#define  OPT_LEVEL SSE2
+//#endif
+
+
+#if   defined  (OPT_F10H)
+#define        CBL_OPTLEVEL CBL_GH
+#elif defined  (OPT_SSE3)
+#error         Not supposed to be using SSE3 code path anywhere!
+#elif defined  (OPT_SSE2)
+#define        CBL_OPTLEVEL CBL_SSE2
+#else
+#define        CBL_OPTLEVEL CBL_SSE2    // for fe only ATM. Find a better fix if using it anywhere else
+#endif
+
+
+//
+// Types
+//
+typedef    signed char          Fw8s ;
+typedef    signed short         Fw16s;
+typedef    signed int           Fw32s;
+typedef    signed long long     Fw64s;
+
+typedef    unsigned char        Fw8u ;
+typedef    unsigned short       Fw16u;
+typedef    unsigned int         Fw32u;
+typedef    unsigned long long   Fw64u;
+
+typedef    float                Fw32f;
+typedef    double               Fw64f;
+
+typedef struct Fw16sc
+{
+    Fw16s    re;
+    Fw16s    im;
+}Fw16sc;
+
+typedef struct Fw32sc
+{
+    Fw32s    re;
+    Fw32s    im;
+}Fw32sc;
+
+typedef struct Fw64sc
+{
+    Fw64s    re;
+    Fw64s    im;
+}Fw64sc;
+
+typedef struct Fw32fc
+{
+    Fw32f    re;
+    Fw32f    im;
+} Fw32fc;
+
+typedef struct Fw64fc
+{
+    Fw64f    re;
+    Fw64f    im;
+} Fw64fc;
+
+typedef struct 
+{
+    int x;
+    int y;
+} FwiPoint;
+
+typedef struct
+{
+    int width;
+    int height;
+} FwiSize;
+
+typedef struct
+{
+    int x;
+    int y;
+    int width;
+    int height;
+} FwiRect;
+
+typedef enum 
+{
+    fwAxsHorizontal,
+    fwAxsVertical,
+    fwAxsBoth
+} FwiAxis;
+
+typedef enum _FwiBorderType
+{
+    fwBorderConst          = 0,
+    fwBorderRepl           = 1,
+    fwBorderWrap           = 2,
+    fwBorderMirror         = 3,
+    fwBorderMirrorR        = 4,
+    fwBorderMirror2        = 5,
+    fwBorderInMem          = 6,
+    fwBorderInMemTop       = 0x0010,
+    fwBorderInMemBottom    = 0x0020
+} FwiBorderType;
+
+typedef enum  _FwiMaskSize 
+{
+    fwMskSize1x3 = 13,
+    fwMskSize1x5 = 15,
+    fwMskSize3x1 = 31,
+    fwMskSize3x3 = 33,
+    fwMskSize5x1 = 51,
+    fwMskSize5x5 = 55
+} FwiMaskSize;
+
+//
+// Enumerated Types
+//
+
+typedef enum 
+{
+    fwFalse = 0,    // No-Normalize sequence of coefficients 
+    fwTrue          // Normalize sequence of coefficients 
+} FwBool;
+
+
+//! FwCpuType
+typedef enum
+{
+    fwCpuUnknown  = 0,
+    fwCpuSSE      = 0x40,
+    fwCpuSSE2,
+    fwCpuSSE3,
+    fwCpuFamily10h
+}FwCpuType;
+
+typedef struct 
+{
+    int   major;
+    int   minor;
+    int   majorBuild;
+    int   build;
+    char  targetCpu[4];
+    const char* Name;
+    const char* Version; 
+    const char* BuildDate;
+} FwLibraryVersion;
+
+
+//! FwStatus value enumeration
+typedef enum 
+{
+     /* errors */
+    fwStsNotSupportedModeErr           = -9999,
+    fwStsCpuNotSupportedErr            = -9998,
+
+    fwStsSizeMatchMatrixErr            = -204 ,
+    fwStsCountMatrixErr                = -203 ,
+    fwStsRoiShiftMatrixErr             = -202 ,
+
+    fwStsResizeNoOperationErr          = -201 ,
+    fwStsSrcDataErr                    = -200 ,
+    fwStsMaxLenHuffCodeErr             = -199 ,
+    fwStsCodeLenTableErr               = -198 ,
+    fwStsFreqTableErr                  = -197 ,
+
+    fwStsIncompleteContextErr          = -196 ,
+
+    fwStsSingularErr                   = -195 ,
+    fwStsSparseErr                     = -194 ,
+    fwStsBitOffsetErr                  = -193 ,
+    fwStsQPErr                         = -192 ,
+    fwStsVLCErr                        = -191 ,
+    fwStsRegExpOptionsErr              = -190 ,
+    fwStsRegExpErr                     = -189 ,
+    fwStsRegExpMatchLimitErr           = -188 ,
+    fwStsRegExpQuantifierErr           = -187 ,
+    fwStsRegExpGroupingErr             = -186 ,
+    fwStsRegExpBackRefErr              = -185 ,
+    fwStsRegExpChClassErr              = -184 ,
+    fwStsRegExpMetaChErr               = -183 ,
+
+    fwStsStrideMatrixErr               = -182 ,
+
+    fwStsCTRSizeErr                    = -181 ,
+
+    fwStsJPEG2KCodeBlockIsNotAttached  = -180 ,
+    fwStsNotPosDefErr                  = -179 ,
+
+    fwStsEphemeralKeyErr               = -178 ,
+    fwStsMessageErr                    = -177 ,
+    fwStsShareKeyErr                   = -176 ,
+    fwStsIvalidPublicKey               = -175 ,
+    fwStsIvalidPrivateKey              = -174 ,
+    fwStsOutOfECErr                    = -173 ,
+    fwStsECCInvalidFlagErr             = -172 ,
+
+    fwStsMP3FrameHeaderErr             = -171 ,
+    fwStsMP3SideInfoErr                = -170 ,
+
+    fwStsBlockStepErr                  = -169 ,
+    fwStsMBStepErr                     = -168 ,
+
+    fwStsAacPrgNumErr                  = -167 ,
+    fwStsAacSectCbErr                  = -166 ,
+    fwStsAacSfValErr                   = -164 ,
+    fwStsAacCoefValErr                 = -163 ,
+    fwStsAacMaxSfbErr                  = -162 ,
+    fwStsAacPredSfbErr                 = -161 ,
+    fwStsAacPlsDataErr                 = -160 ,
+    fwStsAacGainCtrErr                 = -159 ,
+    fwStsAacSectErr                    = -158 ,
+    fwStsAacTnsNumFiltErr              = -157 ,
+    fwStsAacTnsLenErr                  = -156 ,
+    fwStsAacTnsOrderErr                = -155 ,
+    fwStsAacTnsCoefResErr              = -154 ,
+    fwStsAacTnsCoefErr                 = -153 ,
+    fwStsAacTnsDirectErr               = -152 ,
+    fwStsAacTnsProfileErr              = -151 ,
+    fwStsAacErr                        = -150 ,
+    fwStsAacBitOffsetErr               = -149 ,
+    fwStsAacAdtsSyncWordErr            = -148 ,
+    fwStsAacSmplRateIdxErr             = -147 ,
+    fwStsAacWinLenErr                  = -146 ,
+    fwStsAacWinGrpErr                  = -145 ,
+    fwStsAacWinSeqErr                  = -144 ,
+    fwStsAacComWinErr                  = -143 ,
+    fwStsAacStereoMaskErr              = -142 ,
+    fwStsAacChanErr                    = -141 ,
+    fwStsAacMonoStereoErr              = -140 ,
+    fwStsAacStereoLayerErr             = -139 ,
+    fwStsAacMonoLayerErr               = -138 ,
+    fwStsAacScalableErr                = -137 ,
+    fwStsAacObjTypeErr                 = -136 ,
+    fwStsAacWinShapeErr                = -135 ,
+    fwStsAacPcmModeErr                 = -134 ,
+    fwStsVLCUsrTblHeaderErr            = -133 ,
+    fwStsVLCUsrTblUnsupportedFmtErr    = -132 ,
+    fwStsVLCUsrTblEscAlgTypeErr        = -131 ,
+    fwStsVLCUsrTblEscCodeLengthErr     = -130 ,
+    fwStsVLCUsrTblCodeLengthErr        = -129 ,
+    fwStsVLCInternalTblErr             = -128 ,
+    fwStsVLCInputDataErr               = -127 ,
+    fwStsVLCAACEscCodeLengthErr        = -126 ,
+    fwStsNoiseRangeErr                 = -125 ,
+    fwStsUnderRunErr                   = -124 ,
+    fwStsPaddingErr                    = -123 ,
+    fwStsCFBSizeErr                    = -122 ,
+    fwStsPaddingSchemeErr              = -121 ,
+    fwStsInvalidCryptoKeyErr           = -120 ,
+    fwStsLengthErr                     = -119 ,
+    fwStsBadModulusErr                 = -118 ,
+    fwStsLPCCalcErr                    = -117 ,
+    fwStsRCCalcErr                     = -116 ,
+    fwStsIncorrectLSPErr               = -115 ,
+    fwStsNoRootFoundErr                = -114 ,
+    fwStsJPEG2KBadPassNumber           = -113 ,
+    fwStsJPEG2KDamagedCodeBlock        = -112 ,
+    fwStsH263CBPYCodeErr               = -111 ,
+    fwStsH263MCBPCInterCodeErr         = -110 ,
+    fwStsH263MCBPCIntraCodeErr         = -109 ,
+    fwStsNotEvenStepErr                = -108 ,
+    fwStsHistoNofLevelsErr             = -107 ,
+    fwStsLUTNofLevelsErr               = -106 ,
+    fwStsMP4BitOffsetErr               = -105 ,
+    fwStsMP4QPErr                      = -104 ,
+    fwStsMP4BlockIdxErr                = -103 ,
+    fwStsMP4BlockTypeErr               = -102 ,
+    fwStsMP4MVCodeErr                  = -101 ,
+    fwStsMP4VLCCodeErr                 = -100 ,
+    fwStsMP4DCCodeErr                  = -99  ,
+    fwStsMP4FcodeErr                   = -98  ,
+    fwStsMP4AlignErr                   = -97  ,
+    fwStsMP4TempDiffErr                = -96  ,
+    fwStsMP4BlockSizeErr               = -95  ,
+    fwStsMP4ZeroBABErr                 = -94  ,
+    fwStsMP4PredDirErr                 = -93  ,
+    fwStsMP4BitsPerPixelErr            = -92  ,
+    fwStsMP4VideoCompModeErr           = -91  ,
+    fwStsMP4LinearModeErr              = -90  ,
+    fwStsH263PredModeErr               = -83  ,
+    fwStsH263BlockStepErr              = -82  ,
+    fwStsH263MBStepErr                 = -81  ,
+    fwStsH263FrameWidthErr             = -80  ,
+    fwStsH263FrameHeightErr            = -79  ,
+    fwStsH263ExpandPelsErr             = -78  ,
+    fwStsH263PlaneStepErr              = -77  ,
+    fwStsH263QuantErr                  = -76  ,
+    fwStsH263MVCodeErr                 = -75  ,
+    fwStsH263VLCCodeErr                = -74  ,
+    fwStsH263DCCodeErr                 = -73  ,
+    fwStsH263ZigzagLenErr              = -72  ,
+    fwStsFBankFreqErr                  = -71  ,
+    fwStsFBankFlagErr                  = -70  ,
+    fwStsFBankErr                      = -69  ,
+    fwStsNegOccErr                     = -67  ,
+    fwStsCdbkFlagErr                   = -66  ,
+    fwStsSVDCnvgErr                    = -65  ,
+    fwStsJPEGHuffTableErr              = -64  ,
+    fwStsJPEGDCTRangeErr               = -63  ,
+    fwStsJPEGOutOfBufErr               = -62  ,
+    fwStsDrawTextErr                   = -61  ,
+    fwStsChannelOrderErr               = -60  ,
+    fwStsZeroMaskValuesErr             = -59  ,
+    fwStsQuadErr                       = -58  ,
+    fwStsRectErr                       = -57  ,
+    fwStsCoeffErr                      = -56  ,
+    fwStsNoiseValErr                   = -55  ,
+    fwStsDitherLevelsErr               = -54  ,
+    fwStsNumChannelsErr                = -53  ,
+    fwStsCOIErr                        = -52  ,
+    fwStsDivisorErr                    = -51  ,
+    fwStsAlphaTypeErr                  = -50  ,
+    fwStsGammaRangeErr                 = -49  ,
+    fwStsGrayCoefSumErr                = -48  ,
+    fwStsChannelErr                    = -47  ,
+    fwStsToneMagnErr                   = -46  ,
+    fwStsToneFreqErr                   = -45  ,
+    fwStsTonePhaseErr                  = -44  ,
+    fwStsTrnglMagnErr                  = -43  ,
+    fwStsTrnglFreqErr                  = -42  ,
+    fwStsTrnglPhaseErr                 = -41  ,
+    fwStsTrnglAsymErr                  = -40  ,
+    fwStsHugeWinErr                    = -39  ,
+    fwStsJaehneErr                     = -38  ,
+    fwStsStrideErr                     = -37  ,
+    fwStsEpsValErr                     = -36  ,
+    fwStsWtOffsetErr                   = -35  ,
+    fwStsAnchorErr                     = -34  ,
+    fwStsMaskSizeErr                   = -33  ,
+    fwStsShiftErr                      = -32  ,
+    fwStsSampleFactorErr               = -31  ,
+    fwStsSamplePhaseErr                = -30  ,
+    fwStsFIRMRFactorErr                = -29  ,
+    fwStsFIRMRPhaseErr                 = -28  ,
+    fwStsRelFreqErr                    = -27  ,
+    fwStsFIRLenErr                     = -26  ,
+    fwStsIIROrderErr                   = -25  ,
+    fwStsDlyLineIndexErr               = -24  ,
+    fwStsResizeFactorErr               = -23  ,
+    fwStsInterpolationErr              = -22  ,
+    fwStsMirrorFlipErr                 = -21  ,
+    fwStsMoment00ZeroErr               = -20  ,
+    fwStsThreshNegLevelErr             = -19  ,
+    fwStsThresholdErr                  = -18  ,
+    fwStsContextMatchErr               = -17  ,
+    fwStsFftFlagErr                    = -16  ,
+    fwStsFftOrderErr                   = -15  ,
+    fwStsStepErr                       = -14  ,
+    fwStsScaleRangeErr                 = -13  ,
+    fwStsDataTypeErr                   = -12  ,
+    fwStsOutOfRangeErr                 = -11  ,
+    fwStsDivByZeroErr                  = -10  ,
+    fwStsMemAllocErr                   = -9   ,
+    fwStsNullPtrErr                    = -8   ,
+    fwStsRangeErr                      = -7   ,
+    fwStsSizeErr                       = -6   ,
+    fwStsBadArgErr                     = -5   ,
+    fwStsNoMemErr                      = -4   ,
+    fwStsSAReservedErr3                = -3   ,
+    fwStsErr                           = -2   ,
+    fwStsSAReservedErr1                = -1   ,
+
+     // no errors                      
+    fwStsNoErr                         =  0   ,
+
+     // warnings                       
+    fwStsNoOperation                   = 1    ,
+    fwStsMisalignedBuf                 = 2    ,
+    fwStsSqrtNegArg                    = 3    ,
+    fwStsInvZero                       = 4    ,
+    fwStsEvenMedianMaskSize            = 5    ,
+    fwStsDivByZero                     = 6    ,
+    fwStsLnZeroArg                     = 7    ,
+    fwStsLnNegArg                      = 8    ,
+    fwStsNanArg                        = 9    ,
+    fwStsJPEGMarker                    = 10   ,
+    fwStsResFloor                      = 11   ,
+    fwStsOverflow                      = 12   ,
+    fwStsLSFLow                        = 13   ,
+    fwStsLSFHigh                       = 14   ,
+    fwStsLSFLowAndHigh                 = 15   ,
+    fwStsZeroOcc                       = 16   ,
+    fwStsUnderflow                     = 17   ,
+    fwStsSingularity                   = 18   ,
+    fwStsDomain                        = 19   ,
+    fwStsCpuMismatch                   = 21   ,
+    fwStsNoFwFunctionFound            = 22   ,
+    fwStsDllNotFoundBestUsed           = 23   ,
+    fwStsNoOperationInDll              = 24   ,
+    fwStsInsufficientEntropy           = 25   ,
+    fwStsOvermuchStrings               = 26   ,
+    fwStsOverlongString                = 27   ,
+    fwStsAffineQuadChanged             = 28   ,
+    fwStsWrongIntersectROI             = 29   ,
+    fwStsWrongIntersectQuad            = 30   ,
+    fwStsSmallerCodebook               = 31   ,
+    fwStsSrcSizeLessExpected           = 32   ,
+    fwStsDstSizeLessExpected           = 33   ,
+    fwStsStreamEnd                     = 34   ,
+    fwStsDoubleSize                    = 35   ,
+    fwStsNotSupportedCpu               = 36   ,
+    fwStsUnknownCacheSize              = 37
+} FwStatus;
+
+#define fwStsOk fwStsNoErr
+
+// comparison
+typedef enum 
+{
+    fwCmpLess     ,
+    fwCmpLessEq   ,
+    fwCmpEq       ,
+    fwCmpGreaterEq,
+    fwCmpGreater
+} FwCmpOp;
+
+// suggested algorithm
+typedef enum 
+{
+    fwAlgHintNone,
+    fwAlgHintFast,
+    fwAlgHintAccurate
+} FwHintAlgorithm;
+
+
+// Crypto Rijndael encryption
+typedef enum 
+{
+    FwsRijndaelKey128  = 128, // 128-bit key
+    FwsRijndaelKey192  = 192, // 192-bit key
+    FwsRijndaelKey256  = 256  // 256-bit key
+} FwsRijndaelKeyLength;
+
+struct FwsRijndael128Spec;
+struct FwsRijndael256Spec;
+
+
+
+// fft division type
+enum 
+{
+    FW_FFT_DIV_FWD_BY_N = 1,
+    FW_FFT_DIV_INV_BY_N = 2,
+    FW_FFT_DIV_BY_SQRTN = 4,
+    FW_FFT_NODIV_BY_ANY = 8
+};
+
+// Round mode
+typedef enum 
+{
+    fwRndZero,
+    fwRndNear
+} FwRoundMode;
+
+
+//------------------------------------------------------
+//            PLATFORM SPECIFIC
+//------------------------------------------------------
+
+#if defined( WIN64   ) || defined( _WIN64   ) || \
+    defined( WIN32   ) || defined( _WIN32   ) || \
+    defined( WINDOWS ) || defined( _WINDOWS )
+ #define STDCALL __stdcall
+#else 
+ #define STDCALL 
+#endif 
+
+//------------------------------------------------------
+
+typedef void(*WorkFn)(void*);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/*#HintBlock
+AutoOff
+*/
+
+/*#IncludeBlock
+#includeGlobal "../../../doc/fwIntroDoc.h"
+#include "../../../doc/fwBaseIntroDoc.h"
+*/
+
+/*#Documentation
+<Chapter>
+<ChapterHeading>Library Version</ChapterHeading>
+<Paragraph>This chapter describes the FW function that provides library version information.</Paragraph> 
+*/
+
+/*#FunctionBlock - GetLibVersion
+todo:publish
+#Technologies - REF
+#Short - Library version
+#Long - <Text>This function returns a pointer to the <Bold>FwLibraryVersion</Bold> structure which contains FW Library version information.</Text> 
+*/
+const FwLibraryVersion* STDCALL fwGetLibVersion ();
+
+/*#Documentation
+</Chapter>
+*/
+
+/*#Documentation
+<Chapter>
+<ChapterHeading>Core Functions</ChapterHeading>
+<Paragraph>This chapter describes the status string, CPU type, CPU clocking, CPU initialization, threading control, and memory allocation functions.</Paragraph>
+*/
+
+/*#FunctionBlock - GetStatusString
+todo:publish
+#Technologies - REF
+#Short - Get status message string
+#Long - <Text>This function returns a string that describes the meaning of any <Bold>FwStatus</Bold> enumerated integer.</Text> 
+*/
+const char * STDCALL fwGetStatusString( FwStatus StsCode );
+
+/*#FunctionBlock - GetCpuType
+todo:publish
+#Technologies - REF
+#Short - Get CPU Type
+#Long - <Text>This function returns the level of SSE support that is present. It can be used to identify the CPU type.</Text> 
+*/
+FwCpuType   STDCALL fwGetCpuType();
+
+/*#FunctionBlock - GetCpuClocks
+todo:publish
+#Technologies - REF
+#Short - Get CPU clock cycles
+#Long - <Text>This function returns the number of CPU clock cycles elapsed since CPU power on.</Text>
+<Text>A code segment can be timed by invoking the function at two different points, then subtracting the first return value from the second return value.</Text> 
+*/
+Fw64u       STDCALL fwGetCpuClocks();
+
+/*#FunctionBlock - StaticInit
+todo:publish
+#Technologies - REF
+#Short - Initialize to an appropriate CPU type
+#Long - <Text>This function initializes the FW internal dispatcher to use the most appropriate CPU type.</Text> 
+#ReturnValues - fwStsNoErr
+*/
+FwStatus    STDCALL fwStaticInit();
+
+/*#FunctionBlock - StaticInitCpu
+todo:publish
+#Technologies - REF
+#Short - Initialize to a specified CPU type
+#Long - <Text>This function initializes the FW internal dispatcher to use a specified CPU type.</Text> 
+#ReturnValues - fwStsNoErr, fwStsCpuMismatch
+*/
+FwStatus    STDCALL fwStaticInitCpu( FwCpuType cpu );
+
+/*#FunctionBlock - SetNumThreads
+todo:publish
+#Technologies - REF
+#Short - Set number of threads
+#Long - <Text>This function defines the maximum number of threads that can be used by any FW function. 
+Set numThr to 1 to turn threading off.</Text> 
+#ReturnValues - fwStsNoErr
+*/
+FwStatus    STDCALL fwSetNumThreads( unsigned int numThr );
+
+/*#FunctionBlock - GetNumThreads
+todo:publish
+#Technologies - REF
+#Short - Get number of threads
+#Long - <Text>This function returns the maximum number of threads that can be used by any FW function.</Text> 
+*/
+Fw32u       STDCALL fwGetNumThreads();
+
+/*#FunctionBlock - Malloc
+todo:publish
+#Technologies - REF
+#Short - Allocate memory
+#Long - <Text>This function allocates a memory buffer of length bytes and returns a pointer to it.</Text> 
+*/
+void *       STDCALL fwMalloc( int length );
+
+/*#FunctionBlock - Free
+todo:publish
+#Technologies - REF
+#Short - Free memory
+#Long - <Text>This function frees the memory buffer pointed to by <ParameterName>ptr</ParameterName>.</Text> 
+*/
+void         STDCALL fwFree( void * ptr );
+
+/*#FunctionBlock - AlignPtr
+todo:edit
+#Technologies - REF
+#Short - align a buffer
+#Long - <Text>This function aligns a buffer pointed by <ParameterName>ptr</ParameterName> to the specified align boundary.</Text> 
+*/
+void *       STDCALL fwAlignPtr( void *ptr, int alignBytes);
+
+// Internal Functions
+
+/*#FunctionBlock - SetNumThreads_local
+todo:edit
+#Technologies - REF
+#Short - SetNumThreads_local
+#Long - <Text>This function is for FW internal use.</Text> 
+#ReturnValues - fwStsNoErr
+*/
+FwStatus    STDCALL fwSetNumThreads_local( unsigned int numThr );
+
+/*#FunctionBlock - Run
+todo:edit
+#Technologies - REF
+#Short - Run
+#Long - <Text>This function is for FW internal use.</Text> 
+*/
+void         STDCALL fwRun( WorkFn workFn, void* param );
+
+/*#FunctionBlock - Wait
+todo:edit
+#Technologies - REF
+#Short - Wait
+#Long - <Text>This function is for FW internal use.</Text> 
+*/
+void         STDCALL fwWait();
+
+/*#FunctionBlock - GetInitType
+todo:publish
+#Technologies - REF
+#Short - GetInitType 
+#Long - <Text>This function is for FW internal use.</Text> 
+*/
+int          STDCALL fwGetInitType();
+/*#FunctionBlock - BaseData
+todo:publish
+#Technologies - REF
+#Short - BaseData 
+#Long - <Text>This function is for FW internal use.</Text> 
+*/
+void *       STDCALL fwBaseData();
+
+/*#Documentation
+</Chapter>
+*/
+
+#ifdef __cplusplus
+}
+#endif
+
+
+
+#endif // __FWBASE_H__
+

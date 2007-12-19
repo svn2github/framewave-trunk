@@ -1,0 +1,96 @@
+#
+# Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
+# This software is subject to the Apache v2.0 License.
+#
+
+# Bitness and Output directories
+ifeq "$(BITNESS)" "64"
+	BITNESS=64
+else
+	BITNESS=32
+endif
+
+# OS compiler settings
+OSNAME ?= $(shell uname -s)
+
+ifeq "$(OSNAME)" "Linux"			# Solaris
+	CXX = g++
+	PICXXFLAGS = -DLIN -DLIN$(BITNESS) -fPIC
+	SHAREDFLAG = -shared
+	DYNLIBFLAGS = $(SHAREDFLAG) -Wl,-soname,lib$(PROJECT_NAME).so
+	DYN_LIB_EXT = so
+	OS = lin
+else 
+	ifeq "$(OSNAME)" "Darwin"		# Mac OS
+		CXX = g++
+		PICXXFLAGS = -DMAC -DMAC$(BITNESS) -fPIC
+		SHAREDFLAG = -dynamiclib
+		DYNLIBFLAGS = $(SHAREDFLAG) -install_name lib$(PROJECT_NAME).dylib 
+		DYN_LIB_EXT = dylib
+		OS = mac
+	else
+		ifeq "$(OSNAME)" "SunOS"	# Sun Studio
+			CXX = CC
+			PICXXFLAGS = -DSOL -DSOL$(BITNESS) -KPIC
+			SHAREDFLAG = -G
+			DYNLIBFLAGS = $(SHAREDFLAG) -norunpath -h$(PROJECT_NAME).so
+			DYN_LIB_EXT = so
+			OS = sol
+		else
+			abort
+		endif
+	endif
+endif
+
+ifeq "$(CONFIG)" "release"
+	CONFIG_TYPE = release
+	ifeq "$(OSNAME)" "SunOS"	# Sun Studio
+		CONFIGFLAG := -xO3
+	else
+		CONFIGFLAG := -O2 -DNDEBUG
+	endif
+else
+	CONFIG_TYPE = debug
+	CONFIGFLAG := -g
+endif 
+
+PWD = $(shell pwd)
+ifndef OUTDIR
+	OUTDIR = $(PWD)/bin/$(CONFIG_TYPE)_$(BITNESS)
+endif
+
+ifndef TMPDIR
+	TMPDIR = $(PWD)/tmp/$(CONFIG_TYPE)_$(BITNESS)
+endif
+
+ifndef UNIT_TEST_FRAMEWORK_HEADER_PATH
+	UNIT_TEST_FRAMEWORK_HEADER_PATH = ../../UnitTestFramework/UnitTestFramework/
+endif
+
+ifndef UNIT_TEST_FRAMEWORK_LIB_PATH
+	UNIT_TEST_FRAMEWORK_LIB_PATH = ../../UnitTestFramework/bin/$(CONFIG_TYPE)_$(BITNESS)
+endif
+
+ifndef BASE_OBJECTS_PATH
+	BASE_OBJECTS_PATH = ../BaseObjects/
+endif
+
+ifndef FW_INC_PATH
+	FW_INC_PATH = FWBuildBits
+endif
+
+ifndef FW_BIN_PATH
+	FW_BIN_PATH = FWBuildBits/$(CONFIG_TYPE)_shared_$(BITNESS)
+endif
+
+ifndef FW_SRC_PATH
+	FW_SRC_PATH = ../../../Framewave/
+endif
+
+CXXFLAGS := -m$(BITNESS)
+INCLUDE_PATHS = -I$(UNIT_TEST_FRAMEWORK_HEADER_PATH) -I$(BASE_OBJECTS_PATH) -I$(FW_INC_PATH)
+HEADER_FILES := $(shell ls $(UNIT_TEST_FRAMEWORK_HEADER_PATH)/*.h)
+HEADER_FILES += $(shell ls $(BASE_OBJECTS_PATH)/*.h)
+HEADER_FILES += $(shell ls $(FW_INC_PATH)/*.h)
+HEADER_FILES += $(shell ls *.h)
+VPATH = obj:$(TMPDIR)
