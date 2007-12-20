@@ -48,7 +48,7 @@ esac
 
 echo -e "BASE_DIR is $BASE_DIR\n" >> $LOG_FILE
 if [ "$BASE_DIR" != "" ]; then
-	for dir in APL Test
+	for dir in Framewave
 	do
 		echo -e "Building $dir.\n" >> $LOG_FILE
 		cd $BASE_DIR/$dir
