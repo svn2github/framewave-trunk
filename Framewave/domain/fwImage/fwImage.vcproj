@@ -34,7 +34,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="2"
-				AdditionalIncludeDirectories="$(SolutionDir)\APL\domain\$(ProjectName)\include;$(SolutionDir)\APL\domain\common\include;$(SolutionDir)\APL\sdk\cbl;$(SolutionDir)\APL\domain\fwBase\include"
+				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\$(ProjectName)\include;$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
 			/>
 			<Tool
 				Name="VCWebDeploymentTool"
@@ -105,7 +105,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="2"
-				AdditionalIncludeDirectories="$(SolutionDir)\APL\domain\$(ProjectName)\include;$(SolutionDir)\APL\domain\common\include;$(SolutionDir)\APL\sdk\cbl;$(SolutionDir)\APL\domain\fwBase\include"
+				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\$(ProjectName)\include;$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
 			/>
 			<Tool
 				Name="VCWebDeploymentTool"
@@ -176,7 +176,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="2"
-				AdditionalIncludeDirectories="$(SolutionDir)\APL\domain\$(ProjectName)\include;$(SolutionDir)\APL\domain\common\include;$(SolutionDir)\APL\sdk\cbl;$(SolutionDir)\APL\domain\fwBase\include"
+				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\$(ProjectName)\include;$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
 			/>
 			<Tool
 				Name="VCWebDeploymentTool"
@@ -247,7 +247,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="2"
-				AdditionalIncludeDirectories="$(SolutionDir)\APL\domain\$(ProjectName)\include;$(SolutionDir)\APL\domain\common\include;$(SolutionDir)\APL\sdk\cbl;$(SolutionDir)\APL\domain\fwBase\include"
+				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\$(ProjectName)\include;$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
 			/>
 			<Tool
 				Name="VCWebDeploymentTool"
@@ -318,7 +318,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="2"
-				AdditionalIncludeDirectories="$(SolutionDir)\APL\domain\$(ProjectName)\include;$(SolutionDir)\APL\domain\common\include;$(SolutionDir)\APL\sdk\cbl;$(SolutionDir)\APL\domain\fwBase\include"
+				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\$(ProjectName)\include;$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
 			/>
 			<Tool
 				Name="VCWebDeploymentTool"
@@ -389,7 +389,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="2"
-				AdditionalIncludeDirectories="$(SolutionDir)\APL\domain\$(ProjectName)\include;$(SolutionDir)\APL\domain\common\include;$(SolutionDir)\APL\sdk\cbl;$(SolutionDir)\APL\domain\fwBase\include"
+				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\$(ProjectName)\include;$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
 			/>
 			<Tool
 				Name="VCWebDeploymentTool"
@@ -460,7 +460,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="2"
-				AdditionalIncludeDirectories="$(SolutionDir)\APL\domain\$(ProjectName)\include;$(SolutionDir)\APL\domain\common\include;$(SolutionDir)\APL\sdk\cbl;$(SolutionDir)\APL\domain\fwBase\include"
+				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\$(ProjectName)\include;$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
 			/>
 			<Tool
 				Name="VCWebDeploymentTool"
@@ -531,7 +531,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="2"
-				AdditionalIncludeDirectories="$(SolutionDir)\APL\domain\$(ProjectName)\include;$(SolutionDir)\APL\domain\common\include;$(SolutionDir)\APL\sdk\cbl;$(SolutionDir)\APL\domain\fwBase\include"
+				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\$(ProjectName)\include;$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
 			/>
 			<Tool
 				Name="VCWebDeploymentTool"

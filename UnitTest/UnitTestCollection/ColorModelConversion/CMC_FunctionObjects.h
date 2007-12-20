@@ -92,13 +92,13 @@ public:
 
 
 //// --------------------------------
-//// Function Signature: (const TS* const[], int, TS*[], int[], ApliSize)
+//// Function Signature: (const TS* const[], int, TS*[], int[], FwiSize)
 //// --------------------------------
 //template< typename TS, U32 srcPlanes, typename TD, U32 dstPlanes, class Advice >
 //class PSrcPDstRoiMultipleDstStepGeneric : public PDstRoiBase< TD, dstPlanes, Advice >
 //{
 //public:
-//	typedef AplStatus (STDCALL *Fn)( const TS * const [], int, TD *[], int[], FwiSize );
+//	typedef FwStatus (STDCALL *Fn)( const TS * const [], int, TD *[], int[], FwiSize );
 //    const char ** m_srcInit;
 //    Fn m_fn;
 //

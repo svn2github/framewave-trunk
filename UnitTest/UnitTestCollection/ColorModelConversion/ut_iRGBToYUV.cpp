@@ -97,7 +97,7 @@ public:
 //class iRGBToYUV422_8u_P3R : public PSrcPDstRoiMultipleDstStepEvenWidth< U8, 3, U8, 3 >
 //{
 //public:
-//    iRGBToYUV422_8u_P3R( UnitTestCatalogBase & parent ) : PSrcPDstRoiMultipleDstStepEvenWidth< U8, 3, U8, 3 >( parent, "iRGBToYUV422_8u_P3R", apliRGBToYUV422_8u_P3R )
+//    iRGBToYUV422_8u_P3R( UnitTestCatalogBase & parent ) : PSrcPDstRoiMultipleDstStepEvenWidth< U8, 3, U8, 3 >( parent, "iRGBToYUV422_8u_P3R", fwiRGBToYUV422_8u_P3R )
 //    {}
 //
 //    virtual void RunAll()

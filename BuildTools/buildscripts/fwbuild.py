@@ -221,16 +221,16 @@ class fwProject():
             
     
         # need to create DEF file here everytime, even if its a static library
-        if (pthSavedProjectDir):
-            createDefFile( self.dctFwVars['pthDevLabRoot' ],\
-                           self.dctFwVars['pthProjectRoot'],\
-                           self.dctFwVars['pthBuildRoot'  ],\
-                           self.dctFwVars['sProjectName'  ][:-1] )
-        else:
-            createDefFile( self.dctFwVars['pthDevLabRoot' ],\
-                           self.dctFwVars['pthProjectRoot'],\
-                           self.dctFwVars['pthBuildRoot'  ],\
-                           self.dctFwVars['sProjectName'  ] )
+        # if (pthSavedProjectDir):
+            # createDefFile( self.dctFwVars['pthDevLabRoot' ],\
+                           # self.dctFwVars['pthProjectRoot'],\
+                           # self.dctFwVars['pthBuildRoot'  ],\
+                           # self.dctFwVars['sProjectName'  ][:-1] )
+        # else:
+            # createDefFile( self.dctFwVars['pthDevLabRoot' ],\
+                           # self.dctFwVars['pthProjectRoot'],\
+                           # self.dctFwVars['pthBuildRoot'  ],\
+                           # self.dctFwVars['sProjectName'  ] )
 
         # BUGBUG: <one last hack; can't get rid of this for a bit>
         if (self.dctFwVars['toolset'] == 'suncc') and (self.dctFwVars['sProjectName'] == 'fwImage'):
@@ -313,17 +313,17 @@ def constructObjects ( oEnv, pthProjectDir, lstCxxFiles ):
     return lstObjects
 
 # Create the def file using the fwHeaderConvert tool
-def createDefFile ( pthDevLabRoot, pthProjectRoot, pthBuildRoot, sProjectName ):
-    if sys.platform != 'win32': return
-    sCommandStr  = '"' + join(pthDevLabRoot,'BuildTools','FwHeaderConvert.exe') + '"'               # exe name
-    sCommandStr += ' -def' # create def file option
-    sCommandStr += ' ' + pthProjectRoot + '\\' + sProjectName + '\\include\\' + sProjectName + '.h'   # input .h file
-    sCommandStr += ' ' + pthProjectRoot + '\\common\\include\\buildnum.h'                            
-    sCommandStr += ' ' + join(pthBuildRoot, 'include', sProjectName + '.h')
-    sCommandStr += ' ' + pthProjectRoot + '\\' + sProjectName + '\\' + sProjectName + '.def' # finally, the def file name/location
-    sCommandStr += ' ' + sProjectName + '.dll'                                               # and the dll name for the def file
+# def createDefFile ( pthDevLabRoot, pthProjectRoot, pthBuildRoot, sProjectName ):
+    # if sys.platform != 'win32': return
+    # sCommandStr  = '"' + join(pthDevLabRoot,'BuildTools','FwHeaderConvert.exe') + '"'               # exe name
+    # sCommandStr += ' -def' # create def file option
+    # sCommandStr += ' ' + pthProjectRoot + '\\' + sProjectName + '\\include\\' + sProjectName + '.h'   # input .h file
+    # sCommandStr += ' ' + pthProjectRoot + '\\common\\include\\buildnum.h'                            
+    # sCommandStr += ' ' + join(pthBuildRoot, 'include', sProjectName + '.h')
+    # sCommandStr += ' ' + pthProjectRoot + '\\' + sProjectName + '\\' + sProjectName + '.def' # finally, the def file name/location
+    # sCommandStr += ' ' + sProjectName + '.dll'                                               # and the dll name for the def file
 
-    os.system( sCommandStr )
+    # os.system( sCommandStr )
 
     
 
