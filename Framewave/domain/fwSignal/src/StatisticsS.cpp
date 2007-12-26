@@ -351,7 +351,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsStdDev_16s32s_Sfs)(const Fw16s* pSrc, int len
     retStatus = OPT_LEVEL::fex<StatStdDev_16s>(data1,pSrc,len,THREAD_SW_OFF);
 
 
-	*pStdDev = FW_REF::Limits<S16>::Sat(CBL_LIBRARY::FloatToInt(FW_REF::Scale(sqrt(data1.sum/(len-1)),scaleFactor)));
+	*pStdDev = FW_REF::Limits<S32>::Sat(CBL_LIBRARY::FloatToInt(FW_REF::Scale(sqrt(data1.sum/(len-1)),scaleFactor)));
 	return retStatus;
 }
 
