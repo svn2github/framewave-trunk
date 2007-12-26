@@ -17,351 +17,225 @@ Portions copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserve
 
 #include "fe.h"
 
-namespace OPT_LEVEL
-{
-
 ///////////////////////////////////////// CONSTANTS ////////////////////////////////////////////
 
 // used by scalbn
-static const double
-two54   =  1.80143985094819840000e+16,  /* 0x43500000, 0x00000000 */
-twom54  =  5.55111512312578270212e-17,  /* 0x3C900000, 0x00000000 */
-huge   = 1.0e+300,
-tiny   = 1.0e-300;
+extern const double
+two54 ,  /* 0x43500000, 0x00000000 */
+twom54,  /* 0x3C900000, 0x00000000 */
+huge,
+tiny;
 
-// used by kernel_remainder pi_o_2
-static const int 
-init_jk[] = {2,3,4,6}; /* initial value for jk */
+extern const int init_jk[];
+extern const double PIo2[];
+extern const double 
+zero,
+one ,
+two24 ,  /* 0x41700000, 0x00000000 */
+twon24;  /* 0x3E700000, 0x00000000 */
 
-static const double 
-PIo2[] = {
-1.57079625129699707031e+00,				/* 0x3FF921FB, 0x40000000 */
-7.54978941586159635335e-08,				/* 0x3E74442D, 0x00000000 */
-5.39030252995776476554e-15,				/* 0x3CF84698, 0x80000000 */
-3.28200341580791294123e-22,				/* 0x3B78CC51, 0x60000000 */
-1.27065575308067607349e-29,				/* 0x39F01B83, 0x80000000 */
-1.22933308981111328932e-36,				/* 0x387A2520, 0x40000000 */
-2.73370053816464559624e-44,				/* 0x36E38222, 0x80000000 */
-2.16741683877804819444e-51,				/* 0x3569F31D, 0x00000000 */
-};
+extern const int two_over_pi[];
+extern const int npio2_hw[];
 
-static const double 
-zero   = 0.0,
-one    = 1.0,
-two24   =  1.67772160000000000000e+07,  /* 0x41700000, 0x00000000 */
-twon24  =  5.96046447753906250000e-08;  /* 0x3E700000, 0x00000000 */
-
-// used by ieee754_remainder_pi_o_2
-/*
- * Table of constants for 2/pi, 396 Hex digits (476 decimal) of 2/pi */
-static const int 
-two_over_pi[] = {
-0xA2F983, 0x6E4E44, 0x1529FC, 0x2757D1, 0xF534DD, 0xC0DB62,0x95993C, 0x439041, 0xFE5163, 0xABDEBB, 0xC561B7, 0x246E3A,0x424DD2, 0xE00649, 0x2EEA09, 0xD1921C, 0xFE1DEB, 0x1CB129,0xA73EE8, 0x8235F5, 0x2EBB44, 0x84E99C, 0x7026B4, 0x5F7E41,0x3991D6, 0x398353, 0x39F49C, 0x845F8B, 0xBDF928, 0x3B1FF8,0x97FFDE, 0x05980F, 0xEF2F11, 0x8B5A0A, 0x6D1F6D, 0x367ECF,0x27CB09, 0xB74F46, 0x3F669E, 0x5FEA2D, 0x7527BA, 0xC7EBE5,0xF17B3D, 0x0739F7, 0x8A5292, 0xEA6BFB, 0x5FB11F, 0x8D5D08,0x560330, 0x46FC7B, 0x6BABF0, 0xCFBC20, 0x9AF436, 0x1DA9E3,0x91615E, 0xE61B08, 0x659985, 0x5F14A0, 0x68408D, 0xFFD880,0x4D7327, 0x310606, 0x1556CA, 0x73A8C9, 0x60E27B, 0xC08C6B
-};
-
-static const int 
-npio2_hw[] = {
-0x3FF921FB, 0x400921FB, 0x4012D97C, 0x401921FB, 0x401F6A7A, 0x4022D97C,
-0x4025FDBB, 0x402921FB, 0x402C463A, 0x402F6A7A, 0x4031475C, 0x4032D97C,
-0x40346B9C, 0x4035FDBB, 0x40378FDB, 0x403921FB, 0x403AB41B, 0x403C463A,
-0x403DD85A, 0x403F6A7A, 0x40407E4C, 0x4041475C, 0x4042106C, 0x4042D97C,
-0x4043A28C, 0x40446B9C, 0x404534AC, 0x4045FDBB, 0x4046C6CB, 0x40478FDB,
-0x404858EB, 0x404921FB,
-};
-
-/*
- * invpio2:  53 bits of 2/pi
- * pio2_1:   first  33 bit of pi/2
- * pio2_1t:  pi/2 - pio2_1
- * pio2_2:   second 33 bit of pi/2
- * pio2_2t:  pi/2 - (pio2_1+pio2_2)
- * pio2_3:   third  33 bit of pi/2
- * pio2_3t:  pi/2 - (pio2_1+pio2_2+pio2_3)
- */
-
-static const double
-//zero =  0.00000000000000000000e+00,   /* 0x00000000, 0x00000000 */
-half =  5.00000000000000000000e-01,     /* 0x3FE00000, 0x00000000 */
-//two24 =  1.67772160000000000000e+07,  /* 0x41700000, 0x00000000 */
-invpio2 =  6.36619772367581382433e-01,  /* 0x3FE45F30, 0x6DC9C883 */
-pio2_1  =  1.57079632673412561417e+00,  /* 0x3FF921FB, 0x54400000 */
-pio2_1t =  6.07710050650619224932e-11,  /* 0x3DD0B461, 0x1A626331 */
-pio2_2  =  6.07710050630396597660e-11,  /* 0x3DD0B461, 0x1A600000 */
-pio2_2t =  2.02226624879595063154e-21,  /* 0x3BA3198A, 0x2E037073 */
-pio2_3  =  2.02226624871116645580e-21,  /* 0x3BA3198A, 0x2E000000 */
-pio2_3t =  8.47842766036889956997e-32;  /* 0x397B839A, 0x252049C1 */
+extern const double
+half   ,     /* 0x3FE00000, 0x00000000 */
+invpio2,  /* 0x3FE45F30, 0x6DC9C883 */
+pio2_1 ,  /* 0x3FF921FB, 0x54400000 */
+pio2_1t,  /* 0x3DD0B461, 0x1A626331 */
+pio2_2 ,  /* 0x3DD0B461, 0x1A600000 */
+pio2_2t,  /* 0x3BA3198A, 0x2E037073 */
+pio2_3 ,  /* 0x3BA3198A, 0x2E000000 */
+pio2_3t;  /* 0x397B839A, 0x252049C1 */
 
 // used by cos
-static const double
-//one =  1.00000000000000000000e+00,    /* 0x3FF00000, 0x00000000 */
-C1_d  = 4.16666666666666019037e-02,		/* 0x3FA55555, 0x5555554C */
-C2_d  =-1.38888888888741095749e-03,		/* 0xBF56C16C, 0x16C15177 */
-C3_d  = 2.48015872894767294178e-05,		/* 0x3EFA01A0, 0x19CB1590 */
-C4_d  =-2.75573143513906633035e-07,		/* 0xBE927E4F, 0x809C52AD */
-C5_d  = 2.08757232129817482790e-09,		/* 0x3E21EE9E, 0xBDB4B1C4 */
-C6_d  =-1.13596475577881948265e-11;		/* 0xBDA8FAE9, 0xBE8838D4 */
+extern const double
+C1_d,		/* 0x3FA55555, 0x5555554C */
+C2_d,		/* 0xBF56C16C, 0x16C15177 */
+C3_d,		/* 0x3EFA01A0, 0x19CB1590 */
+C4_d,		/* 0xBE927E4F, 0x809C52AD */
+C5_d,		/* 0x3E21EE9E, 0xBDB4B1C4 */
+C6_d;		/* 0xBDA8FAE9, 0xBE8838D4 */
 
 // used by sin
-static const double
-//half =  5.00000000000000000000e-01,   /* 0x3FE00000, 0x00000000 */
-S1  =-1.66666666666666324348e-01,		/* 0xBFC55555, 0x55555549 */
-S2  = 8.33333333332248946124e-03,		/* 0x3F811111, 0x1110F8A6 */
-S3  =-1.98412698298579493134e-04,		/* 0xBF2A01A0, 0x19C161D5 */
-S4  = 2.75573137070700676789e-06,		/* 0x3EC71DE3, 0x57B1FE7D */
-S5  =-2.50507602534068634195e-08,		/* 0xBE5AE5E6, 0x8A2B9CEB */
-S6  = 1.58969099521155010221e-10;		/* 0x3DE5D93A, 0x5ACFD57C */
+extern const double
+S1,		/* 0xBFC55555, 0x55555549 */
+S2,		/* 0x3F811111, 0x1110F8A6 */
+S3,		/* 0xBF2A01A0, 0x19C161D5 */
+S4,		/* 0x3EC71DE3, 0x57B1FE7D */
+S5,		/* 0xBE5AE5E6, 0x8A2B9CEB */
+S6;		/* 0x3DE5D93A, 0x5ACFD57C */
 
 // used by tan
-static const double 
-xxx[] = {
-3.33333333333334091986e-01,				/* 3FD55555, 55555563 */   
-1.33333333333201242699e-01,				/* 3FC11111, 1110FE7A */
-5.39682539762260521377e-02,				/* 3FABA1BA, 1BB341FE */
-2.18694882948595424599e-02,				/* 3F9664F4, 8406D637 */
-8.86323982359930005737e-03,				/* 3F8226E3, E96E8493 */
-3.59207910759131235356e-03,				/* 3F6D6D22, C9560328 */
-1.45620945432529025516e-03,				/* 3F57DBC8, FEE08315 */
-5.88041240820264096874e-04,				/* 3F4344D8, F2F26501 */
-2.46463134818469906812e-04,				/* 3F3026F7, 1A8D1068 */
-7.81794442939557092300e-05,				/* 3F147E88, A03792A6 */
-7.14072491382608190305e-05,				/* 3F12B80F, 32F0A7E9 */
--1.85586374855275456654e-05,			/* BEF375CB, DB605373 */
- 2.59073051863633712884e-05,			/* 3EFB2A70, 74BF7AD4 */
-1.00000000000000000000e+00,             /* 3FF00000, 00000000 */ /* one */   
-7.85398163397448278999e-01,             /* 3FE921FB, 54442D18 */	/* pio4 */  
-3.06161699786838301793e-17              /* 3C81A626, 33145C07 */	/* pio4lo */
-};
+extern const double xxx[];
+
 #define one    xxx[13]
 #define pio4   xxx[14]
 #define pio4lo xxx[15]
 #define T      xxx
 
 // used by acos
-static const double
-//one_d=  1.00000000000000000000e+00,   /* 0x3FF00000, 0x00000000 */
-//pi_d =  3.14159265358979311600e+00,	/* 0x400921FB, 0x54442D18 */
-pio2_hi_d =  1.57079632679489655800e+00,/* 0x3FF921FB, 0x54442D18 */
-pio2_lo_d =  6.12323399573676603587e-17,/* 0x3C91A626, 0x33145C07 */
-pS0_d =  1.66666666666666657415e-01,	/* 0x3FC55555, 0x55555555 */
-pS1_d = -3.25565818622400915405e-01,	/* 0xBFD4D612, 0x03EB6F7D */
-pS2_d =  2.01212532134862925881e-01,	/* 0x3FC9C155, 0x0E884455 */
-pS3_d = -4.00555345006794114027e-02,	/* 0xBFA48228, 0xB5688F3B */
-pS4_d =  7.91534994289814532176e-04,	/* 0x3F49EFE0, 0x7501B288 */
-pS5_d =  3.47933107596021167570e-05,	/* 0x3F023DE1, 0x0DFDF709 */
-qS1_d = -2.40339491173441421878e+00,	/* 0xC0033A27, 0x1C8A2D4B */
-qS2_d =  2.02094576023350569471e+00,	/* 0x40002AE5, 0x9C598AC8 */
-qS3_d = -6.88283971605453293030e-01,	/* 0xBFE6066C, 0x1B8D0159 */
-qS4_d =  7.70381505559019352791e-02;	/* 0x3FB3B8C5, 0xB12E9282 */
+extern const double
+pio2_hi_d,/* 0x3FF921FB, 0x54442D18 */
+pio2_lo_d,/* 0x3C91A626, 0x33145C07 */
+pS0_d,	/* 0x3FC55555, 0x55555555 */
+pS1_d,	/* 0xBFD4D612, 0x03EB6F7D */
+pS2_d,	/* 0x3FC9C155, 0x0E884455 */
+pS3_d,	/* 0xBFA48228, 0xB5688F3B */
+pS4_d,	/* 0x3F49EFE0, 0x7501B288 */
+pS5_d,	/* 0x3F023DE1, 0x0DFDF709 */
+qS1_d,	/* 0xC0033A27, 0x1C8A2D4B */
+qS2_d,	/* 0x40002AE5, 0x9C598AC8 */
+qS3_d,	/* 0xBFE6066C, 0x1B8D0159 */
+qS4_d;	/* 0x3FB3B8C5, 0xB12E9282 */
 
-static const float
-//one_f =  1.0000000000e+00F,			/* 0x3F800000 */
-//pi_f =  3.1415925026e+00F,			/* 0x40490fda */
-pio2_hi_f =  1.5707962513e+00F,			/* 0x3fc90fda */
-pio2_lo_f =  7.5497894159e-08F,			/* 0x33a22168 */
-pS0_f =  1.6666667163e-01F,				/* 0x3e2aaaab */
-pS1_f = -3.2556581497e-01F,				/* 0xbea6b090 */
-pS2_f =  2.0121252537e-01F,				/* 0x3e4e0aa8 */
-pS3_f = -4.0055535734e-02F,				/* 0xbd241146 */
-pS4_f =  7.9153501429e-04F,				/* 0x3a4f7f04 */
-pS5_f =  3.4793309169e-05F,				/* 0x3811ef08 */
-qS1_f = -2.4033949375e+00F,				/* 0xc019d139 */
-qS2_f =  2.0209457874e+00F,				/* 0x4001572d */
-qS3_f = -6.8828397989e-01F,				/* 0xbf303361 */
-qS4_f =  7.7038154006e-02F;				/* 0x3d9dc62e */
+extern const float
+pio2_hi_f,			/* 0x3fc90fda */
+pio2_lo_f,			/* 0x33a22168 */
+pS0_f,				/* 0x3e2aaaab */
+pS1_f,				/* 0xbea6b090 */
+pS2_f,				/* 0x3e4e0aa8 */
+pS3_f,				/* 0xbd241146 */
+pS4_f,				/* 0x3a4f7f04 */
+pS5_f,				/* 0x3811ef08 */
+qS1_f,				/* 0xc019d139 */
+qS2_f,				/* 0x4001572d */
+qS3_f,				/* 0xbf303361 */
+qS4_f;				/* 0x3d9dc62e */
 
 // used by asin
-static const double
-//huge_d =  1.000e+300,
-pio4_hi_d =  7.85398163397448278999e-01;/* 0x3FE921FB, 0x54442D18 */
+extern const double pio4_hi_d;/* 0x3FE921FB, 0x54442D18 */
 
-static const float
-//huge_f =  1.000e+30F,
-pio4_hi_f =  7.8539812565e-01F;			/* 0x3f490fda */
+extern const float pio4_hi_f;			/* 0x3f490fda */
 
 // used by atan
-SYS_FORCEALIGN_16 static const double 
-atanhi_d[] = {
-0.46364760900080611621425623146121F,	/* atan(0.5)hi 0x3eed6338 */
-0.78539816339744830961566084581988F,	/* atan(1.0)hi 0x3f490fda */
-0.98279372324732906798571061101467F,	/* atan(1.5)hi 0x3f7b985e */
-1.5707963267948966192313216916398F		/* atan(inf)hi 0x3fc90fda */
-};
-
-SYS_FORCEALIGN_16 static const double 
-atanlo_d[] = {
-5.0121586562142562314612144020192e-9F,	/* atan(0.5)lo 0x31ac3769 */
--2.1855695000384339154180124278986e-8F,	/* atan(1.0)lo 0x33222168 */
--2.5131424592014289388985333985481e-8F,	/* atan(1.5)lo 0x33140fb4 */
--0.000000043711389980768678308361F		/* atan(inf)lo 0x33a22168 */
-};
-SYS_FORCEALIGN_16 static const double 
-aT_d[] = {
-0.33333333333333333333333333333333F,	// 1/3
--2.0e-01F,								// 1/5
-0.14285714285714285714285714285714F,	// 1/7	
--0.11111111111111111111111111111111F,	// 1/9
-0.090909090909090909090909090909091F,	// ..
--0.076923076923076923076923076923077F,
-0.066666666666666666666666666666667F,
--0.058823529411764705882352941176471F,
-0.052631578947368421052631578947368F,
--0.047619047619047619047619047619048F,
-0.043478260869565217391304347826087F
-};
-
-SYS_FORCEALIGN_16 static const float 
-atanhi_f[] = {
-0.46364760900080611621425623146121F,	/* atan(0.5)hi 0x3eed6338 */
-0.78539816339744830961566084581988F,	/* atan(1.0)hi 0x3f490fda */
-0.98279372324732906798571061101467F,	/* atan(1.5)hi 0x3f7b985e */
-1.5707963267948966192313216916398F		/* atan(inf)hi 0x3fc90fda */
-};
-
-SYS_FORCEALIGN_16 static const float
-atanlo_f[] = {
-9.0008061162142562314612144020192e-9F,	/* atan(0.5)lo 0x31ac3769 */
--2.6602551690384339154180124278986e-8F,	/* atan(1.0)lo 0x33222168 */
--2.6752670932014289388985333985481e-8F,	/* atan(1.5)lo 0x33140fb4 */
--0.000000073205103380768678308361F		/* atan(inf)lo 0x33a22168 */
-};
-SYS_FORCEALIGN_16 static const float
-aT_f[] = {
-0.33333333333333333333333333333333F,	// 1/3
--2.0e-01F,								// 1/5
-0.14285714285714285714285714285714F,	// 1/7	
--0.11111111111111111111111111111111F,	// 1/9
-0.090909090909090909090909090909091F,	// ..
--0.076923076923076923076923076923077F,
-0.066666666666666666666666666666667F,
--0.058823529411764705882352941176471F,
-0.052631578947368421052631578947368F,
--0.047619047619047619047619047619048F,
-0.043478260869565217391304347826087F
-};
-
+SYS_FORCEALIGN_16 extern const double atanhi_d[];
+SYS_FORCEALIGN_16 extern const double atanlo_d[];
+SYS_FORCEALIGN_16 extern const double aT_d[];
+SYS_FORCEALIGN_16 extern const float atanhi_f[];
+SYS_FORCEALIGN_16 extern const float atanlo_f[];
+SYS_FORCEALIGN_16 extern const float aT_f[];
 
 // used by atan2
-SYS_FORCEALIGN_16 static const float  
-huge_f = 1.0e30F,one_f = 1.0F;
+SYS_FORCEALIGN_16 extern const float  
+huge_f,one_f;
 
-SYS_FORCEALIGN_16 static const double
-huge_d = 1.0e300,one_d = 1.0;
+SYS_FORCEALIGN_16 extern const double
+huge_d,one_d;
 
-SYS_FORCEALIGN_16 static const float
-pi_f      = 3.1415926535897932384626433832795F,
-pi_o_4_f  = 0.78539816339744830961566084581988F,
-pi3_o_4_f = 2.3561944901923449288469825374596F,
-pi_hi_f   = 3.1415926535897932384626433832795F,
-pi_lo_f   = 1.3846264338327950288419716939931e-16F;
+SYS_FORCEALIGN_16 extern const float
+pi_f     ,
+pi_o_4_f ,
+pi3_o_4_f,
+pi_hi_f  ,
+pi_lo_f  ;
 
-SYS_FORCEALIGN_16 static const double
-pi_d      = 3.1415926535897932384626433832795,
-pi_o_4_d  = 0.78539816339744830961566084581988,	
-pi3_o_4_d = 2.3561944901923449288469825374596,							
-pi_hi_d   = 3.1415926535897932384626433832795, 
-pi_lo_d   = 1.3846264338327950288419716939931e-16;
+SYS_FORCEALIGN_16 extern const double
+pi_d     ,
+pi_o_4_d ,	
+pi3_o_4_d,							
+pi_hi_d  , 
+pi_lo_d  ;
 
 // used by expm1
-static const double
-//one_d           = 1.0,
-//huge_d          = 1.0e+300,
-tiny_d            = 1.0e-300,
-o_threshold_d     = 7.09782712893383973096e+02,/* 0x40862E42, 0xFEFA39EF */
-ln2_hi_d          = 6.93147180369123816490e-01,/* 0x3fe62e42, 0xfee00000 */
-ln2_lo_d          = 1.90821492927058770002e-10,/* 0x3dea39ef, 0x35793c76 */
-invln2_d          = 1.44269504088896338700e+00,/* 0x3ff71547, 0x652b82fe */
+extern const double
+tiny_d,
+o_threshold_d,/* 0x40862E42, 0xFEFA39EF */
+ln2_hi_d,/* 0x3fe62e42, 0xfee00000 */
+ln2_lo_d,/* 0x3dea39ef, 0x35793c76 */
+invln2_d,/* 0x3ff71547, 0x652b82fe */
 
 /* scaled coefficients related to expm1 */
-Q1_d  =  -3.33333333333331316428e-02,			/* BFA11111 111110F4 */
-Q2_d  =   1.58730158725481460165e-03,			/* 3F5A01A0 19FE5585 */
-Q3_d  =  -7.93650757867487942473e-05,			/* BF14CE19 9EAADBB7 */
-Q4_d  =   4.00821782732936239552e-06,			/* 3ED0CFCA 86E65239 */
-Q5_d  =  -2.01099218183624371326e-07;			/* BE8AFDB7 6E09C32D */
+Q1_d,			/* BFA11111 111110F4 */
+Q2_d,			/* 3F5A01A0 19FE5585 */
+Q3_d,			/* BF14CE19 9EAADBB7 */
+Q4_d,			/* 3ED0CFCA 86E65239 */
+Q5_d;			/* BE8AFDB7 6E09C32D */
 
 //used by ieee754_exp
-static const double
-halF_d[2] = {0.5,-0.5,},
-twom1000_d= 9.33263618503218878990e-302,		/* 2**-1000=0x01700000,0*/
-u_threshold_d= -7.45133219101941108420e+02,		/* 0xc0874910, 0xD52D3051 */
-ln2HI_d[2]   ={ 6.93147180369123816490e-01,		/* 0x3fe62e42, 0xfee00000 */
-             -6.93147180369123816490e-01,},		/* 0xbfe62e42, 0xfee00000 */
-ln2LO_d[2]   ={ 1.90821492927058770002e-10,		/* 0x3dea39ef, 0x35793c76 */
-             -1.90821492927058770002e-10,},		/* 0xbdea39ef, 0x35793c76 */
-P1_d   =  1.66666666666666019037e-01,			/* 0x3FC55555, 0x5555553E */
-P2_d   = -2.77777777770155933842e-03,			/* 0xBF66C16C, 0x16BEBD93 */
-P3_d   =  6.61375632143793436117e-05,			/* 0x3F11566A, 0xAF25DE2C */
-P4_d   = -1.65339022054652515390e-06,			/* 0xBEBBBD41, 0xC5D26BF1 */
-P5_d   =  4.13813679705723846039e-08;			/* 0x3E663769, 0x72BEA4D0 */
+extern const double
+halF_d[2],
+twom1000_d,		/* 2**-1000=0x01700000,0*/
+u_threshold_d,		/* 0xc0874910, 0xD52D3051 */
+ln2HI_d[2],		/* 0x3fe62e42, 0xfee00000 */
+ln2LO_d[2],		/* 0x3dea39ef, 0x35793c76 */
+P1_d,			/* 0x3FC55555, 0x5555553E */
+P2_d,			/* 0xBF66C16C, 0x16BEBD93 */
+P3_d,			/* 0x3F11566A, 0xAF25DE2C */
+P4_d,			/* 0xBEBBBD41, 0xC5D26BF1 */
+P5_d;			/* 0x3E663769, 0x72BEA4D0 */
 
 // used by cosh
-static const double half_d=0.5;
-static const float half_f=0.5F;
+extern const double half_d;
+extern const float half_f;
 
 // used by sinh
-static const double shuge_d = 1.0e307;
-static const float shuge_f = 1.0e37F;
+extern const double shuge_d;
+extern const float shuge_f;
 
 // used by tanh
-static const double two_d = 2.0;
-static const float two_f=2.0;
+extern const double two_d;
+extern const float two_f;
 
 // used by acosh
-static const float
+extern const float
 //one_f           = 1.0F,
 //huge_f          = 1.0e+30F,
-tiny_f            = 1.0e-30F,
-ln2_hi_f          = 6.9313812256e-01F,			/* 0x3f317180 */
-ln2_lo_f          = 9.0580006145e-06F;			/* 0x3717f7d1 */
-static const double
-ln2_d     = 6.93147180559945286227e-01;			/* 0x3FE62E42, 0xFEFA39EF */
-static const float
-ln2_f     = 6.9314718246e-01F;					/* 0x3f317218 */
+tiny_f,
+ln2_hi_f,			/* 0x3f317180 */
+ln2_lo_f;			/* 0x3717f7d1 */
+extern const double
+ln2_d;			/* 0x3FE62E42, 0xFEFA39EF */
+extern const float
+ln2_f;					/* 0x3f317218 */
 
 // used by log1p
-static const double
-two54_d   =  1.80143985094819840000e+16,		/* 43500000 00000000 */
-Lp1_d = 6.666666666666735130e-01,				/* 3FE55555 55555593 */
-Lp2_d = 3.999999999940941908e-01,				/* 3FD99999 9997FA04 */
-Lp3_d = 2.857142874366239149e-01,				/* 3FD24924 94229359 */
-Lp4_d = 2.222219843214978396e-01,				/* 3FCC71C5 1D8E78AF */
-Lp5_d = 1.818357216161805012e-01,				/* 3FC74664 96CB03DE */
-Lp6_d = 1.531383769920937332e-01,				/* 3FC39A09 D078C69F */
-Lp7_d = 1.479819860511658591e-01;				/* 3FC2F112 DF3E5244 */
+extern const double
+two54_d,		/* 43500000 00000000 */
+Lp1_d,				/* 3FE55555 55555593 */
+Lp2_d,				/* 3FD99999 9997FA04 */
+Lp3_d,				/* 3FD24924 94229359 */
+Lp4_d,				/* 3FCC71C5 1D8E78AF */
+Lp5_d,				/* 3FC74664 96CB03DE */
+Lp6_d,				/* 3FC39A09 D078C69F */
+Lp7_d;				/* 3FC2F112 DF3E5244 */
 
-static const double zero_d = 0.0;
+extern const double zero_d;
 
 // used by iee754_log
-static const double
-Lg1_d = 6.666666666666735130e-01,				/* 3FE55555 55555593 */
-Lg2_d = 3.999999999940941908e-01,				/* 3FD99999 9997FA04 */
-Lg3_d = 2.857142874366239149e-01,				/* 3FD24924 94229359 */
-Lg4_d = 2.222219843214978396e-01,				/* 3FCC71C5 1D8E78AF */
-Lg5_d = 1.818357216161805012e-01,				/* 3FC74664 96CB03DE */
-Lg6_d = 1.531383769920937332e-01,				/* 3FC39A09 D078C69F */
-Lg7_d = 1.479819860511658591e-01;				/* 3FC2F112 DF3E5244 */
+extern const double
+Lg1_d,				/* 3FE55555 55555593 */
+Lg2_d,				/* 3FD99999 9997FA04 */
+Lg3_d,				/* 3FD24924 94229359 */
+Lg4_d,				/* 3FCC71C5 1D8E78AF */
+Lg5_d,				/* 3FC74664 96CB03DE */
+Lg6_d,				/* 3FC39A09 D078C69F */
+Lg7_d;				/* 3FC2F112 DF3E5244 */
 
 // used by log1pf
-static const float
-two25_f = 3.355443200e+07F,						/* 0x4c000000 */
-Lp1_f = 6.6666668653e-01F,						/* 3F2AAAAB */
-Lp2_f = 4.0000000596e-01F,						/* 3ECCCCCD */
-Lp3_f = 2.8571429849e-01F,						/* 3E924925 */
-Lp4_f = 2.2222198546e-01F,						/* 3E638E29 */
-Lp5_f = 1.8183572590e-01F,						/* 3E3A3325 */
-Lp6_f = 1.5313838422e-01F,						/* 3E1CD04F */
-Lp7_f = 1.4798198640e-01F;						/* 3E178897 */
+extern const float
+two25_f,						/* 0x4c000000 */
+Lp1_f,						/* 3F2AAAAB */
+Lp2_f,						/* 3ECCCCCD */
+Lp3_f,						/* 3E924925 */
+Lp4_f,						/* 3E638E29 */
+Lp5_f,						/* 3E3A3325 */
+Lp6_f,						/* 3E1CD04F */
+Lp7_f;						/* 3E178897 */
 
-static const float zero_f = 0.0;
+extern const float zero_f;
 
 // used by ieee754_logpf
-static const float
-Lg1_f =      0.66666662693F,					/* 0xaaaaaa.0p-24 */
-Lg2_f =      0.40000972152F,					/* 0xccce13.0p-25 */
-Lg3_f =      0.28498786688F,					/* 0x91e9ee.0p-25 */
-Lg4_f =      0.24279078841F;					/* 0xf89e26.0p-26 */
+extern const float
+Lg1_f,					/* 0xaaaaaa.0p-24 */
+Lg2_f,					/* 0xccce13.0p-25 */
+Lg3_f,					/* 0x91e9ee.0p-25 */
+Lg4_f;					/* 0xf89e26.0p-26 */
 
 
 ///////////////////////////////////////// MACROS ///////////////////////////////////////////////
+
+namespace OPT_LEVEL
+{
 
 IS double __kernel_sin(double x, double y, int iy);
 

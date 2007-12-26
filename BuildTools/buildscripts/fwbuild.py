@@ -23,7 +23,7 @@ from fwObject  import *
 from fwLibrary import *
 
 class fwBuildRoot:
-    def __init__ (self, pthProjectRoot, pthBuildRoot):
+    def __init__ (self, pthProjectRoot, pthBuildRoot, pthBuildScripts = None):
         self.dctFwVars                   = {}
         self.dctFwVars['pthProjectRoot'] = pthProjectRoot
         self.dctFwVars['pthDevLabRoot']  = abspath('..')
@@ -54,7 +54,9 @@ class fwBuildRoot:
         # Based on our toolset, set up the SCons tools
         if   self.dctFwVars['toolset'] == 'msvc':
             buildtools     = ['fwmsvc', 'fwmslink', 'fwmslib']
-            buildtoolspath = [abspath(join(self.dctFwVars['pthProjectRoot'], '..', '..', 'BuildTools', 'buildscripts'))]
+            if not pthBuildScripts:
+                pthBuildScripts = abspath(join(self.dctFwVars['pthProjectRoot'], '..', '..', 'BuildTools', 'buildscripts'))
+            buildtoolspath = [pthBuildScripts]
         elif self.dctFwVars['toolset'] == 'suncc':
             buildtools     = ['sunc++', 'suncc', 'sunlink', 'sunar']
         elif self.dctFwVars['toolset'] == 'gcc':
