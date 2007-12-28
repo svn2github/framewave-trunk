@@ -89,148 +89,8 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="debug_shared|x64"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="1"
-			ExcludeBuckets="2;3;4;5;6;7;8;9;10;11;12;13;14;15;16"
-			>
-			<Tool
-				Name="VCCustomBuildTool"
-				Description="Container for common includes"
-				CommandLine=""
-				Outputs=""
-				ExecutionBucket="1"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				ExecutionBucket="2"
-				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-				ExecutionBucket="2"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				ExecutionBucket="3"
-			/>
-			<Tool
-				Name="VCPreBuildEventTool"
-				ExecutionBucket="3"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-		</Configuration>
-		<Configuration
 			Name="release_shared|Win32"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
-			ExcludeBuckets="2;3;4;5;6;7;8;9;10;11;12;13;14;15;16"
-			>
-			<Tool
-				Name="VCCustomBuildTool"
-				Description="Container for common includes"
-				CommandLine=""
-				Outputs=""
-				ExecutionBucket="1"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				ExecutionBucket="2"
-				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-				ExecutionBucket="2"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				ExecutionBucket="3"
-			/>
-			<Tool
-				Name="VCPreBuildEventTool"
-				ExecutionBucket="3"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="release_shared|x64"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			ExcludeBuckets="2;3;4;5;6;7;8;9;10;11;12;13;14;15;16"
 			>
@@ -369,7 +229,77 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="debug_static|x64"
+			Name="release_static|Win32"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			ExcludeBuckets="2;3;4;5;6;7;8;9;10;11;12;13;14;15;16"
+			>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Container for common includes"
+				CommandLine=""
+				Outputs=""
+				ExecutionBucket="1"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="2"
+				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+				ExecutionBucket="2"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				ExecutionBucket="3"
+			/>
+			<Tool
+				Name="VCPreBuildEventTool"
+				ExecutionBucket="3"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="debug_shared|x64"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			ExcludeBuckets="2;3;4;5;6;7;8;9;10;11;12;13;14;15;16"
@@ -439,8 +369,78 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="release_static|Win32"
-			IntermediateDirectory="$(ConfigurationName)"
+			Name="release_shared|x64"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="1"
+			ExcludeBuckets="2;3;4;5;6;7;8;9;10;11;12;13;14;15;16"
+			>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Container for common includes"
+				CommandLine=""
+				Outputs=""
+				ExecutionBucket="1"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="2"
+				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+				ExecutionBucket="2"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				ExecutionBucket="3"
+			/>
+			<Tool
+				Name="VCPreBuildEventTool"
+				ExecutionBucket="3"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="debug_static|x64"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			ExcludeBuckets="2;3;4;5;6;7;8;9;10;11;12;13;14;15;16"
 			>
@@ -912,7 +912,7 @@
 			Name="Source Files"
 			>
 			<File
-				RelativePath=".\src\Const.cpp"
+				RelativePath=".\src\Constants.cpp"
 				>
 			</File>
 			<File
