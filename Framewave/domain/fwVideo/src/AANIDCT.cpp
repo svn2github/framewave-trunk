@@ -7,17 +7,11 @@ This software is subject to the Apache v2.0 License.
 #include "fwdev.h"
 #include "FwSharedCode.h"
 #include "FwSharedCode_SSE2.h"
-#include "AANIDCT.h"
 #include "fwVideo.h"
 #include "system.h"
 
 using namespace OPT_LEVEL;
 
-/******************************************************************/
-#define PRESHIFT 4	// left-shift input coefficient amount
-#define ROW_STRIDE 16	// for 8x8 matrix transpose operation
-
-/*******************************************************/
 SYS_FORCEALIGN_16 static Fw16s My_idct_weighting[] = {
 	16384,	21407,	16384,	8867, 16384,	-8867,  16384, -21407,	//	w05 w04 w01 w00	w13 w12 w09 w08
 	16384,	8867,	-16384,	-21407,	-16384,	21407,  16384,  -8867,	//	w07 w06 w03 w02	w15 w14 w11 w10
@@ -44,90 +38,59 @@ SYS_FORCEALIGN_16 static Fw16s My_idct_weighting[] = {
 	-21746, -21746, -21746, -21746, -21746, -21746, -21746, -21746, // tg * (2<<16) + 0.5
     -19195, -19195, -19195, -19195,-19195, -19195, -19195, -19195}; //cos * (2<<16) + 0.5
 
-const static Fw16s preSC[] = {
-		16384, 22725, 21407, 19266,  16384, 12873, 8867,  4520,
-        22725, 31521, 29692, 26722,  22725, 17855, 12299, 6270,
-        21407, 29692, 27969, 25172,  21407, 16819, 11585, 5906,
-        19266, 26722, 25172, 22654,  19266, 15137, 10426, 5315,
-        16384, 22725, 21407, 19266,  16384, 12873, 8867,  4520,
-        12873, 17855, 16819, 15137,  25746, 20228, 13933, 7103,
-        17734, 24598, 23170, 20853,  17734, 13933, 9597,  4892,
-        18081, 25080, 23624, 21261,  18081, 14206, 9785,  4988,
-	};
+const static float c[8][8] = 
+ {
+    { 0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F },
+    {0.49039263F,      0.41573480F,      0.27778512F,     0.097545162F,    -0.097545162F,     -0.27778512F,     -0.41573480F,     -0.49039263F },
+    {0.46193975F,     0.19134171F,     -0.19134171F,     -0.46193975F,     -0.46193975F,     -0.19134171F,      0.19134171F,      0.46193975F },
+    {0.41573480F,    -0.097545162F,     -0.49039263F,     -0.27778512F,      0.27778512F,      0.49039263F,     0.097545162F,     -0.41573480F },
+    {0.35355338F,     -0.35355338F,     -0.35355338F,      0.35355338F,      0.35355338F,     -0.35355338F,     -0.35355338F,      0.35355338F },
+    {0.27778512F,     -0.49039263F,     0.097545162F,      0.41573480F,     -0.41573480F,    -0.097545162F,      0.49039263F,     -0.27778512F },
+    {0.19134171F,     -0.46193975F,      0.46193975F,     -0.19134171F,     -0.19134171F,      0.46193975F,     -0.46193975F,      0.19134171F },
+    {0.097545162F,     -0.27778512F,      0.41573480F,     -0.49039263F,      0.49039263F,     -0.41573480F,      0.27778512F,    -0.097545162F}
+ };
 
-SYS_FORCEALIGN_16 static Fw16s tempIdctOutputSSE2[NUM_ROWS][NUM_COLS];
-SYS_FORCEALIGN_16 static Fw16s tempUVIdctOutputSSE2[NUM_ROWS][NUM_COLS];
-
-/*******************************************************/
-//Start internal function for DCT
-#define PI 3.14159265358979323846
-//static float c[8][8]; /* transform coefficients */
-static void init_idct(float c[8][8])
-{
-	int i, j;
-	float s;
-
-	for (i=0; i<8; i++) {
-		s = (float)((i==0) ? sqrt(0.125) : 0.5);
-
-		for (j=0; j<8; j++)
-			c[i][j] = s * (float)(cos((PI/8.0)*i*(j+0.5)));
-	}
-
-}
-
-static void idct(float c[8][8], const Fw16s* pSrc, Fw16s* pDst)
+static void Idct(const float c[8][8], const Fw16s *pSrc, Fw16s *pDst)
 {
 	int i, j, k;
-	float partial_product;
+	float partialProduct;
 	float tmp[64];
 
 	for (i=0; i<8; i++)
 		for (j=0; j<8; j++)
 		{
-			partial_product = 0.0;
+			partialProduct = 0.0;
 
 			for (k=0; k<8; k++)
-				partial_product+= c[k][j]*pSrc[8*i+k];
+				partialProduct+= c[k][j]*pSrc[8*i+k];
 
-			tmp[8*i+j] = partial_product;
+			tmp[8*i+j] = partialProduct;
 		}
 
-		/* Transpose operation is integrated into address mapping by switching 
-		loop order of i and j */
+		// Transpose operation is integrated into address mapping by switching 
+		// loop order of i and j 
 
 		for (j=0; j<8; j++)
 			for (i=0; i<8; i++)
 			{
-				partial_product = 0.0;
+				partialProduct = 0.0;
 
 				for (k=0; k<8; k++)
-					partial_product+= c[k][i]*tmp[8*k+j];
+					partialProduct+= c[k][i]*tmp[8*k+j];
 
-				//v = CBL_LIBRARY::Limits<int>::Sat(floor(partial_product+0.5));
+				//v = CBL_LIBRARY::Limits<int>::Sat(floor(partialProduct+0.5));
 				//pDst[8*i+j] = (Fw16s) CBL_LIBRARY::Limits<Fw16s>::Sat(v);
-				pDst[8*i+j] = (Fw16s) CBL_LIBRARY::Limits<Fw16s>::Sat(floor(partial_product+0.5));
+				pDst[8*i+j] = (Fw16s) CBL_LIBRARY::Limits<Fw16s>::Sat(floor(partialProduct+0.5));
 			}
 }
 
-/***************************************************************************/
 
-template<typename T>
-static void transposeBlock(T* dst, Pointer8x8Block16s src, Fw32s dstStep);
-template<typename T>
-static void transposeBlock(T* dst, Pointer8x8Block16s srcU, Pointer8x8Block16s srcV, Fw32s dstStep);
-static void transposeBlockOptimized_16s_C1R(Fw16s *pDst, Pointer8x8Block16s pSrc, Fw32s dstStep = NUM_COLS*sizeof(Fw16s));
-static void transposeBlockOptimized_16s8u_C1R(Fw8u *pDst, Pointer8x8Block16s pSrc, Fw32s dstStep = NUM_COLS*sizeof(Fw8u));
-static void transposeBlockOptimized_16s_P2C2R(Fw16s* dst, Pointer8x8Block16s srcU, Pointer8x8Block16s srcV, Fw32s dstStep=2*NUM_COLS*sizeof(Fw16s));
-static void transposeBlockOptimized_16s8u_P2C2R(Fw8u* dst, Pointer8x8Block16s srcU, Pointer8x8Block16s srcV, Fw32s dstStep=2*NUM_COLS*sizeof(Fw8u));
-
-/*******************************************************/
 /**
  * performs AAN IDCT using SSE2
  *
  * Assumes destination is aligned on a 16-byte boundary
  */
-static FwStatus My_idct_SSE2(const Fw16s* pSrc, Fw16s* pDst, Fw32s count)
+SYS_INLINE static FwStatus My_idct_SSE2(const Fw16s* pSrc, Fw16s* pDst, Fw32s count)
 {
 	count = count;//in the future we will use count. For the time being make the compiler happy
 	__m128i xmm0,  xmm1,  xmm2,  xmm3,  xmm4,  xmm5,  xmm6,  xmm7;
@@ -139,7 +102,7 @@ static FwStatus My_idct_SSE2(const Fw16s* pSrc, Fw16s* pDst, Fw32s count)
 	pesi = My_idct_weighting;
 	pecx = My_idct_weighting+64;
 
-	const bool bSrcIsAligned = FW_REF::IsAligned(peax, NUM_COLS*sizeof(Fw16s));
+	const bool bSrcIsAligned = FW_REF::IsAligned(peax, 16);
 	if(bSrcIsAligned)
 	{
 		xmm0 = _mm_load_si128((__m128i *)(peax)); 
@@ -484,366 +447,6 @@ static FwStatus My_idct_SSE2(const Fw16s* pSrc, Fw16s* pDst, Fw32s count)
 	return(fwStsNoErr);
 }
 
-template<typename T>
-static void transposeBlock(T* dst, Pointer8x8Block16s srcU, Pointer8x8Block16s srcV, Fw32s dstStep)
-{
-	for(unsigned int I = 0; I < NUM_ROWS; I++)
-	{
-		for(unsigned int J = 0; J < NUM_COLS; J++)
-		{
-			T ucomp = CBL_LIBRARY::Limits<T>::Sat((*srcU)[I][J]);
-			T vcomp = CBL_LIBRARY::Limits<T>::Sat((*srcV)[I][J]);
-
-			((T*)(((char*)dst) + J*dstStep))[2*I] = ucomp;
-			((T*)(((char*)dst) + J*dstStep))[(2*I)+1] = vcomp;
-		}
-	}
-}
-
-template<typename T>
-static void transposeBlock(T* dst, Pointer8x8Block16s src, Fw32s dstStep)
-{
-	for(unsigned int I = 0; I < NUM_ROWS; I++)
-	{
-		for(unsigned int J = 0; J < NUM_COLS; J++)
-		{
-			((T*)(((char*)dst) + I * dstStep))[J] = CBL_LIBRARY::Limits<T>::Sat((*src)[J][I]);
-		}
-	}
-}
-
-/**
- * Transpose an 8x8 block of Fw16s
- *
- * @param dst pointer to the location of memory where the transposed block will be written
- * @param src pointer to the location of memory where the block to be transposed is.
- * @param dstStep distance in bytes of two rows in the destination buffer
- *
- * Algorithm:
- *
- * Step 1: Shuffle low and high qwords of rows 0-4,1-5,2-6,3-7
- * Step 2: Shuffle words of (the NEW) rows 0-1,2-3,4-5,6-7 	
- * Step 3: Shuffle dwords of (the NEW) rows 0-2,1-3,4-6,5-7
- * Step 4: Shuffle qwords of (the NEW) rows 0-4,1-5,2-6,3-7
- * Write block to destination taking dstStep into account
- */
-static void transposeBlockOptimized_16s_C1R(Fw16s* pDst, Pointer8x8Block16s pSrc, Fw32s dstStep)
-{
-	__m128i xmm0,  xmm1,  xmm2,  xmm3,  xmm4,  xmm5,  xmm6,  xmm7;
-	__m128i xmm8,  xmm9;
-
-#include "TransposeBlockOptimizedCode.hpp"
-	const unsigned int OUTPUT_BYTE_STRIDE = dstStep;
-
-	if(FW_REF::IsAligned(pDst, dstStep))
-	{
-		_mm_store_si128 ((__m128i *)(((char*)pDst) + 0 * OUTPUT_BYTE_STRIDE), xmm0);
-		_mm_store_si128 ((__m128i *)(((char*)pDst) + 1 * OUTPUT_BYTE_STRIDE), xmm1);
-		_mm_store_si128 ((__m128i *)(((char*)pDst) + 2 * OUTPUT_BYTE_STRIDE), xmm2);
-		_mm_store_si128 ((__m128i *)(((char*)pDst) + 3 * OUTPUT_BYTE_STRIDE), xmm3);
-		_mm_store_si128 ((__m128i *)(((char*)pDst) + 4 * OUTPUT_BYTE_STRIDE), xmm4);
-		_mm_store_si128 ((__m128i *)(((char*)pDst) + 5 * OUTPUT_BYTE_STRIDE), xmm5);
-		_mm_store_si128 ((__m128i *)(((char*)pDst) + 6 * OUTPUT_BYTE_STRIDE), xmm6);
-		_mm_store_si128 ((__m128i *)(((char*)pDst) + 7 * OUTPUT_BYTE_STRIDE), xmm7);
-	}
-	else
-	{
-		_mm_storeu_si128 ((__m128i *)(((char*)pDst) + 0 * OUTPUT_BYTE_STRIDE), xmm0);
-		_mm_storeu_si128 ((__m128i *)(((char*)pDst) + 1 * OUTPUT_BYTE_STRIDE), xmm1);
-		_mm_storeu_si128 ((__m128i *)(((char*)pDst) + 2 * OUTPUT_BYTE_STRIDE), xmm2);
-		_mm_storeu_si128 ((__m128i *)(((char*)pDst) + 3 * OUTPUT_BYTE_STRIDE), xmm3);
-		_mm_storeu_si128 ((__m128i *)(((char*)pDst) + 4 * OUTPUT_BYTE_STRIDE), xmm4);
-		_mm_storeu_si128 ((__m128i *)(((char*)pDst) + 5 * OUTPUT_BYTE_STRIDE), xmm5);
-		_mm_storeu_si128 ((__m128i *)(((char*)pDst) + 6 * OUTPUT_BYTE_STRIDE), xmm6);
-		_mm_storeu_si128 ((__m128i *)(((char*)pDst) + 7 * OUTPUT_BYTE_STRIDE), xmm7);
-	}
-}
-
-/**
- * Transpose an 8x8 block of Fw16s and convert to Fw8u using saturation
- *
- * @param dst pointer to the location of memory where the transposed block will be written
- * @param src pointer to the location of memory where the block to be transposed is.
- * @param dstStep distance in bytes of two rows in the destination buffer
- *
- * Use same algorithm as in transposeBlockOptimized_16s_C1R() for transposing block
- * Finally, saturate to 8-bits and write block to destination taking dstStep into account
- */
-static void transposeBlockOptimized_16s8u_C1R(Fw8u *pDst, Pointer8x8Block16s pSrc, Fw32s dstStep)
-{
-	__m128i xmm0,  xmm1,  xmm2,  xmm3,  xmm4,  xmm5,  xmm6,  xmm7;
-	__m128i xmm8,  xmm9;
-
-#include "TransposeBlockOptimizedCode.hpp"
-	const unsigned int OUTPUT_BYTE_STRIDE = dstStep;
-	xmm8 = _mm_packus_epi16(xmm0, xmm1);
-	_mm_storel_epi64((__m128i*)(((char*)pDst) + 0 * OUTPUT_BYTE_STRIDE), xmm8);
-	xmm8 = _mm_srli_si128(xmm8, 8);
-	_mm_storel_epi64((__m128i*)(((char*)pDst) + 1 * OUTPUT_BYTE_STRIDE), xmm8);
-
-	xmm8 = _mm_packus_epi16(xmm2, xmm3);
-	_mm_storel_epi64((__m128i*)(((char*)pDst) + 2 * OUTPUT_BYTE_STRIDE), xmm8);
-	xmm8 = _mm_srli_si128(xmm8, 8);
-	_mm_storel_epi64((__m128i*)(((char*)pDst) + 3 * OUTPUT_BYTE_STRIDE), xmm8);
-
-	xmm8 = _mm_packus_epi16(xmm4, xmm5);
-	_mm_storel_epi64((__m128i*)(((char*)pDst) + 4 * OUTPUT_BYTE_STRIDE), xmm8);
-	xmm8 = _mm_srli_si128(xmm8, 8);
-	_mm_storel_epi64((__m128i*)(((char*)pDst) + 5 * OUTPUT_BYTE_STRIDE), xmm8);
-
-	xmm8 = _mm_packus_epi16(xmm6, xmm7);
-	_mm_storel_epi64((__m128i*)(((char*)pDst) + 6 * OUTPUT_BYTE_STRIDE), xmm8);
-	xmm8 = _mm_srli_si128(xmm8, 8);
-	_mm_storel_epi64((__m128i*)(((char*)pDst) + 7 * OUTPUT_BYTE_STRIDE), xmm8);
-}
-
-/**
- * Transpose 8x8 U and V blocks of Fw16s and store to common UV block
- *
- * @param dst pointer to the location of memory where the transposed block will be written
- * @param srcU pointer to the location of memory where the U block to be transposed is.
- * @param srcV pointer to the location of memory where the V block to be transposed is.
- * @param dstStep distance in bytes of two rows in the destination buffer
- *
- * Use same algorithm as in transposeBlockOptimized_16s_C1R() for transposing blocks
- * Saturate to 8-bits and write blocks to common destination block taking dstStep into account
- */
-static void transposeBlockOptimized_16s_P2C2R(Fw16s* pDst, Pointer8x8Block16s srcU, Pointer8x8Block16s srcV, Fw32s dstStep)
-{
-	Pointer8x8Block16s pSrc;
-	__m128i xmm0, xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7;
-	__m128i xmm8, xmm9;
-
-	pSrc = srcV;
-#include "TransposeBlockOptimizedCode.hpp"
-	//save the transposed block of the V components to tmp0-7
-	__m128i tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
-	tmp0 = _mm_load_si128(&xmm0);
-	tmp1 = _mm_load_si128(&xmm1);
-	tmp2 = _mm_load_si128(&xmm2);
-	tmp3 = _mm_load_si128(&xmm3);
-	tmp4 = _mm_load_si128(&xmm4);
-	tmp5 = _mm_load_si128(&xmm5);
-	tmp6 = _mm_load_si128(&xmm6);
-	tmp7 = _mm_load_si128(&xmm7);
-
-	//save the transposed block of the U components to xmm0-7
-	pSrc = srcU;
-#include "TransposeBlockOptimizedCode.hpp"
-
-	//store to memory
-	__m128i tmpXmmLow, tmpXmmHigh;
-
-	const unsigned int OUTPUT_BYTE_STRIDE = dstStep;
-	const bool bDstIsAligned = FW_REF::IsAligned(pDst, dstStep);
-	
-	tmpXmmLow = _mm_unpacklo_epi16(xmm0, tmp0);
-	tmpXmmHigh = _mm_unpackhi_epi16(xmm0, tmp0);
-	if(bDstIsAligned)
-	{
-		_mm_store_si128((__m128i*)(((char*)pDst) + 0 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_store_si128((__m128i*)(((char*)pDst) + 0 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-	else
-	{
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 0 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 0 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-		
-	tmpXmmLow = _mm_unpacklo_epi16(xmm1, tmp1);
-	tmpXmmHigh = _mm_unpackhi_epi16(xmm1, tmp1);
-	if(bDstIsAligned)
-	{
-		_mm_store_si128((__m128i*)(((char*)pDst) + 1 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_store_si128((__m128i*)(((char*)pDst) + 1 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-	else
-	{
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 1 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 1 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-		
-	tmpXmmLow = _mm_unpacklo_epi16(xmm2, tmp2);
-	tmpXmmHigh = _mm_unpackhi_epi16(xmm2, tmp2);
-	if(bDstIsAligned)
-	{
-		_mm_store_si128((__m128i*)(((char*)pDst) + 2 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_store_si128((__m128i*)(((char*)pDst) + 2 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-	else
-	{
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 2 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 2 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-		
-	tmpXmmLow = _mm_unpacklo_epi16(xmm3, tmp3);
-	tmpXmmHigh = _mm_unpackhi_epi16(xmm3, tmp3);	
-	if(bDstIsAligned)
-	{
-		_mm_store_si128((__m128i*)(((char*)pDst) + 3 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_store_si128((__m128i*)(((char*)pDst) + 3 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-	else
-	{
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 3 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 3 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-		
-	tmpXmmLow = _mm_unpacklo_epi16(xmm4, tmp4);
-	tmpXmmHigh = _mm_unpackhi_epi16(xmm4, tmp4);
-	if(bDstIsAligned)
-	{
-		_mm_store_si128((__m128i*)(((char*)pDst) + 4 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_store_si128((__m128i*)(((char*)pDst) + 4 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-	else
-	{
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 4 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 4 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-		
-	tmpXmmLow = _mm_unpacklo_epi16(xmm5, tmp5);
-	tmpXmmHigh = _mm_unpackhi_epi16(xmm5, tmp5);
-	if(bDstIsAligned)
-	{
-		_mm_store_si128((__m128i*)(((char*)pDst) + 5 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_store_si128((__m128i*)(((char*)pDst) + 5 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-	else
-	{
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 5 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 5 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-		
-	tmpXmmLow = _mm_unpacklo_epi16(xmm6, tmp6);
-	tmpXmmHigh = _mm_unpackhi_epi16(xmm6, tmp6);
-	if(bDstIsAligned)
-	{			
-		_mm_store_si128((__m128i*)(((char*)pDst) + 6 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_store_si128((__m128i*)(((char*)pDst) + 6 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-	else
-	{
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 6 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 6 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-		
-	tmpXmmLow = _mm_unpacklo_epi16(xmm7, tmp7);
-	tmpXmmHigh = _mm_unpackhi_epi16(xmm7, tmp7);
-	if(bDstIsAligned)
-	{			
-		_mm_store_si128((__m128i*)(((char*)pDst) + 7 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_store_si128((__m128i*)(((char*)pDst) + 7 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-	else
-	{
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 7 * OUTPUT_BYTE_STRIDE), tmpXmmLow);
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 7 * OUTPUT_BYTE_STRIDE + NUM_COLS * sizeof(Fw16s)), tmpXmmHigh);
-	}
-}
-/*
- * Transpose 8x8 U and V blocks of Fw16s and store to common UV block of Fw8u using saturation.
- *
- * @param dst pointer to the location of memory where the transposed block will be written
- * @param srcU pointer to the location of memory where the U block to be transposed is.
- * @param srcV pointer to the location of memory where the V block to be transposed is.
- * @param dstStep distance in bytes of two rows in the destination buffer
- *
- * Use same algorithm as in transposeBlockOptimized_16s_C1R() for transposing blocks
- * Saturate to 8-bits and write blocks to common destination block taking dstStep into account
- */
-
-static void transposeBlockOptimized_16s8u_P2C2R(Fw8u* pDst, Pointer8x8Block16s srcU, Pointer8x8Block16s srcV, Fw32s dstStep)
-{
-	Pointer8x8Block16s pSrc;
-	__m128i xmm0, xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7;
-	__m128i xmm8, xmm9;
-
-	pSrc = srcV;
-#include "TransposeBlockOptimizedCode.hpp"
-	//save the transposed block of the V components to tmp0-7
-	__m128i tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
-	tmp0 = _mm_load_si128(&xmm0);
-	tmp1 = _mm_load_si128(&xmm1);
-	tmp2 = _mm_load_si128(&xmm2);
-	tmp3 = _mm_load_si128(&xmm3);
-	tmp4 = _mm_load_si128(&xmm4);
-	tmp5 = _mm_load_si128(&xmm5);
-	tmp6 = _mm_load_si128(&xmm6);
-	tmp7 = _mm_load_si128(&xmm7);
-
-	//save the transposed block of the U components to xmm0-7
-	pSrc = srcU;
-#include "TransposeBlockOptimizedCode.hpp"
-
-	//saturate to 8 bits and store to memory
-	const unsigned int OUTPUT_BYTE_STRIDE = dstStep;
-	const bool bDstIsAligned = FW_REF::IsAligned(pDst, dstStep);
-	
-	__m128i tmpSat8Low, tmpSat8High;
-	__m128i tmpStoreLow, tmpStoreHigh;
-
-	tmpSat8Low = _mm_packus_epi16(xmm0, xmm1);
-	tmpSat8High = _mm_packus_epi16(tmp0, tmp1);
-	tmpStoreLow = _mm_unpacklo_epi8(tmpSat8Low, tmpSat8High);
-	tmpStoreHigh = _mm_unpackhi_epi8(tmpSat8Low, tmpSat8High);
-	if(bDstIsAligned)
-	{
-		_mm_store_si128((__m128i*)(((char*)pDst) + 0 * OUTPUT_BYTE_STRIDE), tmpStoreLow);
-		_mm_store_si128((__m128i*)(((char*)pDst) + 1 * OUTPUT_BYTE_STRIDE), tmpStoreHigh);
-	}
-	else
-	{
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 0 * OUTPUT_BYTE_STRIDE), tmpStoreLow);
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 1 * OUTPUT_BYTE_STRIDE), tmpStoreHigh);
-	}
-
-	tmpSat8Low = _mm_packus_epi16(xmm2, xmm3);
-	tmpSat8High = _mm_packus_epi16(tmp2, tmp3);
-	tmpStoreLow = _mm_unpacklo_epi8(tmpSat8Low, tmpSat8High);
-	tmpStoreHigh = _mm_unpackhi_epi8(tmpSat8Low, tmpSat8High);
-	if(bDstIsAligned)
-	{
-		_mm_store_si128((__m128i*)(((char*)pDst) + 2 * OUTPUT_BYTE_STRIDE), tmpStoreLow);
-		_mm_store_si128((__m128i*)(((char*)pDst) + 3 * OUTPUT_BYTE_STRIDE), tmpStoreHigh);
-	}
-	else
-	{
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 2 * OUTPUT_BYTE_STRIDE), tmpStoreLow);
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 3 * OUTPUT_BYTE_STRIDE), tmpStoreHigh);
-	}
-
-	tmpSat8Low = _mm_packus_epi16(xmm4, xmm5);
-	tmpSat8High = _mm_packus_epi16(tmp4, tmp5);
-	tmpStoreLow = _mm_unpacklo_epi8(tmpSat8Low, tmpSat8High);
-	tmpStoreHigh = _mm_unpackhi_epi8(tmpSat8Low, tmpSat8High);
-	if(bDstIsAligned)
-	{
-		_mm_store_si128((__m128i*)(((char*)pDst) + 4 * OUTPUT_BYTE_STRIDE), tmpStoreLow);
-		_mm_store_si128((__m128i*)(((char*)pDst) + 5 * OUTPUT_BYTE_STRIDE), tmpStoreHigh);
-	}
-	else
-	{
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 4 * OUTPUT_BYTE_STRIDE), tmpStoreLow);
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 5 * OUTPUT_BYTE_STRIDE), tmpStoreHigh);
-	}
-
-	tmpSat8Low = _mm_packus_epi16(xmm6, xmm7);
-	tmpSat8High = _mm_packus_epi16(tmp6, tmp7);
-	tmpStoreLow = _mm_unpacklo_epi8(tmpSat8Low, tmpSat8High);
-	tmpStoreHigh = _mm_unpackhi_epi8(tmpSat8Low, tmpSat8High);
-	if(bDstIsAligned)
-	{
-		_mm_store_si128((__m128i*)(((char*)pDst) + 6 * OUTPUT_BYTE_STRIDE), tmpStoreLow);
-		_mm_store_si128((__m128i*)(((char*)pDst) + 7 * OUTPUT_BYTE_STRIDE), tmpStoreHigh);
-	}
-	else
-	{
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 6 * OUTPUT_BYTE_STRIDE), tmpStoreLow);
-		_mm_storeu_si128((__m128i*)(((char*)pDst) + 7 * OUTPUT_BYTE_STRIDE), tmpStoreHigh);
-	}
-}
-
 /**
  * Performs inverse DCT on pre-transposed block.
  *
@@ -863,22 +466,42 @@ static void transposeBlockOptimized_16s8u_P2C2R(Fw8u* pDst, Pointer8x8Block16s s
 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s_C1R)(const Fw16s* pSrc, Fw16s* pDst, Fw32s dstStep, Fw32s count)
 {
 	if(FW_REF::PtrNotOK(pSrc, pDst))return fwStsNullPtrErr;
+
+    SYS_FORCEALIGN_16 Fw16s eightxEightDst[64];
+    Fw16s* pEightxEightDst = eightxEightDst;
+    bool isAligned;
+    __m128i reg;
+
 	switch(Dispatch::Type<DT_SSE2>())
 	{
 	case DT_SSE3:
 	case DT_SSE2:    
-		My_idct_SSE2(pSrc, &tempIdctOutputSSE2[0][0], count);
-		transposeBlockOptimized_16s_C1R(pDst, (Pointer8x8Block16s)&tempIdctOutputSSE2, dstStep);
+		My_idct_SSE2(pSrc, eightxEightDst, count);
+
+        for(int i=0;i<8;i++)
+            {
+             reg = _mm_load_si128((__m128i*)pEightxEightDst);
+             isAligned = FW_REF::IsAligned(pDst,16);
+             if(isAligned)
+                 _mm_store_si128((__m128i*)pDst, reg);
+             else
+                 _mm_storeu_si128((__m128i*)pDst, reg);
+            pDst = pDst + dstStep;
+            pEightxEightDst = pEightxEightDst + 8;
+            }
+
 		break;
-	case DT_REFR:
-	default:             
-		float c[8][8];
-	    init_idct(c);
-		idct(c, pSrc, &tempIdctOutputSSE2[0][0]);
-		transposeBlock(pDst, (Pointer8x8Block16s)&tempIdctOutputSSE2, dstStep);
-		break;
-	}
-	
+
+    default:             
+        Idct(c, pSrc, eightxEightDst);
+        for(int i=0;i<8;i++)
+            {
+            for(int j=0;j<8;j++)
+                pDst[j] = pEightxEightDst[j];
+            pDst = pDst + dstStep;
+            pEightxEightDst = pEightxEightDst + 8;
+            }
+    }	
 	return fwStsNoErr;
 }
 
@@ -902,21 +525,40 @@ FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s_C1R)(cons
 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s8u_C1R)(const Fw16s* pSrc, Fw8u* pDst, Fw32s dstStep, Fw32s count)
 {
 	if(FW_REF::PtrNotOK(pSrc, pDst))return fwStsNullPtrErr;
+
+    SYS_FORCEALIGN_16 Fw16s eightxEightDst[64];
+    Fw16s* pEightxEightDst = eightxEightDst;
+    XMM128 reg1, reg2;
+
 	switch(Dispatch::Type<DT_SSE2>())
 	{
 	case DT_SSE3:
 	case DT_SSE2:     
-		My_idct_SSE2(pSrc, &tempIdctOutputSSE2[0][0], count);
-		transposeBlockOptimized_16s8u_C1R(pDst, (Pointer8x8Block16s)&tempIdctOutputSSE2, dstStep);
+		My_idct_SSE2(pSrc, eightxEightDst, count);
+        for(int i=0;i<4;i++)
+            {
+             reg1.i = _mm_load_si128((__m128i*)pEightxEightDst);
+             pEightxEightDst = pEightxEightDst + 8;
+             reg2.i = _mm_load_si128((__m128i*)pEightxEightDst);
+             pEightxEightDst = pEightxEightDst + 8;
+             reg1.i = _mm_packs_epi16(reg1.i, reg2.i);
+             *((Fw64s*)pDst) = reg1.s64[0];
+             pDst = pDst + dstStep;
+             *((Fw64s*)pDst) = reg1.s64[1];
+             pDst = pDst + dstStep;
+            }
 		break;
-	case DT_REFR:
-	default:    
-		float c[8][8];
-	    init_idct(c);
-		idct(c, pSrc, &tempIdctOutputSSE2[0][0]);
-		transposeBlock(pDst, (Pointer8x8Block16s)&tempIdctOutputSSE2, dstStep);
-		break;
-	}
+
+    default:    
+        Idct(c, pSrc, eightxEightDst);
+        for(int i=0;i<8;i++)
+            {
+            for(int j=0;j<8;j++)
+                pDst[j] = CBL_LIBRARY::Limits<Fw8u>::Sat(pEightxEightDst[j]);
+            pDst = pDst + dstStep;
+            pEightxEightDst = pEightxEightDst + 8;
+            }
+    }
 
 	return fwStsNoErr;
 }
@@ -946,28 +588,64 @@ FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s8u_C1R)(co
 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s_P2C2R)(const Fw16s* pSrcU, const Fw16s* pSrcV, Fw16s* pDstUV, Fw32s dstStep, Fw32s countU, Fw32s countV)
 {
 	if(FW_REF::PtrNotOK(pSrcU, pSrcV, pDstUV))return fwStsNullPtrErr;
+
+    SYS_FORCEALIGN_16 Fw16s eightxEightDstU[64];
+    SYS_FORCEALIGN_16 Fw16s eightxEightDstV[64];
+    Fw16s* pEightxEightDstU = eightxEightDstU;
+    Fw16s* pEightxEightDstV = eightxEightDstV;
+    __m128i reg1, reg2, reg3;
+    bool isAligned;
+
 	switch(Dispatch::Type<DT_SSE2>())
 	{
 	case DT_SSE3:
 	case DT_SSE2:     
 		//perform the AAN IDCT twice, once for the U and once for the V components
-		My_idct_SSE2(pSrcU, &tempIdctOutputSSE2[0][0], countU);//U
-		My_idct_SSE2(pSrcV, &tempUVIdctOutputSSE2[0][0], countV);//V
-		transposeBlockOptimized_16s_P2C2R(pDstUV, (Pointer8x8Block16s)&tempIdctOutputSSE2, 
-			(Pointer8x8Block16s)&tempUVIdctOutputSSE2, dstStep);
-		break;
-	case DT_REFR:
-	default:                
-		float c[8][8];
-	    init_idct(c);
-		idct(c, pSrcU, &tempIdctOutputSSE2[0][0]);
-		idct(c, pSrcV, &tempUVIdctOutputSSE2[0][0]);
-		transposeBlock(pDstUV, (Pointer8x8Block16s)&tempIdctOutputSSE2, 
-			(Pointer8x8Block16s)&tempUVIdctOutputSSE2, dstStep);
+		My_idct_SSE2(pSrcU, eightxEightDstU, countU);//U
+		My_idct_SSE2(pSrcV, eightxEightDstV, countV);//V
 
+        for(int i=0;i<8;i++)
+            {
+             reg1 = _mm_load_si128((__m128i*)pEightxEightDstU);
+             reg2 = _mm_load_si128((__m128i*)pEightxEightDstV);
+             reg3 = _mm_unpacklo_epi16(reg1, reg2);
+             reg1 = _mm_unpackhi_epi16(reg1, reg2);
+
+             isAligned = FW_REF::IsAligned(pDstUV,16);
+
+             if(isAligned)
+                 {
+                 _mm_store_si128((__m128i*)pDstUV, reg3);
+                 _mm_store_si128((((__m128i*)pDstUV) + 1), reg1);
+                 }
+             else
+                 {
+                 _mm_storeu_si128((__m128i*)pDstUV, reg3);
+                 _mm_storeu_si128((((__m128i*)pDstUV) + 1), reg1);
+                 }
+
+            pDstUV = pDstUV + dstStep;
+            pEightxEightDstU = pEightxEightDstU + 8;
+            pEightxEightDstV = pEightxEightDstV + 8;
+            }
 		break;
+
+    default:                
+		Idct(c, pSrcU, eightxEightDstU);
+		Idct(c, pSrcV, eightxEightDstV);
+        for(int i=0;i<8;i++)
+            {
+            for(int j=0,k=0;j<8;j++,k+=2)
+                {
+                pDstUV[k]   = pEightxEightDstU[j];
+                pDstUV[k+1] = pEightxEightDstV[j];
+                }
+
+            pDstUV = pDstUV + dstStep;
+            pEightxEightDstU = pEightxEightDstU + 8;
+            pEightxEightDstV = pEightxEightDstV + 8;
+            }
 	}
-
 	return fwStsNoErr;
 }
 
@@ -994,25 +672,57 @@ FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s_P2C2R)(co
 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s8u_P2C2R)(const Fw16s* pSrcU, const Fw16s* pSrcV, Fw8u* pDstUV, Fw32s dstStep, Fw32s countU, Fw32s countV)
 {
 	if(FW_REF::PtrNotOK(pSrcU, pSrcV, pDstUV))return fwStsNullPtrErr;
+
+    SYS_FORCEALIGN_16 Fw16s eightxEightDstU[64];
+    SYS_FORCEALIGN_16 Fw16s eightxEightDstV[64];
+    Fw16s* pEightxEightDstU = eightxEightDstU;
+    Fw16s* pEightxEightDstV = eightxEightDstV;
+    __m128i reg1, reg2, reg3;
+    bool isAligned;
+
 	switch(Dispatch::Type<DT_SSE2>())
 	{
 	case DT_SSE3:
 	case DT_SSE2:     
 		//perform the AAN IDCT twice, once for the U and once for the V components
-		My_idct_SSE2(pSrcU, &tempIdctOutputSSE2[0][0], countU);//U
-		My_idct_SSE2(pSrcV, &tempUVIdctOutputSSE2[0][0], countV);//V
-		transposeBlockOptimized_16s8u_P2C2R(pDstUV, (Pointer8x8Block16s)&tempIdctOutputSSE2,
-			(Pointer8x8Block16s)&tempUVIdctOutputSSE2, dstStep);
+		My_idct_SSE2(pSrcU, eightxEightDstU, countU);//U
+		My_idct_SSE2(pSrcV, eightxEightDstV, countV);//V
+        for(int i=0;i<8;i++)
+            {
+             reg1 = _mm_load_si128((__m128i*)pEightxEightDstU);
+             reg2 = _mm_load_si128((__m128i*)pEightxEightDstV);
+             reg3 = _mm_unpacklo_epi16(reg1, reg2);
+             reg1 = _mm_unpackhi_epi16(reg1, reg2);
+             reg3 = _mm_packs_epi16(reg3, reg1);
+
+             isAligned = FW_REF::IsAligned(pDstUV,16);
+
+             if(isAligned)
+                 _mm_store_si128((__m128i*)pDstUV, reg3);
+             else
+                 _mm_storeu_si128((__m128i*)pDstUV, reg3);
+
+             pDstUV = pDstUV + dstStep;
+             pEightxEightDstU = pEightxEightDstU + 8;
+             pEightxEightDstV = pEightxEightDstV + 8;
+            }
 		break;
-	case DT_REFR:
+
 	default:          
-		float c[8][8];
-	    init_idct(c);
-		idct(c, pSrcU, &tempIdctOutputSSE2[0][0]);
-		idct(c, pSrcV, &tempUVIdctOutputSSE2[0][0]);
-		transposeBlock(pDstUV, (Pointer8x8Block16s)&tempIdctOutputSSE2,
-			(Pointer8x8Block16s)&tempUVIdctOutputSSE2, dstStep);
-		break;
+		Idct(c, pSrcU, eightxEightDstU);
+		Idct(c, pSrcV, eightxEightDstV);
+        for(int i=0;i<8;i++)
+            {
+            for(int j=0,k=0;j<8;j++,k+=2)
+                {
+                pDstUV[k]   = CBL_LIBRARY::Limits<Fw8u>::Sat(pEightxEightDstU[j]);
+                pDstUV[k+1] = CBL_LIBRARY::Limits<Fw8u>::Sat(pEightxEightDstV[j]);
+                }
+
+            pDstUV = pDstUV + dstStep;
+            pEightxEightDstU = pEightxEightDstU + 8;
+            pEightxEightDstV = pEightxEightDstV + 8;
+            }
 	}
 
 	return fwStsNoErr;
