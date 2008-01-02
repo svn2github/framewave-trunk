@@ -714,6 +714,24 @@ namespace ADD_SSE2
 			dst = srcTemp1;
 		}
 
+        //scale value = 1
+		ISV AddC16s(const XMM128& src, XMM128& dst, const XMM128& value0, const XMM128& value1)
+
+		{
+			XMM128 srcTemp1, srcTemp2;
+			srcTemp1 = src;
+			CBL_SSE2::Unpack16STo32S(srcTemp1.i,srcTemp2.i);
+
+			srcTemp1.i = _mm_add_epi32(srcTemp1.i, value0.i);
+			srcTemp2.i = _mm_add_epi32(srcTemp2.i, value1.i);
+            srcTemp1.i = _mm_srai_epi32(srcTemp1.i,1);
+            srcTemp2.i = _mm_srai_epi32(srcTemp2.i,1);
+
+            srcTemp1.i = _mm_packs_epi32(srcTemp1.i, srcTemp2.i);
+
+			dst = srcTemp1;
+		}
+
 		template <int scaleType>
 		ISV AddC8u(const XMM128& src, XMM128& dst, const XMM128& value0, const XMM128& value1, const XMM128 scaleMasks[])
 		{
@@ -759,6 +777,9 @@ namespace ADD_SSE2
 						Common::InitScale::To32f(scale, scaleReg);
 						Common::InitConst::C1::To32s::From16s(valC, val);
 						break;
+                    case 2:
+                        Common::InitConst::C1::To32s::From16s(valC, val);
+                        break;
 					default:;
 						Common::InitConst::C1::To16s::From16s(valC, val);
 					}
@@ -832,6 +853,9 @@ namespace ADD_SSE2
 						Common::InitScale::To32f(scale, scaleReg);
 						Common::InitConst::C3::To32s::From16s(valC, val0, val1, val2);
 						break;
+                    case 2:
+                        Common::InitConst::C3::To32s::From16s(valC, val0, val1, val2);
+                        break;
 					default:;
 						Common::InitConst::C3::To16s::From16s(valC, val0, val1, val2);
 					}
@@ -895,6 +919,9 @@ namespace ADD_SSE2
 						Common::InitScale::To32f(scale, scaleReg);
 						Common::InitConst::C4::To32s::From16s(valC, val);
 						break;
+                    case 2:
+                        Common::InitConst::C4::To32s::From16s(valC, val);
+                        break;
 					default:;
 						Common::InitConst::C4::To16s::From16s(valC, val);
 					}
@@ -933,6 +960,9 @@ namespace ADD_SSE2
 						Common::InitScale::To32f(scale, scaleReg);
 						Common::InitConst::AC4::To32s::From16s(valC, val);
 						break;
+                    case 2:
+                        Common::InitConst::AC4::To32s::From16s(valC, val);
+                        break;
 					default:;
 						Common::InitConst::AC4::To16s::From16s(valC, val);
 					}
@@ -1008,6 +1038,9 @@ namespace ADD_SSE2
 					case -1:
 						ADD_SSE2::ADDC::AddC16s(src, dst, val0, val1, scaleReg);
 						break;
+                    case 2: // scale value = 1
+                        ADD_SSE2::ADDC::AddC16s(src, dst, val0, val1);
+                        break;
 					default:
 						dst.i = _mm_adds_epi16(src.i, val0.i);
 					}
