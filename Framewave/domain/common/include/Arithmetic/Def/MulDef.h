@@ -1270,11 +1270,7 @@ namespace DEF_MUL
 				}
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
-					XMM128 hi_1;
-					CBL_SSE2::Unpack8UTo16U( r.src1[0].i, hi_1.i );		// Convert to 16 bit, 2 regs
-					MUL_SSE2::MULXSCALE::MulScale_Mul_16s(r.src1[0], val, r.dst[0]);
-					MUL_SSE2::MULXSCALE::MulScale_Mul_16s(hi_1, val, hi_1);
-					FW_SSE2::Pack16Uto8(r.dst[0], hi_1 );
+					MUL_SSE2::MULXSCALE::MulScale_Div_16u(r.src1[0],val, r.dst[0]);
 				}      
 			};
 
@@ -1328,22 +1324,9 @@ namespace DEF_MUL
 				}
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
-					XMM128 hi_1;
-
-					CBL_SSE2::Unpack8UTo16U( r.src1[0].i, hi_1.i );		// Convert to 16 bit, 2 regs
-					MUL_SSE2::MULXSCALE::MulScale_Mul_16s_C3(r.src1[0],	val0, val1, r.dst[0]);
-					MUL_SSE2::MULXSCALE::MulScale_Mul_16s_C3(hi_1,			val2, val0, hi_1);
-					FW_SSE2::Pack16Uto8( r.dst[0], hi_1 );
-
-					CBL_SSE2::Unpack8UTo16U( r.src1[1].i, hi_1.i );		// Convert to 16 bit, 2 regs
-					MUL_SSE2::MULXSCALE::MulScale_Mul_16s_C3(r.src1[1],	val1, val2, r.dst[1]);
-					MUL_SSE2::MULXSCALE::MulScale_Mul_16s_C3(hi_1,			val0, val1, hi_1);
-					FW_SSE2::Pack16Uto8( r.dst[1], hi_1 );
-
-					CBL_SSE2::Unpack8UTo16U( r.src1[2].i, hi_1.i );		// Convert to 16 bit, 2 regs
-					MUL_SSE2::MULXSCALE::MulScale_Mul_16s_C3(r.src1[2],	val2, val0, r.dst[2]);
-					MUL_SSE2::MULXSCALE::MulScale_Mul_16s_C3(hi_1,			val1, val2, hi_1);
-					FW_SSE2::Pack16Uto8( r.dst[2], hi_1 );
+					MUL_SSE2::MULXSCALE::MulScale_Div_16u(r.src1[0],val0, r.dst[0]);
+                    MUL_SSE2::MULXSCALE::MulScale_Div_16u(r.src1[1],val1, r.dst[1]);
+                    MUL_SSE2::MULXSCALE::MulScale_Div_16u(r.src1[2],val2, r.dst[2]);
 				}      
 			};
 
@@ -1415,14 +1398,10 @@ namespace DEF_MUL
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					XMM128 temp;
-					XMM128 hi_1, src1 = r.src1[0];
-
-					CBL_SSE2::Unpack8UTo16U( src1.i, hi_1.i );		// Convert to 16 bit, 2 regs
-					MUL_SSE2::MULXSCALE::MulScale_Mul_16s(src1, val, temp);
-					MUL_SSE2::MULXSCALE::MulScale_Mul_16s(hi_1, val, hi_1);
-					FW_SSE2::Pack16Uto8( temp, hi_1 );
-
+					MUL_SSE2::MULXSCALE::MulScale_Div_16u(r.src1[0],val, temp);
 					Common::AC4::Apply::MaskI(r.dst[0], temp, mask);
+
+
 				}
 			};
 			struct MulCScale_16u : public MulCScale_AC4<Fw16u, Fw16u>
@@ -1481,11 +1460,7 @@ namespace DEF_MUL
 				}
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
-					XMM128 hi_1;
-					CBL_SSE2::Unpack8UTo16U( r.src1[0].i, hi_1.i );		// Convert to 16 bit, 2 regs
-					MUL_SSE2::MULXSCALE::MulScale_Mul_16s(r.src1[0], val, r.dst[0]);
-					MUL_SSE2::MULXSCALE::MulScale_Mul_16s(hi_1, val, hi_1);
-					FW_SSE2::Pack16Uto8(r.dst[0], hi_1 );
+					MUL_SSE2::MULXSCALE::MulScale_Div_16u(r.src1[0], val, r.dst[0]);
 				}      
 			};
 			struct MulCScale_16u : public MulCScale_C4<Fw16u, Fw16u>
@@ -1499,11 +1474,7 @@ namespace DEF_MUL
 				}
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
-					XMM128 hi_1;
-					CBL_SSE2::Unpack8UTo16U( r.src1[0].i, hi_1.i );		// Convert to 16 bit, 2 regs
-					MUL_SSE2::MULXSCALE::MulScale_Mul_16s(r.src1[0], val, r.dst[0]);
-					MUL_SSE2::MULXSCALE::MulScale_Mul_16s(hi_1, val, hi_1);
-					FW_SSE2::Pack16Uto8(r.dst[0], hi_1 );
+                    MUL_SSE2::MULXSCALE::MulScale_Mul_16u(r.src1[0], val, r.dst[0]);
 				}      
 			};
 		}
