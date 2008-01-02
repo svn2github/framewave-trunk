@@ -189,7 +189,12 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiAddC_16s_C1IRSfs )(  A16S v,    A16S *sd, int
 		{																							
 			DEF_ADD::ADDC::C1::AddC_16s<-1> data(scale, v);
 			return OPT_LEVEL::fe<DEF_ADD::ADDC::C1::AddC_16s<-1> >(data, sd, sdStep, sd, sdStep, roi);
-		}																							
+		}		
+        else if(scale == 1)
+        {
+			DEF_ADD::ADDC::C1::AddC_16s<2> data(scale, v);
+			return OPT_LEVEL::fe<DEF_ADD::ADDC::C1::AddC_16s<2> >(data, sd, sdStep, sd, sdStep, roi);
+        }
 		else																						
 		{																							
 			DEF_ADD::ADDC::C1::AddC_16s<1> data(scale, v);
