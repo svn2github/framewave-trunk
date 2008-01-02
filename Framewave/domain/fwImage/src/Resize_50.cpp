@@ -538,6 +538,29 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiResizeYUV422_8u_C2R)(const Fw8u *pSrc, FwiSiz
 			}
 		}		
 
+        for (y=0;y<resizeHeight;y++) {	
+			tempS=pDst  + y*dstStep ;
+			tempY=pDstY + resizeWidth*y;
+			tempU=pDstU + ((resizeWidth+1)/2)*y;
+			tempV=pDstV + (resizeWidth/2)*y;
+
+			for (x=0; x<resizeWidth * 2; x++){
+				switch (x%4) 
+				{
+				case 1://U
+					*tempU++ = *tempS++;
+					break;
+				case 3://V
+					*tempV++ = *tempS++;
+					break;
+				case 0://Y
+				case 2:
+				default:
+					*tempY++ = *tempS++;
+				}
+			}
+		}		
+
 		//handle Y
 		FwStatus status;
 		FwiSize tempSize;
