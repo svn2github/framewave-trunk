@@ -1295,22 +1295,22 @@ namespace MUL_SSE2
 			XMM128 tempsrc1_0, tempsrc1_1;
 
 			tempsrc1_0 = src1;
-			CBL_SSE2::Unpack16UTo32U(tempsrc1_0.i,tempsrc1_1.i);
 
-			tempsrc1_0.f = _mm_cvtepi32_ps (tempsrc1_0.i);
-			tempsrc1_0.f = _mm_mul_ps( tempsrc1_0.f, src2.f );
-			tempsrc1_0.i = _mm_cvttps_epi32(tempsrc1_0.f);
+            tempsrc1_0.i = _mm_mullo_epi16(src1.i, src2.i);
+            src1.i = _mm_mulhi_epu16(src1.i, src2.i);
 
-			tempsrc1_1.f = _mm_cvtepi32_ps (tempsrc1_1.i);
-			tempsrc1_1.f = _mm_mul_ps( tempsrc1_1.f, src2.f );
-			tempsrc1_1.i = _mm_cvttps_epi32(tempsrc1_1.f);
+            tempsrc1_1.i = _mm_unpackhi_epi16(tempsrc1_0.i, src1.i);
+            tempsrc1_0.i = _mm_unpacklo_epi16(tempsrc1_0.i, src1.i);
+
+            tempsrc1_1.i = _mm_srli_epi32(tempsrc1_1.i, 16);
+            tempsrc1_0.i = _mm_srli_epi32(tempsrc1_0.i, 16);
+
 
 			tempsrc1_1.i = _mm_slli_epi32(tempsrc1_1.i, 16);
 			tempsrc1_0.i = _mm_or_si128(tempsrc1_0.i, tempsrc1_1.i);
 			
 			tempsrc1_0.i = _mm_shufflelo_epi16(tempsrc1_0.i, _MM_SHUFFLE(3,1,2,0));
 			tempsrc1_0.i = _mm_shufflehi_epi16(tempsrc1_0.i, _MM_SHUFFLE(3,1,2,0));
-			//dst.i = _mm_shuffle_epi32(tempsrc1_0.i, _MM_SHUFFLE(3,1,2,0));
 			dst.i	     = CBL_OPTLEVEL::Shuffle_3120_32s(tempsrc1_0.i);
 
 		}
@@ -1364,10 +1364,7 @@ namespace MUL_SSE2
 			{
 				ISV MulCScale_8u(Fw8u valC, XMM128 &val)
 				{
-					A8U value = valC;
-					Fw8u max = FW_REF::Limits< Fw8u >::MaxValue();
-					Fw32f int_val = (Fw32f)value/(Fw32f)max;
-					val.f = _mm_set1_ps(int_val);
+                    FW_SSE2::Load1(val, valC);
 				}
 
 				ISV MulCScale_16u(Fw16u valC, XMM128 &val)
@@ -1379,16 +1376,9 @@ namespace MUL_SSE2
 			{
 				ISV MulCScale_8u(Fw8u valC[], XMM128 &val0, XMM128 &val1, XMM128 &val2)
 				{
-					A8U *v = valC;
-					Fw8u max = FW_REF::Limits< Fw8u >::MaxValue();
-					Fw32f vNew[3];
-					vNew[0] = (Fw32f)v[0]/(Fw32f)max;
-					vNew[1] = (Fw32f)v[1]/(Fw32f)max;
-					vNew[2] = (Fw32f)v[2]/(Fw32f)max;
-
-					FW_SSE2::Load2(val0, vNew, OPT_LEVEL::C3, 0);//value for reg1										// 1 3 2 1
-					val1.f = _mm_shuffle_ps(val0.f, val0.f, _MM_SHUFFLE(1, 0, 2, 1));	// 2 1 3 2
-					val2.f = _mm_shuffle_ps(val0.f, val0.f, _MM_SHUFFLE(2, 1, 0, 2)); // 3 2 1 3
+					FW_SSE2::Load2(val0, valC, OPT_LEVEL::C3, 0);
+                    FW_SSE2::Load2(val1, valC, OPT_LEVEL::C3, 1);
+                    FW_SSE2::Load2(val2, valC, OPT_LEVEL::C3, 2);
 				}
 
 				ISV MulCScale_16u(Fw16u valC[], XMM128 &val0, XMM128 &val1, XMM128 &val2)
