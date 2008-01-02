@@ -720,10 +720,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\TransposeBlockOptimizedCode.hpp"
-				>
-			</File>
-			<File
 				RelativePath=".\include\Trigonometric.h"
 				>
 			</File>
