@@ -7,6 +7,7 @@ This software is subject to the Apache v2.0 License.
 #define __COLORMODELCONVERSION_H__
 
 #include "colorModelConvConst.h"
+#include "Constants.h"
 
 #define HLSRGBMac(a,h,m1,m2) if (h < 0) h += 360;                                       \
                              if (h < 60) { a = m1 + (m2 - m1)*h / 60; }                 \
@@ -14,6 +15,7 @@ This software is subject to the Apache v2.0 License.
                              else if (h < 240) { a = m1 + (m2 - m1) * (240 - h) / 60; } \
                              else { a = m1; }
 
+extern const CMCDat CMCConstants[CF_MAXConv];
 
 namespace OPT_LEVEL
 {
@@ -1518,11 +1520,11 @@ namespace OPT_LEVEL
         // MathPattern is a collection of order of operations for pixel conversion.
         enum MathPattern    
         {
-            PLU_PLU_PLU,    //  A + B + C
-            MIN_MIN_PLU,    // -A - B + C
-            PLU_MIN_MIN,    //  A - B - C
-            PLU_MIN_PLU,    //  A - B + C
-            MIN_PLU_PLU     // -A + B + C
+            MP_PLU_PLU_PLU,    //  A + B + C
+            MP_MIN_MIN_PLU,    // -A - B + C
+            MP_PLU_MIN_MIN,    //  A - B - C
+            MP_PLU_MIN_PLU,    //  A - B + C
+            MP_MIN_PLU_PLU     // -A + B + C
         };
         // PixelID is an enum to differentiate between different pixels (ie. R, G, or B)
         enum PixelID
@@ -1537,112 +1539,6 @@ namespace OPT_LEVEL
             PROC_NORMAL = 0,
             PROC_SHIFT13
         };
-        enum ConvFunc
-        {
-            RGBToYUV = 0,
-            YUVToRGB,
-            RGBToYCbCr,
-            YCbCrToRGB,
-            RGBToXYZ,
-            XYZToRGB,
-            RGBToLUV,
-            LUVToRGB,
-            BGRToLab,
-            LabToBGR,
-            RGBToYCC,
-            YCCToRGB,
-            RGBToHLS,
-            HLSToRGB,
-            BGRToHLS,
-            RGBToHSV,
-            HSVToRGB,
-            MAXConv
-        };
-
-
-    // ColorModelConv Constants struct
-    // CMCDat is a global structure of conversion constants that map the constants to the conversion function
-    struct CMCDat
-    {
-        // FnID - Value = MulConst[*][0] * (x - SubConst[0]) + 
-        //                MulConst[*][1] * (y - SubConst[1]) + 
-        //                MulConst[*][2] * (z - SubConst[2]) + 
-        //                AddConst[*];
-        Fw32u FnID;
-        A16U SubConst[3];
-        A16U MulConst[3][3];
-        A16U AddConst[3];
-    };
-
-    #define SHIFT_VAL 16                    // 2^4
-    #define SET_16U(           val       ) (A16U)val
-    #define SET_16U_SHIFT_15L( val       ) (A16U)(32768*val)
-    #define SET_16U_SHIFT_13L( val       ) (A16U)(8192*val)
-    #define SET_16U_MUL_VAL(   val, mult ) (A16U)(val*mult)
-
-    static const CMCDat CMCConstants[MAXConv] = 
-    {
-            {RGBToYUV,        {SET_16U( CONST_RGB2YUVsubR ), SET_16U( CONST_RGB2YUVsubG ), SET_16U( CONST_RGB2YUVsubB )},
-            {{ SET_16U_SHIFT_15L( CONST_RGB2YUV_YR ), SET_16U_SHIFT_15L( CONST_RGB2YUV_YG ), SET_16U_SHIFT_15L( CONST_RGB2YUV_YB )}, 
-            {  SET_16U_SHIFT_15L( CONST_RGB2YUV_UR ), SET_16U_SHIFT_15L( CONST_RGB2YUV_UG ), SET_16U_SHIFT_15L( CONST_RGB2YUV_UB )},
-            {  SET_16U_SHIFT_15L( CONST_RGB2YUV_VR ), SET_16U_SHIFT_15L( CONST_RGB2YUV_VG ), SET_16U_SHIFT_15L( CONST_RGB2YUV_VB )}},
-            {SET_16U_MUL_VAL( CONST_RGB2YUVaddY, SHIFT_VAL ), 
-             SET_16U_MUL_VAL( CONST_RGB2YUVaddU, SHIFT_VAL ), 
-             SET_16U_MUL_VAL( CONST_RGB2YUVaddV, SHIFT_VAL )}
-            },
-            {YUVToRGB,        {SET_16U( CONST_YUV2RGBsubY ), SET_16U( CONST_YUV2RGBsubU ), SET_16U( CONST_YUV2RGBsubV )},
-            {{ SET_16U_SHIFT_13L( CONST_YUV2RGB_RY ), SET_16U_SHIFT_13L( CONST_YUV2RGB_RU ), SET_16U_SHIFT_13L( CONST_YUV2RGB_RV )}, 
-            {  SET_16U_SHIFT_13L( CONST_YUV2RGB_GY ), SET_16U_SHIFT_13L( CONST_YUV2RGB_GU ), SET_16U_SHIFT_13L( CONST_YUV2RGB_GV )},
-            {  SET_16U_SHIFT_13L( CONST_YUV2RGB_BY ), SET_16U_SHIFT_13L( CONST_YUV2RGB_BU ), SET_16U_SHIFT_13L( CONST_YUV2RGB_BV )}},
-            {SET_16U_MUL_VAL( CONST_YUV2RGBaddR, SHIFT_VAL ), 
-             SET_16U_MUL_VAL( CONST_YUV2RGBaddG, SHIFT_VAL ), 
-             SET_16U_MUL_VAL( CONST_YUV2RGBaddB, SHIFT_VAL ) }
-            },
-            {RGBToYCbCr,    {SET_16U( CONST_RGB2YCbCrsubR ), SET_16U( CONST_RGB2YCbCrsubG ), SET_16U( CONST_RGB2YCbCrsubB )},
-            {{ SET_16U_SHIFT_15L( CONST_RGB2YCbCr_YR  ), SET_16U_SHIFT_15L( CONST_RGB2YCbCr_YG  ), SET_16U_SHIFT_15L( CONST_RGB2YCbCr_YB  )}, 
-            {  SET_16U_SHIFT_15L( CONST_RGB2YCbCr_CbR ), SET_16U_SHIFT_15L( CONST_RGB2YCbCr_CbG ), SET_16U_SHIFT_15L( CONST_RGB2YCbCr_CbB )},
-            {  SET_16U_SHIFT_15L( CONST_RGB2YCbCr_CrR ), SET_16U_SHIFT_15L( CONST_RGB2YCbCr_CrG ), SET_16U_SHIFT_15L( CONST_RGB2YCbCr_CrB )}},
-            {SET_16U_MUL_VAL( CONST_RGB2YCbCraddY, SHIFT_VAL ), 
-             SET_16U_MUL_VAL( CONST_RGB2YCbCraddCb, SHIFT_VAL ), 
-             SET_16U_MUL_VAL( CONST_RGB2YCbCraddCr, SHIFT_VAL )}
-            },
-            {YCbCrToRGB,    {SET_16U( CONST_YCbCr2RGBsubY ), SET_16U( CONST_YCbCr2RGBsubCb ), SET_16U( CONST_YCbCr2RGBsubCr )},
-            {{ SET_16U_SHIFT_13L( CONST_YCbCr2RGB_RY ), SET_16U_SHIFT_13L( CONST_YCbCr2RGB_RCb ), SET_16U_SHIFT_13L( CONST_YCbCr2RGB_RCr )}, 
-            {  SET_16U_SHIFT_13L( CONST_YCbCr2RGB_GY ), SET_16U_SHIFT_13L( CONST_YCbCr2RGB_GCb ), SET_16U_SHIFT_13L( CONST_YCbCr2RGB_GCr )},
-            {  SET_16U_SHIFT_13L( CONST_YCbCr2RGB_BY ), SET_16U_SHIFT_13L( CONST_YCbCr2RGB_BCb ), SET_16U_SHIFT_13L( CONST_YCbCr2RGB_BCr )}},
-            {SET_16U_MUL_VAL( CONST_YCbCr2RGBaddR, SHIFT_VAL ), 
-             SET_16U_MUL_VAL( CONST_YCbCr2RGBaddG, SHIFT_VAL ), 
-             SET_16U_MUL_VAL( CONST_YCbCr2RGBaddB, SHIFT_VAL )}
-            },
-            {RGBToXYZ,        {SET_16U( CONST_RGB2XYZsubR ), SET_16U( CONST_RGB2XYZsubG ), SET_16U( CONST_RGB2XYZsubB )},
-            {{ SET_16U_SHIFT_15L( CONST_RGB2XYZ_XR ), SET_16U_SHIFT_15L( CONST_RGB2XYZ_XG ), SET_16U_SHIFT_15L( CONST_RGB2XYZ_XB )}, 
-            {  SET_16U_SHIFT_15L( CONST_RGB2XYZ_YR ), SET_16U_SHIFT_15L( CONST_RGB2XYZ_YG ), SET_16U_SHIFT_15L( CONST_RGB2XYZ_YB )},
-            {  SET_16U_SHIFT_15L( CONST_RGB2XYZ_ZR ), SET_16U_SHIFT_15L( CONST_RGB2XYZ_ZG ), SET_16U_SHIFT_15L( CONST_RGB2XYZ_ZB )}},
-            {SET_16U_MUL_VAL(CONST_RGB2XYZaddX, SHIFT_VAL ), 
-             SET_16U_MUL_VAL(CONST_RGB2XYZaddY, SHIFT_VAL ), 
-             SET_16U_MUL_VAL(CONST_RGB2XYZaddZ, SHIFT_VAL ) }
-            },
-            {XYZToRGB,        {SET_16U( CONST_XYZ2RGBsubX ), SET_16U( CONST_XYZ2RGBsubY ), SET_16U( CONST_XYZ2RGBsubZ )},
-            {{ SET_16U_SHIFT_13L( CONST_XYZ2RGB_RX ), SET_16U_SHIFT_13L( CONST_XYZ2RGB_RY ), SET_16U_SHIFT_13L( CONST_XYZ2RGB_RZ )}, 
-            {  SET_16U_SHIFT_13L( CONST_XYZ2RGB_GX ), SET_16U_SHIFT_13L( CONST_XYZ2RGB_GY ), SET_16U_SHIFT_13L( CONST_XYZ2RGB_GZ )},
-            {  SET_16U_SHIFT_13L( CONST_XYZ2RGB_BX ), SET_16U_SHIFT_13L( CONST_XYZ2RGB_BY ), SET_16U_SHIFT_13L( CONST_XYZ2RGB_BZ )}},
-            {SET_16U_MUL_VAL( CONST_XYZ2RGBaddR, SHIFT_VAL ), 
-             SET_16U_MUL_VAL( CONST_XYZ2RGBaddG, SHIFT_VAL ), 
-             SET_16U_MUL_VAL( CONST_XYZ2RGBaddB, SHIFT_VAL )}
-            },
-            {RGBToLUV,      {0, 0, 0}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {0, 0, 0}},
-            {LUVToRGB,      {0, 0, 0}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {0, 0, 0}},
-            {BGRToLab,      {0, 0, 0}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {0, 0, 0}},
-            {LabToBGR,      {0, 0, 0}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {0, 0, 0}},
-            {RGBToYCC,      {0, 0, 0}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {0, 0, 0}},
-            {YCCToRGB,      {0, 0, 0}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {0, 0, 0}},
-            {RGBToHLS,      {0, 0, 0}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {0, 0, 0}},
-            {HLSToRGB,      {0, 0, 0}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {0, 0, 0}},
-            {BGRToHLS,      {0, 0, 0}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {0, 0, 0}},
-            {RGBToHSV,      {0, 0, 0}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {0, 0, 0}},
-            {HSVToRGB,      {0, 0, 0}, {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}, {0, 0, 0}},
-        };
-
 
         // Pixel Processing Functions - Dependent on MathPattern
         // - The Pixel Processing Details -
@@ -1692,7 +1588,7 @@ namespace OPT_LEVEL
         };
 
         template <ConvFunc fn, PixelID pid, ProcID prc>
-        struct Pixel <fn,pid,prc,PLU_PLU_PLU>
+        struct Pixel <fn,pid,prc,MP_PLU_PLU_PLU>
         {
             static SYS_INLINE __m128i Process( XMM128 &pX, XMM128 &pY, XMM128 &pZ )
             {
@@ -1737,7 +1633,7 @@ namespace OPT_LEVEL
         };
 
         template <ConvFunc fn, PixelID pid, ProcID prc>
-        struct Pixel <fn,pid,prc,MIN_MIN_PLU>
+        struct Pixel <fn,pid,prc,MP_MIN_MIN_PLU>
         {
             static SYS_INLINE __m128i Process( XMM128 &pX, XMM128 &pY, XMM128 &pZ )
             {
@@ -1784,7 +1680,7 @@ namespace OPT_LEVEL
         };
 
         template <ConvFunc fn, PixelID pid, ProcID prc>
-        struct Pixel <fn,pid,prc,PLU_MIN_MIN>
+        struct Pixel <fn,pid,prc,MP_PLU_MIN_MIN>
         {
             static SYS_INLINE __m128i Process( XMM128 &pX, XMM128 &pY, XMM128 &pZ )
             {
@@ -1830,7 +1726,7 @@ namespace OPT_LEVEL
         };
 
         template <ConvFunc fn, PixelID pid, ProcID prc>
-        struct Pixel <fn,pid,prc,PLU_MIN_PLU>
+        struct Pixel <fn,pid,prc,MP_PLU_MIN_PLU>
         {
             static SYS_INLINE __m128i Process( XMM128 &pX, XMM128 &pY, XMM128 &pZ )
             {
@@ -1876,7 +1772,7 @@ namespace OPT_LEVEL
         };
 
         template <ConvFunc fn, PixelID pid, ProcID prc>
-        struct Pixel <fn,pid,prc,MIN_PLU_PLU>
+        struct Pixel <fn,pid,prc,MP_MIN_PLU_PLU>
         {
             static SYS_INLINE __m128i Process( XMM128 &pX, XMM128 &pY, XMM128 &pZ )
             {

@@ -119,7 +119,7 @@ namespace OPT_LEVEL
         };
 
         template< CMC::ChCount chCount, class TS, CH cs, class TD, CH cd, PIX_FN2_REF, 
-                  CMC::MathPattern mp1, CMC::MathPattern mp2, CMC::MathPattern mp3, CMC::ConvFunc fn, CMC::ProcID prc >
+                  CMC::MathPattern mp1, CMC::MathPattern mp2, CMC::MathPattern mp3, ConvFunc fn, CMC::ProcID prc >
         struct ChannelToChannel : public ChannelToChannel_REF<chCount, TS, cs, TD, cd, pix_ref>
         {
 
@@ -152,7 +152,7 @@ namespace OPT_LEVEL
         };
 
         template< CMC::ChCount chCount, class TS, CH cs, class TD, CH cd, PIX_FN2_REF, 
-                  CMC::MathPattern mp1, CMC::MathPattern mp2, CMC::MathPattern mp3, CMC::ConvFunc fn, CMC::ProcID prc >
+                  CMC::MathPattern mp1, CMC::MathPattern mp2, CMC::MathPattern mp3, ConvFunc fn, CMC::ProcID prc >
         struct PlanarToChannel : public PlanarToChannel_REF<chCount, TS, cs, TD, cd, pix_ref>
         {
             PlanarToChannel() {}
@@ -182,7 +182,7 @@ namespace OPT_LEVEL
         };
 
         template< CMC::ChCount chCount, class TS, CH cs, class TD, CH cd, PIX_FN2_REF, 
-                  CMC::MathPattern mp1, CMC::MathPattern mp2, CMC::MathPattern mp3, CMC::ConvFunc fn, CMC::ProcID prc >
+                  CMC::MathPattern mp1, CMC::MathPattern mp2, CMC::MathPattern mp3, ConvFunc fn, CMC::ProcID prc >
         struct Channel3ToPlanar3 : public Channel3ToPlanar3_REF<chCount, TS, cs, TD, cd, pix_ref>
         {
             Channel3ToPlanar3() {}
@@ -213,7 +213,7 @@ namespace OPT_LEVEL
         };
 
         template< CMC::ChCount chCount, class TS, CH cs, class TD, CH cd, PIX_FN2_REF, 
-                  CMC::MathPattern mp1, CMC::MathPattern mp2, CMC::MathPattern mp3, CMC::ConvFunc fn, CMC::ProcID prc >
+                  CMC::MathPattern mp1, CMC::MathPattern mp2, CMC::MathPattern mp3, ConvFunc fn, CMC::ProcID prc >
         struct Planar3ToPlanar3 : public Planar3ToPlanar3_REF<chCount, TS, cs, TD, cd, pix_ref>
         {
             Planar3ToPlanar3() {}

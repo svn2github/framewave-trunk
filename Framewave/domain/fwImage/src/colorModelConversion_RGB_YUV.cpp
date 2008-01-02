@@ -24,8 +24,8 @@ FwStatus PREFIX_OPT( OPT_PREFIX, fwiRGBToYUV_8u_C3R )( const Fw8u *pSrc, int src
 { 
     typedef NoChromaSampling::ChannelToChannel< 
                                                 CMC::CH_C3, Fw8u, C3, Fw8u, C3, RGBToYUV, 
-                                                CMC::PLU_PLU_PLU, CMC::MIN_MIN_PLU, CMC::PLU_MIN_MIN, 
-                                                CMC::RGBToYUV, CMC::PROC_NORMAL                  
+                                                CMC::MP_PLU_PLU_PLU, CMC::MP_MIN_MIN_PLU, CMC::MP_PLU_MIN_MIN, 
+                                                CF_RGBToYUV, CMC::PROC_NORMAL                  
                                               > FeType;
     FeType data;
     return fe< FeType > (data, pSrc, srcStep, pDst, dstStep, roiSize);
@@ -36,8 +36,8 @@ FwStatus PREFIX_OPT( OPT_PREFIX, fwiRGBToYUV_8u_AC4R )( const Fw8u *pSrc, int sr
 { 
     typedef NoChromaSampling::ChannelToChannel< 
                                                 CMC::CH_AC4, Fw8u, AC4, Fw8u, AC4, RGBToYUV, 
-                                                CMC::PLU_PLU_PLU, CMC::MIN_MIN_PLU, CMC::PLU_MIN_MIN, 
-                                                CMC::RGBToYUV, CMC::PROC_NORMAL                  
+                                                CMC::MP_PLU_PLU_PLU, CMC::MP_MIN_MIN_PLU, CMC::MP_PLU_MIN_MIN, 
+                                                CF_RGBToYUV, CMC::PROC_NORMAL                  
                                               > FeType;
     FeType data;
     return fe< FeType > (data, pSrc, srcStep, pDst, dstStep, roiSize);
@@ -48,8 +48,8 @@ FwStatus PREFIX_OPT( OPT_PREFIX, fwiRGBToYUV_8u_P3R )( const Fw8u * const pSrc[3
 {
     typedef NoChromaSampling::Planar3ToPlanar3< 
                                                 CMC::CH_P3, Fw8u, C1, Fw8u, C1, RGBToYUV, 
-                                                CMC::PLU_PLU_PLU, CMC::MIN_MIN_PLU, CMC::PLU_MIN_MIN, 
-                                                CMC::RGBToYUV, CMC::PROC_NORMAL
+                                                CMC::MP_PLU_PLU_PLU, CMC::MP_MIN_MIN_PLU, CMC::MP_PLU_MIN_MIN, 
+                                                CF_RGBToYUV, CMC::PROC_NORMAL
                                               > FeType;
     FeType data;
     return fec3S3D< FeType >(data, pSrc[0], srcStep, pSrc[1], srcStep, pSrc[2], srcStep, 
@@ -61,8 +61,8 @@ FwStatus PREFIX_OPT( OPT_PREFIX, fwiRGBToYUV_8u_C3P3R )( const Fw8u *pSrc, int s
 { 
     typedef NoChromaSampling::Channel3ToPlanar3< 
                                                  CMC::CH_C3P3, Fw8u, C3, Fw8u, C1, 
-                                                 RGBToYUV, CMC::PLU_PLU_PLU, CMC::MIN_MIN_PLU, CMC::PLU_MIN_MIN, 
-                                                 CMC::RGBToYUV, CMC::PROC_NORMAL                 
+                                                 RGBToYUV, CMC::MP_PLU_PLU_PLU, CMC::MP_MIN_MIN_PLU, CMC::MP_PLU_MIN_MIN, 
+                                                 CF_RGBToYUV, CMC::PROC_NORMAL                 
                                                > FeType;
     FeType data;
     return fec1S3D< FeType >(data, pSrc, srcStep, pDst[0], dstStep, pDst[1], dstStep, pDst[2], dstStep, roiSize );
@@ -77,8 +77,8 @@ FwStatus PREFIX_OPT( OPT_PREFIX, fwiYUVToRGB_8u_C3R )( const Fw8u *pSrc, int src
 { 
     typedef NoChromaSampling::ChannelToChannel< 
                                                 CMC::CH_C3, Fw8u, C3, Fw8u, C3, YUVToRGB, 
-                                                CMC::PLU_PLU_PLU, CMC::PLU_MIN_MIN, CMC::PLU_PLU_PLU, 
-                                                CMC::YUVToRGB, CMC::PROC_SHIFT13 
+                                                CMC::MP_PLU_PLU_PLU, CMC::MP_PLU_MIN_MIN, CMC::MP_PLU_PLU_PLU, 
+                                                CF_YUVToRGB, CMC::PROC_SHIFT13 
                                               > FeType;
     FeType data;
     return fe< FeType > (data, pSrc, srcStep, pDst, dstStep, roiSize);
@@ -89,8 +89,8 @@ FwStatus PREFIX_OPT( OPT_PREFIX, fwiYUVToRGB_8u_AC4R )( const Fw8u *pSrc, int sr
 { 
     typedef NoChromaSampling::ChannelToChannel< 
                                                 CMC::CH_AC4, Fw8u, AC4, Fw8u, AC4, YUVToRGB, 
-                                                CMC::PLU_PLU_PLU, CMC::PLU_MIN_MIN, CMC::PLU_PLU_PLU, 
-                                                CMC::YUVToRGB, CMC::PROC_SHIFT13 
+                                                CMC::MP_PLU_PLU_PLU, CMC::MP_PLU_MIN_MIN, CMC::MP_PLU_PLU_PLU, 
+                                                CF_YUVToRGB, CMC::PROC_SHIFT13 
                                               > FeType;
     FeType data;
     return fe< FeType > (data, pSrc, srcStep, pDst, dstStep, roiSize);
@@ -101,8 +101,8 @@ FwStatus PREFIX_OPT( OPT_PREFIX, fwiYUVToRGB_8u_P3R )( const Fw8u *const pSrc[3]
 { 
     typedef NoChromaSampling::Planar3ToPlanar3< 
                                                 CMC::CH_P3, Fw8u, C1, Fw8u, C1, YUVToRGB, 
-                                                CMC::PLU_PLU_PLU, CMC::PLU_MIN_MIN, CMC::PLU_PLU_PLU, 
-                                                CMC::YUVToRGB, CMC::PROC_SHIFT13 
+                                                CMC::MP_PLU_PLU_PLU, CMC::MP_PLU_MIN_MIN, CMC::MP_PLU_PLU_PLU, 
+                                                CF_YUVToRGB, CMC::PROC_SHIFT13 
                                               > FeType;
     FeType data;
     return fec3S3D< FeType >( data, pSrc[0], srcStep, pSrc[1], srcStep, pSrc[2], srcStep, 
@@ -114,8 +114,8 @@ FwStatus PREFIX_OPT( OPT_PREFIX, fwiYUVToRGB_8u_P3C3R )( const Fw8u *const pSrc[
 { 
     typedef NoChromaSampling::PlanarToChannel< 
                                                CMC::CH_P3C3, Fw8u, C1, Fw8u, C3, YUVToRGB, 
-                                               CMC::PLU_PLU_PLU, CMC::PLU_MIN_MIN, CMC::PLU_PLU_PLU, 
-                                               CMC::YUVToRGB, CMC::PROC_SHIFT13 
+                                               CMC::MP_PLU_PLU_PLU, CMC::MP_PLU_MIN_MIN, CMC::MP_PLU_PLU_PLU, 
+                                               CF_YUVToRGB, CMC::PROC_SHIFT13 
                                              > FeType;
     FeType data;
     return fe< FeType > (data, pSrc[0], srcStep, pSrc[1], srcStep, pSrc[2], srcStep, pDst, dstStep, roiSize);
