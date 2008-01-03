@@ -46,17 +46,17 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiQuantFwdRawTableInit_JPEG_8u)(Fw8u *pQuantRaw
 	return fwStsNoErr;
 }
 
-const Fw8u ZigZagInvOrder[64] =
-{
-	 0,  1,  5,  6, 14, 15, 27, 28,
-	 2,  4,  7, 13, 16, 26, 29, 42,
-	 3,  8, 12, 17, 25, 30, 41, 43,
-	 9, 11, 18, 24, 31, 40, 44, 53,
-	10, 19, 23, 32, 39, 45, 52, 54,
-	20, 22, 33, 38, 46, 51, 55, 60,
-	21, 34, 37, 47, 50, 56, 59, 61,
-	35, 36, 48, 49, 57, 58, 62, 63
-};
+extern const Fw8u zigZagInvOrder[64];// =
+//{
+//	 0,  1,  5,  6, 14, 15, 27, 28,
+//	 2,  4,  7, 13, 16, 26, 29, 42,
+//	 3,  8, 12, 17, 25, 30, 41, 43,
+//	 9, 11, 18, 24, 31, 40, 44, 53,
+//	10, 19, 23, 32, 39, 45, 52, 54,
+//	20, 22, 33, 38, 46, 51, 55, 60,
+//	21, 34, 37, 47, 50, 56, 59, 61,
+//	35, 36, 48, 49, 57, 58, 62, 63
+//};
 
 //-----------------------------------------------------------------------
 //This function reorder the initial raw table which has zigzag order to 
@@ -72,7 +72,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiQuantFwdTableInit_JPEG_8u16u)(const Fw8u *pQu
 	Fw8u temp;
 //#define CBL_U16_MAX 0xFFFF
 	for(int i=0; i<64; i++)	{// convert zz to top-down order
-		temp = pQuantRawTable[ZigZagInvOrder[i]];
+		temp = pQuantRawTable[zigZagInvOrder[i]];
 		if (temp) 
 			pQuantFwdTable[i] = (scale15+(temp>>1))/temp;
 		else 
@@ -112,7 +112,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiQuantInvTableInit_JPEG_8u16u)(const Fw8u *pQu
 	if (pQuantRawTable==0 || pQuantInvTable==0) return fwStsNullPtrErr;
 
 	for(int i=0; i<64; i++)
-		pQuantInvTable[i] = pQuantRawTable[ZigZagInvOrder[i]];
+		pQuantInvTable[i] = pQuantRawTable[zigZagInvOrder[i]];
 
 	return fwStsNoErr;
 }

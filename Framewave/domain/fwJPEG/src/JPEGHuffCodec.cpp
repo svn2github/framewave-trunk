@@ -64,19 +64,19 @@ struct EncodeHuffmanState
 };
 
 //extra data in the array to prevent table overrun
-const Fw8u ZigZagFwdOrder[80] =
-{
-	0,   1,  8, 16,  9,  2,  3, 10, 
-	17, 24, 32, 25, 18, 11,  4,  5,
-	12, 19, 26, 33, 40, 48, 41, 34, 
-	27, 20, 13,  6,  7, 14, 21, 28,
-	35, 42, 49, 56, 57, 50, 43, 36, 
-	29, 22, 15, 23, 30, 37, 44, 51,
-	58, 59, 52, 45, 38, 31, 39, 46, 
-	53, 60, 61, 54, 47, 55, 62, 63,
-	63, 63, 63, 63, 63, 63, 63, 63,
-	63, 63, 63, 63, 63, 63, 63, 63
-};
+extern const Fw8u zigZagFwdOrder[80];// =
+//{
+//	0,   1,  8, 16,  9,  2,  3, 10, 
+//	17, 24, 32, 25, 18, 11,  4,  5,
+//	12, 19, 26, 33, 40, 48, 41, 34, 
+//	27, 20, 13,  6,  7, 14, 21, 28,
+//	35, 42, 49, 56, 57, 50, 43, 36, 
+//	29, 22, 15, 23, 30, 37, 44, 51,
+//	58, 59, 52, 45, 38, 31, 39, 46, 
+//	53, 60, 61, 54, 47, 55, 62, 63,
+//	63, 63, 63, 63, 63, 63, 63, 63,
+//	63, 63, 63, 63, 63, 63, 63, 63
+//};
 
 //-----------------------------------------------------------------------
 //This function creates raw Huffman tables with symbols statistics.  It 
@@ -560,7 +560,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeHuffman8x8_JPEG_16s1u_C1)(
 	runlen = 0;			
 
 	for (k = 1; k < 64; k++) {
-		diff = pSrc[ZigZagFwdOrder[k]];
+		diff = pSrc[zigZagFwdOrder[k]];
 		if (diff) {
 			while (runlen >= 16) {
 				EncStuffbits(pEncHuffState, pAcTable->symcode[0xF0], pAcTable->symlen[0xF0], 
@@ -821,7 +821,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeHuffman8x8_ACFirst_JPEG_16s1u_C1)(
 	runlen = 0;	
 
 	for (k = Ss; k <= Se; k++) {
-		ZZ = pSrc[ZigZagFwdOrder[k]];
+		ZZ = pSrc[zigZagFwdOrder[k]];
 
 		if (ZZ < 0) {
 			ZZ = -ZZ;		
@@ -930,7 +930,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeHuffman8x8_ACRefine_JPEG_16s1u_C1)(
 	//To determine EOB, we must scan all data.
 	EOB = 0;
 	for (k=Ss;k<=Se;k++) {
-		ZZ[k]=pSrc[ZigZagFwdOrder[k]];
+		ZZ[k]=pSrc[zigZagFwdOrder[k]];
 		if (ZZ[k] <0) {
 			ZZsgn[k] = 0;
 			ZZ[k] = -ZZ[k];
@@ -1045,7 +1045,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeHuffman8x8_ACRefine_JPEG_16s1u_C1)(
 //-----------------------------------------------------------------------
 //This functions computes the statistics for the baseline encoding.
 //-----------------------------------------------------------------------
-int MSB_lookup[16]= {
+static int MSB_lookup[16]= {
 	0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4 
 };
 
@@ -1587,7 +1587,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDecodeHuffman8x8_JPEG_1u16s_C1)(
 			runlen = GET_ACCBITS(pDecHuffState, s);
 			s = DEC_EXTEND(runlen, s);
 
-			pDst[ZigZagFwdOrder[k]] = (Fw16s) s;
+			pDst[zigZagFwdOrder[k]] = (Fw16s) s;
 		} else {
 			if (runlen != 15)   break;
 			k += 15;
@@ -1787,7 +1787,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDecodeHuffman8x8_ACFirst_JPEG_1u16s_C1)(
 				}
 				runlen = GET_ACCBITS(pDecHuffState, s);
 				s = DEC_EXTEND(runlen, s);
-				pDst[ZigZagFwdOrder[k]] = (Fw16s) (s<<Al);
+				pDst[zigZagFwdOrder[k]] = (Fw16s) (s<<Al);
 			} else {
 				if (runlen == 15) {	
 					k += 15;		
@@ -1896,7 +1896,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDecodeHuffman8x8_ACRefine_JPEG_1u16s_C1)(
 			}
 
 			for (;k<Se;k++) {
-				pDstZ = (Fw16s *)(pDst + ZigZagFwdOrder[k]);
+				pDstZ = (Fw16s *)(pDst + zigZagFwdOrder[k]);
 				if (*pDstZ != 0) {
 					if (pDecHuffState->accbitnum < 1) {
 						if (! dec_receivebits(pDecHuffState,pDecHuffState->accbuf,
@@ -1921,7 +1921,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDecodeHuffman8x8_ACRefine_JPEG_1u16s_C1)(
 			}
 
 			if (s) {
-				pos = ZigZagFwdOrder[k];
+				pos = zigZagFwdOrder[k];
 				pDst[pos] = (Fw16s) s;
 				recovernz[nonZeroByte++] = pos;
 			}
@@ -1930,7 +1930,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDecodeHuffman8x8_ACRefine_JPEG_1u16s_C1)(
 
 	if (EOBRUN > 0) {
 		for (k=Ss; k <= Se; k++) {
-			pDstZ = pDst + ZigZagFwdOrder[k];
+			pDstZ = pDst + zigZagFwdOrder[k];
 			if (*pDstZ != 0) {
 				if (pDecHuffState->accbitnum < 1) {
 					if (! dec_receivebits(pDecHuffState,pDecHuffState->accbuf,
