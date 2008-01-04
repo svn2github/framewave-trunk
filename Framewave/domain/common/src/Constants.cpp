@@ -976,3 +976,998 @@ extern const float dct_Scale[64]=
 	(float)3.624510, (float)2.613126, (float)2.774080, (float)3.082392,
 	(float)3.624510, (float)4.613126, (float)6.697221, (float)13.137072
 };
+
+// Constants Used in Video
+
+// used by ReconstructBlock
+extern const unsigned int NUM_ROWS = 8;
+extern const unsigned int NUM_COLS = 8;
+extern const unsigned int NUM_ELEMS = NUM_ROWS * NUM_COLS;
+extern const unsigned int DC_ELEM_INDEX = 0;
+
+// used by AANIDCT
+extern const float c[8][8] = {
+    { 0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F },
+    {0.49039263F,      0.41573480F,      0.27778512F,     0.097545162F,    -0.097545162F,     -0.27778512F,     -0.41573480F,     -0.49039263F },
+    {0.46193975F,     0.19134171F,     -0.19134171F,     -0.46193975F,     -0.46193975F,     -0.19134171F,      0.19134171F,      0.46193975F },
+    {0.41573480F,    -0.097545162F,     -0.49039263F,     -0.27778512F,      0.27778512F,      0.49039263F,     0.097545162F,     -0.41573480F },
+    {0.35355338F,     -0.35355338F,     -0.35355338F,      0.35355338F,      0.35355338F,     -0.35355338F,     -0.35355338F,      0.35355338F },
+    {0.27778512F,     -0.49039263F,     0.097545162F,      0.41573480F,     -0.41573480F,    -0.097545162F,      0.49039263F,     -0.27778512F },
+    {0.19134171F,     -0.46193975F,      0.46193975F,     -0.19134171F,     -0.19134171F,      0.46193975F,     -0.46193975F,      0.19134171F },
+    {0.097545162F,     -0.27778512F,      0.41573480F,     -0.49039263F,      0.49039263F,     -0.41573480F,      0.27778512F,    -0.097545162F}
+ };
+
+// used by ReconstructDCTBlock
+extern SYS_FORCEALIGN_16 const Fw16s non_intra_quantizer_matrix[128] = {
+16, 16, 16, 16, 16, 16, 16, 16, 
+16, 16, 16, 16, 16, 16, 16, 16, 
+16, 16, 16, 16, 16, 16, 16, 16, 
+16, 16, 16, 16, 16, 16, 16, 16, 
+16, 16, 16, 16, 16, 16, 16, 16, 
+16, 16, 16, 16, 16, 16, 16, 16, 
+16, 16, 16, 16, 16, 16, 16, 16, 
+16, 16, 16, 16, 16, 16, 16, 16,
+16, 16, 16, 16, 16, 16, 16, 16, 
+16, 16, 16, 16, 16, 16, 16, 16, 
+16, 16, 16, 16, 16, 16, 16, 16, 
+16, 16, 16, 16, 16, 16, 16, 16, 
+16, 16, 16, 16, 16, 16, 16, 16, 
+16, 16, 16, 16, 16, 16, 16, 16, 
+16, 16, 16, 16, 16, 16, 16, 16, 
+16, 16, 16, 16, 16, 16, 16, 16
+};
+
+// used by H.264 Transform
+//! Dequantization coefficients
+extern SYS_FORCEALIGN_16 const int dequant_coef[6][4][4] = {
+  {{10, 13, 10, 13},{ 13, 16, 13, 16},{10, 13, 10, 13},{ 13, 16, 13, 16}},
+  {{11, 14, 11, 14},{ 14, 18, 14, 18},{11, 14, 11, 14},{ 14, 18, 14, 18}},
+  {{13, 16, 13, 16},{ 16, 20, 16, 20},{13, 16, 13, 16},{ 16, 20, 16, 20}},
+  {{14, 18, 14, 18},{ 18, 23, 18, 23},{14, 18, 14, 18},{ 18, 23, 18, 23}},
+  {{16, 20, 16, 20},{ 20, 25, 20, 25},{16, 20, 16, 20},{ 20, 25, 20, 25}},
+  {{18, 23, 18, 23},{ 23, 29, 23, 29},{18, 23, 18, 23},{ 23, 29, 23, 29}}
+};
+
+extern SYS_FORCEALIGN_16 const Fw16s dequant_coef16[6*4*4] = {
+    10, 13, 10, 13, 13, 16, 13, 16, 10, 13, 10, 13, 13, 16, 13, 16,
+    11, 14, 11, 14, 14, 18, 14, 18, 11, 14, 11, 14, 14, 18, 14, 18,
+    13, 16, 13, 16, 16, 20, 16, 20, 13, 16, 13, 16, 16, 20, 16, 20,
+    14, 18, 14, 18, 18, 23, 18, 23, 14, 18, 14, 18, 18, 23, 18, 23,
+    16, 20, 16, 20, 20, 25, 20, 25, 16, 20, 16, 20, 20, 25, 20, 25,
+    18, 23, 18, 23, 23, 29, 23, 29, 18, 23, 18, 23, 23, 29, 23, 29
+};
+
+extern SYS_FORCEALIGN_16 const Fw8u QP_SCALE_CR[52] = {
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,
+   12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,
+   28,29,29,30,31,32,32,33,34,34,35,35,36,36,37,37,
+   37,38,38,38,39,39,39,39
+};
+
+extern const int quant_coef[6][4][4] = {
+  {{13107, 8066,13107, 8066},{ 8066, 5243, 8066, 5243},{13107, 8066,13107, 8066},{ 8066, 5243, 8066, 5243}},
+  {{11916, 7490,11916, 7490},{ 7490, 4660, 7490, 4660},{11916, 7490,11916, 7490},{ 7490, 4660, 7490, 4660}},
+  {{10082, 6554,10082, 6554},{ 6554, 4194, 6554, 4194},{10082, 6554,10082, 6554},{ 6554, 4194, 6554, 4194}},
+  {{ 9362, 5825, 9362, 5825},{ 5825, 3647, 5825, 3647},{ 9362, 5825, 9362, 5825},{ 5825, 3647, 5825, 3647}},
+  {{ 8192, 5243, 8192, 5243},{ 5243, 3355, 5243, 3355},{ 8192, 5243, 8192, 5243},{ 5243, 3355, 5243, 3355}},
+  {{ 7282, 4559, 7282, 4559},{ 4559, 2893, 4559, 2893},{ 7282, 4559, 7282, 4559},{ 4559, 2893, 4559, 2893}}
+};
+
+extern const int A[4][4] = {
+  { 16, 20, 16, 20},
+  { 20, 25, 20, 25},
+  { 16, 20, 16, 20},
+  { 20, 25, 20, 25}
+};
+
+extern const int QuantCoef[6][16] = {
+  {13107, 8066,13107, 8066, 8066, 5243, 8066, 5243,13107, 8066,13107, 8066, 8066, 5243, 8066, 5243},
+  {11916, 7490,11916, 7490, 7490, 4660, 7490, 4660,11916, 7490,11916, 7490, 7490, 4660, 7490, 4660},
+  {10082, 6554,10082, 6554, 6554, 4194, 6554, 4194,10082, 6554,10082, 6554, 6554, 4194, 6554, 4194},
+  { 9362, 5825, 9362, 5825, 5825, 3647, 5825, 3647, 9362, 5825, 9362, 5825, 5825, 3647, 5825, 3647},
+  { 8192, 5243, 8192, 5243, 5243, 3355, 5243, 3355, 8192, 5243, 8192, 5243, 5243, 3355, 5243, 3355},
+  { 7282, 4559, 7282, 4559, 4559, 2893, 4559, 2893, 7282, 4559, 7282, 4559, 4559, 2893, 4559, 2893}
+};
+
+extern const int MATR[16] = {
+   16, 20, 16, 20,
+   20, 25, 20, 25,
+   16, 20, 16, 20,
+   20, 25, 20, 25
+};
+
+//the same arrays that QuantIndex and InvQuantTable in ownH264Tables.h
+extern const Fw32s QuantIndex1[16] = {0,2,0,2,2,1,2,1,0,2,0,2,2,1,2,1};
+
+extern const Fw32s InvQuantTable1[52][3] = {
+{10,16,13},{11,18,14},{13,20,16},{14,23,18},
+{16,25,20},{18,29,23},{20,32,26},{22,36,28},
+{26,40,32},{28,46,36},{32,50,40},{36,58,46},
+{40,64,52},{44,72,56},{52,80,64},{56,92,72},
+{64,100,80},{72,116,92},{80,128,104},{88,144,112},
+{104,160,128},{112,184,144},{128,200,160},{144,232,184},
+{160,256,208},{176,288,224},{208,320,256},{224,368,288},
+{256,400,320},{288,464,368},{320,512,416},{352,576,448},
+{416,640,512},{448,736,576},{512,800,640},{576,928,736},
+{640,1024,832},{704,1152,896},{832,1280,1024},{896,1472,1152},
+{1024,1600,1280},{1152,1856,1472},{1280,2048,1664},{1408,2304,1792},
+{1664,2560,2048},{1792,2944,2304},{2048,3200,2560},{2304,3712,2944},
+{2560,4096,3328},{2816,4608,3584},{3328,5120,4096},{3584,5888,4608}
+};
+
+// used by H.264-MBrecon
+// tab16, indexed by 4x4 subblock
+extern const Fw8u left_edge_tab16[16] 	= {1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0};
+extern const Fw8u top_edge_tab16[16]	= {1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0};
+extern const Fw8u right_edge_tab16[16] 	= {0,0,0,0,0,1,0,1,0,0,0,0,0,1,0,1};
+
+// Table for 4x4 intra prediction to find if a subblock can use predictors
+// from above right. Also used for motion vector prediction availability.
+// JVT CD block order.
+extern const Fw8u above_right_avail_4x4[16] = {1,1,1,0,1,1,1,0,1,1,1,0,1,0,1,0};
+
+// Table for 4x4 intra prediction to find if a subblock can use predictors
+// from below left. JVT CD block order.
+extern const Fw8u intra4x4_below_left_avail[16] = {1,0,1,0,1,0,0,0,1,0,0,0,1,0,0,0};
+
+//extern "C" const static Fw8u  ClampTbl[CLIP_RANGE];	/////////// Init
+extern SYS_FORCEALIGN_16  const Fw8u ClampTbl[768] =
+{
+     0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00
+    ,0x00 ,0x01 ,0x02 ,0x03 ,0x04 ,0x05 ,0x06 ,0x07
+    ,0x08 ,0x09 ,0x0a ,0x0b ,0x0c ,0x0d ,0x0e ,0x0f
+    ,0x10 ,0x11 ,0x12 ,0x13 ,0x14 ,0x15 ,0x16 ,0x17
+    ,0x18 ,0x19 ,0x1a ,0x1b ,0x1c ,0x1d ,0x1e ,0x1f
+    ,0x20 ,0x21 ,0x22 ,0x23 ,0x24 ,0x25 ,0x26 ,0x27
+    ,0x28 ,0x29 ,0x2a ,0x2b ,0x2c ,0x2d ,0x2e ,0x2f
+    ,0x30 ,0x31 ,0x32 ,0x33 ,0x34 ,0x35 ,0x36 ,0x37
+    ,0x38 ,0x39 ,0x3a ,0x3b ,0x3c ,0x3d ,0x3e ,0x3f
+    ,0x40 ,0x41 ,0x42 ,0x43 ,0x44 ,0x45 ,0x46 ,0x47
+    ,0x48 ,0x49 ,0x4a ,0x4b ,0x4c ,0x4d ,0x4e ,0x4f
+    ,0x50 ,0x51 ,0x52 ,0x53 ,0x54 ,0x55 ,0x56 ,0x57
+    ,0x58 ,0x59 ,0x5a ,0x5b ,0x5c ,0x5d ,0x5e ,0x5f
+    ,0x60 ,0x61 ,0x62 ,0x63 ,0x64 ,0x65 ,0x66 ,0x67
+    ,0x68 ,0x69 ,0x6a ,0x6b ,0x6c ,0x6d ,0x6e ,0x6f
+    ,0x70 ,0x71 ,0x72 ,0x73 ,0x74 ,0x75 ,0x76 ,0x77
+    ,0x78 ,0x79 ,0x7a ,0x7b ,0x7c ,0x7d ,0x7e ,0x7f
+    ,0x80 ,0x81 ,0x82 ,0x83 ,0x84 ,0x85 ,0x86 ,0x87
+    ,0x88 ,0x89 ,0x8a ,0x8b ,0x8c ,0x8d ,0x8e ,0x8f
+    ,0x90 ,0x91 ,0x92 ,0x93 ,0x94 ,0x95 ,0x96 ,0x97
+    ,0x98 ,0x99 ,0x9a ,0x9b ,0x9c ,0x9d ,0x9e ,0x9f
+    ,0xa0 ,0xa1 ,0xa2 ,0xa3 ,0xa4 ,0xa5 ,0xa6 ,0xa7
+    ,0xa8 ,0xa9 ,0xaa ,0xab ,0xac ,0xad ,0xae ,0xaf
+    ,0xb0 ,0xb1 ,0xb2 ,0xb3 ,0xb4 ,0xb5 ,0xb6 ,0xb7
+    ,0xb8 ,0xb9 ,0xba ,0xbb ,0xbc ,0xbd ,0xbe ,0xbf
+    ,0xc0 ,0xc1 ,0xc2 ,0xc3 ,0xc4 ,0xc5 ,0xc6 ,0xc7
+    ,0xc8 ,0xc9 ,0xca ,0xcb ,0xcc ,0xcd ,0xce ,0xcf
+    ,0xd0 ,0xd1 ,0xd2 ,0xd3 ,0xd4 ,0xd5 ,0xd6 ,0xd7
+    ,0xd8 ,0xd9 ,0xda ,0xdb ,0xdc ,0xdd ,0xde ,0xdf
+    ,0xe0 ,0xe1 ,0xe2 ,0xe3 ,0xe4 ,0xe5 ,0xe6 ,0xe7
+    ,0xe8 ,0xe9 ,0xea ,0xeb ,0xec ,0xed ,0xee ,0xef
+    ,0xf0 ,0xf1 ,0xf2 ,0xf3 ,0xf4 ,0xf5 ,0xf6 ,0xf7
+    ,0xf8 ,0xf9 ,0xfa ,0xfb ,0xfc ,0xfd ,0xfe ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+    ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff ,0xff
+};
+
+// used by H.264-Deblock
+extern SYS_FORCEALIGN_16 const Fw8u pb_01[16] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+extern SYS_FORCEALIGN_16 const Fw8u pb_03[16] = {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3};
+extern SYS_FORCEALIGN_16 const Fw8u pb_a1[16] = {0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1};
+
+// used in H.264-CAVLC
+// three entry
+#define VLC(a, b, c) {a, b, c}
+#define VLC2(a, b, c) VLC(a, b, c), VLC(a, b, c)
+#define VLC4(a, b, c) VLC2(a, b, c), VLC2(a, b, c)
+
+/* ++ cavlc tables ++ */
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff4_0[] = 
+{
+    VLC(6, 0, 2),   /* 0001 00 */
+    VLC(6, 3, 3),   /* 0001 01 */
+    VLC(6, 1, 2),   /* 0001 10 */
+    VLC(6, 0, 1),   /* 0001 11 */
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff4_1[] = 
+{
+    VLC2(7, 3, 4),   /* 0000 000(0) */
+    VLC(8, 2, 4),   /* 0000 0010 */
+    VLC(8, 1, 4),   /* 0000 0011 */
+    VLC2(7, 2, 3),   /* 0000 010(0) */
+    VLC2(7, 1, 3),   /* 0000 011(0) */
+    VLC4(6, 0, 4),   /* 0000 10(00) */
+    VLC4(6, 0, 3),   /* 0000 11(00) */
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff3_0[] =
+{
+    VLC(6, 0, 1),    /* 0000 00 */ 
+    VLC(6, 1, 1),    /* 0000 01 */ 
+    VLC((Fw8u)-1, (Fw8u)-1, (Fw8u)-1), /* 0000 10 */ 
+    VLC(6, 0, 0),    /* 0000 11 */
+    VLC(6, 0, 2),    /* 0001 00 */
+    VLC(6, 1, 2),    /* 0001 01 */
+    VLC(6, 2, 2),    /* 0001 10 */
+    VLC((Fw8u)-1, (Fw8u)-1, (Fw8u)-1), /* 0001 11 */
+    VLC(6, 0, 3),    /* 0010 00 */
+    VLC(6, 1, 3),    /* 0010 01 */
+    VLC(6, 2, 3),    /* 0010 10 */
+    VLC(6, 3, 3),    /* 0010 11 */
+    VLC(6, 0, 4),    /* 0011 00 */
+    VLC(6, 1, 4),    /* 0011 01 */
+    VLC(6, 2, 4),    /* 0011 10 */
+    VLC(6, 3, 4),    /* 0011 11 */
+    VLC(6, 0, 5),    /* 0100 00 */
+    VLC(6, 1, 5),    /* 0100 01 */
+    VLC(6, 2, 5),    /* 0100 10 */
+    VLC(6, 3, 5),    /* 0100 11 */
+    VLC(6, 0, 6),    /* 0101 00 */
+    VLC(6, 1, 6),    /* 0101 01 */
+    VLC(6, 2, 6),    /* 0101 10 */
+    VLC(6, 3, 6),    /* 0101 11 */
+    VLC(6, 0, 7),    /* 0110 00 */
+    VLC(6, 1, 7),    /* 0110 01 */
+    VLC(6, 2, 7),    /* 0110 10 */
+    VLC(6, 3, 7),    /* 0110 11 */
+    VLC(6, 0, 8),
+    VLC(6, 1, 8),
+    VLC(6, 2, 8),
+    VLC(6, 3, 8),
+    VLC(6, 0, 9),
+    VLC(6, 1, 9),
+    VLC(6, 2, 9),
+    VLC(6, 3, 9),
+    VLC(6, 0, 10),
+    VLC(6, 1, 10),
+    VLC(6, 2, 10),
+    VLC(6, 3, 10),
+    VLC(6, 0, 11),
+    VLC(6, 1, 11),
+    VLC(6, 2, 11),
+    VLC(6, 3, 11),
+    VLC(6, 0, 12),
+    VLC(6, 1, 12),
+    VLC(6, 2, 12),
+    VLC(6, 3, 12),
+    VLC(6, 0, 13),
+    VLC(6, 1, 13),
+    VLC(6, 2, 13),
+    VLC(6, 3, 13),
+    VLC(6, 0, 14),
+    VLC(6, 1, 14),
+    VLC(6, 2, 14),
+    VLC(6, 3, 14),
+    VLC(6, 0, 15),
+    VLC(6, 1, 15),
+    VLC(6, 2, 15),
+    VLC(6, 3, 15),
+    VLC(6, 0, 16),
+    VLC(6, 1, 16),
+    VLC(6, 2, 16),
+    VLC(6, 3, 16)
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_0[] = 
+{
+    VLC(4, 3, 7),   /* 1000 */
+    VLC(4, 3, 6),   /* 1001 */
+    VLC(4, 3, 5),   /* 1010 */
+    VLC(4, 3, 4),   /* 1011 */
+    VLC(4, 3, 3),   /* 1100 */
+    VLC(4, 2, 2),   /* 1101 */
+    VLC(4, 1, 1),   /* 1110 */
+    VLC(4, 0, 0),   /* 1111 */
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_1[] = 
+{
+    VLC(5, 1, 5),   /* 0100 0 */
+    VLC(5, 2, 5),
+    VLC(5, 1, 4),
+    VLC(5, 2, 4),
+    VLC(5, 1, 3),
+    VLC(5, 3, 8),
+    VLC(5, 2, 3),
+    VLC(5, 1, 2),
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_2[] = 
+{
+    VLC(6, 0, 3),   /* 0010 00 */
+    VLC(6, 2, 7),
+    VLC(6, 1, 7),
+    VLC(6, 0, 2),
+    VLC(6, 3, 9),
+    VLC(6, 2, 6),
+    VLC(6, 1, 6),
+    VLC(6, 0, 1),
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_3[] = 
+{
+    VLC(7, 0, 7),   /* 0001 000 */
+    VLC(7, 0, 6),
+    VLC(7, 2, 9),
+    VLC(7, 0, 5),
+    VLC(7, 3, 10),
+    VLC(7, 2, 8),
+    VLC(7, 1, 8),
+    VLC(7, 0, 4),
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_4[] = 
+{
+    VLC(8, 3, 12),   /* 0000 1000 */
+    VLC(8, 2, 11),
+    VLC(8, 1, 10),
+    VLC(8, 0, 9),
+    VLC(8, 3, 11),
+    VLC(8, 2, 10),
+    VLC(8, 1, 9),
+    VLC(8, 0, 8),
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_5[] = 
+{
+    VLC(9, 0, 12),   /* 0000 0100 0 */
+    VLC(9, 2, 13),
+    VLC(9, 1, 12),
+    VLC(9, 0, 11),
+    VLC(9, 3, 13),
+    VLC(9, 2, 12),
+    VLC(9, 1, 11),
+    VLC(9, 0, 10),
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_6[] = 
+{
+    VLC((Fw8u)-1, (Fw8u)-1, (Fw8u)-1),   /* 0000 0000 00 */
+    VLC(10, 0, 16),    /* 0000 0000 01 */
+    VLC(10, 3, 16),    /* 0000 0000 10 */
+    VLC(10, 2, 16),    /* 0000 0000 11 */
+    VLC(10, 1, 16),    /* 0000 0001 00 */
+    VLC(10, 0, 15),    /* 0000 0001 01 */
+    VLC(10, 3, 15),    /* 0000 0001 10 */
+    VLC(10, 2, 15),    /* 0000 0001 11 */
+    VLC(10, 1, 15),    /* 0000 0010 00 */
+    VLC(10, 0, 14),
+    VLC(10, 3, 14),
+    VLC(10, 2, 14),
+    VLC(10, 1, 14),
+    VLC(10, 0, 13),
+    VLC2(9, 1, 13),    /* 0000 0011 1(0) */
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_0[] = 
+{
+    VLC(4, 3, 4),  /* 0100 */
+    VLC(4, 3, 3),  /* 0101 */
+    VLC2(3, 2, 2), /* 011(0) */
+    VLC4(2, 1, 1), /* 10 */
+    VLC4(2, 0, 0), /* 11 */
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_1[] = 
+{
+    VLC(6, 3, 7),   /* 0001 00 */
+    VLC(6, 2, 4),   /* 0001 01 */
+    VLC(6, 1, 4),   /* 0001 10 */
+    VLC(6, 0, 2),   /* 0001 11 */
+    VLC(6, 3, 6),   /* 0010 00 */
+    VLC(6, 2, 3),   /* 0010 01 */
+    VLC(6, 1, 3),   /* 0010 10 */
+    VLC(6, 0, 1),   /* 0010 11*/
+    VLC2(5, 3, 5),   /* 0011 0(0)*/
+    VLC2(5, 1, 2),   /* 0011 1(0)*/
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_2[] = 
+{
+    VLC(9, 3, 9),   /* 0000 0010 0 */
+    VLC(9, 2, 7),   /* 0000 0010 1 */
+    VLC(9, 1, 7),   /* 0000 0011 0 */
+    VLC(9, 0, 6),   /* 0000 0011 1 */
+
+    VLC2(8, 0, 5),   /* 0000 0100 */
+    VLC2(8, 2, 6),   /* 0000 0101 */
+    VLC2(8, 1, 6),   /* 0000 0110 */
+    VLC2(8, 0, 4),   /* 0000 0111 */
+
+    VLC4(7, 3, 8),    /* 0000 100 */
+    VLC4(7, 2, 5),    /* 0000 101 */
+    VLC4(7, 1, 5),    /* 0000 110 */
+    VLC4(7, 0, 3),    /* 0000 111 */
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_3[] = 
+{
+    VLC(11, 3, 11),   /* 0000 0001 000 */
+    VLC(11, 2, 9),    /* 0000 0001 001 */
+    VLC(11, 1, 9),    /* 0000 0001 010 */
+    VLC(11, 0, 8),    /* 0000 0001 011 */
+    VLC(11, 3, 10),   /* 0000 0001 100 */
+    VLC(11, 2, 8),    /* 0000 0001 101 */
+    VLC(11, 1, 8),    /* 0000 0001 110 */
+    VLC(11, 0, 7),    /* 0000 0001 111 */
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_4[] = 
+{
+    VLC(12, 0, 11),   /* 0000 0000 1000 */
+    VLC(12, 2, 11),   /* 0000 0000 1001 */
+    VLC(12, 1, 11),   /* 0000 0000 1010 */
+    VLC(12, 0, 10),   /* 0000 0000 1011 */
+    VLC(12, 3, 12),   /* 0000 0000 1100 */
+    VLC(12, 2, 10),   /* 0000 0000 1101 */
+    VLC(12, 1, 10),   /* 0000 0000 1110 */
+    VLC(12, 0, 9),    /* 0000 0000 1111 */
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_5[] = 
+{
+    VLC(13, 3, 14),   /* 0000 0000 0100 0 */
+    VLC(13, 2, 13),   /* 0000 0000 0100 1 */
+    VLC(13, 1, 13),   /* 0000 0000 0101 0 */
+    VLC(13, 0, 13),   /* 0000 0000 0101 1 */
+    VLC(13, 3, 13),   /* 0000 0000 0110 0 */
+    VLC(13, 2, 12),   /* 0000 0000 0110 1 */
+    VLC(13, 1, 12),   /* 0000 0000 0111 0 */
+    VLC(13, 0, 12),   /* 0000 0000 0111 1 */
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_6[] = 
+{
+    VLC2((Fw8u)-1, (Fw8u)-1, (Fw8u)-1),  /* 0000 0000 0000 00 */
+    VLC2(13, 3, 15),   /* 0000 0000 0000 1(0) */
+    VLC(14, 3, 16),   /* 0000 0000 0001 00 */
+    VLC(14, 2, 16),   /* 0000 0000 0001 01 */
+    VLC(14, 1, 16),   /* 0000 0000 0001 10 */
+    VLC(14, 0, 16),   /* 0000 0000 0001 11 */
+
+    VLC(14, 1, 15),   /* 0000 0000 0010 00 */
+    VLC(14, 0, 15),   /* 0000 0000 0010 01 */
+    VLC(14, 2, 15),   /* 0000 0000 0010 10 */
+    VLC(14, 1, 14),   /* 0000 0000 0010 11 */
+    VLC2(13, 2, 14),   /* 0000 0000 0011 0(0) */
+    VLC2(13, 0, 14),   /* 0000 0000 0011 1(0) */
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_0[] = 
+{
+    VLC2((Fw8u)-1, (Fw8u)-1, (Fw8u)-1), /* 0000 0000 0000 000(0) */
+    VLC2(15, 1, 13),  /* 0000 0000 0000 001(0) */
+    VLC(16, 0, 16),   /* 0000 0000 0000 0100 */
+    VLC(16, 2, 16),   
+    VLC(16, 1, 16),
+    VLC(16, 0, 15),
+    VLC(16, 3, 16),
+    VLC(16, 2, 15),
+    VLC(16, 1, 15),
+    VLC(16, 0, 14),
+    VLC(16, 3, 15),
+    VLC(16, 2, 14),
+    VLC(16, 1, 14),
+    VLC(16, 0, 13),   /* 0000 0000 0000 1111 */
+    VLC2(15, 3, 14),  /* 0000 0000 0001 000(0) */
+    VLC2(15, 2, 13),
+    VLC2(15, 1, 12),
+    VLC2(15, 0, 12),
+    VLC2(15, 3, 13),
+    VLC2(15, 2, 12),
+    VLC2(15, 1, 11),
+    VLC2(15, 0, 11),  /* 0000 0000 0001 111(0) */
+    VLC4(14, 3, 12),  /* 0000 0000 0010 00(00) */
+    VLC4(14, 2, 11),
+    VLC4(14, 1, 10),
+    VLC4(14, 0, 10),
+    VLC4(14, 3, 11),
+    VLC4(14, 2, 10),
+    VLC4(14, 1, 9),
+    VLC4(14, 0, 9),  /* 0000 0000 0011 11(00) */
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_1[] = 
+{
+    VLC(13, 0, 8),   /* 0000 0000 0100 0 */
+    VLC(13, 2, 9),
+    VLC(13, 1, 8),
+    VLC(13, 0, 7),
+    VLC(13, 3, 10),
+    VLC(13, 2, 8),
+    VLC(13, 1, 7),
+    VLC(13, 0, 6),  /* 0000 0000 0111 1 */
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_2[] = 
+{
+    VLC(11, 3, 9),   /* 0000 0000 100 */
+    VLC(11, 2, 7),
+    VLC(11, 1, 6),
+    VLC(11, 0, 5),   /* 0000 0000 111 */
+    VLC2(10, 3, 8),  /* 0000 0001 00(0) */
+    VLC2(10, 2, 6),
+    VLC2(10, 1, 5),
+    VLC2(10, 0, 4),  /* 0000 0001 11(0) */
+    VLC4(9, 3, 7),  /* 0000 0010 0(0) */
+    VLC4(9, 2, 5),
+    VLC4(9, 1, 4),
+    VLC4(9, 0, 3),  /* 0000 0011 1(0) */
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_3[] = 
+{
+    VLC(8, 3, 6),   /* 0000 0100 */
+    VLC(8, 2, 4),
+    VLC(8, 1, 3),
+    VLC(8, 0, 2),
+    VLC2(7, 3, 5),  /* 0000 100 */
+    VLC2(7, 2, 3),
+    VLC4(6, 3, 4),  /* 0000 11 */
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_4[] = 
+{
+    VLC(6, 1, 2),    /* 0001 00 */
+    VLC(6, 0, 1),    /* 0001 01 */
+    VLC2(5, 3, 3)    /* 0001 1 */
+};
+
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_5[] = 
+{
+    VLC((Fw8u)-1, (Fw8u)-1, (Fw8u)-1),   /* 000 */
+    VLC(3, 2, 2),      /* 001 */
+    VLC2(2, 1, 1),     /* 01 */
+    VLC4(1, 0, 0)      /* 1 */
+};
+
+extern SYS_FORCEALIGN_16 const Fw32u GetBitsMask32[32] =
+{
+    0x00000000, 0x00000001, 0x00000003, 0x00000007,
+    0x0000000f, 0x0000001f, 0x0000003f, 0x0000007f,
+    0x000000ff, 0x000001ff, 0x000003ff, 0x000007ff,
+    0x00000fff, 0x00001fff, 0x00003fff, 0x00007fff,
+    0x0000ffff, 0x0001ffff, 0x0003ffff, 0x0007ffff,
+    0x000fffff, 0x001fffff, 0x003fffff, 0x007fffff,
+    0x00ffffff,	0x01ffffff, 0x03ffffff, 0x07ffffff,
+    0x0fffffff,	0x1fffffff, 0x3fffffff, 0x7fffffff,
+};
+
+// two entry
+#undef VLC
+#undef VLC2
+#undef VLC4
+#define VLC(a, b) {a, b}
+#define VLC2(a, b) VLC(a, b), VLC(a, b)
+#define VLC4(a, b) VLC2(a, b), VLC2(a, b)
+#define VLC8(a, b) VLC4(a, b), VLC4(a, b)
+
+extern const zero_count_t total_zero_table1_0[] = 
+{
+    VLC((Fw8u)-1, (Fw8u)-1),
+    VLC(15, 9), /* 0000 0000 1 */
+    VLC(14, 9),
+    VLC(13, 9), /* 0000 0001 1 */
+    VLC2(12, 8),/* 0000 0010 */
+    VLC2(11, 8),/* 0000 0011 */
+    VLC4(10, 7),/* 0000 010 */
+    VLC4(9, 7), /* 0000 011 */
+    VLC8(8, 6), /* 0000 10 */
+    VLC8(7, 6), /* 0000 11 */
+};
+
+extern const zero_count_t total_zero_table1_1[] = 
+{
+    VLC2((Fw8u)-1, (Fw8u)-1),
+    VLC(6, 5), /* 0001 0 */
+    VLC(5, 5), /* 0001 1 */
+    VLC2(4, 4),/* 0010 */
+    VLC2(3, 4),/* 0011 */
+    VLC4(2, 3),/* 010 */
+    VLC4(1, 3),/* 011 */
+    VLC8(0, 1), /*1 */
+    VLC8(0, 1), /*1 */
+};
+
+extern const zero_count_t total_zero_table2_0[] = 
+{
+    VLC(14, 6), /* 0000 00 */
+    VLC(13, 6),
+    VLC(12, 6),
+    VLC(11, 6),
+    VLC2(10, 5),/* 0001 0 */
+    VLC2(9, 5),
+};
+
+extern const zero_count_t total_zero_table2_1[] = 
+{
+    VLC2((Fw8u)-1, (Fw8u)-1),
+    VLC(8, 4), /* 0010 */
+    VLC(7, 4), /* 0011 */
+    VLC(6, 4),
+    VLC(5, 4),
+    VLC2(4, 3),/* 011 */
+    VLC2(3, 3),/* 100 */
+    VLC2(2, 3), /*101 */
+    VLC2(1, 3), /*110 */
+    VLC2(0, 3), /*111 */
+};
+
+extern const zero_count_t total_zero_table3_0[] = 
+{
+    VLC(13, 6), /* 0000 00 */
+    VLC(11, 6),
+    VLC2(12, 5),/* 0000 1 */
+    VLC2(10, 5),/* 0001 0 */
+    VLC2(9, 5), /* 0001 1 */
+};
+
+extern const zero_count_t total_zero_table3_1[] = 
+{
+    VLC2((Fw8u)-1, (Fw8u)-1),
+    VLC(8, 4), /* 0010 */
+    VLC(5, 4), /* 0011 */
+    VLC(4, 4),
+    VLC(0, 4),
+    VLC2(7, 3),/* 011 */
+    VLC2(6, 3),/* 100 */
+    VLC2(3, 3), /*101 */
+    VLC2(2, 3), /*110 */
+    VLC2(1, 3), /*111 */
+};
+
+extern const zero_count_t total_zero_table6_0[] = 
+{
+    VLC(10, 6), /* 0000 00 */
+    VLC(0, 6),
+    VLC2(1, 5),/* 0000 1 */
+    VLC4(8, 4),/* 0000 1 */
+};
+
+extern const zero_count_t total_zero_table6_1[] = 
+{
+    VLC((Fw8u)-1, (Fw8u)-1),
+    VLC(9, 3), /* 001 */
+    VLC(7, 3), /* 010 */
+    VLC(6, 3),
+    VLC(5, 3),
+    VLC(4, 3),
+    VLC(3, 3),
+    VLC(2, 3)
+};
+
+extern const zero_count_t total_zero_table7_0[] = 
+{
+    VLC(9, 6), /* 0000 00 */
+    VLC(0, 6),
+    VLC2(1, 5),/* 0000 1 */
+    VLC4(7, 4),/* 0001 */
+};
+
+extern const zero_count_t total_zero_table7_1[] = 
+{
+    VLC((Fw8u)-1, (Fw8u)-1),
+    VLC(8, 3), /* 001 */
+    VLC(6, 3), /* 010 */
+    VLC(4, 3),
+    VLC(3, 3),
+    VLC(2, 3),
+    VLC2(5, 2)
+};
+
+extern const zero_count_t total_zero_table8_0[] = 
+{
+    VLC(8, 6), /* 0000 00 */
+    VLC(0, 6),
+    VLC2(2, 5),/* 0000 1 */
+    VLC4(1, 4),/* 0001 */
+};
+
+extern const zero_count_t total_zero_table8_1[] = 
+{
+    VLC((Fw8u)-1, (Fw8u)-1),
+    VLC(7, 3), /* 001 */
+    VLC(6, 3), /* 010 */
+    VLC(3, 3),
+    VLC2(5, 2),
+    VLC2(4, 2)
+};
+
+extern const zero_count_t total_zero_table9_0[] = 
+{
+    VLC(1, 6), /* 0000 00 */
+    VLC(0, 6),
+    VLC2(7, 5),/* 0000 1 */
+    VLC4(2, 4),/* 0001 */
+};
+
+extern const zero_count_t total_zero_table9_1[] = 
+{
+    VLC((Fw8u)-1, (Fw8u)-1),
+    VLC(5, 3), /* 001 */
+    VLC2(6, 2), /* 01 */
+    VLC2(4, 2),
+    VLC2(3, 2),
+};
+
+extern const zero_count_t total_zero_table4_0[] = 
+{
+    VLC(12, 5), /* 0000 0 */
+    VLC(11, 5),
+    VLC(10, 5), /* 0000 1 */
+    VLC(0, 5),  /* 0001 1 */
+    VLC2(9, 4), /* 0010 */
+    VLC2(7, 4),
+    VLC2(3, 4),
+    VLC2(2, 4), /* 0101 */
+    VLC4(8, 3), /* 011 */
+};
+
+extern const zero_count_t total_zero_table4_1[] = 
+{
+    VLC(6, 3),   /* 100 */
+    VLC(5, 3),   /* 101 */
+    VLC(4, 3),   /* 110 */
+    VLC(1, 3)    /* 111 */
+};
+
+extern const zero_count_t total_zero_table5_0[] = 
+{
+    VLC(11, 5),  /* 0000 0 */
+    VLC(9, 5),
+    VLC2(10, 4), /* 0000 1 */
+    VLC2(8, 4),  /* 0010 */
+    VLC2(2, 4),
+    VLC2(1, 4),
+    VLC2(0, 4),
+    VLC4(7, 3)
+};
+
+extern const zero_count_t total_zero_table5_1[] = 
+{
+    VLC(6, 3), /* 100 */
+    VLC(5, 3),
+    VLC(4, 3),
+    VLC(3, 3)
+};
+
+extern const zero_count_t total_zero_table10_0[] = 
+{
+    VLC(1, 5), /* 0000 0 */
+    VLC(0, 5),
+    VLC2(6, 4), /* 0000 1 */
+};
+
+extern const zero_count_t total_zero_table10_1[] = 
+{
+    VLC((Fw8u)-1, (Fw8u)-1),
+    VLC(2, 3), /* 001 */
+    VLC2(5, 2), /* 01 */
+    VLC2(4, 2),
+    VLC2(3, 2),
+};
+
+extern const zero_count_t total_zero_table11_0[] = 
+{
+    VLC(0, 4), /* 0000 */
+    VLC(1, 4),
+    VLC2(2, 3), /* 010 */
+    VLC2(3, 3),
+    VLC2(5, 3),
+    VLC8(4, 1)
+};
+
+extern const zero_count_t total_zero_table12_0[] = 
+{
+    VLC(0, 4), /* 0000 */
+    VLC(1, 4),
+    VLC2(4, 3), /* 010 */
+    VLC4(2, 2),
+    VLC8(3, 1)
+};
+
+extern const zero_count_t total_zero_table13_0[] = 
+{
+    VLC(0, 3), /* 000 */
+    VLC(1, 3),
+    VLC2(3, 2), /* 01 */
+    VLC4(2, 1),
+};
+
+extern const zero_count_t total_zero_table14_0[] = 
+{
+    VLC(0, 2), 
+    VLC(1, 2),
+    VLC2(2, 1),
+};
+
+extern const zero_count_t total_zero_table_chroma[3][8] = 
+{
+    {
+        VLC(3, 3), 
+        VLC(2, 3),
+        VLC2(1, 2),
+        VLC4(0, 1)
+    },
+    {
+        VLC2(2, 2),
+        VLC2(1, 2),
+        VLC4(0, 1)
+    },
+    {
+        VLC4(1, 1),
+        VLC4(0, 1)
+    }
+};
+
+extern const zero_count_t run_before_table_0[7][8] = 
+{
+    {
+        VLC4(1, 1),
+        VLC4(0, 1)
+    },
+    {
+        VLC2(2, 2),
+        VLC2(1, 2),
+        VLC4(0, 1)
+    },
+    {
+        VLC2(3, 2),
+        VLC2(2, 2),
+        VLC2(1, 2),
+        VLC2(0, 2)
+    },
+    {
+        VLC(4, 3),
+        VLC(3, 3),
+        VLC2(2, 2),
+        VLC2(1, 2),
+        VLC2(0, 2)
+    },
+    {
+        VLC(5, 3),
+        VLC(4, 3),
+        VLC(3, 3),
+        VLC(2, 3),
+        VLC2(1, 2),
+        VLC2(0, 2),
+    },
+    {
+        VLC(1, 3),
+        VLC(2, 3),
+        VLC(4, 3),
+        VLC(3, 3),
+        VLC(6, 3),
+        VLC(5, 3),
+        VLC2(0, 2)
+    },
+    {
+        VLC((Fw8u)-1, (Fw8u)-1),
+        VLC(6, 3),
+        VLC(5, 3),
+        VLC(4, 3),
+        VLC(3, 3),
+        VLC(2, 3),
+        VLC(1, 3),
+        VLC(0, 3)
+    }
+};
+
+extern const Fw8u prefix_table0[] = 
+{
+    (Fw8u)-1,
+    (Fw8u)3,
+    (Fw8u)2, (Fw8u)2,
+    (Fw8u)1, (Fw8u)1, (Fw8u)1, (Fw8u)1,
+    (Fw8u)0, (Fw8u)0, (Fw8u)0, (Fw8u)0, (Fw8u)0, (Fw8u)0, (Fw8u)0, (Fw8u)0
+};
+
+extern const Fw8u prefix_table1[] = 
+{
+    (Fw8u)-1,
+    (Fw8u)7,
+    (Fw8u)6, (Fw8u)6,
+    (Fw8u)5, (Fw8u)5, (Fw8u)5, (Fw8u)5,
+    (Fw8u)4, (Fw8u)4, (Fw8u)4, (Fw8u)4, (Fw8u)4, (Fw8u)4, (Fw8u)4, (Fw8u)4
+};
+
+extern const Fw8u prefix_table2[] =
+{
+    (Fw8u)-1,
+    (Fw8u)11,
+    (Fw8u)10, (Fw8u)10,
+    (Fw8u)9, (Fw8u)9, (Fw8u)9, (Fw8u)9,
+    (Fw8u)8, (Fw8u)8, (Fw8u)8, (Fw8u)8, (Fw8u)8, (Fw8u)8, (Fw8u)8, (Fw8u)8
+};
+
+extern const Fw8u prefix_table3[] = 
+{
+    (Fw8u)-1,
+    (Fw8u)15,
+    (Fw8u)14, (Fw8u)14,
+    (Fw8u)13, (Fw8u)13, (Fw8u)13, (Fw8u)13,
+    (Fw8u)12, (Fw8u)12, (Fw8u)12, (Fw8u)12, (Fw8u)12, (Fw8u)12, (Fw8u)12, (Fw8u)12
+};
+
+extern const Fw8u run_before_table_1[] =
+{
+    (Fw8u)-1,
+    (Fw8u)10,
+    (Fw8u)9, (Fw8u)9,
+    (Fw8u)8, (Fw8u)8, (Fw8u)8, (Fw8u)8,
+    (Fw8u)7, (Fw8u)7, (Fw8u)7, (Fw8u)7, (Fw8u)7, (Fw8u)7, (Fw8u)7,(Fw8u) 7
+};
+
+extern const Fw8u run_before_table_2[] =
+{
+    (Fw8u)-1,
+    (Fw8u)14,
+    (Fw8u)13, (Fw8u)13,
+    (Fw8u)12, (Fw8u)12, (Fw8u)12, (Fw8u)12,
+    (Fw8u)11, (Fw8u)11, (Fw8u)11, (Fw8u)11, (Fw8u)11, (Fw8u)11, (Fw8u)11, (Fw8u)11
+};
+
+
+
