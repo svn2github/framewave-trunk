@@ -3,7 +3,7 @@
 # This software is subject to the Apache v2.0 License.
 #
 
-include ../Makefile-generic
+include ../Makefileinclude.in
 PROJECT_NAME=ThresholdAndCompare
 
 OBJS  = ut_iCompare.o ut_iCompareC.o ut_iCompareEqualEps.o ut_iCompareEqualEpsC.o ut_iThreshold.o ut_iThreshold_GT.o ut_iThreshold_GTVal.o ut_iThreshold_LT.o ut_iThreshold_LTVal.o ut_iThreshold_LTValGTVal.o ut_iThreshold_Val.o ut_sThreshold.o ut_sThreshold_GT.o ut_sThreshold_GTVal.o ut_sThreshold_LT.o ut_sThreshold_LTInv.o ut_sThreshold_LTVal.o ut_sThreshold_LTValGTVal.o ut_ThresholdAndCompare.o 

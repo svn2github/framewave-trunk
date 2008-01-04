@@ -3,7 +3,7 @@
 # This software is subject to the Apache v2.0 License.
 #
 
-include ../Makefile-generic
+include ../Makefileinclude.in
 PROJECT_NAME=LogicalFuncTest
 
 OBJS  = LogicalTests.o T_And.o T_AndC.o T_Not.o T_Or.o T_OrC.o T_Xor.o T_XorC.o T_LShiftC.o T_RShiftC.o

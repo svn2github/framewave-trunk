@@ -3,7 +3,7 @@
 # This software is subject to the Apache v2.0 License.
 #
 
-include ../Makefile-generic
+include ../Makefileinclude.in
 PROJECT_NAME=ImageInitialization
 OBJS  = ImageInitialization.o T_Copy.o T_Set.o T_Convert.o
 

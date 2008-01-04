@@ -3,7 +3,7 @@
 # This software is subject to the Apache v2.0 License.
 #
 
-include ../Makefile-generic
+include ../Makefileinclude.in
 PROJECT_NAME=InFnImageArithmeticAndLogical
 
 OBJS  = InFnImageArithmeticAndLogical.o ut_Abs.o

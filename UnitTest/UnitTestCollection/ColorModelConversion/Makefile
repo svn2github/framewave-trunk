@@ -3,7 +3,7 @@
 # This software is subject to the Apache v2.0 License.
 #
 
-include ../Makefile-generic
+include ../Makefileinclude.in
 PROJECT_NAME=ColorModelConversion
 
 OBJS  = CMC_Tests.o ut_iRGBToXYZ.o ut_iXYZToRGB.o ut_iRGBToYUV.o ut_iYUVToRGB.o

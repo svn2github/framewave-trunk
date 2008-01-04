@@ -3,7 +3,7 @@
 # This software is subject to the Apache v2.0 License.
 #
 
-include ../Makefile-generic
+include ../Makefileinclude.in
 PROJECT_NAME=InFnImageInitialization
 
 OBJS  = InFnImageInitialization.o ut_Convert.o
