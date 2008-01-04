@@ -15,33 +15,9 @@ This software is subject to the Apache v2.0 License.
 
 using namespace OPT_LEVEL;
 
-/*******************************************************/
-const unsigned int NUM_ROWS = 8;
-const unsigned int NUM_COLS = 8;
-const unsigned int NUM_ELEMS = NUM_ROWS * NUM_COLS;
-const unsigned int DC_ELEM_INDEX = 0;
+extern const unsigned int NUM_ELEMS;
+extern SYS_FORCEALIGN_16 const Fw16s non_intra_quantizer_matrix[128];
 
-/*******************************************************/
-SYS_FORCEALIGN_16 const Fw16s non_intra_quantizer_matrix[2 * NUM_ROWS * NUM_COLS] = {
-16, 16, 16, 16, 16, 16, 16, 16, 
-16, 16, 16, 16, 16, 16, 16, 16, 
-16, 16, 16, 16, 16, 16, 16, 16, 
-16, 16, 16, 16, 16, 16, 16, 16, 
-16, 16, 16, 16, 16, 16, 16, 16, 
-16, 16, 16, 16, 16, 16, 16, 16, 
-16, 16, 16, 16, 16, 16, 16, 16, 
-16, 16, 16, 16, 16, 16, 16, 16,
-16, 16, 16, 16, 16, 16, 16, 16, 
-16, 16, 16, 16, 16, 16, 16, 16, 
-16, 16, 16, 16, 16, 16, 16, 16, 
-16, 16, 16, 16, 16, 16, 16, 16, 
-16, 16, 16, 16, 16, 16, 16, 16, 
-16, 16, 16, 16, 16, 16, 16, 16, 
-16, 16, 16, 16, 16, 16, 16, 16, 
-16, 16, 16, 16, 16, 16, 16, 16
-};
-
-/*******************************************************/
 FwStatus SYS_INLINE fwiQuantInvIntra_MPEG1_16s_C1I(Fw16s *pSrcDst, int QP, Fw16s *pQPMatrix)
 {
 	if(FW_REF::PtrNotOK(pSrcDst, pQPMatrix))return fwStsNullPtrErr;

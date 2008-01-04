@@ -12,43 +12,8 @@ This software is subject to the Apache v2.0 License.
 
 using namespace OPT_LEVEL;
 
-SYS_FORCEALIGN_16 static Fw16s My_idct_weighting[] = {
-	16384,	21407,	16384,	8867, 16384,	-8867,  16384, -21407,	//	w05 w04 w01 w00	w13 w12 w09 w08
-	16384,	8867,	-16384,	-21407,	-16384,	21407,  16384,  -8867,	//	w07 w06 w03 w02	w15 w14 w11 w10
-	22725,	19266,  19266,  -4520, 	12873,	-22725,	4520,	-12873,	//	w21 w20 w17 w16 w29 w28 w25 w24
-	12873,	4520,	-22725, -12873, 4520,	19266,  19266,	-22725, //	w23 w22 w19 w18 w31 w30 w27 w26
-
-	22725,  29692,  22725,  12299, 22725,	-12299, 22725,	-29692,
-	22725,  12299,	-22725, -29692,	-22725,	29692,  22725,	-12299,
-	31521,  26722,  26722,  -6270, 17855,	-31521, 6270,	-17855,
-	17855,  6270,	-31521, -17855,	6270,	26722,  26722,	-31521,
-
-	21407,  27969,  21407,  11585,  21407,	-11585, 21407,	-27969,
-	21407,  11585,	-21407, -27969,	-21407, 27969,  21407,	-11585,
-	29692,  25172,  25172,  -5906,  16819,	-29692, 5906,	-16819,
-	16819,  5906,	-29692, -16819,	5906,	25172,  25172,	-29692,
-
-	19266,  25172,  19266,  10426, 19266,	-10426, 19266,	-25172,	
-	19266,  10426,	-19266, -25172,	-19266, 25172,  19266,	-10426,	
-	26722,  22654,  22654,  -5315,  15137,	-26722, 5315,	-15137,	
-	15137,  5315,	-26722, -15137, 5315,	22654,  22654,	-26722,
-
-	13036,  13036,  13036,  13036,  13036,  13036,  13036,  13036, 
-    27146,  27146,  27146,  27146,  27146,  27146,  27146,  27146,
-	-21746, -21746, -21746, -21746, -21746, -21746, -21746, -21746, // tg * (2<<16) + 0.5
-    -19195, -19195, -19195, -19195,-19195, -19195, -19195, -19195}; //cos * (2<<16) + 0.5
-
-const static float c[8][8] = 
- {
-    { 0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F },
-    {0.49039263F,      0.41573480F,      0.27778512F,     0.097545162F,    -0.097545162F,     -0.27778512F,     -0.41573480F,     -0.49039263F },
-    {0.46193975F,     0.19134171F,     -0.19134171F,     -0.46193975F,     -0.46193975F,     -0.19134171F,      0.19134171F,      0.46193975F },
-    {0.41573480F,    -0.097545162F,     -0.49039263F,     -0.27778512F,      0.27778512F,      0.49039263F,     0.097545162F,     -0.41573480F },
-    {0.35355338F,     -0.35355338F,     -0.35355338F,      0.35355338F,      0.35355338F,     -0.35355338F,     -0.35355338F,      0.35355338F },
-    {0.27778512F,     -0.49039263F,     0.097545162F,      0.41573480F,     -0.41573480F,    -0.097545162F,      0.49039263F,     -0.27778512F },
-    {0.19134171F,     -0.46193975F,      0.46193975F,     -0.19134171F,     -0.19134171F,      0.46193975F,     -0.46193975F,      0.19134171F },
-    {0.097545162F,     -0.27778512F,      0.41573480F,     -0.49039263F,      0.49039263F,     -0.41573480F,      0.27778512F,    -0.097545162F}
- };
+extern SYS_FORCEALIGN_16 const Fw16s idct_weighting[];
+extern const float c[8][8];
 
 static void Idct(const float c[8][8], const Fw16s *pSrc, Fw16s *pDst)
 {
@@ -97,10 +62,10 @@ SYS_INLINE static FwStatus My_idct_SSE2(const Fw16s* pSrc, Fw16s* pDst, Fw32s co
 	__m128i xmm8,  xmm9,  xmm10, xmm11, xmm12, xmm13, xmm14, xmm15;
 	Fw16s *peax = (Fw16s*)pSrc;
 	Fw16s *pedx = pDst;
-	Fw16s *pesi, *pecx;
+	const Fw16s *pesi, *pecx;
 
-	pesi = My_idct_weighting;
-	pecx = My_idct_weighting+64;
+	pesi = idct_weighting;
+	pecx = idct_weighting+64;
 
 	const bool bSrcIsAligned = FW_REF::IsAligned(peax, 16);
 	if(bSrcIsAligned)
@@ -239,7 +204,7 @@ SYS_INLINE static FwStatus My_idct_SSE2(const Fw16s* pSrc, Fw16s* pDst, Fw32s co
 	{
 		xmm8 = _mm_loadu_si128((__m128i *)(peax+24)); 
 	}
-	pesi = My_idct_weighting + 96;
+	pesi = idct_weighting + 96;
 
 	if(bSrcIsAligned)
 	{
@@ -249,7 +214,7 @@ SYS_INLINE static FwStatus My_idct_SSE2(const Fw16s* pSrc, Fw16s* pDst, Fw32s co
 	{
 		xmm12 = _mm_loadu_si128((__m128i *)(peax+8)); 
 	}
-	pecx = My_idct_weighting + 32;
+	pecx = idct_weighting + 32;
 //	DCT_8_INV_ROW	//Row 4, tab_i_35 and Row 2, tab_i_17
 	xmm8 = _mm_shufflelo_epi16(xmm8, 0xD8);
 	xmm8 = _mm_shufflehi_epi16 (xmm8, 0xD8);
@@ -360,9 +325,9 @@ SYS_INLINE static FwStatus My_idct_SSE2(const Fw16s* pSrc, Fw16s* pDst, Fw32s co
 	xmm6 = xmm4;
 	xmm2 = xmm0;
 	xmm3 = _mm_load_si128((__m128i *)(pedx+24));
-	xmm1 = _mm_load_si128((__m128i *)(My_idct_weighting+144));
+	xmm1 = _mm_load_si128((__m128i *)(idct_weighting+144));
 	xmm0 = _mm_mulhi_epi16(xmm0, xmm1);
-	xmm5 = _mm_load_si128((__m128i *)(My_idct_weighting+128));
+	xmm5 = _mm_load_si128((__m128i *)(idct_weighting+128));
 	xmm1 = _mm_mulhi_epi16(xmm1, xmm3);
 	xmm1 = _mm_adds_epi16(xmm1, xmm3);
 	xmm4 = _mm_mulhi_epi16(xmm4, xmm5);
@@ -375,7 +340,7 @@ SYS_INLINE static FwStatus My_idct_SSE2(const Fw16s* pSrc, Fw16s* pDst, Fw32s co
 	xmm0 = _mm_adds_epi16(xmm0, xmm3);
 	xmm2 = _mm_subs_epi16(xmm2, xmm1);
 	xmm1 = xmm0;
-	xmm3 = _mm_load_si128((__m128i *)(My_idct_weighting+136));
+	xmm3 = _mm_load_si128((__m128i *)(idct_weighting+136));
 	xmm7 = _mm_mulhi_epi16(xmm7, xmm3);
 	xmm3 = _mm_mulhi_epi16(xmm3, _mm_load_si128((__m128i *)(pedx+16)));
 	xmm0 = _mm_adds_epi16(xmm0, xmm4);
@@ -388,7 +353,7 @@ SYS_INLINE static FwStatus My_idct_SSE2(const Fw16s* pSrc, Fw16s* pDst, Fw32s co
 	xmm6 = _mm_adds_epi16(xmm6, xmm2);
 	_mm_store_si128((__m128i *)(pedx+24), xmm6);
 	xmm1 = xmm4;
-	xmm0 = _mm_load_si128((__m128i *)(My_idct_weighting+152));
+	xmm0 = _mm_load_si128((__m128i *)(idct_weighting+152));
 	xmm2 = xmm0;
 	xmm4 = _mm_adds_epi16(xmm4, xmm5);
 	xmm1 = _mm_subs_epi16(xmm1, xmm5);

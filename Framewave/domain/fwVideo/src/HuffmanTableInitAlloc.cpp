@@ -11,9 +11,6 @@ This software is subject to the Apache v2.0 License.
 
 using namespace OPT_LEVEL;
 
-/*******************************************************************/
-
-
 namespace OPT_LEVEL
 {
 
@@ -317,7 +314,6 @@ void  TableEntry::insertTableEntry(std::vector<TableEntry>& rvte, int index)
 	}
 }
 
-/********************************************************************/
 template<typename T>
  void readValue(TableEntry* const pte, Fw32s const * const pt, unsigned int * const po)
 {

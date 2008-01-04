@@ -28,9 +28,9 @@ static inline Fw8u clip_uint8( int a )
         return (Fw8u)a;
 }
 
-SYS_FORCEALIGN_16 static Fw8u pb_01[16] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
-SYS_FORCEALIGN_16 static Fw8u pb_03[16] = {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3};
-SYS_FORCEALIGN_16 static Fw8u pb_a1[16] = {0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1,0xa1};
+extern SYS_FORCEALIGN_16 const Fw8u pb_01[16];
+extern SYS_FORCEALIGN_16 const Fw8u pb_03[16];
+extern SYS_FORCEALIGN_16 const Fw8u pb_a1[16];
 
 #define DIFF_GT_SSE2(m2, m3, m4, m5, m6)	\
 {	\

@@ -13,13 +13,11 @@ This software is subject to the Apache v2.0 License.
 
 using namespace OPT_LEVEL;
 
+extern const unsigned int NUM_COLS;
+extern const unsigned int NUM_ELEMS;
+
 namespace OPT_LEVEL
 {
-/************************************************************/
-const unsigned int NUM_ROWS = 8;
-const unsigned int NUM_COLS = 8;
-const unsigned int NUM_ELEMS = NUM_ROWS * NUM_COLS;
-/************************************************************/
 
 FwStatus SYS_INLINE quantInvIntra_MPEG2(Fw16s *pSrcDst, int &QP, Fw16s *pQPMatrix)
 {

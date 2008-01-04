@@ -8,6 +8,7 @@ This software is subject to the Apache v2.0 License.
 #include "FwSharedCode_SSE2.h"
 #include "fwVideo.h"
 #include "system.h"
+#include "Constants.h"
 
 using namespace OPT_LEVEL;
 
@@ -188,378 +189,31 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeChromaDcCoeffsCAVLC_H264_16s)(
 #define UINT32 Fw32s
 
 
-typedef struct  
-{
-    Fw8u len;
-    Fw8u uNumTrailingOnes;
-    Fw8u uNumCoeff;
-} vlc_coeff_token_t;
-
-// three entry
-#define VLC(a, b, c) {a, b, c}
-#define VLC2(a, b, c) VLC(a, b, c), VLC(a, b, c)
-#define VLC4(a, b, c) VLC2(a, b, c), VLC2(a, b, c)
-
 /* ++ cavlc tables ++ */
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff4_0[] = 
-{
-    VLC(6, 0, 2),   /* 0001 00 */
-    VLC(6, 3, 3),   /* 0001 01 */
-    VLC(6, 1, 2),   /* 0001 10 */
-    VLC(6, 0, 1),   /* 0001 11 */
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff4_1[] = 
-{
-    VLC2(7, 3, 4),   /* 0000 000(0) */
-    VLC(8, 2, 4),   /* 0000 0010 */
-    VLC(8, 1, 4),   /* 0000 0011 */
-    VLC2(7, 2, 3),   /* 0000 010(0) */
-    VLC2(7, 1, 3),   /* 0000 011(0) */
-    VLC4(6, 0, 4),   /* 0000 10(00) */
-    VLC4(6, 0, 3),   /* 0000 11(00) */
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff3_0[] =
-{
-    VLC(6, 0, 1),    /* 0000 00 */ 
-    VLC(6, 1, 1),    /* 0000 01 */ 
-    VLC((Fw8u)-1, (Fw8u)-1, (Fw8u)-1), /* 0000 10 */ 
-    VLC(6, 0, 0),    /* 0000 11 */
-    VLC(6, 0, 2),    /* 0001 00 */
-    VLC(6, 1, 2),    /* 0001 01 */
-    VLC(6, 2, 2),    /* 0001 10 */
-    VLC((Fw8u)-1, (Fw8u)-1, (Fw8u)-1), /* 0001 11 */
-    VLC(6, 0, 3),    /* 0010 00 */
-    VLC(6, 1, 3),    /* 0010 01 */
-    VLC(6, 2, 3),    /* 0010 10 */
-    VLC(6, 3, 3),    /* 0010 11 */
-    VLC(6, 0, 4),    /* 0011 00 */
-    VLC(6, 1, 4),    /* 0011 01 */
-    VLC(6, 2, 4),    /* 0011 10 */
-    VLC(6, 3, 4),    /* 0011 11 */
-    VLC(6, 0, 5),    /* 0100 00 */
-    VLC(6, 1, 5),    /* 0100 01 */
-    VLC(6, 2, 5),    /* 0100 10 */
-    VLC(6, 3, 5),    /* 0100 11 */
-    VLC(6, 0, 6),    /* 0101 00 */
-    VLC(6, 1, 6),    /* 0101 01 */
-    VLC(6, 2, 6),    /* 0101 10 */
-    VLC(6, 3, 6),    /* 0101 11 */
-    VLC(6, 0, 7),    /* 0110 00 */
-    VLC(6, 1, 7),    /* 0110 01 */
-    VLC(6, 2, 7),    /* 0110 10 */
-    VLC(6, 3, 7),    /* 0110 11 */
-    VLC(6, 0, 8),
-    VLC(6, 1, 8),
-    VLC(6, 2, 8),
-    VLC(6, 3, 8),
-    VLC(6, 0, 9),
-    VLC(6, 1, 9),
-    VLC(6, 2, 9),
-    VLC(6, 3, 9),
-    VLC(6, 0, 10),
-    VLC(6, 1, 10),
-    VLC(6, 2, 10),
-    VLC(6, 3, 10),
-    VLC(6, 0, 11),
-    VLC(6, 1, 11),
-    VLC(6, 2, 11),
-    VLC(6, 3, 11),
-    VLC(6, 0, 12),
-    VLC(6, 1, 12),
-    VLC(6, 2, 12),
-    VLC(6, 3, 12),
-    VLC(6, 0, 13),
-    VLC(6, 1, 13),
-    VLC(6, 2, 13),
-    VLC(6, 3, 13),
-    VLC(6, 0, 14),
-    VLC(6, 1, 14),
-    VLC(6, 2, 14),
-    VLC(6, 3, 14),
-    VLC(6, 0, 15),
-    VLC(6, 1, 15),
-    VLC(6, 2, 15),
-    VLC(6, 3, 15),
-    VLC(6, 0, 16),
-    VLC(6, 1, 16),
-    VLC(6, 2, 16),
-    VLC(6, 3, 16)
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_0[] = 
-{
-    VLC(4, 3, 7),   /* 1000 */
-    VLC(4, 3, 6),   /* 1001 */
-    VLC(4, 3, 5),   /* 1010 */
-    VLC(4, 3, 4),   /* 1011 */
-    VLC(4, 3, 3),   /* 1100 */
-    VLC(4, 2, 2),   /* 1101 */
-    VLC(4, 1, 1),   /* 1110 */
-    VLC(4, 0, 0),   /* 1111 */
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_1[] = 
-{
-    VLC(5, 1, 5),   /* 0100 0 */
-    VLC(5, 2, 5),
-    VLC(5, 1, 4),
-    VLC(5, 2, 4),
-    VLC(5, 1, 3),
-    VLC(5, 3, 8),
-    VLC(5, 2, 3),
-    VLC(5, 1, 2),
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_2[] = 
-{
-    VLC(6, 0, 3),   /* 0010 00 */
-    VLC(6, 2, 7),
-    VLC(6, 1, 7),
-    VLC(6, 0, 2),
-    VLC(6, 3, 9),
-    VLC(6, 2, 6),
-    VLC(6, 1, 6),
-    VLC(6, 0, 1),
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_3[] = 
-{
-    VLC(7, 0, 7),   /* 0001 000 */
-    VLC(7, 0, 6),
-    VLC(7, 2, 9),
-    VLC(7, 0, 5),
-    VLC(7, 3, 10),
-    VLC(7, 2, 8),
-    VLC(7, 1, 8),
-    VLC(7, 0, 4),
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_4[] = 
-{
-    VLC(8, 3, 12),   /* 0000 1000 */
-    VLC(8, 2, 11),
-    VLC(8, 1, 10),
-    VLC(8, 0, 9),
-    VLC(8, 3, 11),
-    VLC(8, 2, 10),
-    VLC(8, 1, 9),
-    VLC(8, 0, 8),
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_5[] = 
-{
-    VLC(9, 0, 12),   /* 0000 0100 0 */
-    VLC(9, 2, 13),
-    VLC(9, 1, 12),
-    VLC(9, 0, 11),
-    VLC(9, 3, 13),
-    VLC(9, 2, 12),
-    VLC(9, 1, 11),
-    VLC(9, 0, 10),
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_6[] = 
-{
-    VLC((Fw8u)-1, (Fw8u)-1, (Fw8u)-1),   /* 0000 0000 00 */
-    VLC(10, 0, 16),    /* 0000 0000 01 */
-    VLC(10, 3, 16),    /* 0000 0000 10 */
-    VLC(10, 2, 16),    /* 0000 0000 11 */
-    VLC(10, 1, 16),    /* 0000 0001 00 */
-    VLC(10, 0, 15),    /* 0000 0001 01 */
-    VLC(10, 3, 15),    /* 0000 0001 10 */
-    VLC(10, 2, 15),    /* 0000 0001 11 */
-    VLC(10, 1, 15),    /* 0000 0010 00 */
-    VLC(10, 0, 14),
-    VLC(10, 3, 14),
-    VLC(10, 2, 14),
-    VLC(10, 1, 14),
-    VLC(10, 0, 13),
-    VLC2(9, 1, 13),    /* 0000 0011 1(0) */
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_0[] = 
-{
-    VLC(4, 3, 4),  /* 0100 */
-    VLC(4, 3, 3),  /* 0101 */
-    VLC2(3, 2, 2), /* 011(0) */
-    VLC4(2, 1, 1), /* 10 */
-    VLC4(2, 0, 0), /* 11 */
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_1[] = 
-{
-    VLC(6, 3, 7),   /* 0001 00 */
-    VLC(6, 2, 4),   /* 0001 01 */
-    VLC(6, 1, 4),   /* 0001 10 */
-    VLC(6, 0, 2),   /* 0001 11 */
-    VLC(6, 3, 6),   /* 0010 00 */
-    VLC(6, 2, 3),   /* 0010 01 */
-    VLC(6, 1, 3),   /* 0010 10 */
-    VLC(6, 0, 1),   /* 0010 11*/
-    VLC2(5, 3, 5),   /* 0011 0(0)*/
-    VLC2(5, 1, 2),   /* 0011 1(0)*/
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_2[] = 
-{
-    VLC(9, 3, 9),   /* 0000 0010 0 */
-    VLC(9, 2, 7),   /* 0000 0010 1 */
-    VLC(9, 1, 7),   /* 0000 0011 0 */
-    VLC(9, 0, 6),   /* 0000 0011 1 */
-
-    VLC2(8, 0, 5),   /* 0000 0100 */
-    VLC2(8, 2, 6),   /* 0000 0101 */
-    VLC2(8, 1, 6),   /* 0000 0110 */
-    VLC2(8, 0, 4),   /* 0000 0111 */
-
-    VLC4(7, 3, 8),    /* 0000 100 */
-    VLC4(7, 2, 5),    /* 0000 101 */
-    VLC4(7, 1, 5),    /* 0000 110 */
-    VLC4(7, 0, 3),    /* 0000 111 */
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_3[] = 
-{
-    VLC(11, 3, 11),   /* 0000 0001 000 */
-    VLC(11, 2, 9),    /* 0000 0001 001 */
-    VLC(11, 1, 9),    /* 0000 0001 010 */
-    VLC(11, 0, 8),    /* 0000 0001 011 */
-    VLC(11, 3, 10),   /* 0000 0001 100 */
-    VLC(11, 2, 8),    /* 0000 0001 101 */
-    VLC(11, 1, 8),    /* 0000 0001 110 */
-    VLC(11, 0, 7),    /* 0000 0001 111 */
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_4[] = 
-{
-    VLC(12, 0, 11),   /* 0000 0000 1000 */
-    VLC(12, 2, 11),   /* 0000 0000 1001 */
-    VLC(12, 1, 11),   /* 0000 0000 1010 */
-    VLC(12, 0, 10),   /* 0000 0000 1011 */
-    VLC(12, 3, 12),   /* 0000 0000 1100 */
-    VLC(12, 2, 10),   /* 0000 0000 1101 */
-    VLC(12, 1, 10),   /* 0000 0000 1110 */
-    VLC(12, 0, 9),    /* 0000 0000 1111 */
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_5[] = 
-{
-    VLC(13, 3, 14),   /* 0000 0000 0100 0 */
-    VLC(13, 2, 13),   /* 0000 0000 0100 1 */
-    VLC(13, 1, 13),   /* 0000 0000 0101 0 */
-    VLC(13, 0, 13),   /* 0000 0000 0101 1 */
-    VLC(13, 3, 13),   /* 0000 0000 0110 0 */
-    VLC(13, 2, 12),   /* 0000 0000 0110 1 */
-    VLC(13, 1, 12),   /* 0000 0000 0111 0 */
-    VLC(13, 0, 12),   /* 0000 0000 0111 1 */
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_6[] = 
-{
-    VLC2((Fw8u)-1, (Fw8u)-1, (Fw8u)-1),  /* 0000 0000 0000 00 */
-    VLC2(13, 3, 15),   /* 0000 0000 0000 1(0) */
-    VLC(14, 3, 16),   /* 0000 0000 0001 00 */
-    VLC(14, 2, 16),   /* 0000 0000 0001 01 */
-    VLC(14, 1, 16),   /* 0000 0000 0001 10 */
-    VLC(14, 0, 16),   /* 0000 0000 0001 11 */
-
-    VLC(14, 1, 15),   /* 0000 0000 0010 00 */
-    VLC(14, 0, 15),   /* 0000 0000 0010 01 */
-    VLC(14, 2, 15),   /* 0000 0000 0010 10 */
-    VLC(14, 1, 14),   /* 0000 0000 0010 11 */
-    VLC2(13, 2, 14),   /* 0000 0000 0011 0(0) */
-    VLC2(13, 0, 14),   /* 0000 0000 0011 1(0) */
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_0[] = 
-{
-    VLC2((Fw8u)-1, (Fw8u)-1, (Fw8u)-1), /* 0000 0000 0000 000(0) */
-    VLC2(15, 1, 13),  /* 0000 0000 0000 001(0) */
-    VLC(16, 0, 16),   /* 0000 0000 0000 0100 */
-    VLC(16, 2, 16),   
-    VLC(16, 1, 16),
-    VLC(16, 0, 15),
-    VLC(16, 3, 16),
-    VLC(16, 2, 15),
-    VLC(16, 1, 15),
-    VLC(16, 0, 14),
-    VLC(16, 3, 15),
-    VLC(16, 2, 14),
-    VLC(16, 1, 14),
-    VLC(16, 0, 13),   /* 0000 0000 0000 1111 */
-    VLC2(15, 3, 14),  /* 0000 0000 0001 000(0) */
-    VLC2(15, 2, 13),
-    VLC2(15, 1, 12),
-    VLC2(15, 0, 12),
-    VLC2(15, 3, 13),
-    VLC2(15, 2, 12),
-    VLC2(15, 1, 11),
-    VLC2(15, 0, 11),  /* 0000 0000 0001 111(0) */
-    VLC4(14, 3, 12),  /* 0000 0000 0010 00(00) */
-    VLC4(14, 2, 11),
-    VLC4(14, 1, 10),
-    VLC4(14, 0, 10),
-    VLC4(14, 3, 11),
-    VLC4(14, 2, 10),
-    VLC4(14, 1, 9),
-    VLC4(14, 0, 9),  /* 0000 0000 0011 11(00) */
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_1[] = 
-{
-    VLC(13, 0, 8),   /* 0000 0000 0100 0 */
-    VLC(13, 2, 9),
-    VLC(13, 1, 8),
-    VLC(13, 0, 7),
-    VLC(13, 3, 10),
-    VLC(13, 2, 8),
-    VLC(13, 1, 7),
-    VLC(13, 0, 6),  /* 0000 0000 0111 1 */
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_2[] = 
-{
-    VLC(11, 3, 9),   /* 0000 0000 100 */
-    VLC(11, 2, 7),
-    VLC(11, 1, 6),
-    VLC(11, 0, 5),   /* 0000 0000 111 */
-    VLC2(10, 3, 8),  /* 0000 0001 00(0) */
-    VLC2(10, 2, 6),
-    VLC2(10, 1, 5),
-    VLC2(10, 0, 4),  /* 0000 0001 11(0) */
-    VLC4(9, 3, 7),  /* 0000 0010 0(0) */
-    VLC4(9, 2, 5),
-    VLC4(9, 1, 4),
-    VLC4(9, 0, 3),  /* 0000 0011 1(0) */
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_3[] = 
-{
-    VLC(8, 3, 6),   /* 0000 0100 */
-    VLC(8, 2, 4),
-    VLC(8, 1, 3),
-    VLC(8, 0, 2),
-    VLC2(7, 3, 5),  /* 0000 100 */
-    VLC2(7, 2, 3),
-    VLC4(6, 3, 4),  /* 0000 11 */
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_4[] = 
-{
-    VLC(6, 1, 2),    /* 0001 00 */
-    VLC(6, 0, 1),    /* 0001 01 */
-    VLC2(5, 3, 3)    /* 0001 1 */
-};
-
-static SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_5[] = 
-{
-    VLC((Fw8u)-1, (Fw8u)-1, (Fw8u)-1),   /* 000 */
-    VLC(3, 2, 2),      /* 001 */
-    VLC2(2, 1, 1),     /* 01 */
-    VLC4(1, 0, 0)      /* 1 */
-};
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff4_0[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff4_1[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff3_0[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_0[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_1[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_2[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_3[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_4[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_5[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff2_6[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_0[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_1[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_2[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_3[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_4[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_5[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff1_6[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_0[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_1[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_2[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_3[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_4[];
+extern SYS_FORCEALIGN_16 const vlc_coeff_token_t coeff0_5[]; 
+extern SYS_FORCEALIGN_16 const Fw32u GetBitsMask32[32];
 
 typedef struct
 {
@@ -606,18 +260,6 @@ AVS_INT read_bits(const AVS_BYTE * buffer, AVS_DWORD * totbitoffset, AVS_INT num
 #define ABS(x) ((x) > 0 ? (x) : -(x))
 
 /* initialise bitstream structure */
-
-static SYS_FORCEALIGN_16 const Fw32u GetBitsMask32[32] =
-{
-    0x00000000, 0x00000001, 0x00000003, 0x00000007,
-    0x0000000f, 0x0000001f, 0x0000003f, 0x0000007f,
-    0x000000ff, 0x000001ff, 0x000003ff, 0x000007ff,
-    0x00000fff, 0x00001fff, 0x00003fff, 0x00007fff,
-    0x0000ffff, 0x0001ffff, 0x0003ffff, 0x0007ffff,
-    0x000fffff, 0x001fffff, 0x003fffff, 0x007fffff,
-    0x00ffffff,	0x01ffffff, 0x03ffffff, 0x07ffffff,
-    0x0fffffff,	0x1fffffff, 0x3fffffff, 0x7fffffff,
-};
 
 static void SYS_INLINE BitstreamInit(Bitstream * const bs, 
 								   Fw32u	 *pBitStream, 
@@ -993,278 +635,32 @@ static const H264dec_mb_read_coff_token_t read_coeff[4] =
 
 #if 1
 
-// two entry
-#undef VLC
-#undef VLC2
-#undef VLC4
-#define VLC(a, b) {a, b}
-#define VLC2(a, b) VLC(a, b), VLC(a, b)
-#define VLC4(a, b) VLC2(a, b), VLC2(a, b)
-#define VLC8(a, b) VLC4(a, b), VLC4(a, b)
+extern const zero_count_t total_zero_table1_0[];
+extern const zero_count_t total_zero_table1_1[];
+extern const zero_count_t total_zero_table2_0[];
+extern const zero_count_t total_zero_table2_1[];
+extern const zero_count_t total_zero_table3_0[];
+extern const zero_count_t total_zero_table3_1[];
+extern const zero_count_t total_zero_table6_0[];
+extern const zero_count_t total_zero_table6_1[];
+extern const zero_count_t total_zero_table7_0[];
+extern const zero_count_t total_zero_table7_1[];
+extern const zero_count_t total_zero_table8_0[];
+extern const zero_count_t total_zero_table8_1[];
+extern const zero_count_t total_zero_table9_0[];
+extern const zero_count_t total_zero_table9_1[];
+extern const zero_count_t total_zero_table4_0[];
+extern const zero_count_t total_zero_table4_1[];
+extern const zero_count_t total_zero_table5_0[];
+extern const zero_count_t total_zero_table5_1[];
+extern const zero_count_t total_zero_table10_0[];
+extern const zero_count_t total_zero_table10_1[];
+extern const zero_count_t total_zero_table11_0[];
+extern const zero_count_t total_zero_table12_0[];
+extern const zero_count_t total_zero_table13_0[];
+extern const zero_count_t total_zero_table14_0[];
+extern const zero_count_t total_zero_table_chroma[3][8];
 
-typedef struct  
-{
-    Fw8u num;
-    Fw8u len;
-} zero_count_t;
-
-static const zero_count_t total_zero_table1_0[] = 
-{
-    VLC((Fw8u)-1, (Fw8u)-1),
-    VLC(15, 9), /* 0000 0000 1 */
-    VLC(14, 9),
-    VLC(13, 9), /* 0000 0001 1 */
-    VLC2(12, 8),/* 0000 0010 */
-    VLC2(11, 8),/* 0000 0011 */
-    VLC4(10, 7),/* 0000 010 */
-    VLC4(9, 7), /* 0000 011 */
-    VLC8(8, 6), /* 0000 10 */
-    VLC8(7, 6), /* 0000 11 */
-};
-
-static const zero_count_t total_zero_table1_1[] = 
-{
-    VLC2((Fw8u)-1, (Fw8u)-1),
-    VLC(6, 5), /* 0001 0 */
-    VLC(5, 5), /* 0001 1 */
-    VLC2(4, 4),/* 0010 */
-    VLC2(3, 4),/* 0011 */
-    VLC4(2, 3),/* 010 */
-    VLC4(1, 3),/* 011 */
-    VLC8(0, 1), /*1 */
-    VLC8(0, 1), /*1 */
-};
-
-static const zero_count_t total_zero_table2_0[] = 
-{
-    VLC(14, 6), /* 0000 00 */
-    VLC(13, 6),
-    VLC(12, 6),
-    VLC(11, 6),
-    VLC2(10, 5),/* 0001 0 */
-    VLC2(9, 5),
-};
-
-static const zero_count_t total_zero_table2_1[] = 
-{
-    VLC2((Fw8u)-1, (Fw8u)-1),
-    VLC(8, 4), /* 0010 */
-    VLC(7, 4), /* 0011 */
-    VLC(6, 4),
-    VLC(5, 4),
-    VLC2(4, 3),/* 011 */
-    VLC2(3, 3),/* 100 */
-    VLC2(2, 3), /*101 */
-    VLC2(1, 3), /*110 */
-    VLC2(0, 3), /*111 */
-};
-
-static const zero_count_t total_zero_table3_0[] = 
-{
-    VLC(13, 6), /* 0000 00 */
-    VLC(11, 6),
-    VLC2(12, 5),/* 0000 1 */
-    VLC2(10, 5),/* 0001 0 */
-    VLC2(9, 5), /* 0001 1 */
-};
-
-static const zero_count_t total_zero_table3_1[] = 
-{
-    VLC2((Fw8u)-1, (Fw8u)-1),
-    VLC(8, 4), /* 0010 */
-    VLC(5, 4), /* 0011 */
-    VLC(4, 4),
-    VLC(0, 4),
-    VLC2(7, 3),/* 011 */
-    VLC2(6, 3),/* 100 */
-    VLC2(3, 3), /*101 */
-    VLC2(2, 3), /*110 */
-    VLC2(1, 3), /*111 */
-};
-
-static const zero_count_t total_zero_table6_0[] = 
-{
-    VLC(10, 6), /* 0000 00 */
-    VLC(0, 6),
-    VLC2(1, 5),/* 0000 1 */
-    VLC4(8, 4),/* 0000 1 */
-};
-
-static const zero_count_t total_zero_table6_1[] = 
-{
-    VLC((Fw8u)-1, (Fw8u)-1),
-    VLC(9, 3), /* 001 */
-    VLC(7, 3), /* 010 */
-    VLC(6, 3),
-    VLC(5, 3),
-    VLC(4, 3),
-    VLC(3, 3),
-    VLC(2, 3)
-};
-
-static const zero_count_t total_zero_table7_0[] = 
-{
-    VLC(9, 6), /* 0000 00 */
-    VLC(0, 6),
-    VLC2(1, 5),/* 0000 1 */
-    VLC4(7, 4),/* 0001 */
-};
-
-static const zero_count_t total_zero_table7_1[] = 
-{
-    VLC((Fw8u)-1, (Fw8u)-1),
-    VLC(8, 3), /* 001 */
-    VLC(6, 3), /* 010 */
-    VLC(4, 3),
-    VLC(3, 3),
-    VLC(2, 3),
-    VLC2(5, 2)
-};
-
-static const zero_count_t total_zero_table8_0[] = 
-{
-    VLC(8, 6), /* 0000 00 */
-    VLC(0, 6),
-    VLC2(2, 5),/* 0000 1 */
-    VLC4(1, 4),/* 0001 */
-};
-
-static const zero_count_t total_zero_table8_1[] = 
-{
-    VLC((Fw8u)-1, (Fw8u)-1),
-    VLC(7, 3), /* 001 */
-    VLC(6, 3), /* 010 */
-    VLC(3, 3),
-    VLC2(5, 2),
-    VLC2(4, 2)
-};
-
-static const zero_count_t total_zero_table9_0[] = 
-{
-    VLC(1, 6), /* 0000 00 */
-    VLC(0, 6),
-    VLC2(7, 5),/* 0000 1 */
-    VLC4(2, 4),/* 0001 */
-};
-
-static const zero_count_t total_zero_table9_1[] = 
-{
-    VLC((Fw8u)-1, (Fw8u)-1),
-    VLC(5, 3), /* 001 */
-    VLC2(6, 2), /* 01 */
-    VLC2(4, 2),
-    VLC2(3, 2),
-};
-
-static const zero_count_t total_zero_table4_0[] = 
-{
-    VLC(12, 5), /* 0000 0 */
-    VLC(11, 5),
-    VLC(10, 5), /* 0000 1 */
-    VLC(0, 5),  /* 0001 1 */
-    VLC2(9, 4), /* 0010 */
-    VLC2(7, 4),
-    VLC2(3, 4),
-    VLC2(2, 4), /* 0101 */
-    VLC4(8, 3), /* 011 */
-};
-
-static const zero_count_t total_zero_table4_1[] = 
-{
-    VLC(6, 3),   /* 100 */
-    VLC(5, 3),   /* 101 */
-    VLC(4, 3),   /* 110 */
-    VLC(1, 3)    /* 111 */
-};
-
-static const zero_count_t total_zero_table5_0[] = 
-{
-    VLC(11, 5),  /* 0000 0 */
-    VLC(9, 5),
-    VLC2(10, 4), /* 0000 1 */
-    VLC2(8, 4),  /* 0010 */
-    VLC2(2, 4),
-    VLC2(1, 4),
-    VLC2(0, 4),
-    VLC4(7, 3)
-};
-
-static const zero_count_t total_zero_table5_1[] = 
-{
-    VLC(6, 3), /* 100 */
-    VLC(5, 3),
-    VLC(4, 3),
-    VLC(3, 3)
-};
-
-static const zero_count_t total_zero_table10_0[] = 
-{
-    VLC(1, 5), /* 0000 0 */
-    VLC(0, 5),
-    VLC2(6, 4), /* 0000 1 */
-};
-
-static const zero_count_t total_zero_table10_1[] = 
-{
-    VLC((Fw8u)-1, (Fw8u)-1),
-    VLC(2, 3), /* 001 */
-    VLC2(5, 2), /* 01 */
-    VLC2(4, 2),
-    VLC2(3, 2),
-};
-
-static const zero_count_t total_zero_table11_0[] = 
-{
-    VLC(0, 4), /* 0000 */
-    VLC(1, 4),
-    VLC2(2, 3), /* 010 */
-    VLC2(3, 3),
-    VLC2(5, 3),
-    VLC8(4, 1)
-};
-
-static const zero_count_t total_zero_table12_0[] = 
-{
-    VLC(0, 4), /* 0000 */
-    VLC(1, 4),
-    VLC2(4, 3), /* 010 */
-    VLC4(2, 2),
-    VLC8(3, 1)
-};
-
-static const zero_count_t total_zero_table13_0[] = 
-{
-    VLC(0, 3), /* 000 */
-    VLC(1, 3),
-    VLC2(3, 2), /* 01 */
-    VLC4(2, 1),
-};
-
-static const zero_count_t total_zero_table14_0[] = 
-{
-    VLC(0, 2), 
-    VLC(1, 2),
-    VLC2(2, 1),
-};
-
-static const zero_count_t total_zero_table_chroma[3][8] = 
-{
-    {
-        VLC(3, 3), 
-        VLC(2, 3),
-        VLC2(1, 2),
-        VLC4(0, 1)
-    },
-    {
-        VLC2(2, 2),
-        VLC2(1, 2),
-        VLC4(0, 1)
-    },
-    {
-        VLC4(1, 1),
-        VLC4(0, 1)
-    }
-};
 #endif
 
 
@@ -1593,41 +989,11 @@ static H264dec_mb_read_total_zero_t total_zero_f[] =
 	H264dec_mb_read_total_zero15
 };
 
-static const Fw8u prefix_table0[] = 
-{
-    (Fw8u)-1,
-    (Fw8u)3,
-    (Fw8u)2, (Fw8u)2,
-    (Fw8u)1, (Fw8u)1, (Fw8u)1, (Fw8u)1,
-    (Fw8u)0, (Fw8u)0, (Fw8u)0, (Fw8u)0, (Fw8u)0, (Fw8u)0, (Fw8u)0, (Fw8u)0
-};
+extern const Fw8u prefix_table0[];
+extern const Fw8u prefix_table1[];
+extern const Fw8u prefix_table2[];
+extern const Fw8u prefix_table3[];
 
-static const Fw8u prefix_table1[] = 
-{
-    (Fw8u)-1,
-    (Fw8u)7,
-    (Fw8u)6, (Fw8u)6,
-    (Fw8u)5, (Fw8u)5, (Fw8u)5, (Fw8u)5,
-    (Fw8u)4, (Fw8u)4, (Fw8u)4, (Fw8u)4, (Fw8u)4, (Fw8u)4, (Fw8u)4, (Fw8u)4
-};
-
-static const Fw8u prefix_table2[] =
-{
-    (Fw8u)-1,
-    (Fw8u)11,
-    (Fw8u)10, (Fw8u)10,
-    (Fw8u)9, (Fw8u)9, (Fw8u)9, (Fw8u)9,
-    (Fw8u)8, (Fw8u)8, (Fw8u)8, (Fw8u)8, (Fw8u)8, (Fw8u)8, (Fw8u)8, (Fw8u)8
-};
-
-static const Fw8u prefix_table3[] = 
-{
-    (Fw8u)-1,
-    (Fw8u)15,
-    (Fw8u)14, (Fw8u)14,
-    (Fw8u)13, (Fw8u)13, (Fw8u)13, (Fw8u)13,
-    (Fw8u)12, (Fw8u)12, (Fw8u)12, (Fw8u)12, (Fw8u)12, (Fw8u)12, (Fw8u)12, (Fw8u)12
-};
 Fw8u  static H264dec_mb_read_level_prefix(Bitstream * const tbs)
 {
     Fw8u prefix;
@@ -1673,75 +1039,10 @@ Fw8u  static H264dec_mb_read_level_prefix_sse2(Bitstream * const tbs)
 
     return prefix;
 }
-static const zero_count_t run_before_table_0[7][8] = 
-{
-    {
-        VLC4(1, 1),
-        VLC4(0, 1)
-    },
-    {
-        VLC2(2, 2),
-        VLC2(1, 2),
-        VLC4(0, 1)
-    },
-    {
-        VLC2(3, 2),
-        VLC2(2, 2),
-        VLC2(1, 2),
-        VLC2(0, 2)
-    },
-    {
-        VLC(4, 3),
-        VLC(3, 3),
-        VLC2(2, 2),
-        VLC2(1, 2),
-        VLC2(0, 2)
-    },
-    {
-        VLC(5, 3),
-        VLC(4, 3),
-        VLC(3, 3),
-        VLC(2, 3),
-        VLC2(1, 2),
-        VLC2(0, 2),
-    },
-    {
-        VLC(1, 3),
-        VLC(2, 3),
-        VLC(4, 3),
-        VLC(3, 3),
-        VLC(6, 3),
-        VLC(5, 3),
-        VLC2(0, 2)
-    },
-    {
-        VLC((Fw8u)-1, (Fw8u)-1),
-        VLC(6, 3),
-        VLC(5, 3),
-        VLC(4, 3),
-        VLC(3, 3),
-        VLC(2, 3),
-        VLC(1, 3),
-        VLC(0, 3)
-    }
-};
-static const Fw8u run_before_table_1[] =
-{
-    (Fw8u)-1,
-    (Fw8u)10,
-    (Fw8u)9, (Fw8u)9,
-    (Fw8u)8, (Fw8u)8, (Fw8u)8, (Fw8u)8,
-    (Fw8u)7, (Fw8u)7, (Fw8u)7, (Fw8u)7, (Fw8u)7, (Fw8u)7, (Fw8u)7,(Fw8u) 7
-};
 
-static const Fw8u run_before_table_2[] =
-{
-    (Fw8u)-1,
-    (Fw8u)14,
-    (Fw8u)13, (Fw8u)13,
-    (Fw8u)12, (Fw8u)12, (Fw8u)12, (Fw8u)12,
-    (Fw8u)11, (Fw8u)11, (Fw8u)11, (Fw8u)11, (Fw8u)11, (Fw8u)11, (Fw8u)11, (Fw8u)11
-};
+extern const zero_count_t run_before_table_0[7][8];
+extern const Fw8u run_before_table_1[];
+extern const Fw8u run_before_table_2[];
 
 Fw8u  static H264dec_mb_read_run_before(Bitstream * const tbs, Fw8u zero_left)
 {
