@@ -29,8 +29,8 @@ static void FdctQuant_SSE2(const Fw16s *pSrc, Fw16s *pDst, const Fw16u *pQuantFw
 static int IdctQuant_LS_SSE2(const Fw16s *pSrc, Fw8u *pDst, int dstStp, const Fw16u *pQuantInvTable);
 static void FdctQuant_LS_SSE2(const Fw8u *pSrc, int srcStp, Fw16s *pDst, const Fw16u *pQuantFwdTable);
 
-static void Init_Idct(float c[8][8]);
-static void Idct(float c[8][8], const Fw16s *pSrc, Fw16s *pDst);
+extern const float c[8][8];
+static void Idct(const float c[8][8], const Fw16s *pSrc, Fw16s *pDst);
 static void C_faandct(const Fw16s *pSrc, Fw16s *pDst, float round);
 
 #ifndef __JPEGDCT
@@ -155,9 +155,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDCTQuantInv8x8_JPEG_16s_C1)(const Fw16s *pSrc
 		break;
 	default:
 		int q;
-		float c[8][8];
-		Init_Idct(c);
-        
         for(int i=0; i<64; i++) {
 			q = pQuantInvTable[i];
 			*(pDst+i) = (Fw16s)(*(pSrc+i)* q) ;
@@ -182,9 +179,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDCTQuantInv8x8_JPEG_16s_C1I)(Fw16s *pDst, con
 	   break;
 	default:
 		int q;
-		float c[8][8];
-		Init_Idct(c);
-
 		for(int i=0; i<64; i++) {
 			q = pQuantInvTable[i];
 			*(pDst+i) = (Fw16s)(*(pDst+i)*q) ;
@@ -215,11 +209,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDCTQuantInv8x8LS_JPEG_16s8u_C1R)(const Fw16s 
 		break;
 	default:
 		int q, i, j;
-		float c[8][8];
 	    Fw16s ppSrc[64];
-
-		Init_Idct(c);
-
 		for(i=0; i<8; i++) {
 		  for(j=0; j<8; j++) {
 		 	q = pQuantInvTable[8*i+j];
@@ -1955,24 +1945,7 @@ void FdctQuant_LS_SSE2(const Fw8u *pSrc, int srcStp, Fw16s *pDst, const Fw16u *p
 
 
 //------------------------------------------------------------------------
-//Start internal function for DCT
-#define PI 3.14159265358979323846
-//static float c[8][8]; /* transform coefficients */
-void Init_Idct(float c[8][8])
-{
-	int i, j;
-	float s;
-
-	for (i=0; i<8; i++) {
-		s = (float)((i==0) ? sqrt(0.125) : 0.5);
-
-		for (j=0; j<8; j++)
-			c[i][j] = s * (float)(cos((PI/8.0)*i*(j+0.5)));
-	}
-
-}
-
-void Idct(float c[8][8], const Fw16s *pSrc, Fw16s *pDst)
+void Idct(const float c[8][8], const Fw16s *pSrc, Fw16s *pDst)
 {
 	int i, j, k;
 	float partialProduct;
