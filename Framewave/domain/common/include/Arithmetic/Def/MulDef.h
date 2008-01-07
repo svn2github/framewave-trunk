@@ -227,6 +227,34 @@ namespace DEF_MUL
 				}      
 			};
 
+            template<class TSD>
+            struct Mul_8u_PosScale : fe3<TSD, OPT_LEVEL::C1, TSD, OPT_LEVEL::C1, TSD, OPT_LEVEL::C1>
+                {
+                XMM128 scaleMasks[4];
+                int scale;
+
+                    FE_CUSTOM_SSE2_REF
+                    IV SSE2_Init()
+	                {
+		                MUL_SSE2::MUL::Init::C1::Mul_8u_setup<1>(scale, scaleMasks);
+	                }
+                    Mul_8u_PosScale(int scaleFactor)
+                    {  
+                        scale = scaleFactor;
+                    }
+
+                    template<IsAlign ia>
+                    IV Custom1D_sse2(const TSD *s1, const TSD *s2, TSD *d, U32 pixCount) const 								
+                    {			
+                        Mul_8u_unit_PosScale_Custom<TSD, OPT_LEVEL::C1, ia>(s1, s2, d, pixCount, scale, scaleMasks);
+                    }				
+                    IV REFR(const TSD *s1, const TSD *s2, TSD *d) const		// REFR Pixel function
+	                {
+		                MUL_REF::MUL::MulI(s1, OPT_LEVEL::C1, s2, OPT_LEVEL::C1, d, OPT_LEVEL::C1, scale);
+	                } 
+                };
+
+
 			template <int scaleType>
 			struct Mul_16s	: public MulI< Fw16s, Fw16s, Fw16s, OPT_LEVEL::C1 >
 			{
@@ -468,6 +496,33 @@ namespace DEF_MUL
 					MUL_SSE2::MUL::Unit::C1::Mul_8u_unit<scaleType>(r.src1[2], r.src2[2], r.dst[2], scaleMasks);
 				}      
 			};
+
+            template<class TSD>
+            struct Mul_8u_PosScale : fe3<TSD, OPT_LEVEL::C3, TSD, OPT_LEVEL::C3, TSD, OPT_LEVEL::C3>
+                {
+                XMM128 scaleMasks[4];
+                int scale;
+
+                    FE_CUSTOM_SSE2_REF
+                    IV SSE2_Init()
+	                {
+		                MUL_SSE2::MUL::Init::C1::Mul_8u_setup<1>(scale, scaleMasks);
+	                }
+                    Mul_8u_PosScale(int scaleFactor)
+                    {  
+                        scale = scaleFactor;
+                    }
+
+                    template<IsAlign ia>
+                    IV Custom1D_sse2(const TSD *s1, const TSD *s2, TSD *d, U32 pixCount) const 								
+                    {			
+                        Mul_8u_unit_PosScale_Custom<TSD, OPT_LEVEL::C3, ia>(s1, s2, d, pixCount, scale, scaleMasks);
+                    }				
+                    IV REFR(const TSD *s1, const TSD *s2, TSD *d) const		// REFR Pixel function
+	                {
+		                MUL_REF::MUL::MulI(s1, OPT_LEVEL::C3, s2, OPT_LEVEL::C3, d, OPT_LEVEL::C3, scale);
+	                } 
+                };
 
 			template <int scaleType>
 			struct Mul_16s	: public MulI< Fw16s, Fw16s, Fw16s, OPT_LEVEL::C3 >
@@ -711,11 +766,34 @@ namespace DEF_MUL
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					MUL_SSE2::MUL::Unit::C1::Mul_8u_unit<scaleType>(r.src1[0], r.src2[0], r.dst[0], scaleMasks);
-					MUL_SSE2::MUL::Unit::C1::Mul_8u_unit<scaleType>(r.src1[1], r.src2[1], r.dst[1], scaleMasks);
-					MUL_SSE2::MUL::Unit::C1::Mul_8u_unit<scaleType>(r.src1[2], r.src2[2], r.dst[2], scaleMasks);
-					MUL_SSE2::MUL::Unit::C1::Mul_8u_unit<scaleType>(r.src1[3], r.src2[3], r.dst[3], scaleMasks);
 				}      
 			};
+            template<class TSD>
+            struct Mul_8u_PosScale : fe3<TSD, OPT_LEVEL::C4, TSD, OPT_LEVEL::C4, TSD, OPT_LEVEL::C4>
+                {
+                XMM128 scaleMasks[4];
+                int scale;
+
+                    FE_CUSTOM_SSE2_REF
+                    IV SSE2_Init()
+	                {
+		                MUL_SSE2::MUL::Init::C1::Mul_8u_setup<1>(scale, scaleMasks);
+	                }
+                    Mul_8u_PosScale(int scaleFactor)
+                    {  
+                        scale = scaleFactor;
+                    }
+
+                    template<IsAlign ia>
+                    IV Custom1D_sse2(const TSD *s1, const TSD *s2, TSD *d, U32 pixCount) const 								
+                    {			
+                        Mul_8u_unit_PosScale_Custom<TSD, OPT_LEVEL::C4, ia>(s1, s2, d, pixCount, scale, scaleMasks);
+                    }				
+                    IV REFR(const TSD *s1, const TSD *s2, TSD *d) const		// REFR Pixel function
+	                {
+		                MUL_REF::MUL::MulI(s1, OPT_LEVEL::C4, s2, OPT_LEVEL::C4, d, OPT_LEVEL::C4, scale);
+	                } 
+                };
 
 			template <int scaleType>
 			struct Mul_16s	: public MulI< Fw16s, Fw16s, Fw16s, OPT_LEVEL::C4 >
