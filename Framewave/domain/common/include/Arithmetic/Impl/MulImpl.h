@@ -590,9 +590,22 @@ namespace MUL_SSE2
 				template <int scaleType>
 				ISV Mul_8u_unit( const XMM128& src1, const XMM128& src2, XMM128& dst, const XMM128 *scaleMasks)
 				{
-						__m128i srcLo = src1.i, srcHi, tlo, thi, zero;
+						__m128i tlo, thi;
 
-						srcHi = CBL_SSE2::Multiply_8u_16s_Lo(srcLo, src2.i);
+                        __m128i srcLo, srcHi, src2Lo, src2Hi;
+
+						const __m128i zero =  _mm_setzero_si128();
+
+	                    srcHi   = _mm_unpackhi_epi8( src1.i, zero );
+	                    srcLo   = _mm_unpacklo_epi8( src1.i, zero );
+
+                        src2Hi  = _mm_unpackhi_epi8( src2.i, zero );
+	                    src2Lo  = _mm_unpacklo_epi8( src2.i, zero );
+
+                        srcLo	= _mm_mullo_epi16(srcLo, src2Lo);
+                        srcHi	= _mm_mullo_epi16(srcHi, src2Hi);
+
+ 
 
 						switch (scaleType)
 						{
@@ -603,8 +616,28 @@ namespace MUL_SSE2
 							srcLo	= _mm_xor_si128(_mm_srai_epi16(srcLo, 15), srcLo);
 							srcHi	= _mm_xor_si128(_mm_srai_epi16(srcHi, 15), srcHi);
 							break;
+
+                        case 1://;
+							
+                            __m128i mask;
+                            mask	= _mm_and_si128(srcLo,  scaleMasks[2].i);		// 111 mask (for scale 2)
+		                    mask	= _mm_cmpgt_epi16(mask, scaleMasks[1].i);		// 010		(for scale 2)
+
+		                    srcLo	= _mm_srl_epi16(srcLo, scaleMasks[0].i);		// rsh by scale - 1
+		                    srcLo	= _mm_sub_epi16(srcLo, mask);				// i.e., if mask true, then +1
+
+		                    srcLo =	  _mm_srli_epi16(srcLo, 1);					// rsh one more to make total rsh by scale
+
+                            mask	= _mm_and_si128(srcHi,  scaleMasks[2].i);		// 111 mask (for scale 2)
+		                    mask	= _mm_cmpgt_epi16(mask, scaleMasks[1].i);		// 010		(for scale 2)
+
+		                    srcHi	= _mm_srl_epi16(srcHi, scaleMasks[0].i);		// rsh by scale - 1
+		                    srcHi	= _mm_sub_epi16(srcHi, mask);				// i.e., if mask true, then +1
+
+		                    srcHi =	  _mm_srli_epi16(srcHi, 1);					// rsh one more to make total rsh by scale
+                            break;
+
 						case -1:
-							zero	= _mm_setzero_si128();
 							tlo		= _mm_unpacklo_epi16(srcLo, zero);
 							thi		= _mm_unpackhi_epi16(srcLo, zero);
 
@@ -622,12 +655,14 @@ namespace MUL_SSE2
 							srcHi	= _mm_packs_epi32(tlo, thi);
 
 							break;
-						default:;
-							srcLo	= CBL_SSE2::Scale_16s<scaleType>(srcLo, (__m128i*) scaleMasks);
-							srcHi	= CBL_SSE2::Scale_16s<scaleType>(srcHi, (__m128i*) scaleMasks);
+						
+
 						}
 						dst.i	= _mm_packus_epi16(srcLo, srcHi);
 				}
+
+ 
+      
 
 
 				template <int scaleType>
@@ -1426,6 +1461,58 @@ namespace MUL_SSE2
 
 	}
 }
+
+template<class TSD, CH c, IsAlign ia>
+ISV Mul_8u_unit_PosScale_Custom(const TSD *s1, const TSD *s2, TSD *d, U32 &pixCount, int /*scale*/, const XMM128* scaleMasks)
+    {
+    TSD  *end	  = d + pixCount * ChannelCount(c);
+    XMM128 src1, src2;    
+    const __m128i scaleMask0 = scaleMasks[0].i, scaleMask1 = scaleMasks[1].i, scaleMask2 = scaleMasks[2].i;
+   
+    for( ; d < end; s1+=16, s2+=16, d+=16)
+        {
+            LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_TRUE>(&src1, (const void*)s1);
+            LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_TRUE>(&src2, (const void*)s2);
+
+            __m128i srcHi, &src2Lo = src2.i , src2Hi;
+            XMM128 &srcLo = src1;
+						    
+            srcHi   = _mm_unpackhi_epi8( srcLo.i, _mm_setzero_si128() );
+            srcLo.i   = _mm_unpacklo_epi8( srcLo.i, _mm_setzero_si128() );
+
+            src2Hi  = _mm_unpackhi_epi8( src2Lo, _mm_setzero_si128() );
+            src2Lo  = _mm_unpacklo_epi8( src2Lo, _mm_setzero_si128() );
+
+            srcLo.i	= _mm_mullo_epi16(srcLo.i, src2Lo);
+            srcHi	= _mm_mullo_epi16(srcHi, src2Hi);
+            
+            __m128i mask;
+
+    
+            mask	= _mm_and_si128(srcLo.i,  scaleMask2);		// 111 mask (for scale 2)
+            mask	= _mm_cmpgt_epi16(mask, scaleMask1);		// 010		(for scale 2)
+
+            srcLo.i	= _mm_srl_epi16(srcLo.i, scaleMask0);		// rsh by scale - 1
+            srcLo.i	= _mm_sub_epi16(srcLo.i, mask);				// i.e., if mask true, then +1
+
+            srcLo.i =	  _mm_srli_epi16(srcLo.i, 1);					// rsh one more to make total rsh by scale
+
+            mask	= _mm_and_si128(srcHi,  scaleMask2);		// 111 mask (for scale 2)
+            mask	= _mm_cmpgt_epi16(mask, scaleMask1);		// 010		(for scale 2)
+
+            srcHi	= _mm_srl_epi16(srcHi, scaleMask0);		// rsh by scale - 1
+            srcHi	= _mm_sub_epi16(srcHi, mask);				// i.e., if mask true, then +1
+
+            srcHi =	  _mm_srli_epi16(srcHi, 1);					// rsh one more to make total rsh by scale
+
+            srcLo.i	= _mm_packus_epi16(srcLo.i, srcHi);
+           
+           //XMM128 &dst = srcLo;
+
+           LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_FLSE>(&srcLo, (void*)(d));
+        }
+    }
+
 
 } // namespace OPT_LEVEL
 
