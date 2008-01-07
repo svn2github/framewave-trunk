@@ -986,7 +986,7 @@ extern const unsigned int NUM_ELEMS = NUM_ROWS * NUM_COLS;
 extern const unsigned int DC_ELEM_INDEX = 0;
 
 // used by AANIDCT
-extern const float c[8][8] = {
+extern const float idct_coefficients[8][8] = {
     { 0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F,      0.35355338F },
     {0.49039263F,      0.41573480F,      0.27778512F,     0.097545162F,    -0.097545162F,     -0.27778512F,     -0.41573480F,     -0.49039263F },
     {0.46193975F,     0.19134171F,     -0.19134171F,     -0.46193975F,     -0.46193975F,     -0.19134171F,      0.19134171F,      0.46193975F },

@@ -29,7 +29,7 @@ static void FdctQuant_SSE2(const Fw16s *pSrc, Fw16s *pDst, const Fw16u *pQuantFw
 static int IdctQuant_LS_SSE2(const Fw16s *pSrc, Fw8u *pDst, int dstStp, const Fw16u *pQuantInvTable);
 static void FdctQuant_LS_SSE2(const Fw8u *pSrc, int srcStp, Fw16s *pDst, const Fw16u *pQuantFwdTable);
 
-extern const float c[8][8];
+extern const float idct_coefficients[8][8];
 static void Idct(const float c[8][8], const Fw16s *pSrc, Fw16s *pDst);
 static void C_faandct(const Fw16s *pSrc, Fw16s *pDst, float round);
 
@@ -160,7 +160,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDCTQuantInv8x8_JPEG_16s_C1)(const Fw16s *pSrc
 			*(pDst+i) = (Fw16s)(*(pSrc+i)* q) ;
 		}
 
-		Idct(c, pDst, pDst);
+		Idct(idct_coefficients, pDst, pDst);
 	}
 
 	return fwStsNoErr;
@@ -184,7 +184,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDCTQuantInv8x8_JPEG_16s_C1I)(Fw16s *pDst, con
 			*(pDst+i) = (Fw16s)(*(pDst+i)*q) ;
 		}	
         
-        Idct(c, pDst, pDst);
+        Idct(idct_coefficients, pDst, pDst);
 	}
 
 	return fwStsNoErr;
@@ -217,7 +217,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDCTQuantInv8x8LS_JPEG_16s8u_C1R)(const Fw16s 
 			}
 		}
 
-		Idct(c, ppSrc, ppSrc);
+		Idct(idct_coefficients, ppSrc, ppSrc);
 
 		for(i=0; i<8; i++) {
 		  for(j=0; j<8; j++) {

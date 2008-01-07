@@ -24,8 +24,8 @@ using namespace OPT_LEVEL;
 static int  Idct_SSE2(const Fw16s* pSrc, Fw16s* pDst);
 static void Fdct_SSE2(const Fw16s* pSrc, Fw16s* pDst);
 
-static void Init_Idct(float c[8][8]);
-static void Idct(float c[8][8], const Fw16s* pSrc, Fw16s* pDst);
+extern const float idct_coefficients[8][8];
+static void Idct(const float c[8][8], const Fw16s* pSrc, Fw16s* pDst);
 static void C_faandct(const Fw16s* pSrc, Fw16s* pDst, float round);
 
 // Perform 8x8 forward DCT transformation
@@ -67,9 +67,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_16s_C1)(const Fw16s* pSrc, Fw16s* p
 		Idct_SSE2(pSrc, pDst);
 		break;
 	default:
-		float c[8][8];
-		Init_Idct(c);
-		Idct(c, pSrc, pDst);
+		Idct(idct_coefficients, pSrc, pDst);
 	}
 
 	return fwStsNoErr;
@@ -828,25 +826,8 @@ static void Fdct_SSE2(const Fw16s* pSrc, Fw16s* pDst)
 
 
 //------------------------------------------------------------------------
-//Start internal function for DCT
-#define PI 3.14159265358979323846
-//static float c[8][8]; 
-// transform coefficients
-void Init_Idct(float c[8][8])
-{
-	int i, j;
-	float s;
 
-	for (i=0; i<8; i++) {
-		s = (float)((i==0) ? sqrt(0.125) : 0.5);
-
-		for (j=0; j<8; j++)
-			c[i][j] = s * (float)(cos((PI/8.0)*i*(j+0.5)));
-	}
-
-}
-
-void Idct(float c[8][8], const Fw16s* pSrc, Fw16s* pDst)
+void Idct(const float c[8][8], const Fw16s* pSrc, Fw16s* pDst)
 {
 	int i, j, k;
 	float partialProduct;

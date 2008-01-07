@@ -13,7 +13,7 @@ This software is subject to the Apache v2.0 License.
 using namespace OPT_LEVEL;
 
 extern SYS_FORCEALIGN_16 const Fw16s idct_weighting[];
-extern const float c[8][8];
+extern const float idct_coefficients[8][8];
 
 static void Idct(const float c[8][8], const Fw16s *pSrc, Fw16s *pDst)
 {
@@ -458,7 +458,7 @@ FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s_C1R)(cons
 		break;
 
     default:             
-        Idct(c, pSrc, eightxEightDst);
+        Idct(idct_coefficients, pSrc, eightxEightDst);
         for(int i=0;i<8;i++)
             {
             for(int j=0;j<8;j++)
@@ -515,7 +515,7 @@ FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s8u_C1R)(co
 		break;
 
     default:    
-        Idct(c, pSrc, eightxEightDst);
+        Idct(idct_coefficients, pSrc, eightxEightDst);
         for(int i=0;i<8;i++)
             {
             for(int j=0;j<8;j++)
@@ -596,8 +596,8 @@ FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s_P2C2R)(co
 		break;
 
     default:                
-		Idct(c, pSrcU, eightxEightDstU);
-		Idct(c, pSrcV, eightxEightDstV);
+		Idct(idct_coefficients, pSrcU, eightxEightDstU);
+		Idct(idct_coefficients, pSrcV, eightxEightDstV);
         for(int i=0;i<8;i++)
             {
             for(int j=0,k=0;j<8;j++,k+=2)
@@ -674,8 +674,8 @@ FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s8u_P2C2R)(
 		break;
 
 	default:          
-		Idct(c, pSrcU, eightxEightDstU);
-		Idct(c, pSrcV, eightxEightDstV);
+		Idct(idct_coefficients, pSrcU, eightxEightDstU);
+		Idct(idct_coefficients, pSrcV, eightxEightDstV);
         for(int i=0;i<8;i++)
             {
             for(int j=0,k=0;j<8;j++,k+=2)
