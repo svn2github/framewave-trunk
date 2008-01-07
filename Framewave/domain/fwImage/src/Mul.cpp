@@ -22,8 +22,8 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiMul_8u_C1IRSfs )( cA8U *s,  int sStep,   A8U 
 	}																								
 	else																							
 	{
-		DEF_MUL::MUL::C1::Mul_8u<1> data(scale);
-		return OPT_LEVEL::fe< DEF_MUL::MUL::C1::Mul_8u<1> >(data, s, sStep, sd, sdStep, sd, sdStep, roi);
+        DEF_MUL::MUL::C1::Mul_8u_PosScale<A8U> data(scale);						 
+		return OPT_LEVEL::fe< DEF_MUL::MUL::C1::Mul_8u_PosScale<A8U> > (data, s, sStep, sd, sdStep, sd, sdStep, roi);
 	}
 }
 
@@ -41,8 +41,8 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiMul_8u_C3IRSfs )( cA8U *s,  int sStep,   A8U 
 	}																								
 	else																							
 	{
-		DEF_MUL::MUL::C3::Mul_8u<1> data(scale);
-		return OPT_LEVEL::fe< DEF_MUL::MUL::C3::Mul_8u<1> >(data, s, sStep, sd, sdStep, sd, sdStep, roi);
+		DEF_MUL::MUL::C3::Mul_8u_PosScale<A8U> data(scale);						 
+		return OPT_LEVEL::fe< DEF_MUL::MUL::C3::Mul_8u_PosScale<A8U> > (data, s, sStep, sd, sdStep, sd, sdStep, roi);
 	}
 }
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiMul_8u_AC4IRSfs)( cA8U *s,  int sStep,   A8U *sd, int sdStep, ASZ roi, int scale)
@@ -77,8 +77,8 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiMul_8u_C4IRSfs )( cA8U *s,  int sStep,   A8U 
 	}																								
 	else																							
 	{
-		DEF_MUL::MUL::C4::Mul_8u<1> data(scale);
-		return OPT_LEVEL::fe< DEF_MUL::MUL::C4::Mul_8u<1> >(data, s, sStep, sd, sdStep, sd, sdStep, roi);
+		DEF_MUL::MUL::C4::Mul_8u_PosScale<A8U> data(scale);						 
+		return OPT_LEVEL::fe< DEF_MUL::MUL::C4::Mul_8u_PosScale<A8U> > (data, s, sStep, sd, sdStep, sd, sdStep, roi);
 	}
 }
 
@@ -95,9 +95,9 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiMul_8u_C1RSfs  )( cA8U *s1, int s1Step, cA8U 
 		return OPT_LEVEL::fe< DEF_MUL::MUL::C1::Mul_8u<-1> >(data, s1, s1Step, s2, s2Step, d, dStep, roi);
 	}																							
 	else																						
-	{																	 
-		DEF_MUL::MUL::C1::Mul_8u<1> data(scale);						 
-		return OPT_LEVEL::fe< DEF_MUL::MUL::C1::Mul_8u<1> > (data, s1, s1Step, s2, s2Step, d, dStep, roi);
+	{	
+        DEF_MUL::MUL::C1::Mul_8u_PosScale<A8U> data(scale);						 
+		return OPT_LEVEL::fe< DEF_MUL::MUL::C1::Mul_8u_PosScale<A8U> > (data, s1, s1Step, s2, s2Step, d, dStep, roi);
 	}
 }
 
@@ -116,8 +116,8 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiMul_8u_C3RSfs  )( cA8U *s1, int s1Step, cA8U 
 	}																							
 	else																						
 	{																	 
-		DEF_MUL::MUL::C3::Mul_8u<1> data(scale);						 
-		return OPT_LEVEL::fe< DEF_MUL::MUL::C3::Mul_8u<1> > (data, s1, s1Step, s2, s2Step, d, dStep, roi);
+		DEF_MUL::MUL::C3::Mul_8u_PosScale<A8U> data(scale);						 
+		return OPT_LEVEL::fe< DEF_MUL::MUL::C3::Mul_8u_PosScale<A8U> > (data, s1, s1Step, s2, s2Step, d, dStep, roi);
 	}
 }
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiMul_8u_AC4RSfs )( cA8U *s1, int s1Step, cA8U *s2, int s2Step, A8U *d, int dStep, ASZ roi, int scale)
@@ -152,8 +152,8 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiMul_8u_C4RSfs  )( cA8U *s1, int s1Step, cA8U 
 	}																							
 	else																						
 	{																	 
-		DEF_MUL::MUL::C4::Mul_8u<1> data(scale);						 
-		return OPT_LEVEL::fe< DEF_MUL::MUL::C4::Mul_8u<1> > (data, s1, s1Step, s2, s2Step, d, dStep, roi);
+		DEF_MUL::MUL::C4::Mul_8u_PosScale<A8U> data(scale);						 
+		return OPT_LEVEL::fe< DEF_MUL::MUL::C4::Mul_8u_PosScale<A8U> > (data, s1, s1Step, s2, s2Step, d, dStep, roi);
 	}
 }
 
