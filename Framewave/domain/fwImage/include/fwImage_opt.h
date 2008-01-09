@@ -2622,20 +2622,20 @@ OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterRobertsUp_32f
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterRobertsUp_32f_C3R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize );
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterRobertsUp_32f_AC4R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize );
 
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8u_C1R)( const Fw8u * pSrc, int srcStep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8u_C3R)( const Fw8u * pSrc, int srcStep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8u_C4R)( const Fw8u * pSrc, int srcStep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8u_AC4R)( const Fw8u * pSrc, int srcStep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_16s_C1R)( const Fw16s * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_16s_C3R)( const Fw16s * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_16s_C4R)( const Fw16s * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_16s_AC4R)( const Fw16s * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_32f_C1R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_32f_C3R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_32f_C4R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_32f_AC4R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8u16s_C1R)( const Fw8u * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8s16s_C1R)( const Fw8s * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_8u_C1R)( const Fw8u * pSrc, int srcStep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_8u_C3R)( const Fw8u * pSrc, int srcStep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_8u_C4R)( const Fw8u * pSrc, int srcStep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_8u_AC4R)( const Fw8u * pSrc, int srcStep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_16s_C1R)( const Fw16s * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_16s_C3R)( const Fw16s * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_16s_C4R)( const Fw16s * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_16s_AC4R)( const Fw16s * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_32f_C1R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_32f_C3R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_32f_C4R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_32f_AC4R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_8u16s_C1R)( const Fw8u * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_8s16s_C1R)( const Fw8s * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
 
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterGauss_8u_C1R)( const Fw8u * pSrc, int srcStep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterGauss_8u_C3R)( const Fw8u * pSrc, int srcStep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );

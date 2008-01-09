@@ -300,7 +300,7 @@ namespace FiltersFixed
     };
 
     template< CH chCount, typename SrcType, typename DstType, typename CalcType >
-    struct FilterLfwace
+    struct FilterLaplace
     {
         static inline void Calculate(   const SrcType * pSrcPtr, int srcStep,
                                         DstType * pDst, int /*dstStep*/ )
@@ -316,7 +316,7 @@ namespace FiltersFixed
     };
 
     template< CH chCount, typename SrcType, typename DstType, typename CalcType >
-    struct FilterLfwace5x5
+    struct FilterLaplace5x5
     {
         static inline void Calculate(   const SrcType * pSrcPtr, int srcStep,
                                         DstType * pDst, int /*dstStep*/ )

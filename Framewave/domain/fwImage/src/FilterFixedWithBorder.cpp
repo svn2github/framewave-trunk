@@ -655,7 +655,7 @@ FwStatus fwiFilterLPREFIX_OPT(OPT_PREFIX, fwacianBorder_8u16s_C1R)( const Fw8u *
             Fw16s, 
             Fw16s, 
             FilterCommon::TProcessor_pSrc_sStep_pDst_dStep_roi,
-            FiltersFixed::FilterLfwace, FilterCommon::Data,
+            FiltersFixed::FilterLaplace, FilterCommon::Data,
             1 
         >::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, borderType, &borderValue, pBuffer );
     }
@@ -667,7 +667,7 @@ FwStatus fwiFilterLPREFIX_OPT(OPT_PREFIX, fwacianBorder_8u16s_C1R)( const Fw8u *
             Fw16s, 
             Fw16s, 
             FilterCommon::TProcessor_pSrc_sStep_pDst_dStep_roi,
-            FiltersFixed::FilterLfwace5x5, FilterCommon::Data,
+            FiltersFixed::FilterLaplace5x5, FilterCommon::Data,
             2
         >::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, borderType, &borderValue, pBuffer );
     }
@@ -687,7 +687,7 @@ FwStatus fwiFilterLPREFIX_OPT(OPT_PREFIX, fwacianBorder_32f_C1R)( const Fw32f * 
             Fw32f, 
             Fw32f, 
             FilterCommon::TProcessor_pSrc_sStep_pDst_dStep_roi,
-            FiltersFixed::FilterLfwace, FilterCommon::Data,
+            FiltersFixed::FilterLaplace, FilterCommon::Data,
             1 
         >::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, borderType, &borderValue, pBuffer );
     }
@@ -699,7 +699,7 @@ FwStatus fwiFilterLPREFIX_OPT(OPT_PREFIX, fwacianBorder_32f_C1R)( const Fw32f * 
             Fw32f, 
             Fw32f, 
             FilterCommon::TProcessor_pSrc_sStep_pDst_dStep_roi,
-            FiltersFixed::FilterLfwace5x5, FilterCommon::Data,
+            FiltersFixed::FilterLaplace5x5, FilterCommon::Data,
             2
         >::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, borderType, &borderValue, pBuffer );
     }

@@ -4811,29 +4811,29 @@ FwStatus STDCALL fwiFilterRobertsUp_32f_C1R           ( const Fw32f  *pSrc, int 
 FwStatus STDCALL fwiFilterRobertsUp_32f_C3R           ( const Fw32f  *pSrc, int srcStep, Fw32f *pDst, int dstStep, FwiSize dstRoiSize );
 FwStatus STDCALL fwiFilterRobertsUp_32f_AC4R          ( const Fw32f  *pSrc, int srcStep, Fw32f *pDst, int dstStep, FwiSize dstRoiSize );
 
-/*#FunctionBlock - FilterLfwace
+/*#FunctionBlock - FilterLaplace
 TODO:publish
 #Technologies - REF, MT, SSE2
-#Short - Filter with a Lfwace kernel
+#Short - Filter with a Laplace kernel
 #Long - <Text>These functions step through an ROI in a source buffer, apply a high-pass Lfwacian operator to the source data, and write the filtered data to a destination buffer.</Text>
 <Text>The functions use either a 3X3 or a 5X5 kernel.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsStepErr, fwStsSizeErr
 */
 
-FwStatus STDCALL fwiFilterLfwace_8u_C1R              ( const Fw8u   *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-FwStatus STDCALL fwiFilterLfwace_8u_C3R              ( const Fw8u   *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-FwStatus STDCALL fwiFilterLfwace_8u_C4R              ( const Fw8u   *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-FwStatus STDCALL fwiFilterLfwace_8u_AC4R             ( const Fw8u   *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-FwStatus STDCALL fwiFilterLfwace_16s_C1R             ( const Fw16s  *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-FwStatus STDCALL fwiFilterLfwace_16s_C3R             ( const Fw16s  *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-FwStatus STDCALL fwiFilterLfwace_16s_C4R             ( const Fw16s  *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-FwStatus STDCALL fwiFilterLfwace_16s_AC4R            ( const Fw16s  *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-FwStatus STDCALL fwiFilterLfwace_32f_C1R             ( const Fw32f  *pSrc, int srcStep, Fw32f *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-FwStatus STDCALL fwiFilterLfwace_32f_C3R             ( const Fw32f  *pSrc, int srcStep, Fw32f *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-FwStatus STDCALL fwiFilterLfwace_32f_C4R             ( const Fw32f  *pSrc, int srcStep, Fw32f *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-FwStatus STDCALL fwiFilterLfwace_32f_AC4R            ( const Fw32f  *pSrc, int srcStep, Fw32f *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-FwStatus STDCALL fwiFilterLfwace_8u16s_C1R           ( const Fw8u   *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
-FwStatus STDCALL fwiFilterLfwace_8s16s_C1R           ( const Fw8s   *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterLaplace_8u_C1R              ( const Fw8u   *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterLaplace_8u_C3R              ( const Fw8u   *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterLaplace_8u_C4R              ( const Fw8u   *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterLaplace_8u_AC4R             ( const Fw8u   *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterLaplace_16s_C1R             ( const Fw16s  *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterLaplace_16s_C3R             ( const Fw16s  *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterLaplace_16s_C4R             ( const Fw16s  *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterLaplace_16s_AC4R            ( const Fw16s  *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterLaplace_32f_C1R             ( const Fw32f  *pSrc, int srcStep, Fw32f *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterLaplace_32f_C3R             ( const Fw32f  *pSrc, int srcStep, Fw32f *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterLaplace_32f_C4R             ( const Fw32f  *pSrc, int srcStep, Fw32f *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterLaplace_32f_AC4R            ( const Fw32f  *pSrc, int srcStep, Fw32f *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterLaplace_8u16s_C1R           ( const Fw8u   *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterLaplace_8s16s_C1R           ( const Fw8s   *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
 
 /*#FunctionBlock - FilterGauss
 TODO:publish
@@ -5067,8 +5067,8 @@ FwStatus STDCALL fwiFilterSobelCrossBorder_32f_C1R            ( const Fw32f  *pS
 /*#FunctionBlock - FilterLfwacianBorder
 TODO:publish
 #Technologies - REF, MT
-#Short - Filter with a Lfwace kernel and replicate border
-#Long - <Text>These functions step through an ROI in a source buffer, apply a second Lfwace operator to the source data, and write the filtered data to a destination buffer.</Text>
+#Short - Filter with a Laplace kernel and replicate border
+#Long - <Text>These functions step through an ROI in a source buffer, apply a second Laplace operator to the source data, and write the filtered data to a destination buffer.</Text>
 <Text>Border pixels are replicated according to the specified border type.</Text>
 <Text>The function can use a 3X3 or 5X5 kernel size as specified by the mask parameter.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsStepErr, fwStsSizeErr, fwStsBorderErr, fwStsNotEvenStepErr, fwStsMaskErr

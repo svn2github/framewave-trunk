@@ -169,21 +169,21 @@ const Fw32f rgSobelCrossKernel5x5_32f[] = {   -1, -2,  0,  2,  1,
 
 //////////////////////////////////////////////////////
 
-const Fw32s rgLfwaceKernel[] =  {  -1, -1, -1,
+const Fw32s rgLaplaceKernel[] =  {  -1, -1, -1,
                                      -1,  8, -1,
                                      -1, -1, -1 };
 
-const Fw32f rgLfwaceKernel32f[] =  {  -1, -1, -1,
+const Fw32f rgLaplaceKernel32f[] =  {  -1, -1, -1,
                                         -1,  8, -1,
                                         -1, -1, -1 };
 
-const Fw32s rgLfwaceKernel5x5[] = {   -1, -3, -4, -3, -1,
+const Fw32s rgLaplaceKernel5x5[] = {   -1, -3, -4, -3, -1,
                                         -3,  0,  6,  0, -3,
                                         -4,  6, 20,  6, -4,
                                         -3,  0,  6,  0, -3,
                                         -1, -3, -4, -3, -1 };
 
-const Fw32f rgLfwaceKernel5x5_32f[] = {   -1, -3, -4, -3, -1,
+const Fw32f rgLaplaceKernel5x5_32f[] = {   -1, -3, -4, -3, -1,
                                             -3,  0,  6,  0, -3,
                                             -4,  6, 20,  6, -4,
                                             -3,  0,  6,  0, -3,
@@ -1310,215 +1310,215 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterRobertsUp_32f_AC4R)( const Fw32f * pSrc
     ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8u_C1R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_8u_C1R)( const Fw8u * pSrc, int srcStep,
                                     Fw8u * pDst, int dstStep, FwiSize dstRoiSize, 
                                     FwiMaskSize maskSize )
 {
     if( maskSize == fwMskSize3x3 )
     {
-        return fwiFilter_8u_C1R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel, kernel3x3, anchor3x3, 1 );
+        return fwiFilter_8u_C1R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel, kernel3x3, anchor3x3, 1 );
         //return FilterCommon::DivideAndConquer_pSrc_sStep_pDst_dStep_roi< 
         //    C1,
         //    Fw8u, 
         //    Fw8u, 
         //    Fw16s, 
         //    FilterCommon::TProcessor_pSrc_sStep_pDst_dStep_roi,
-        //    FiltersFixed::FilterLfwace, FilterCommon::Data >
+        //    FiltersFixed::FilterLaplace, FilterCommon::Data >
         //::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize );
     }
     else if( maskSize == fwMskSize5x5 )
     {
-        return fwiFilter_8u_C1R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel5x5, kernel5x5, anchor5x5, 1 );
+        return fwiFilter_8u_C1R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel5x5, kernel5x5, anchor5x5, 1 );
         //return FilterCommon::DivideAndConquer_pSrc_sStep_pDst_dStep_roi< 
         //    C1,
         //    Fw8u, 
         //    Fw8u, 
         //    Fw16s, 
         //    FilterCommon::TProcessor_pSrc_sStep_pDst_dStep_roi,
-        //    FiltersFixed::FilterLfwace5x5, FilterCommon::Data >
+        //    FiltersFixed::FilterLaplace5x5, FilterCommon::Data >
         //::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize );
     }
     else
         return fwStsMaskSizeErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8u_C3R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_8u_C3R)( const Fw8u * pSrc, int srcStep,
                                     Fw8u * pDst, int dstStep, FwiSize dstRoiSize, 
                                     FwiMaskSize maskSize )
 {
     if( maskSize == fwMskSize3x3 )
     {
-        return fwiFilter_8u_C3R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel, kernel3x3, anchor3x3, 1 );
+        return fwiFilter_8u_C3R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel, kernel3x3, anchor3x3, 1 );
     }
     else if( maskSize == fwMskSize5x5 )
     {
-        return fwiFilter_8u_C3R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel5x5, kernel5x5, anchor5x5, 1 );
+        return fwiFilter_8u_C3R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel5x5, kernel5x5, anchor5x5, 1 );
     }
     else
         return fwStsMaskSizeErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8u_C4R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_8u_C4R)( const Fw8u * pSrc, int srcStep,
                                     Fw8u * pDst, int dstStep, FwiSize dstRoiSize, 
                                     FwiMaskSize maskSize )
 {
     if( maskSize == fwMskSize3x3 )
     {
-        return fwiFilter_8u_C4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel, kernel3x3, anchor3x3, 1 );
+        return fwiFilter_8u_C4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel, kernel3x3, anchor3x3, 1 );
     }
     else if( maskSize == fwMskSize5x5 )
     {
-        return fwiFilter_8u_C4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel5x5, kernel5x5, anchor5x5, 1 );
+        return fwiFilter_8u_C4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel5x5, kernel5x5, anchor5x5, 1 );
     }
     else
         return fwStsMaskSizeErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8u_AC4R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_8u_AC4R)( const Fw8u * pSrc, int srcStep,
                                     Fw8u * pDst, int dstStep, FwiSize dstRoiSize, 
                                     FwiMaskSize maskSize )
 {
     if( maskSize == fwMskSize3x3 )
     {
-        return fwiFilter_8u_AC4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel, kernel3x3, anchor3x3, 1 );
+        return fwiFilter_8u_AC4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel, kernel3x3, anchor3x3, 1 );
     }
     else if( maskSize == fwMskSize5x5 )
     {
-        return fwiFilter_8u_AC4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel5x5, kernel5x5, anchor5x5, 1 );
+        return fwiFilter_8u_AC4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel5x5, kernel5x5, anchor5x5, 1 );
     }
     else
         return fwStsMaskSizeErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_16s_C1R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_16s_C1R)( const Fw16s * pSrc, int srcStep,
                                      Fw16s * pDst, int dstStep, FwiSize dstRoiSize, 
                                      FwiMaskSize maskSize )
 {
     if( maskSize == fwMskSize3x3 )
     {
-        return fwiFilter_16s_C1R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel, kernel3x3, anchor3x3, 1 );
+        return fwiFilter_16s_C1R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel, kernel3x3, anchor3x3, 1 );
     }
     else if( maskSize == fwMskSize5x5 )
     {
-        return fwiFilter_16s_C1R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel5x5, kernel5x5, anchor5x5, 1 );
+        return fwiFilter_16s_C1R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel5x5, kernel5x5, anchor5x5, 1 );
     }
     else
         return fwStsMaskSizeErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_16s_C3R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_16s_C3R)( const Fw16s * pSrc, int srcStep,
                                      Fw16s * pDst, int dstStep, FwiSize dstRoiSize, 
                                      FwiMaskSize maskSize )
 {
     if( maskSize == fwMskSize3x3 )
     {
-        return fwiFilter_16s_C3R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel, kernel3x3, anchor3x3, 1 );
+        return fwiFilter_16s_C3R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel, kernel3x3, anchor3x3, 1 );
     }
     else if( maskSize == fwMskSize5x5 )
     {
-        return fwiFilter_16s_C3R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel5x5, kernel5x5, anchor5x5, 1 );
+        return fwiFilter_16s_C3R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel5x5, kernel5x5, anchor5x5, 1 );
     }
     else
         return fwStsMaskSizeErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_16s_C4R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_16s_C4R)( const Fw16s * pSrc, int srcStep,
                                      Fw16s * pDst, int dstStep, FwiSize dstRoiSize, 
                                      FwiMaskSize maskSize )
 {
     if( maskSize == fwMskSize3x3 )
     {
-        return fwiFilter_16s_C4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel, kernel3x3, anchor3x3, 1 );
+        return fwiFilter_16s_C4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel, kernel3x3, anchor3x3, 1 );
     }
     else if( maskSize == fwMskSize5x5 )
     {
-        return fwiFilter_16s_C4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel5x5, kernel5x5, anchor5x5, 1 );
+        return fwiFilter_16s_C4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel5x5, kernel5x5, anchor5x5, 1 );
     }
     else
         return fwStsMaskSizeErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_16s_AC4R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_16s_AC4R)( const Fw16s * pSrc, int srcStep,
                                      Fw16s * pDst, int dstStep, FwiSize dstRoiSize, 
                                      FwiMaskSize maskSize )
 {
     if( maskSize == fwMskSize3x3 )
     {
-        return fwiFilter_16s_AC4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel, kernel3x3, anchor3x3, 1 );
+        return fwiFilter_16s_AC4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel, kernel3x3, anchor3x3, 1 );
     }
     else if( maskSize == fwMskSize5x5 )
     {
-        return fwiFilter_16s_AC4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel5x5, kernel5x5, anchor5x5, 1 );
+        return fwiFilter_16s_AC4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel5x5, kernel5x5, anchor5x5, 1 );
     }
     else
         return fwStsMaskSizeErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_32f_C1R)( const Fw32f * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_32f_C1R)( const Fw32f * pSrc, int srcStep,
                                               Fw32f * pDst, int dstStep, FwiSize dstRoiSize, 
                                               FwiMaskSize maskSize )
 {
     if( maskSize == fwMskSize3x3 )
     {
-        return fwiFilter_32f_C1R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel32f, kernel3x3, anchor3x3 );
+        return fwiFilter_32f_C1R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel32f, kernel3x3, anchor3x3 );
     }
     else if( maskSize == fwMskSize5x5 )
     {
-        return fwiFilter_32f_C1R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel5x5_32f, kernel5x5, anchor5x5 );
+        return fwiFilter_32f_C1R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel5x5_32f, kernel5x5, anchor5x5 );
     }
     else
         return fwStsMaskSizeErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_32f_C3R)( const Fw32f * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_32f_C3R)( const Fw32f * pSrc, int srcStep,
                                               Fw32f * pDst, int dstStep, FwiSize dstRoiSize, 
                                               FwiMaskSize maskSize )
 {
     if( maskSize == fwMskSize3x3 )
     {
-        return fwiFilter_32f_C3R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel32f, kernel3x3, anchor3x3 );
+        return fwiFilter_32f_C3R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel32f, kernel3x3, anchor3x3 );
     }
     else if( maskSize == fwMskSize5x5 )
     {
-        return fwiFilter_32f_C3R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel5x5_32f, kernel5x5, anchor5x5 );
+        return fwiFilter_32f_C3R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel5x5_32f, kernel5x5, anchor5x5 );
     }
     else
         return fwStsMaskSizeErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_32f_C4R)( const Fw32f * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_32f_C4R)( const Fw32f * pSrc, int srcStep,
                                               Fw32f * pDst, int dstStep, FwiSize dstRoiSize, 
                                               FwiMaskSize maskSize )
 {
     if( maskSize == fwMskSize3x3 )
     {
-        return fwiFilter_32f_C4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel32f, kernel3x3, anchor3x3 );
+        return fwiFilter_32f_C4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel32f, kernel3x3, anchor3x3 );
     }
     else if( maskSize == fwMskSize5x5 )
     {
-        return fwiFilter_32f_C4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel5x5_32f, kernel5x5, anchor5x5 );
+        return fwiFilter_32f_C4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel5x5_32f, kernel5x5, anchor5x5 );
     }
     else
         return fwStsMaskSizeErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_32f_AC4R)( const Fw32f * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_32f_AC4R)( const Fw32f * pSrc, int srcStep,
                                               Fw32f * pDst, int dstStep, FwiSize dstRoiSize, 
                                               FwiMaskSize maskSize )
 {
     if( maskSize == fwMskSize3x3 )
     {
-        return fwiFilter_32f_AC4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel32f, kernel3x3, anchor3x3 );
+        return fwiFilter_32f_AC4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel32f, kernel3x3, anchor3x3 );
     }
     else if( maskSize == fwMskSize5x5 )
     {
-        return fwiFilter_32f_AC4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLfwaceKernel5x5_32f, kernel5x5, anchor5x5 );
+        return fwiFilter_32f_AC4R( pSrc, srcStep, pDst, dstStep, dstRoiSize, rgLaplaceKernel5x5_32f, kernel5x5, anchor5x5 );
     }
     else
         return fwStsMaskSizeErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8u16s_C1R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_8u16s_C1R)( const Fw8u * pSrc, int srcStep,
                                                 Fw16s * pDst, int dstStep, FwiSize dstRoiSize, 
                                                 FwiMaskSize maskSize )
 {
@@ -1530,7 +1530,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8u16s_C1R)( const Fw8u * pSrc, i
             Fw16s, 
             Fw16s, 
             FilterCommon::TProcessor_pSrc_sStep_pDst_dStep_roi,
-            FiltersFixed::FilterLfwace, FilterCommon::Data >
+            FiltersFixed::FilterLaplace, FilterCommon::Data >
         ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize );
     }
     else if( maskSize == fwMskSize5x5 )
@@ -1541,14 +1541,14 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8u16s_C1R)( const Fw8u * pSrc, i
             Fw16s, 
             Fw16s, 
             FilterCommon::TProcessor_pSrc_sStep_pDst_dStep_roi,
-            FiltersFixed::FilterLfwace5x5, FilterCommon::Data >
+            FiltersFixed::FilterLaplace5x5, FilterCommon::Data >
         ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize );
     }
     else
         return fwStsMaskSizeErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8s16s_C1R)( const Fw8s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLaplace_8s16s_C1R)( const Fw8s * pSrc, int srcStep,
                                                 Fw16s * pDst, int dstStep, FwiSize dstRoiSize, 
                                                 FwiMaskSize maskSize )
 {
@@ -1560,7 +1560,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8s16s_C1R)( const Fw8s * pSrc, i
             Fw16s, 
             Fw16s, 
             FilterCommon::TProcessor_pSrc_sStep_pDst_dStep_roi,
-            FiltersFixed::FilterLfwace, FilterCommon::Data >
+            FiltersFixed::FilterLaplace, FilterCommon::Data >
         ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize );
     }
     else if( maskSize == fwMskSize5x5 )
@@ -1571,7 +1571,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterLfwace_8s16s_C1R)( const Fw8s * pSrc, i
             Fw16s, 
             Fw16s, 
             FilterCommon::TProcessor_pSrc_sStep_pDst_dStep_roi,
-            FiltersFixed::FilterLfwace5x5, FilterCommon::Data >
+            FiltersFixed::FilterLaplace5x5, FilterCommon::Data >
         ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize );
     }
     else
