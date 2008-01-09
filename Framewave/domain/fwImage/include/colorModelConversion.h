@@ -1972,6 +1972,7 @@ namespace OPT_LEVEL
                         dstRow[1] += 16;
                         dstRow[2] += 16;
                     }
+                    _mm_mfence();
                 }
                 else
                 {
@@ -1988,7 +1989,6 @@ namespace OPT_LEVEL
                         _mm_storeu_si128((__m128i*)dstRow[0], xmmU.i);
                         _mm_storeu_si128((__m128i*)dstRow[1], xmmV.i);
                         _mm_storeu_si128((__m128i*)dstRow[2], xmmW.i);
-
 
                         srcRow[0] += 16;
                         _mm_prefetch( (const char *)(srcRow[0]), _MM_HINT_T0 );
@@ -2033,6 +2033,7 @@ namespace OPT_LEVEL
                         dstRow[1] += 16;
                         dstRow[2] += 16;
                     }
+                    _mm_mfence();
                 }
                 else
                 {

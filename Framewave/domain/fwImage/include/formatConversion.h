@@ -217,6 +217,7 @@ namespace OPT_LEVEL
                             ASSERT(false);
                     }
                 }
+                _mm_mfence();
             }
         }; // struct ChannelToPlanar
     } // namespace F_422To420
