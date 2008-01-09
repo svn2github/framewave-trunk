@@ -514,15 +514,13 @@ namespace DIV_SSE2
 					dst.i = _mm_and_si128(tmp1, tsrc1_0.i);
 				}
 
-				ISV Div_16s_unit( const XMM128& src1, const XMM128& src2, XMM128& dst, const XMM128 &scale, const XMM128 &ones)
+				ISV Div_16s_unit( const XMM128& src1, const XMM128& src2, XMM128& dst, const XMM128 &scale, const XMM128 &)
 				{
 					XMM128 tsrc1_0, tsrc1_1;
 					XMM128 tsrc2_0, tsrc2_1;
 					__m128i zero = _mm_setzero_si128();
 
-					__m128i max = _mm_set1_epi16(0x7FFF);	//have to put it in setup func
-					__m128i min = _mm_xor_si128(max, ones.i);
-					__m128i tmp1, tmp2 ;
+					__m128i tmp1, tmp2,tmp3,tmp4,tmp5 ;
 
 					tsrc1_0 = src1;
 					tsrc2_0 = src2;
@@ -533,7 +531,7 @@ namespace DIV_SSE2
 					tsrc2_0.f = _mm_cvtepi32_ps (tsrc2_0.i);
 					tsrc1_0.f = _mm_div_ps( tsrc1_0.f, tsrc2_0.f );
 					tsrc1_0.f = _mm_mul_ps( tsrc1_0.f, scale.f);
-					tsrc1_0.i = _mm_cvtps_epi32(tsrc1_0.f);
+					dst.i = _mm_cvtps_epi32(tsrc1_0.f);
 
 					tsrc1_1.f = _mm_cvtepi32_ps (tsrc1_1.i);
 					tsrc2_1.f = _mm_cvtepi32_ps (tsrc2_1.i);
@@ -541,25 +539,35 @@ namespace DIV_SSE2
 					tsrc1_1.f = _mm_mul_ps( tsrc1_1.f, scale.f);
 					tsrc1_1.i = _mm_cvtps_epi32(tsrc1_1.f);
 
-					FW_SSE2::pack32STo16S(tsrc1_0.i, tsrc1_1.i);
+					FW_SSE2::pack32STo16S(dst.i, tsrc1_1.i);
 
 					//handling special cases x/0, -x/0, 0/0 (can be optimized)
-					tmp1 = _mm_cmpgt_epi16(src1.i, zero);
-					tmp1 = _mm_and_si128(tmp1, max);
-					tmp2 = _mm_cmplt_epi16(src1.i, zero);
-					tmp2 = _mm_and_si128(tmp2, min);
-					tmp1 = _mm_or_si128(tmp1, tmp2);	// tmp1 = max if numerator >0 else min
 
-					tmp2 = _mm_cmpeq_epi16(src1.i, zero);
-					tmp2 = _mm_xor_si128(tmp2, ones.i);
-					tmp1 = _mm_and_si128(tmp2, tmp1);  // tmp1 = max if num >0, min if num <0, else 0
+                	tmp3 = _mm_cmpeq_epi16(src2.i, zero);
+                   
+                    if(0 != _mm_movemask_epi8(tmp3))
+                    {
+                        
+                         tmp1 = _mm_cmpeq_epi16(src1.i,zero);
+                         tmp5 = _mm_and_si128(tmp1,tmp3);
+                        // dst.i = _mm_andnot_si128(tmp1,dst.i);
+                         
+                         tmp1 = _mm_cmpgt_epi16(src1.i, zero);
+                         tmp2 = _mm_cmplt_epi16(src1.i, zero);
+                         tmp4 = _mm_or_si128(tmp1,tmp2); 
+                         tmp4 = _mm_or_si128(tmp4,tmp5); 
+                         tmp4 = _mm_and_si128(tmp4,tmp3); 
 
-					tmp2 = _mm_cmpeq_epi16(src2.i, zero);
-					tmp2 = _mm_and_si128(tmp2, tmp1);
-					tmp1 = _mm_xor_si128(_mm_cmpeq_epi16(src2.i, zero), ones.i);
-					tmp1 = _mm_and_si128(tmp1, tsrc1_0.i);	//tmp1 = above tmp1 if denom = 0 else result
+                         
+                         tmp1 = _mm_srli_epi16(tmp1,1);
+                         tmp2 = _mm_slli_epi16(tmp2,15);
+                         tmp2 = _mm_or_si128(tmp1,tmp2); 
+                         tmp2 = _mm_and_si128(tmp2,tmp3); 
 
-					dst.i = _mm_or_si128(tmp1, tmp2);
+                        dst.i = _mm_andnot_si128(tmp4,dst.i);
+                        dst.i = _mm_or_si128(dst.i,tmp2);
+                    }
+
 				}
 
 				ISV Div_32s_unit(const XMM128 &s1, const XMM128 &s2, XMM128 &dest, const XMM128 &scale)
@@ -591,20 +599,35 @@ namespace DIV_SSE2
 					dest.i = _mm_and_si128(src1_1.i, mask_z.i);
 				}
 
-				ISV Div_16sc_unit( const XMM128 &src1, const XMM128 &src2, XMM128 &dst, const XMM128 &scale, const XMM128 &min32s)
+				ISV Div_16sc_unit( const XMM128 &src1, const XMM128 &src2, XMM128 &dst, const XMM128 &scale, const XMM128 &)
 				{
-					__m128 dstLo, dstHi; __m128i dstLoi, dstHii; __m128i zeromask = min32s.i;
-					dstHi	= CBL_SSE2::Divide_16sc_32fc(src1.i, src2.i, dst.f, min32s.i, zeromask);
-					dstLo	= dst.f;
-					dstLo	= _mm_mul_ps(dstLo, scale.f);
-					dstHi	= _mm_mul_ps(dstHi, scale.f);
+                 
+                   
+                    XMM128 src1lo,src1hi,src2lo,src2hi;
+                    __m128i zero = _mm_setzero_si128();
+                    src1lo = src1;
+                    src2lo = src2;
+                    CBL_SSE2::Unpack16STo32S(src1lo.i,src1hi.i);
+                    CBL_SSE2::Unpack16STo32S(src2lo.i,src2hi.i);
 
-					dstLoi	= _mm_cvtps_epi32(dstLo);
-					dstHii	= _mm_cvtps_epi32(dstHi);
+                   src1lo.f =  _mm_cvtepi32_ps(src1lo.i);
+                   src1hi.f =  _mm_cvtepi32_ps(src1hi.i);
+                   src2lo.f =  _mm_cvtepi32_ps(src2lo.i);
+                   src2hi.f =  _mm_cvtepi32_ps(src2hi.i);
 
-					dst.i	= _mm_packs_epi32(dstLoi, dstHii);
-					dst.i	= _mm_andnot_si128(zeromask, dst.i);	// zeromask is set in epi32 for denom, = epi16 | epi16 masks per 32bit value
-																	// serves our purpose just fine without any further work
+                    src1lo.f = CBL_SSE2::Divide_32fc(src1lo.f,src2lo.f);
+                    src1hi.f = CBL_SSE2::Divide_32fc(src1hi.f,src2hi.f);
+
+                    src1lo.f	= _mm_mul_ps(src1lo.f, scale.f);
+					src1hi.f	= _mm_mul_ps(src1hi.f, scale.f);
+
+					src1lo.i	= _mm_cvtps_epi32(src1lo.f);
+					src1hi.i	= _mm_cvtps_epi32(src1hi.f);
+
+                    src1lo.i	= _mm_packs_epi32(src1lo.i, src1hi.i);
+                    src1hi.i =  _mm_cmpeq_epi16(src2.i,zero);
+                    dst.i = _mm_andnot_si128(src1hi.i,src1lo.i);
+                    
 				}
 
 				ISV Div_32sc_unit( const XMM128& src1, const XMM128& src2, XMM128& dst, const XMM128 &scale)
