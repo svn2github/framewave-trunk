@@ -4023,6 +4023,8 @@ FwStatus STDCALL fwiFilterMaxBorderReplicate_32f_C4R  ( const Fw32f  *pSrc, int 
 
 #if BUILD_NUM_AT_LEAST( 100 )
 
+
+#if BUILD_NUM_AT_LEAST( 9999 )
 /*#FunctionBlock - FilterMedian
 TODO:publish
 #Technologies - REF, MT
@@ -4062,6 +4064,7 @@ FwStatus STDCALL fwiFilterMedian_16s_C4R              ( const Fw16s *pSrc, int s
 FwStatus STDCALL fwiFilterMedian_16s_AC4R             ( const Fw16s *pSrc, int srcStep,
                                                                 Fw16s *pDst, int dstStep, FwiSize dstRoiSize,
                                                                 FwiSize maskSize, FwiPoint anchor );
+
 
 /*#FunctionBlock - FilterMedianHoriz
 TODO:publish
@@ -4115,6 +4118,8 @@ FwStatus STDCALL fwiFilterMedianCross_16s_C1R         ( const Fw16s *pSrc, int s
 FwStatus STDCALL fwiFilterMedianCross_16s_C3R         ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
 FwStatus STDCALL fwiFilterMedianCross_16s_AC4R        ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
 
+
+#endif // BUILD_NUM_AT_LEAST( 9999 )
 
 #if BUILD_NUM_AT_LEAST( 9999 )
 
