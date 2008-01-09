@@ -37,6 +37,10 @@ class fwLibrary:
         variant = oFWVARS['variant']
         libtype = oFWVARS['libtype']
         bitness = oFWVARS['bitness']
+
+        # Set debug information build factor
+        if oFWVARS['debuginfo'] == 'off': debuginfo = None
+        else:                            debuginfo = 'debuginfo'
         
         # Get platform building on
         # Since there is no cross building yet
@@ -48,7 +52,9 @@ class fwLibrary:
         toolset = oFWVARS['toolset']
         
         # Collect the build factors into a list and return
-        lstBuildFactors = [self.pthTarget, variant, libtype, bitness, platform, toolset]
+        lstBuildFactors = [self.pthTarget, variant, libtype, bitness, platform, debuginfo, toolset]
+
+        lstBuildFactors = removeNones(lstBuildFactors)
         return lstBuildFactors
         
     def getEnvForLibrary( self, oEnv ):

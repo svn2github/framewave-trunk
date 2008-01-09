@@ -237,3 +237,9 @@ def appendToFilename( pthFile, sPostfix ):
     # Seperate out the filename and extension
     pthRoot, sExt = os.path.splitext( pthFile )
     return pthRoot+sPostfix+sExt
+
+def removeNones( lstList ):
+    lstReturnList = []
+    for x in lstList:
+        if (x != None): lstReturnList += [x]
+    return lstReturnList

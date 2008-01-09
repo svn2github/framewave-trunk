@@ -39,6 +39,15 @@ gcc = 'gcc'
 msv = 'msvc'
 scc = 'suncc'
 
+# Shortcut for the debug info build factor
+dbi = 'debuginfo'
+
+# Shortcuts for the win crt build factors
+mtr = 'wincrtmt'
+mtd = 'wincrtmtd'
+mdr = 'wincrtmd'
+mdd = 'wincrtmdd'
+
 
 class fwFlagsBase:
     def __init__ (self, oEnv):

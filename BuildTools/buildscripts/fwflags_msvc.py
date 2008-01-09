@@ -31,12 +31,15 @@ dctCCFlags[r'/EHa']          = []
 dctCCFlags[r'/RTC1']         = [dbg]
 dctCCFlags[r'/Gz']           = []
 dctCCFlags[r'/arch:SSE2']    = [rel, b32, [ss2, ss3, f10]]
-dctCCFlags[r'/MT']           = [rel]
-dctCCFlags[r'/MTd']          = [dbg]
+
+dctCCFlags[r'/MT']           = [mtr]
+dctCCFlags[r'/MTd']          = [mtd]
+dctCCFlags[r'/MD']           = [mdr]
+dctCCFlags[r'/MDd']          = [mdd]
 
 dctCCFlags[r'/Zi']           = None
 dctCCFlags[r'/ZI']           = None
-dctCCFlags[r'/Z7']           = [dbg]
+dctCCFlags[r'/Z7']           = [dbi]
 
 dctCCFlags[r'/W4']           = []
 dctCCFlags[r'/WX']           = []

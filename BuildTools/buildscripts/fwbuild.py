@@ -35,6 +35,12 @@ class fwBuildRoot:
         self.dctFwVars['bitness']        = ARGUMENTS.get('bitness',   '32')
         self.dctFwVars['debuginfo']      = ARGUMENTS.get('debuginfo', '---')
         self.dctFwVars['toolset']        = ARGUMENTS.get('toolset',   '---')
+        self.dctFwVars['wincrt']         = ARGUMENTS.get('wincrt',    '---')
+        
+        # Set correct default wincrt
+        if self.dctFwVars['wincrt'] == '---':
+            if self.dctFwVars['variant']=='debug': self.dctFwVars['wincrt'] = 'mtd'
+            else:                                  self.dctFwVars['wincrt'] = 'mt'
         
         # Set our current toolset if none is set from the command line
         if self.dctFwVars['toolset'] == '---':
@@ -339,7 +345,7 @@ def specialMSVCHandler( oEnv ):
     
     # Special handling for msvc; because, well, Microsoft is Microsoft
     if dctFwVars['toolset'] == 'msvc':
-        if dctFwVars['variant'] == 'debug':
+        if dctFwVars['debuginfo'] == 'on':
             # translate flags isn't applied on compiler flags setup by SCons, hence get the name
             # from the caller project object's FWVARS dictionary itself
             if dctFwVars.has_key('sProgramName'):

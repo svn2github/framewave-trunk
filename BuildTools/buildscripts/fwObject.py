@@ -38,7 +38,16 @@ class fwObject:
         variant = oFWVARS['variant']
         libtype = oFWVARS['libtype']
         bitness = oFWVARS['bitness']
-        
+
+        # Set debug information build factor
+        if oFWVARS['debuginfo'] == 'off': debuginfo = None
+        else:                             debuginfo = 'debuginfo'
+
+        if   oFWVARS['wincrt']=='mt' : wincrt = 'wincrtmt'
+        elif oFWVARS['wincrt']=='mtd': wincrt = 'wincrtmtd' 
+        elif oFWVARS['wincrt']=='md' : wincrt = 'wincrtmd' 
+        elif oFWVARS['wincrt']=='mdd': wincrt = 'wincrtmdd' 
+                                           
         # Get platform building on
         # Since there is no cross building yet
         # we can assume that the platform we're
@@ -50,10 +59,12 @@ class fwObject:
         
         # We could be building a single pass object, so check if path even exists
         if self.oPath:
-            lstBuildFactors = [self.pthSrc, variant, libtype, bitness, platform, toolset, self.oPath['OPT_LEVEL']]
+            lstBuildFactors = [self.pthSrc, variant, libtype, bitness, platform, toolset, debuginfo, wincrt, self.oPath['OPT_LEVEL']]
         else:
             # Set the path to the single pass canary token
-            lstBuildFactors = [self.pthSrc, variant, libtype, bitness, platform, toolset, 'SiPC']
+            lstBuildFactors = [self.pthSrc, variant, libtype, bitness, platform, toolset, debuginfo, wincrt, 'SiPC']
+            
+        lstBuildFactors = removeNones(lstBuildFactors)
         
         return lstBuildFactors
 
