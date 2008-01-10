@@ -1,0 +1,53 @@
+#Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
+
+#This software is subject to the Apache v2.0 License.
+
+
+##################################################################
+#                                                                #
+#                                                                #
+#    Makefile for building sample application project on Linux   #
+#                                                                #
+#                                                                #
+##################################################################
+
+	
+OBJS = process_yuv420torgb.o process_ycbcrtorgb.o process_ycbcr422torgb.o process_ycbcr420torgb.o process_xor.o process_video.o process_subc.o process_sub.o process_sharp.o process_saturate.o process_rotate.o process_rgbtoyuv422.o process_rgbtoyuv420.o process_rgbtoyuv.o process_rgbtoycbcr420.o process_resize.o process_remove.o process_noise.o process_negate.o process_mirror.o process_illusion.o process_hue.o process_halftone.o process_grid.o process_grey.o process_glassy.o process_gamma.o process_fsobvert.o process_fsobhoriz.o process_frow.o process_frobup.o process_frobdown.o process_frectkernel.o process_fprewvert.o process_fprewhoriz.o process_fmin.o process_fmedvert.o process_fmedian.o process_fmedhoriz.o process_fmax.o process_fmedcross.o process_fmedcolor.o process_fhighpass.o process_flaplace.o process_flowpass.o process_fgauss.o process_fcolumn.o process_explode.o process_emboss.o process_edgedetect.o process_deinterlace.o process_crop.o process_contrast.o process_border.o process_brightness.o process_blur.o process_blinds.o process_addc.o process_add.o FW_writefiles.o FW_sampleapp.o FW_readfilesAPI.o FW_readfiles.o FW_options.o FW_display.o FW_errorhandler.o
+
+#change the 64 to 32 for 32 bit application
+BITS_PROCESSOR = 64
+
+FW_LIB_PATH = ./
+FW_INC_PATH = ./
+SRC_PATH = ./SRC/
+INC_PATH = ./INC/
+
+#change dynamic to static for static linking
+LIB_TYPE = dynamic
+
+all: setup sample.exe clean
+	
+sample.exe: $(OBJS) 
+		CC -m$(BITS_PROCESSOR)  -o bin/X$(BITS_PROCESSOR)/sample$(BITS_PROCESSOR)_$(LIB_TYPE) $(OBJS) -L$(FW_LIB_PATH) -lfwImage -lfwBase -lpthread -lrt 
+		@echo 
+		@echo Sample application building is successful ...
+
+
+%.o : $(SRC_PATH)%.cpp
+		CC -m$(BITS_PROCESSOR) -xO2 -DLINUX -DSOL -c $< -o $@  -I$(INC_PATH) -I$(FW_INC_PATH)
+
+setup: 
+ifeq ($(LIB_TYPE),dynamic)
+
+		ln -sf  $(FW_LIB_PATH)/libfwBase.so.1.1.0 $(FW_LIB_PATH)/libfwBase.so.1
+		ln -sf  $(FW_LIB_PATH)/libfwImage.so.1.1.0 $(FW_LIB_PATH)/libfwImage.so.1
+
+		ln -sf  $(FW_LIB_PATH)/libfwBase.so.1 $(FW_LIB_PATH)/libfwBase.so
+		ln -sf  $(FW_LIB_PATH)/libfwImage.so.1 $(FW_LIB_PATH)/libfwImage.so
+
+endif
+
+clean:
+		rm -f *.o 
+
+
