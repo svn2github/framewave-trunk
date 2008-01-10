@@ -557,9 +557,6 @@ namespace DEF_DIV
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					r.dst[0].f = _mm_div_ps( r.src2[0].f, r.src1[0].f );
-					r.dst[1].f = _mm_div_ps( r.src2[1].f, r.src1[1].f );
-					r.dst[2].f = _mm_div_ps( r.src2[2].f, r.src1[2].f );
-					r.dst[3].f = _mm_div_ps( r.src2[3].f, r.src1[3].f );
 				}      
 				IV REFR(const Fw32f *s1, const Fw32f *s2, Fw32f *d) const	// REFR Pixel function
 				{
