@@ -304,6 +304,7 @@ ISV Set_C3R_Custom_SSE2_I(TSD *d, U32 &pixCount, XMM128 &value1, XMM128 &value2,
 		LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&value2, (void*)(dst++));
 		LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&value3, (void*)(dst++));
 	}
+    _mm_mfence();
 }
 
 //AC4R
@@ -350,6 +351,7 @@ ISV Set_16s_C1MR_Custom_SSE2_I(const A8U *s, A16S *d, U32 &pixCount, XMM128 &val
                 LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_FLSE>(&dst_data, (void*)dst);
 			}
 	}
+    _mm_mfence();
 }
 
 template<class TSD, IsAlign ia>
@@ -381,6 +383,7 @@ ISV Set_32_C1MR_Custom_SSE2_I(const A8U *s, TSD *d, U32 &pixCount, XMM128 &value
                 LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_FLSE>(&dst_data, (void*)dst);
             }
         }
+    _mm_mfence();
 }
 
 //C3MR
@@ -481,6 +484,8 @@ ISV Set_16s_C3MR_SSE2_I(const A8U *m, A16S *d, U32 &pixCount, XMM128 &value1, XM
                 LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&value3, (void*)(d+16));
             }          
         }
+
+    _mm_mfence();
     }
 
 template<IsAlign ia>
@@ -542,6 +547,7 @@ ISV Set_16s_C3MR_eq_SSE2_I(const A8U *m, A16S *d, U32 &pixCount, XMM128 &value, 
                 LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&value, (void*)(d+16));
             }          
         }
+    _mm_mfence();
     }
 
 template<class TSD, IsAlign ia>
@@ -601,6 +607,7 @@ ISV Set_32_C3MR_SSE2_I(const A8U *s, TSD *d, U32 &pixCount, XMM128 &value)
 			}
 		}
 	}
+    _mm_mfence();
 }
 
 // C4MR
