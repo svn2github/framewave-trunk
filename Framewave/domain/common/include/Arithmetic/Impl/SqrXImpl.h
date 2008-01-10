@@ -31,6 +31,37 @@ namespace SQRX_REF
 			}
 		}
 
+        IS S64 DoubleToLong(F64 x)
+        {
+
+	        F64 di, fract = modf( x, &di );
+	        S64 i = (S64)di;
+	        bool even = !(i&0x1);
+	        S64 res;
+
+	        if     ( fract >   0.5 ) res = i+1;									//  1.6-> 2,  2.6-> 3			
+	        else if( fract ==  0.5 ) res = even ? i : i+1;						//  1.5-> 2,  2.5-> 2 
+	        else if( fract >=  0.0 ) res = i;			 						//  1.4-> 1,  2.4-> 1
+	        else if( fract >  -0.5 ) res = i;									// -1.4->-1, -2.4->-2 
+	        else if( fract == -0.5 ) res = even ? i : i-1;						// -1.5->-2, -2.5->-2
+	        else					 res = i-1;									// -1.6->-2, -2.6->-3
+
+	        return res;	
+        }
+
+        ISV SqrtI( const Fw64s * s, CH cs, Fw64s * d, CH cd, int scale )
+		{
+			ASSERT( ChannelCount(cs) == ChannelCount(cd) ); cs;
+            switch( cd )
+			{
+			case C4:	d[3] = DoubleToLong( (s[3] < 0 ? 0 : sqrt((float)s[3])) * pow(2.0,-scale));
+			case C3:    
+			case AC4:	d[2] = DoubleToLong( (s[2] < 0 ? 0 : sqrt((float)s[2])) * pow(2.0,-scale));
+						d[1] = DoubleToLong( (s[1] < 0 ? 0 : sqrt((float)s[1])) * pow(2.0,-scale));
+			case C1:	d[0] = DoubleToLong( (s[0] < 0 ? 0 : sqrt((float)s[0])) * pow(2.0,-scale));
+			}
+		}
+
 		ISV SqrtI( const A16U * s, CH cs, A16U * d, CH cd, int scale )
 		{
 			ASSERT( ChannelCount(cs) == ChannelCount(cd) ); cs;
