@@ -11,7 +11,7 @@ This software is subject to the Apache v2.0 License.
 #define FW_MAJOR   1
 #define FW_MINOR   1
 #define FW_VERSION 0
-#define FW_VERSTR "1.1"
+#define FW_VERSTR "1.2"
 
 
 //-----------------------------------
