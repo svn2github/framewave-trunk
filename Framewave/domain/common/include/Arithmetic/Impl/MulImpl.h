@@ -1511,6 +1511,7 @@ ISV Mul_8u_unit_PosScale_Custom(const TSD *s1, const TSD *s2, TSD *d, U32 &pixCo
 
            LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_FLSE>(&srcLo, (void*)(d));
         }
+    _mm_mfence();
     }
 
 
