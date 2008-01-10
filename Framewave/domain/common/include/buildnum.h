@@ -9,9 +9,9 @@ This software is subject to the Apache v2.0 License.
 #define __BUILDNUM_H__
 
 #define FW_MAJOR   1
-#define FW_MINOR   1
+#define FW_MINOR   0
 #define FW_VERSION 0
-#define FW_VERSTR "1.2"
+#define FW_VERSTR "FW 1.0" // First release in sourceforge
 
 
 //-----------------------------------
