@@ -407,9 +407,6 @@ namespace DEF_SQRX
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					SQRX_SSE2::SQRT::Unit::C1::Sqrt_8u_unit<scaleType>(r.src1[0], r.dst[0], scale);
-					SQRX_SSE2::SQRT::Unit::C1::Sqrt_8u_unit<scaleType>(r.src1[1], r.dst[1], scale);
-					SQRX_SSE2::SQRT::Unit::C1::Sqrt_8u_unit<scaleType>(r.src1[2], r.dst[2], scale);
-					SQRX_SSE2::SQRT::Unit::C1::Sqrt_8u_unit<scaleType>(r.src1[3], r.dst[3], scale);
 				}      
 			};
 
@@ -427,9 +424,6 @@ namespace DEF_SQRX
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					SQRX_SSE2::SQRT::Unit::C1::Sqrt_16s_unit<scaleType>(r.src1[0], r.dst[0], scale);
-					SQRX_SSE2::SQRT::Unit::C1::Sqrt_16s_unit<scaleType>(r.src1[1], r.dst[1], scale);
-					SQRX_SSE2::SQRT::Unit::C1::Sqrt_16s_unit<scaleType>(r.src1[2], r.dst[2], scale);
-					SQRX_SSE2::SQRT::Unit::C1::Sqrt_16s_unit<scaleType>(r.src1[3], r.dst[3], scale);
 				}      
 			};
 
@@ -447,9 +441,6 @@ namespace DEF_SQRX
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					SQRX_SSE2::SQRT::Unit::C1::Sqrt_16u_unit<scaleType>(r.src1[0], r.dst[0], scale);
-					SQRX_SSE2::SQRT::Unit::C1::Sqrt_16u_unit<scaleType>(r.src1[1], r.dst[1], scale);
-					SQRX_SSE2::SQRT::Unit::C1::Sqrt_16u_unit<scaleType>(r.src1[2], r.dst[2], scale);
-					SQRX_SSE2::SQRT::Unit::C1::Sqrt_16u_unit<scaleType>(r.src1[3], r.dst[3], scale);
 				}      
 			};
 
@@ -462,9 +453,6 @@ namespace DEF_SQRX
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					r.dst[0].f = _mm_sqrt_ps( r.src1[0].f );
-					r.dst[1].f = _mm_sqrt_ps( r.src1[1].f );
-					r.dst[2].f = _mm_sqrt_ps( r.src1[2].f );
-					r.dst[3].f = _mm_sqrt_ps( r.src1[3].f );
 				}      
 				IV REFR(const Fw32f *s, Fw32f *d) const	// REFR Pixel function
 				{
@@ -797,9 +785,6 @@ namespace DEF_SQRX
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					SQRX_SSE2::SQR::Unit::C1::Sqr_8u_unit<scaleType>(r.src1[0], r.dst[0], scaleMasks, sqrCap);
-					SQRX_SSE2::SQR::Unit::C1::Sqr_8u_unit<scaleType>(r.src1[1], r.dst[1], scaleMasks, sqrCap);
-					SQRX_SSE2::SQR::Unit::C1::Sqr_8u_unit<scaleType>(r.src1[2], r.dst[2], scaleMasks, sqrCap);
-					SQRX_SSE2::SQR::Unit::C1::Sqr_8u_unit<scaleType>(r.src1[3], r.dst[3], scaleMasks, sqrCap);
 				}      
 			};
 
@@ -817,9 +802,6 @@ namespace DEF_SQRX
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					SQRX_SSE2::SQR::Unit::C1::Sqr_16s_unit<scaleType>(r.src1[0], r.dst[0], scaleMasks[0]);
-					SQRX_SSE2::SQR::Unit::C1::Sqr_16s_unit<scaleType>(r.src1[1], r.dst[1], scaleMasks[0]);
-					SQRX_SSE2::SQR::Unit::C1::Sqr_16s_unit<scaleType>(r.src1[2], r.dst[2], scaleMasks[0]);
-					SQRX_SSE2::SQR::Unit::C1::Sqr_16s_unit<scaleType>(r.src1[3], r.dst[3], scaleMasks[0]);
 				}      
 			};
 
@@ -837,9 +819,6 @@ namespace DEF_SQRX
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					SQRX_SSE2::SQR::Unit::C1::Sqr_16u_unit<scaleType>(r.src1[0], r.dst[0], scaleMasks[0]);
-					SQRX_SSE2::SQR::Unit::C1::Sqr_16u_unit<scaleType>(r.src1[1], r.dst[1], scaleMasks[0]);
-					SQRX_SSE2::SQR::Unit::C1::Sqr_16u_unit<scaleType>(r.src1[2], r.dst[2], scaleMasks[0]);
-					SQRX_SSE2::SQR::Unit::C1::Sqr_16u_unit<scaleType>(r.src1[3], r.dst[3], scaleMasks[0]);
 				}      
 			};
 
@@ -852,9 +831,6 @@ namespace DEF_SQRX
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					r.dst[0].f = _mm_mul_ps (r.src1[0].f, r.src1[0].f);
-					r.dst[1].f = _mm_mul_ps (r.src1[1].f, r.src1[1].f);
-					r.dst[2].f = _mm_mul_ps (r.src1[2].f, r.src1[2].f);
-					r.dst[3].f = _mm_mul_ps (r.src1[3].f, r.src1[3].f);
 				}      
 				IV REFR(const Fw32f *s, Fw32f *d) const	// REFR Pixel function
 				{
