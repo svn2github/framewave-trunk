@@ -606,9 +606,6 @@ namespace DEF_SUB
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					SUB_SSE2::SUB::Unit::C1::Sub_8u_unit<scaleType>(r.src1[0], r.src2[0], r.dst[0], scaleMasks);
-					SUB_SSE2::SUB::Unit::C1::Sub_8u_unit<scaleType>(r.src1[1], r.src2[1], r.dst[1], scaleMasks);
-					SUB_SSE2::SUB::Unit::C1::Sub_8u_unit<scaleType>(r.src1[2], r.src2[2], r.dst[2], scaleMasks);
-					SUB_SSE2::SUB::Unit::C1::Sub_8u_unit<scaleType>(r.src1[3], r.src2[3], r.dst[3], scaleMasks);
 				}      
 			};
 
@@ -626,9 +623,6 @@ namespace DEF_SUB
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					SUB_SSE2::SUB::Unit::C1::Sub_16s_unit<scaleType>(r.src1[0], r.src2[0], r.dst[0], scaleMasks[0]);
-					SUB_SSE2::SUB::Unit::C1::Sub_16s_unit<scaleType>(r.src1[1], r.src2[1], r.dst[1], scaleMasks[0]);
-					SUB_SSE2::SUB::Unit::C1::Sub_16s_unit<scaleType>(r.src1[2], r.src2[2], r.dst[2], scaleMasks[0]);
-					SUB_SSE2::SUB::Unit::C1::Sub_16s_unit<scaleType>(r.src1[3], r.src2[3], r.dst[3], scaleMasks[0]);
 				}      
 			};
 
@@ -641,9 +635,6 @@ namespace DEF_SUB
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					r.dst[0].f = _mm_sub_ps( r.src2[0].f, r.src1[0].f );
-					r.dst[1].f = _mm_sub_ps( r.src2[1].f, r.src1[1].f );
-					r.dst[2].f = _mm_sub_ps( r.src2[2].f, r.src1[2].f );
-					r.dst[3].f = _mm_sub_ps( r.src2[3].f, r.src1[3].f );
 				}      
 				IV REFR(const Fw32f *s1, const Fw32f *s2, Fw32f *d) const	// REFR Pixel function
 				{
