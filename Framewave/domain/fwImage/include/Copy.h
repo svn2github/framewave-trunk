@@ -209,6 +209,7 @@ ISV Copy_CR_Custom_SSE2_I(const TSD *s, TSD *d, U32 &pixCount)
     		LoadStoreModules::LOAD<16,DT_SSE2,ia,STREAM_FLSE>(&val,(const void*)src++);
         	LoadStoreModules::STORE<16,DT_SSE2,ia,STREAM_TRUE>(&val,(void*)dst++);
         }
+    _mm_mfence();
     }
 
 template<class TSD,IsAlign ia>
@@ -230,6 +231,7 @@ ISV Copy_C3R_Custom_SSE2_I(const TSD *s, TSD *d, U32 &pixCount)
             LoadStoreModules::LOAD<16,DT_SSE2,ia,STREAM_FLSE>(&val,(const void*)src++);
         	LoadStoreModules::STORE<16,DT_SSE2,ia,STREAM_TRUE>(&val,(void*)dst++);
         }
+    _mm_mfence();
     }
 
 // AC4R	-- All Data Types
@@ -313,6 +315,7 @@ ISV Copy_32_C1MR_Custom_SSE2_I(const A8U *m, const TSD *s, TSD *d, U32 &pixCount
                 LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_FLSE>(&dst_data, (void*)dst);
             }
         }
+    _mm_mfence();
     }
 
 // C3MR
@@ -393,6 +396,7 @@ ISV Copy_C3MR_16s_Custom_SSE2_I(const A8U *m, const A16S *s, A16S *d, U32 &pixCo
                 LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&src_data, (void*)(d+16));
             }          
         }
+    _mm_mfence();
     }
 
 
@@ -458,6 +462,7 @@ ISV Copy_C3MR_Custom_SSE2_I(const A8U *m, const TSD *s, TSD *d, U32 &pixCount)
                 LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&src_data, (void*)(d+8));
             } 
         }
+    _mm_mfence();
     }
 
 
@@ -989,7 +994,8 @@ ISV Copy_P3C3R_Custom_SSE2_I(const A8U *s1, const A8U *s2, const A8U *s3, A8U *d
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&r, (void*)d);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&g, (void*)(d+16));
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&b, (void*)(d+32));
-        }		
+        }	
+    _mm_mfence();
     }
 
 template<IsAlign ia>
@@ -1009,7 +1015,8 @@ ISV Copy_P3C3R_Custom_SSE2_I(const A16S *s1, const A16S *s2, const A16S *s3, A16
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&r, (void*)d);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&g, (void*)(d+8));
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&b, (void*)(d+16));
-        }		
+        }	
+    _mm_mfence();
     }
 
 template<class TSD, IsAlign ia>
@@ -1029,7 +1036,8 @@ ISV Copy_P3C3R_Custom_SSE2_I(const TSD *s1, const TSD *s2, const TSD *s3, TSD *d
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&r, (void*)d);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&g, (void*)(d+4));
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&b, (void*)(d+8));
-        }		
+        }
+    _mm_mfence();
     }
 
 // P4C4R
@@ -1053,6 +1061,7 @@ ISV Copy_P4C4R_Custom_SSE2_I(const A8U *s1, const A8U *s2, const A8U *s3, const 
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&b, (void*)(d+32));
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&a, (void*)(d+48));
         }
+    _mm_mfence();
 
     for( ; d < end; d+=16, s1+=4,s2+=4,s3+=4,s4+=4)
         {
@@ -1095,6 +1104,7 @@ ISV Copy_P4C4R_Custom_SSE2_I(const A16S *s1, const A16S *s2, const A16S *s3, con
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&b, (void*)(d+16));
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&a, (void*)(d+24));
         }
+    _mm_mfence();
 
     for( ; d < end; d+=8, s1+=2,s2+=2,s3+=2,s4+=2)
         {
@@ -1129,6 +1139,7 @@ ISV Copy_P4C4R_Custom_SSE2_I(const TSD *s1, const TSD *s2, const TSD *s3, const 
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&b, (void*)(d+8));
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&a, (void*)(d+12));
         }
+    _mm_mfence();
 
     for( ; d < end; d+=4, s1++,s2++,s3++,s4++)
         {
@@ -1159,6 +1170,7 @@ ISV Copy_C3P3R_Custom_SSE2_I(const A8U *s, A8U *d1, A8U *d2, A8U *d3, U32 &pixCo
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgb2, (void*)d2);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgb3, (void*)d3);
         }
+    _mm_mfence();
     }
 
 template<IsAlign ia>
@@ -1180,6 +1192,7 @@ ISV Copy_C3P3R_Custom_SSE2_I(const A16S *s, A16S *d1, A16S *d2, A16S *d3, U32 &p
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgb2, (void*)d2);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgb3, (void*)d3);
         }
+    _mm_mfence();
     }
 
 template <class TSD, IsAlign ia>
@@ -1201,6 +1214,7 @@ ISV Copy_C3P3R_Custom_SSE2_I(const TSD *s, TSD *d1, TSD *d2, TSD *d3, U32 &pixCo
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgb2, (void*)d2);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgb3, (void*)d3);
         }
+    _mm_mfence();
     }
 
 // C4P4R
@@ -1224,6 +1238,7 @@ ISV Copy_C4P4R_Custom_SSE2_I(const A8U *s, A8U *d1, A8U *d2, A8U *d3, A8U *d4, U
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgba3, (void*)d3);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgba4, (void*)d4);
         }
+    _mm_mfence();
 
     for( ; s < end; s+=16, d1+=4,d2+=4,d3+=4,d4+=4)
         {
@@ -1266,6 +1281,7 @@ ISV Copy_C4P4R_Custom_SSE2_I(const A16S *s, A16S *d1, A16S *d2, A16S *d3, A16S *
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgba3, (void*)d3);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgba4, (void*)d4);
         }
+    _mm_mfence();
 
     for( ; s < end; s+=8, d1+=2,d2+=2,d3+=2,d4+=2)
         {
@@ -1300,6 +1316,7 @@ ISV Copy_C4P4R_Custom_SSE2_I(const TSD *s, TSD *d1, TSD *d2, TSD *d3, TSD *d4, U
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgba3, (void*)d3);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgba4, (void*)d4);
         }
+    _mm_mfence();
     for( ; s < end; s+=4, d1++,d2++,d3++,d4++)
         {
         d1[0] = s[0];		
