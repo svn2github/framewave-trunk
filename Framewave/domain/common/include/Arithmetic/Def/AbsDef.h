@@ -189,9 +189,6 @@ namespace DEF_ABS
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					ABS_SSE2::ABS::Unit::C1::Abs_16s_unit(r.src1[0], r.dst[0]);
-					ABS_SSE2::ABS::Unit::C1::Abs_16s_unit(r.src1[1], r.dst[1]);
-					ABS_SSE2::ABS::Unit::C1::Abs_16s_unit(r.src1[2], r.dst[2]);
-					ABS_SSE2::ABS::Unit::C1::Abs_16s_unit(r.src1[3], r.dst[3]);
 				}
 				IV REFR (const Fw16s *s, Fw16s *d) const
 				{
@@ -211,9 +208,6 @@ namespace DEF_ABS
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					r.dst[0].f	= _mm_and_ps(r.src1[0].f, signmask.f);
-					r.dst[1].f	= _mm_and_ps(r.src1[1].f, signmask.f);
-					r.dst[2].f	= _mm_and_ps(r.src1[2].f, signmask.f);
-					r.dst[3].f	= _mm_and_ps(r.src1[3].f, signmask.f);
 				}
 				IV REFR (const Fw32f *s, Fw32f *d) const
 				{
