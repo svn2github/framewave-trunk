@@ -3358,7 +3358,7 @@ TODO:Publish
 #Long - <Text>These functions step through an ROI in a source buffer and compare source data to two specified threshold values.</Text>
 <Text>The value of thresholdLT must be less than the value of thresholdGT.</Text>
 <Text>When the source data is less than the value specified by thresholdLT, the output data is set to the value specified by valueLT.</Text>
-<Text>When the source data is greater than the value specified by thresholdGT, the output data is set to the value specified by valueLT.</Text>
+<Text>When the source data is greater than the value specified by thresholdGT, the output data is set to the value specified by valueGT.</Text>
 <Text>When the source data is within the range defined by thresholdLT and thresholdGT, the output data is set to same value as the source data.</Text>
 <Text>Output data is written back to the same buffer for in-place operation or to a destination buffer.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsSizeErr, fwStsStepErr, fwStsThresholdErr
