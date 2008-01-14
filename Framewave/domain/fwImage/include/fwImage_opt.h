@@ -2164,7 +2164,7 @@ OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSumWindowColumn_16s
                                Fw32f * pDst, int dstStep, FwiSize dstRoiSize,
                                int maskSize, int anchor );
 
-#if BUILD_NUM_AT_LEAST( 9999 )
+
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_8u_C1R)( const Fw8u * pSrc, int srcStep,
                                            Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                            FwiSize maskSize, FwiPoint anchor );
@@ -2277,8 +2277,6 @@ OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_3
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_32f_AC4R)( const Fw32f * pSrc, int srcStep,
                                                   Fw32f * pDst, int dstStep, FwiSize dstRoiSize,
                                                   FwiMaskSize maskSize );
-
-#endif 
 
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilter_8u_C1R)( const Fw8u * pSrc, int srcStep,
                              Fw8u * pDst, int dstStep, FwiSize dstRoiSize,

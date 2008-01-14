@@ -2046,6 +2046,90 @@ FwStatus STDCALL fwiSumWindowColumn_16s32f_C3R        ( const Fw16s *pSrc, int s
 FwStatus STDCALL fwiSumWindowColumn_16s32f_C4R        ( const Fw16s *pSrc, int srcStep, Fw32f *pDst, int dstStep, FwiSize dstRoiSize, int maskSize, int anchor );
 
 ////////////////////////////////////////////////////////////////
+//                        FilterMedian
+////////////////////////////////////////////////////////////////
+
+FwStatus STDCALL fwiFilterMedian_8u_C1R               ( const Fw8u *pSrc, int srcStep,
+                                                                Fw8u *pDst, int dstStep, FwiSize dstRoiSize,
+                                                                FwiSize maskSize, FwiPoint anchor );
+
+FwStatus STDCALL fwiFilterMedian_8u_C3R               ( const Fw8u *pSrc, int srcStep,
+                                                                Fw8u *pDst, int dstStep, FwiSize dstRoiSize,
+                                                                FwiSize maskSize, FwiPoint anchor );
+
+FwStatus STDCALL fwiFilterMedian_8u_C4R               ( const Fw8u *pSrc, int srcStep,
+                                                                Fw8u *pDst, int dstStep, FwiSize dstRoiSize,
+                                                                FwiSize maskSize, FwiPoint anchor );
+
+FwStatus STDCALL fwiFilterMedian_8u_AC4R              ( const Fw8u *pSrc, int srcStep,
+                                                                Fw8u *pDst, int dstStep, FwiSize dstRoiSize,
+                                                                FwiSize maskSize, FwiPoint anchor );
+
+FwStatus STDCALL fwiFilterMedian_16s_C1R              ( const Fw16s *pSrc, int srcStep,
+                                                                Fw16s *pDst, int dstStep, FwiSize dstRoiSize,
+                                                                FwiSize maskSize, FwiPoint anchor );
+
+FwStatus STDCALL fwiFilterMedian_16s_C3R              ( const Fw16s *pSrc, int srcStep,
+                                                                Fw16s *pDst, int dstStep, FwiSize dstRoiSize,
+                                                                FwiSize maskSize, FwiPoint anchor );
+
+FwStatus STDCALL fwiFilterMedian_16s_C4R              ( const Fw16s *pSrc, int srcStep,
+                                                                Fw16s *pDst, int dstStep, FwiSize dstRoiSize,
+                                                                FwiSize maskSize, FwiPoint anchor );
+
+FwStatus STDCALL fwiFilterMedian_16s_AC4R             ( const Fw16s *pSrc, int srcStep,
+                                                                Fw16s *pDst, int dstStep, FwiSize dstRoiSize,
+                                                                FwiSize maskSize, FwiPoint anchor );
+
+////////////////////////////////////////////////////////////////
+//                        FilterMedianHoriz
+////////////////////////////////////////////////////////////////
+
+FwStatus STDCALL fwiFilterMedianHoriz_8u_C1R          ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianHoriz_8u_C3R          ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianHoriz_8u_C4R          ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianHoriz_8u_AC4R         ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianHoriz_16s_C1R         ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianHoriz_16s_C3R         ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianHoriz_16s_C4R         ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianHoriz_16s_AC4R        ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+
+////////////////////////////////////////////////////////////////
+//                        FilterMedianVert
+////////////////////////////////////////////////////////////////
+
+FwStatus STDCALL fwiFilterMedianVert_8u_C1R           ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianVert_8u_C3R           ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianVert_8u_C4R           ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianVert_8u_AC4R          ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianVert_16s_C1R          ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianVert_16s_C3R          ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianVert_16s_C4R          ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianVert_16s_AC4R         ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+
+////////////////////////////////////////////////////////////////
+//                        FilterMedianCross
+////////////////////////////////////////////////////////////////
+
+FwStatus STDCALL fwiFilterMedianCross_8u_C1R          ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianCross_8u_C3R          ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianCross_8u_AC4R         ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianCross_16s_C1R         ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianCross_16s_C3R         ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianCross_16s_AC4R        ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+
+////////////////////////////////////////////////////////////////
+//                        FilterMedianColor
+////////////////////////////////////////////////////////////////
+
+FwStatus STDCALL fwiFilterMedianColor_8u_C3R          ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianColor_8u_AC4R         ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianColor_16s_C3R         ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianColor_16s_AC4R        ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianColor_32f_C3R         ( const Fw32f *pSrc, int srcStep, Fw32f *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+FwStatus STDCALL fwiFilterMedianColor_32f_AC4R        ( const Fw32f *pSrc, int srcStep, Fw32f *pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
+
+////////////////////////////////////////////////////////////////
 //                        Filter
 ////////////////////////////////////////////////////////////////
 
