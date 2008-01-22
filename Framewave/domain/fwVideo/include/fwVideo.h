@@ -1568,27 +1568,25 @@ FwStatus STDCALL fwiTransformDequantLumaDC_H264_16s_C1I           ( Fw16s *pSrcD
 /*#FunctionBlock - MPEG-2 Inverse Quantization
 TODO:edit
 #Technologies - REF, SSE2, SSE3
-#Short - Perform Inverse Quantization for MPEG-2 frames
-#Long - <Text>These functions perform inverse quantization for intra/non-intra frames according to the MPEG-2 standard.</Text>
+#Short - Performs inverse quantization for intra/non-intra frames according to MPEG-2 standard
+#Long - <Text>These functions multiply the 8x8 matrix of DCT coefficients in pSrcDst with Qp(Quantising scale factor) and then with 
+the corresponding elements from 8x8 pQPMatrix. Further they also perform saturation and mismatch control according to the MPEG-2 standard.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr
 */
 FwStatus STDCALL fwiQuantInvIntra_MPEG2_16s_C1I                   ( Fw16s *pSrcDst, int QP, Fw16s *pQPMatrix );
-
-/*#FunctionBlock - QuantInv_MPEG2
-TODO:edit
-#Technologies - REF
-#Short - todo
-#Long - todo
-#ReturnValues - fwStsNoErr
-*/
 FwStatus STDCALL fwiQuantInv_MPEG2_16s_C1I                        ( Fw16s *pSrcDst, int QP, Fw16s *pQPMatrix );
 
-/*#FunctionBlock - ReconstructDCTBlock_MPEG1
+/*#FunctionBlock - MPEG-1 Reconstruct DCT Block
 TODO:edit
-#Technologies - REF, SSE2, SSE3
-#Short - TODO
-#Long - TODO
-#ReturnValues - TODO
+#Technologies - REF
+#Short - Reconstructs an 8x8 DCT block for non-intra/intra frames according to MPEG-1 standard
+#Long - These functions decode 64 quantised DCT coefficients from the bitstream for non-intra/intra frames by making use 
+of the run-level tables in MPEG-1 standard. The coefficients are then rearranged as an 8x8 block according to pScanMatrix and then inverse quantisation is performed.
+Saturation and mismatch control are also performed according to MPEG-1 standard. pDCSizeTable is used to decode the DC coefficient.
+pACTable is used to decode ac coefficients. QP and pQPMatrix are used for inverse quantisation. The reconstructed 8x8 block of 
+DCT coefficients are written into pDstBlock. *pDstSize indicates the position of last non-zero coefficient. ppBitStream and pOffset 
+are updated accordingly to point to the next bit in the bitstream from where the decoding for the next 8x8 block should begin.</Text>
+#ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsH263VLCCodeErr
 */
 FwStatus STDCALL fwiReconstructDCTBlock_MPEG1_32s                 (      Fw32u **ppBitStream, int *pOffset,
                                                                      const Fw32s *pDCSizeTable,
@@ -1596,25 +1594,23 @@ FwStatus STDCALL fwiReconstructDCTBlock_MPEG1_32s                 (      Fw32u *
                                                                            Fw32s *pScanMatrix , int QP, Fw16s *pQPMatrix,
                                                                            Fw16s *pDstBlock   ,         Fw32s *pDstSize );
 
-/*#FunctionBlock - ReconstructDCTBlockIntra_MPEG1
-TODO:edit
-#Technologies - REF, SSE2, SSE3
-#Short - TODO
-#Long - TODO
-#ReturnValues - TODO
-*/
 FwStatus STDCALL fwiReconstructDCTBlockIntra_MPEG1_32s            (      Fw32u **ppBitStream, int *pOffset,
                                                                      const Fw32s *pDCSizeTable,
                                                                      const Fw32s *pACTable    ,
                                                                            Fw32s *pScanMatrix , int QP, Fw16s *pQPMatrix,
                                                                            Fw16s *pDCPred     ,         Fw16s *pDstBlock, Fw32s *pDstSize );
 
-/*#FunctionBlock - ReconstructDCTBlock_MPEG2
+/*#FunctionBlock - MPEG-2 Reconstruct DCT Block
 TODO:edit
-#Technologies - REF, SSE2, SSE3
-#Short - TODO
-#Long - TODO
-#ReturnValues - TODO
+#Technologies - REF
+#Short - Reconstructs an 8x8 DCT block for non-intra/intra frames according to MPEG-2 standard
+#Long - These functions decode 64 quantised DCT coefficients from the bitstream for non-intra/intra frames by making use 
+of the run-level tables in MPEG-2 standard. The coefficients are then rearranged as an 8x8 block according to pScanMatrix and then inverse quantisation is performed.
+Saturation and mismatch control are also performed according to MPEG-2 standard. pDCTable is used to decode the DC coefficient.
+pACTable is used to decode ac coefficients. QP and pQPMatrix are used for inverse quantisation. The reconstructed 8x8 block of 
+DCT coefficients are written into pDstBlock. *pDstSize indicates the position of last non-zero coefficient. ppBitStream and pOffset 
+are updated accordingly to point to the next bit in the bitstream from where the decoding for the next 8x8 block should begin.</Text>
+#ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsH263VLCCodeErr
 */
 FwStatus STDCALL fwiReconstructDCTBlock_MPEG2_32s                 (       Fw32u **ppBitStream, int *pOffset,
                                                                       const FwVCHuffmanSpec_32s *pDCTable,
@@ -1622,13 +1618,6 @@ FwStatus STDCALL fwiReconstructDCTBlock_MPEG2_32s                 (       Fw32u 
                                                                             Fw32s *pScanMatrix , int QP, Fw16s *pQPMatrix,
                                                                             Fw16s *pDstBlock   , Fw32s *pDstSize );
 
-/*#FunctionBlock - ReconstructDCTBlockIntra_MPEG2
-TODO:edit
-#Technologies - REF, SSE2, SSE3
-#Short - TODO
-#Long - TODO
-#ReturnValues - TODO
-*/
 FwStatus STDCALL fwiReconstructDCTBlockIntra_MPEG2_32s            (       Fw32u **ppBitStream, int *pOffset,
                                                                       const FwVCHuffmanSpec_32s *pDCSizeTable,
                                                                       const FwVCHuffmanSpec_32s *pACTable    ,
