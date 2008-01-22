@@ -80,7 +80,7 @@ cd ..
 echo PASS: %PASS% 		>> %LOG%
 if "%PASS%"=="FALSE" exit
 echo del ..\..\%CLIENT_ERROR%	>> %LOG%
-del ..\%CLIENT_ERROR%		>> %LOG%
+del ..\..\%CLIENT_ERROR%		>> %LOG%
 exit
 ::--------------------------------
 
