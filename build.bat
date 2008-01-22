@@ -30,7 +30,7 @@ echo BaseDir[%BASE_DIR%] Target[%TARGET%] Platform[%PLATFORM%] Variant[%VARIANT%
 
 
 if "%SERVER%"=="TRUE" goto SERVER_ALL
-if "%BASE_DIR%"=="" goto CLIENT_ALL
+if "%BASE_DIR%"=="ALL" goto CLIENT_ALL
 goto CLIENT_ONE
 
 
@@ -79,7 +79,7 @@ cd ..
 
 echo PASS: %PASS% 		>> %LOG%
 if "%PASS%"=="FALSE" exit
-echo del ..\%CLIENT_ERROR%	>> %LOG%
+echo del ..\..\%CLIENT_ERROR%	>> %LOG%
 del ..\%CLIENT_ERROR%		>> %LOG%
 exit
 ::--------------------------------
