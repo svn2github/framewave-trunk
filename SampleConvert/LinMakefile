@@ -40,8 +40,8 @@ sample.exe: $(OBJS)
 setup: 
 ifeq ($(LIB_TYPE),dynamic)
 		/sbin/ldconfig -n $(FW_LIB_PATH)	
-		ln -sf  $(FW_LIB_PATH)/libfwBase.so.1.1.0 $(FW_LIB_PATH)/libfwBase.so
-		ln -sf  $(FW_LIB_PATH)/libfwImage.so.1.1.0 $(FW_LIB_PATH)/libfwImage.so
+		ln -sf  $(FW_LIB_PATH)/libfwBase.so.1 $(FW_LIB_PATH)/libfwBase.so
+		ln -sf  $(FW_LIB_PATH)/libfwImage.so.1 $(FW_LIB_PATH)/libfwImage.so
 endif
 
 clean:
