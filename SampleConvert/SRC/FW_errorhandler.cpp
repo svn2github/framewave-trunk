@@ -106,7 +106,7 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 		count = 3 ;
 	else if(ret_val == YUV)
 	{
-		if (isnumber(argv[3], 1) == RETN || isnumber(argv[4], 1) == RETN )
+		if (isnumber_int(argv[3], 1) == RETN || isnumber_int(argv[4], 1) == RETN )
 		{
 			printf("Error: Invalid argument specified for 'yuv' file \n") ;
 			return RETN ;
@@ -145,7 +145,7 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 		else if(stricmp("-crop", argv[count]) == 0 )
 		{
 
-			if (isnumber(argv[count+1], 1) == RETN || isnumber(argv[count+2], 1) == RETN )
+			if (isnumber_int(argv[count+1], 1) == RETN || isnumber_int(argv[count+2], 1) == RETN )
 			{
 				printf("Error: Invalid argument specified for '-crop' option \n") ;
 				return RETN ;
@@ -171,7 +171,7 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 				count += 2 ;
 			else if(ret_val == YUV)
 			{
-				if (isnumber(argv[count+2], 1) == RETN || isnumber(argv[count+3], 1) == RETN )
+				if (isnumber_int(argv[count+2], 1) == RETN || isnumber_int(argv[count+3], 1) == RETN )
 				{
 					printf("Error: Invalid argument specified for 'yuv' file \n") ;
 					return RETN ;
@@ -188,9 +188,9 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 /*  addC  */
 		else if(stricmp("-addC", argv[count]) == 0 )
 		{
-			if (isnumber(argv[count+1], 1) == RETN ||
-				isnumber(argv[count+2], 1) == RETN ||
-				isnumber(argv[count+3], 1) == RETN  )
+			if (isnumber_int(argv[count+1], 1) == RETN ||
+				isnumber_int(argv[count+2], 1) == RETN ||
+				isnumber_int(argv[count+3], 1) == RETN  )
 			{
 				printf("Error: Invalid argument specified for '-addC' option \n") ;
 				return RETN ;
@@ -219,7 +219,7 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 				count += 2 ;
 			else if(ret_val == YUV)
 			{
-				if (isnumber(argv[count+2], 1) == RETN || isnumber(argv[count+3], 1) == RETN )
+				if (isnumber_int(argv[count+2], 1) == RETN || isnumber_int(argv[count+3], 1) == RETN )
 				{
 					printf("Error: Invalid argument specified for 'yuv' file \n") ;
 					return RETN ;
@@ -235,9 +235,9 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 /*  subC  */
 		else if(stricmp("-subC", argv[count]) == 0 )
 		{
-			if (isnumber(argv[count+1], 1) == RETN ||
-				isnumber(argv[count+2], 1) == RETN ||
-				isnumber(argv[count+3], 1) == RETN  )
+			if (isnumber_int(argv[count+1], 1) == RETN ||
+				isnumber_int(argv[count+2], 1) == RETN ||
+				isnumber_int(argv[count+3], 1) == RETN  )
 			{
 				printf("Error: Invalid argument specified for '-subC' option \n") ;
 				return RETN ;
@@ -265,7 +265,7 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 				count += 2 ;
 			else if(ret_val == YUV)
 			{
-				if (isnumber(argv[count+2], 1) == RETN || isnumber(argv[count+3], 1) == RETN )
+				if (isnumber_int(argv[count+2], 1) == RETN || isnumber_int(argv[count+3], 1) == RETN )
 				{
 					printf("Error: Invalid argument specified for 'yuv' file \n") ;
 					return RETN ;
@@ -303,7 +303,7 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 /*  roi  */
 		else if(stricmp("--roi", argv[count]) == 0 )
 		{
-			if (isnumber(argv[count+1], 1) == RETN || isnumber(argv[count+2], 1) == RETN )
+			if (isnumber_int(argv[count+1], 1) == RETN || isnumber_int(argv[count+2], 1) == RETN )
 			{
 				printf("Error: Invalid argument specified for '--roi' option \n") ;
 				return RETN ;
@@ -319,7 +319,7 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 /*  flip  */
 		else if(stricmp("-flip", argv[count]) == 0 )
 		{
-			if (isnumber(argv[count+1], 1) == RETN )
+			if (isnumber_int(argv[count+1], 1) == RETN )
 			{
 				printf("Error: Invalid argument specified for '-flip' option \n") ;
 				return RETN ;
@@ -365,7 +365,7 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 /*  brightness  */
 		else if(stricmp("-bright", argv[count]) == 0 )
 		{
-			if (isnumber(argv[count+1], -1) == RETN )
+			if (isnumber_int(argv[count+1], -1) == RETN )
 			{
 				printf("Error: Invalid argument specified for '-bright' option \n") ;
 				return RETN ;
@@ -383,7 +383,7 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 /*  contrast  */
 		else if(stricmp("-contrast", argv[count]) == 0 )
 		{
-			if (isnumber(argv[count+1], -1) == RETN )
+			if (isnumber_int(argv[count+1], -1) == RETN )
 			{
 				printf("Error: Invalid argument specified for '-contrast' option \n") ;
 				return RETN ;
@@ -412,9 +412,9 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 /*  border  */
 		else if(stricmp("-border", argv[count]) == 0 )
 		{
-			if (isnumber(argv[count+1], 1) == RETN ||
-				isnumber(argv[count+2], 1) == RETN ||
-				isnumber(argv[count+3], 1) == RETN  )
+			if (isnumber_int(argv[count+1], 1) == RETN ||
+				isnumber_int(argv[count+2], 1) == RETN ||
+				isnumber_int(argv[count+3], 1) == RETN  )
 			{
 				printf("Error: Invalid argument specified for '-border' option \n") ;
 				return RETN ;
@@ -624,7 +624,7 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 /*  grid */
 		else if(stricmp("-grid", argv[count]) == 0 )
 		{
-			if (isnumber(argv[count+1], 1) == RETN )
+			if (isnumber_int(argv[count+1], 1) == RETN )
 			{
 				printf("Error: Invalid argument specified for '-grid' option \n") ;
 				return RETN ;
@@ -641,7 +641,7 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 /*  noise */
 		else if(stricmp("-noise", argv[count]) == 0 )
 		{
-			if (isnumber(argv[count+1], 1) == RETN )
+			if (isnumber_int(argv[count+1], 1) == RETN )
 			{
 				printf("Error: Invalid argument specified for '-noise' option \n") ;
 				return RETN ;
@@ -658,10 +658,10 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 /*  blinds */
 		else if(stricmp("-blinds", argv[count]) == 0 )
 		{
-			if (isnumber(argv[count+1], 1) == RETN ||
-				isnumber(argv[count+2], 1) == RETN ||
-				isnumber(argv[count+3], 1) == RETN ||
-				isnumber(argv[count+4], 1) == RETN)
+			if (isnumber_int(argv[count+1], 1) == RETN ||
+				isnumber_int(argv[count+2], 1) == RETN ||
+				isnumber_int(argv[count+3], 1) == RETN ||
+				isnumber_int(argv[count+4], 1) == RETN)
 			{
 				printf("Error: Invalid argument specified for '-blinds' option \n") ;
 				return RETN ;
@@ -691,7 +691,7 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 /*  deinterlace */
 		else if(stricmp("-deinterlace", argv[count]) == 0 )
 		{
-			if (isnumber(argv[count+1], 1) == RETN )
+			if (isnumber_int(argv[count+1], 1) == RETN )
 			{
 				printf("Error: Invalid argument specified for '-deinterlace' option \n") ;
 				return RETN ;
@@ -714,8 +714,8 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 /*  glassy */
 		else if(stricmp("-glassy", argv[count]) == 0 )
 		{
-			if (isnumber(argv[count+1], 1) == RETN ||
-				isnumber(argv[count+2], 1) == RETN )
+			if (isnumber_int(argv[count+1], 1) == RETN ||
+				isnumber_int(argv[count+2], 1) == RETN )
 			{
 				printf("Error: Invalid argument specified for '-glassy' option \n") ;
 				return RETN ;
@@ -733,7 +733,7 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 /*  illusion */
 		else if(stricmp("-illusion", argv[count]) == 0 )
 		{
-			if (isnumber(argv[count+1], 1) == RETN )
+			if (isnumber_int(argv[count+1], 1) == RETN )
 			{
 				printf("Error: Invalid argument specified for '-illusion' option \n") ;
 				return RETN ;
@@ -756,7 +756,7 @@ check_command_line(int argc, char *argv[], en_options *p_opts, char *outfile )
 /*  video */
 		else if(stricmp("-video", argv[count]) == 0 )
 		{
-			if (isnumber(argv[count+1], 1) == RETN )
+			if (isnumber_int(argv[count+1], 1) == RETN )
 			{
 				printf("Error: Invalid argument specified for '-video' option \n") ;
 				return RETN ;
@@ -950,7 +950,7 @@ isnumber_float(char *str, int pos_neg )
 
 /*!
  *************************************************************************************
- * \function isnumber
+ * \function isnumber_int
  *
  * \brief
  *    This function checks args for number
@@ -959,7 +959,7 @@ isnumber_float(char *str, int pos_neg )
  *************************************************************************************
  */
 int
-isnumber(char *str, int pos_neg )
+isnumber_int(char *str, int pos_neg )
 {
 	int i=0 ;
 

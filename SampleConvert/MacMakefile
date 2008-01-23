@@ -1,3 +1,4 @@
+
 #Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
 
 #This software is subject to the Apache v2.0 License.
@@ -6,7 +7,7 @@
 ##################################################################
 #                                                                #
 #                                                                #
-#    Makefile for building sample application project on Sol     #
+#    Makefile for building sample application project on Mac	 #
 #                                                                #
 #                                                                #
 ##################################################################
@@ -28,26 +29,21 @@ LIB_TYPE = dynamic
 all: setup sample.exe clean
 	
 sample.exe: $(OBJS) 
-		CC -m$(BITS_PROCESSOR)  -o bin/X$(BITS_PROCESSOR)/sample$(BITS_PROCESSOR)_$(LIB_TYPE) $(OBJS) -L$(FW_LIB_PATH) -lfwImage -lfwBase -lpthread -lrt 
+		g++ -m$(BITS_PROCESSOR) -o bin/X$(BITS_PROCESSOR)/sample$(BITS_PROCESSOR)_$(LIB_TYPE) $(OBJS) -$(LIB_TYPE) -lfwImage -lfwBase -lpthread  -L$(FW_LIB_PATH)
 		@echo 
 		@echo Sample application building is successful ...
 
 
 %.o : $(SRC_PATH)%.cpp
-		CC -m$(BITS_PROCESSOR) -xO2 -DLINUX -DSOL -c $< -o $@  -I$(INC_PATH) -I$(FW_INC_PATH)
+		g++ -m$(BITS_PROCESSOR) -DLINUX -c $< -o $@  -I$(INC_PATH) -I$(FW_INC_PATH)
 
 setup: 
 ifeq ($(LIB_TYPE),dynamic)
-
-		ln -sf  $(FW_LIB_PATH)/libfwBase.so.1.1.0 $(FW_LIB_PATH)/libfwBase.so.1
-		ln -sf  $(FW_LIB_PATH)/libfwImage.so.1.1.0 $(FW_LIB_PATH)/libfwImage.so.1
-
-		ln -sf  $(FW_LIB_PATH)/libfwBase.so.1 $(FW_LIB_PATH)/libfwBase.so
-		ln -sf  $(FW_LIB_PATH)/libfwImage.so.1 $(FW_LIB_PATH)/libfwImage.so
-
+		ln -sf  $(FW_LIB_PATH)/libfwBase.dylib $(FW_LIB_PATH)/libfwBase.1.dylib
+		ln -sf  $(FW_LIB_PATH)/libfwImage.dylib $(FW_LIB_PATH)/libfwImage.1.dylib
 endif
 
 clean:
-		rm -f *.o 
+		rm -f *.o
 
 

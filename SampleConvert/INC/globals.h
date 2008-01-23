@@ -169,7 +169,7 @@ int		check_removearg(char *str) ;
 int		check_range(char *str, int lo, int hi ) ;
 int		check_range_float(char *str, float lo, float hi ) ;
 int		check_yuvformat(char *str) ;
-int		isnumber(char *str, int pos_neg ) ;
+int		isnumber_int(char *str, int pos_neg ) ;
 int		isnumber_float(char *str, int pos_neg ) ;
 
 int		read_bmpfile(FILE *fp, st_input_format *bmp_data) ;

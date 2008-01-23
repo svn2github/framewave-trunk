@@ -42,24 +42,19 @@ The project uses the following directory structure:
    |---------bin
    |		|
    |		|	   
-   |		|---------X32---------Linux/Solaris executable is created here
+   |		|---------X32---------Linux/Solaris/Mac executable is created here
    |		|	      |
    |           	|	      |----Debug-----sample.exe(Windows debug Executable is created here)       
    |		|	      |
    |		|	      |----Release-----sample.exe(Windows release Executable is created here)
-   |		|             |
-   |		|	      |----debug_static-----sample.exe(Windows debug Executable is created here)
    |		|
    |		|          
-   |		|---------X64----------Linux/Solaris executable is created here
+   |		|---------X64----------Linux/Solaris/Mac executable is created here
    |		|	      |
    |           	|	      |----Debug-----sample.exe(Windows debug Executable is created here)       
    |		|	      |
    |		|	      |----Release-----sample.exe(Windows release Executable is created here)
    |		|             |
-   |		|	      |----debug_static-----sample.exe(Windows debug Executable is created here)
-   |           
-   |               
    |
    |           
    |---------butterfly.bmp(sample image file)
@@ -67,7 +62,7 @@ The project uses the following directory structure:
 
 
 
-FW header fiels (fwImage.h fwBase.h) and FW binaries(fwBase and fwImage) come with the fw installation and are not part of the FW_SampleConvert.zip. 
+FW header fiels (fwImage.h fwBase.h) and FW binaries(fwBase and fwImage) come with the fw installation and are not part of the SampleConvert. 
 
 
 2. Build Steps
@@ -78,7 +73,7 @@ Use one of the following sequences when building the project:
 For Microsoft(R) Windows(R):
 
  1. Open sample sample.sln 
- 2. Select the project configuration as 'Debug','Release' OR 'Debug_static'.
+ 2. Select the project configuration as 'Debug'OR 'Release'.
  3. Edit the 'additional library directories' section in the project's 
     Property Page to locate the FW libraries.
  4. Edit the 'additional include directories' section in the project's 
@@ -86,41 +81,53 @@ For Microsoft(R) Windows(R):
  5. Build the project
  6. Use the application with a BMP/YUV file
 
-Note: to run the sample application PATH environment variable has to be set to locate the FW dll in case of dynamic linking. 
+Note: to run the sample application, PATH environment variable has to be set to locate the FW dll in case of dynamic linking. 
 
 For LINUX(R):
 
- 1. Extract the files from FW_SampleConvert.tar
- 2. Edit the LinMakefile to change BITS_PROCESSOR depending on 32 bit/64 bit target build.
+ 1. Edit the LinMakefile to change BITS_PROCESSOR depending on 32 bit/64 bit target build.
     For example: For 64-bit build assign BITS_PROCESSOR=64
- 3. Edit the LinMakefile to change the FW_LIB_PATH to point to the location of the libraries.
+ 2. Edit the LinMakefile to change the FW_LIB_PATH to point to the location of the libraries.
     For example: if the FW is installed at /home/fw/libs32/ then assign FW_LIB_PATH=/home/fw/libs32/
- 4. Edit the Makefile to change the FW_INC_PATH to point to the location of the FW header files.
+ 3. Edit the Makefile to change the FW_INC_PATH to point to the location of the FW header files.
     For example: if the header files are at /home/fw/headerfiles/ then assign FW_INC_PATH=/home/fw/headerfiles/    
- 5. Edit the LinMakefile to select linker option for dynamic/static
+ 4. Edit the LinMakefile to select linker option for dynamic/static
     For example: if the linker option is selected as dynamic then assign LIB_TYPE=dynamic
- 6. Build the release version of sample.exe using LinMakefile (use the command "make -f LinMakefile")
- 7. Use the application with a BMP/YUV files 
+ 5. Build the release version of sample using LinMakefile (use the command "make -f LinMakefile")
+ 6. Use the application with a BMP/YUV files 
  
 Note: to run the sample application Set the LD_LIBRARY_PATH environment variable to locate the FW libraries in case of dynamic linking. 
 
 FOR Solaris(R):
 
- 1. Extract the files from FW_SampleConvert.tar
- 2. Edit the SolMakefile to change BITS_PROCESSOR depending on 32 bit/64 bit target build.
+ 1. Edit the SolMakefile to change BITS_PROCESSOR depending on 32 bit/64 bit target build.
     For example: For 64-bit build assign BITS_PROCESSOR=64
- 3. Edit the SolMakefile to change the FW_LIB_PATH to point to the location of the libraries.
+ 2. Edit the SolMakefile to change the FW_LIB_PATH to point to the location of the libraries.
     For example: if the FW is installed at /home/FW/libs32/ then assign FW_LIB_PATH=/home/FW/libs32/
- 4. Edit the Makefile to change the FW_INC_PATH to point to the location of the FW header files.
+ 3. Edit the Makefile to change the FW_INC_PATH to point to the location of the FW header files.
     For example: if the header files are at /home/FW/headerfiles/ then assign FW_INC_PATH=/home/FW/headerfiles/    
- 5. Edit the SolMakefile to select linker option for dynamic/static
+ 4. Edit the SolMakefile to select linker option for dynamic/static
     For example: if the linker option is selected as dynamic then assign LIB_TYPE=dynamic
- 6. Build the release version of sample.exe using SolMakefile (use the command "make -f SolMakefile")
- 7. Use the application with a BMP/YUV files 
+ 5. Build the release version of sample using SolMakefile (use the command "make -f SolMakefile")
+ 6. Use the application with a BMP/YUV files 
 
 Note: 1)to run the sample application Set the LD_LIBRARY_PATH environment variable to locate the FW libraries in case of dynamic linking. 
-      2)In Solaris the preprocessor directive SOL must be defined while compiling. 
  
+FOR Mac(R):
+
+ 1. Edit the MacMakefile to change BITS_PROCESSOR depending on 32 bit/64 bit target build.
+    For example: For 64-bit build assign BITS_PROCESSOR=64
+ 2. Edit the SolMakefile to change the FW_LIB_PATH to point to the location of the libraries.
+    For example: if the FW is installed at /home/FW/libs32/ then assign FW_LIB_PATH=/home/FW/libs32/
+ 3. Edit the Makefile to change the FW_INC_PATH to point to the location of the FW header files.
+    For example: if the header files are at /home/FW/headerfiles/ then assign FW_INC_PATH=/home/FW/headerfiles/    
+ 4. Edit the SolMakefile to select linker option for dynamic/static
+    For example: if the linker option is selected as dynamic then assign LIB_TYPE=dynamic
+ 5. Build the release version of sample using SolMakefile (use the command "make -f MacMakefile")
+ 6. Use the application with a BMP/YUV files 
+
+Note: 1)to run the sample application Set the DYLD_LIBRARY_PATH environment variable to locate the FW libraries in case of dynamic linking.  
+
 3. Program Usage 
 ----------------
 
@@ -341,7 +348,7 @@ The following are examples of syntax that can be used to invoke the sample proje
 
      Add 'in_add.yuv' to 'in.yuv', then write the resultant to 'out.yuv'
 
-4. sample.exe -input in.yuv 352 288 420   -output out.bmp
+4. sample.exe -input in.yuv 352 288 420 -output out.bmp
 
      Convert  in.yuv to 'out.bmp' --- YUV to RGB color space
 
@@ -358,11 +365,6 @@ The following limitations apply to the sample project:
 3. In Solaris all the filter options, -blur and -sharp are disabled. 
    
 
-Copyright (c) 2006, 2007 Advanced Micro Devices, Inc.  All Rights Reserved.
-
-
-This software and any related documentation (collectively "Software") are the 
-confidential proprietary property information of AMD.  Any use of such Software 
-is subject to the AMD Performance Library License Agreement.  If you do not agree 
-to the terms and conditions of the Agreement, do not use the Software.
+Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
+This software is subject to the Apache v2.0 License.
 
