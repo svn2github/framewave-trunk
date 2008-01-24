@@ -665,11 +665,13 @@ _mm_sfence (void)
   FwInterrupt3();
 }
 
-static inline void
-_mm_pause (void)
-{
-  FwInterrupt3();
-}
+#if !defined _MSC_VER >= 1500
+    static inline void
+    _mm_pause (void)
+    {
+      FwInterrupt3();
+    }
+#endif
 
 #endif
 
