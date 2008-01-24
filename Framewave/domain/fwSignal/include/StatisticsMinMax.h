@@ -382,11 +382,11 @@ struct StatMinMax_32u: public StatMinMaxGen<Fw32u,C1>
     {
         __m128i max1,min1;
 
-        max1 = _mm_max_epu32(r.src1[0].i,r.src1[1].i);
+        max1 = mm_max_epu32(r.src1[0].i,r.src1[1].i);
         min1 = _mm_xor_si128(max1,r.src1[0].i);
         min1 = _mm_xor_si128(min1,r.src1[1].i);
-        mMax.i = _mm_max_epu32(mMax.i,max1);
-        mMin.i  = _mm_min_epu32(mMin.i,min1);
+        mMax.i = mm_max_epu32(mMax.i,max1);
+        mMin.i  = mm_min_epu32(mMin.i,min1);
     }
 };
 
@@ -488,7 +488,7 @@ struct StatMaxAbs_32s: public fe1St<Fw32s,C1>
     IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
     {
         // Find the absolute value
-        __m128i  desti = _mm_abs_epi32(r.src1[0].i);
+        __m128i  desti = mm_abs_epi32(r.src1[0].i);
 
         // Find the maximum
         __m128i inter_res, com_inter;
