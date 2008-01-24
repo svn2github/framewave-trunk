@@ -158,7 +158,7 @@ enum PxFnType
     PFT_CUSTOM,                    // present but customized with fallback
     PFT_CUSTOM_NO_FALLBACK,        // present but customized without fallback
     PFT_EMULATE_CUSTOM,            // not present but fall to next available custom
-    PFT_EMULATE_CUSTOM_NO_FB,      // not present but fall to next available custom with no fallback
+    PFT_EMULATE_CUSTOM_NO_FB       // not present but fall to next available custom with no fallback
 };
 
 enum IsAlign
