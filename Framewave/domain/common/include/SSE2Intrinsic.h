@@ -118,7 +118,7 @@ SYS_INLINE STATIC __m128i _mm_cmpgt_epu16(const __m128i &val1, const __m128i &va
 }
 
 
-SYS_INLINE STATIC __m128i _mm_max_epu32(const __m128i &val1, const __m128i &val2) 
+SYS_INLINE STATIC __m128i mm_max_epu32(const __m128i &val1, const __m128i &val2) 
 {
     __m128i mask    = _mm_cmpgt_epu32(val1, val2);
     __m128i ret     = _mm_and_si128(mask, val1);
@@ -127,7 +127,7 @@ SYS_INLINE STATIC __m128i _mm_max_epu32(const __m128i &val1, const __m128i &val2
     return            _mm_or_si128(ret, mask);
 }
 
-SYS_INLINE STATIC __m128i _mm_min_epu32(const __m128i &val1, const __m128i &val2) 
+SYS_INLINE STATIC __m128i mm_min_epu32(const __m128i &val1, const __m128i &val2) 
 {
     __m128i mask   = _mm_cmpgt_epu32(val1, val2);
     __m128i ret1   = _mm_and_si128(mask, val2);
@@ -145,7 +145,7 @@ SYS_INLINE STATIC __m128i _mm_min_epi32(const __m128i &val1, const __m128i &val2
     return            _mm_or_si128(ret1,mask);
 }
 
-SYS_INLINE STATIC __m128i _mm_max_epi32(const __m128i &val1, const __m128i &val2) 
+SYS_INLINE STATIC __m128i mm_max_epi32(const __m128i &val1, const __m128i &val2) 
 {
     __m128i mask    = _mm_cmpgt_epi32(val1, val2);
     __m128i ret1    = _mm_and_si128(mask, val1);
@@ -188,7 +188,7 @@ SYS_INLINE STATIC __m128i _mm_abs_epi16(const __m128i &src) // returns the absol
     return dst;
 }
 
-SYS_INLINE STATIC __m128i _mm_abs_epi32(const __m128i &src) // returns the absolute value of the 16bit signed value.
+SYS_INLINE STATIC __m128i mm_abs_epi32(const __m128i &src) // returns the absolute value of the 16bit signed value.
 {
      /* do a one's complement and ( add 1 i.e., subtract -1 wich is same as 1111...1111) */
     __m128i complement, temp,dst  ;
