@@ -35,7 +35,7 @@ namespace OPT_LEVEL
         enum CMCStep
         {
             STEP_CHANNEL, // Step through the ROI in channel format (ie. RGBRGB...)
-            STEP_PLANAR,  // Step through the ROI in planar format. Each channel is in its own buffer
+            STEP_PLANAR   // Step through the ROI in planar format. Each channel is in its own buffer
                           //   ie. pSrc[0] = RRR...  pSrc[1] = GGG...  pSrc[2] = BBB...
         };
 
