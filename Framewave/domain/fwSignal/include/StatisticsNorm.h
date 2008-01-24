@@ -489,8 +489,8 @@ struct StatNorm_L1_16s32s_Sfs: public StatNorm_L1Gen<Fw16s,C1,Fw64s>
 
 		srcLo.i = r.src1[0].i;
 		CBL_SSE2::Unpack16STo32S(srcLo.i,srcHi.i);
-		srcLo.i = _mm_abs_epi32(srcLo.i);
-		srcHi.i = _mm_abs_epi32(srcHi.i);
+		srcLo.i = mm_abs_epi32(srcLo.i);
+		srcHi.i = mm_abs_epi32(srcHi.i);
 		srcLo.i = _mm_add_epi32(srcLo.i,srcHi.i);
 		CBL_SSE2::Unpack32UTo64U(srcLo.i,srcHi.i);
 		srcLo.i = _mm_add_epi64(srcLo.i,srcHi.i);
@@ -889,11 +889,11 @@ struct StatNormDiff_Inf_16s32s: public StatNormDiff_InfGen<Fw16s,C1,Fw16s,C1,Fw3
 		src1Lo.i = _mm_sub_epi32(src1Lo.i,src2Lo.i);
 		src2Lo.i = _mm_sub_epi32(src1Hi.i,src2Hi.i);
 
-        src1Lo.i = _mm_abs_epi32(src1Lo.i);
-        src2Lo.i = _mm_abs_epi32(src2Lo.i);
+        src1Lo.i = mm_abs_epi32(src1Lo.i);
+        src2Lo.i = mm_abs_epi32(src2Lo.i);
 
-        src1Lo.i = _mm_max_epi32(src1Lo.i,src2Lo.i);
-		mMax.i = _mm_max_epi32(mMax.i,src1Lo.i);
+        src1Lo.i = mm_max_epi32(src1Lo.i,src2Lo.i);
+		mMax.i = mm_max_epi32(mMax.i,src1Lo.i);
 	}
 
 };
