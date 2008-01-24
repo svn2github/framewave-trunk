@@ -51,7 +51,7 @@ enum IMAGE_TYPE
     FW_YCbCr422,
     FW_YCbCr420,
     FW_CbYCr422,
-    FW_CbYCr422Gamma,
+    FW_CbYCr422Gamma
 };
 
 std::string GetMD5( void * data, U32 size )
