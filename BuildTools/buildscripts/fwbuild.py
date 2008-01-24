@@ -245,8 +245,8 @@ class fwProject():
 #                           self.dctFwVars['sProjectName'  ] )
 
         # BUGBUG: <one last hack; can't get rid of this for a bit>
-        if (self.dctFwVars['toolset'] == 'suncc') and (self.dctFwVars['sProjectName'] == 'fwImage'):
-            pthBuildHFile = appendToFilename(pthBuildHFile, '_sol')
+        #if (self.dctFwVars['toolset'] == 'suncc') and (self.dctFwVars['sProjectName'] == 'fwImage'):
+        #    pthBuildHFile = appendToFilename(pthBuildHFile, '_sol')
         # </one last hack>
         
         dctFunctions = constructMultipassCPP( self.dctFwVars['pthProjectDir'],          \
