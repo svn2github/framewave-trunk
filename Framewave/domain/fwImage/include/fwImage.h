@@ -17,7 +17,7 @@ enum {
     FWI_INTER_CUBIC    = 4,            // Bicubic Interpolation
     FWI_INTER_SUPER    = 8,            // Supersampling
     FWI_INTER_LANCZOS  = 16,           // 3-lobe Lanczos Interpolation
-    FWI_SMOOTH_EDGE    = ( 1<<31 ),    // Edge Smooth Feature
+    FWI_SMOOTH_EDGE    = ( 1<<31 )     // Edge Smooth Feature
 };
 
 #if BUILD_NUM_AT_LEAST( 9999 )
@@ -33,7 +33,7 @@ typedef enum {
     fwWinHamming,
     fwWinHann,
     fwWinRect,
-    fwWinKaiser,
+    fwWinKaiser
 } FwWinType;
 
 typedef enum {
