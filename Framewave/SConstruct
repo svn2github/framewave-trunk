@@ -39,6 +39,8 @@ if (str(COMMAND_LINE_TARGETS)=='') or \
 
 if ( (sys.platform == 'linux2' or sys.platform == 'sunos5') and ARGUMENTS.get('libtype', 'shared')=='shared'):
     postAction = fixLinuxSharedLib
+elif ((sys.platform == 'darwin') and ARGUMENTS.get('libtype', 'shared')=='shared'):
+    postAction = fixMacSharedLib
 else:
     postAction = ""
     
