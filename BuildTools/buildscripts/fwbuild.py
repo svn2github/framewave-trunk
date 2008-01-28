@@ -9,8 +9,9 @@ import glob
 import os
 from string import replace
 from os.path import *
-
+from stat import *
 import sys
+
 sys.path = [ join(sys.prefix, 'Lib', 'site-packages', 'scons-0.97'),
              join(sys.prefix, 'Lib', 'site-packages', 'scons'),
              join(sys.prefix, 'scons-0.97'), join(sys.prefix, 'scons')] + sys.path
@@ -345,6 +346,9 @@ def createDefFile ( pthDevLabRoot, pthProjectRoot, pthBuildRoot, sProjectName ):
     sCommandStr += ' ' + join(pthBuildRoot, 'include', sProjectName + '.h')
     sCommandStr += ' ' + join(pthProjectRoot,sProjectName,sProjectName + '.def')             # finally, the def file name/location
     sCommandStr += ' ' + sProjectName + '.dll'                                               # and the dll name for the def file
+    exe_name_path = join(pthDevLabRoot,'BuildTools','bin',exe_name)
+    if os.access(exe_name_path,os.X_OK) == False:
+        os.chmod(exe_name_path,S_IEXEC | S_IRWXU | S_IXGRP | S_IRGRP | S_IROTH | S_IXOTH)        
     os.system( sCommandStr )
 
     if win_sys == 0:
