@@ -39,8 +39,11 @@ sample.exe: $(OBJS)
 
 setup: 
 ifeq ($(LIB_TYPE),dynamic)
-		ln -sf  $(FW_LIB_PATH)/libfwBase.dylib $(FW_LIB_PATH)/libfwBase.1.dylib
-		ln -sf  $(FW_LIB_PATH)/libfwImage.dylib $(FW_LIB_PATH)/libfwImage.1.dylib
+		ln -sf  $(FW_LIB_PATH)/libfwBase-1.0.dylib $(FW_LIB_PATH)/libfwBase.1.dylib
+		ln -sf  $(FW_LIB_PATH)/libfwImage-1.0.dylib $(FW_LIB_PATH)/libfwImage.1.dylib
+
+		ln -sf  $(FW_LIB_PATH)/libfwBase.1.dylib $(FW_LIB_PATH)/libfwBase.dylib
+		ln -sf  $(FW_LIB_PATH)/libfwImage.1.dylib $(FW_LIB_PATH)/libfwImage.dylib		
 endif
 
 clean:
