@@ -159,15 +159,12 @@ fwiSumsDiff16x16Blocks4x4_8u16s_C1
 fwiSumsDiff8x8Blocks4x4_8u16s_C1
 
 fwiQuantInvIntra_MPEG2_16s_C1I
-
 fwiQuantInv_MPEG2_16s_C1I
 
 fwiReconstructDCTBlock_MPEG1_32s
-
 fwiReconstructDCTBlockIntra_MPEG1_32s
 
 fwiReconstructDCTBlock_MPEG2_32s
-
 fwiReconstructDCTBlockIntra_MPEG2_32s
 
 fwiDCT8x8Inv_AANTransposed_16s_C1R
