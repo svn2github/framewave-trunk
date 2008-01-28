@@ -39,10 +39,10 @@ def globtree ( pthPath ):
         if not pthDirName: pthDirName = os.curdir
 
         lstDirs = filter ( os.path.isdir, ( join ( pthDirName, f ) for f in os.listdir ( pthDirName ) ) )
-        
+
         for d in lstDirs:
             lstResult += globtree ( join ( d, pthBaseName ) )
-        
+
         lstResult += glob.glob ( pthPath )
     except:
         # if there was an exception, return an empty list
@@ -57,7 +57,7 @@ def globtree ( pthPath ):
 def setupIncludePaths ( oEnv, pthStartPath, dontRecurse=None ):
     if dontRecurse: lstAllHeaders = [os.path.dirname(pthStartPath)]
     else:           lstAllHeaders = (os.path.dirname(f) for f in globtree(join( pthStartPath, "*.h" )))
-	
+
     lstIncludes = []
     if oEnv.has_key('CPPPATH'):
         if ('#/'+pthStartPath) not in oEnv['CPPPATH']: lstIncludes = ['#/'+pthStartPath]
@@ -87,20 +87,24 @@ def buildPath( pthBuildRoot ):
 				 ARGUMENTS.get('variant','debug')  + "_" +\
 				 ARGUMENTS.get('libtype','shared') + "_" +\
 				 ARGUMENTS.get('bitness','32') )
-	
-                         
+
+
 def turnOnZi( oEnv ):
 	import SCons.Util
 	oEnv['CCPDBFLAGS'] = SCons.Util.CLVar(['${(PDB and "/Gm /ZI /Fd%s" % File(PDB)) or ""}'])
 
 def fixLinuxSharedLib( target = None, source = None, env = None ):
     if target:
-        for t in target: os.rename(t.path, t.path+'.1.1.0')
+        for t in target: os.rename(t.path, t.path+'.1.0.0')
+
+def fixMacSharedLib( target = None, source = None, env = None ):
+    if target:
+        for t in target: os.rename(t.path, replace(t.path,'.dylib','-1.0.dylib'))
 
 def AddObjsFromLibs( oEnv, LIBS, LIBPATH ):
     # If no libs exist, nothing needs ot be added
     if not LIBS: return
-    
+
     libprefix      = oEnv['LIBPREFIX']
     libsuffix      = oEnv['LIBSUFFIX']
     pthBuildDir    = oEnv['FWVARS']['pthBuildDir']
@@ -150,7 +154,7 @@ def isListIn( s, lst ):
 def applyPrefixToFilename( pthFile, oPath ):
     # If single pass compile, return original filename
     if not oPath: return pthFile
-    
+
     # Seperate out the filename from the path
     dirname, basename = split( pthFile )
     return join( dirname, (oPath['OPT_PREFIX'] + basename) )
@@ -163,7 +167,7 @@ def readFile ( sInFile ):
         print "Could not open " + sInFile  + "!\n"
         return None
     return data
-    
+
 def writeFile ( sOutFile, lstData ):
     try:
         with open(sOutFile, 'w') as f:
@@ -228,7 +232,7 @@ def allInList( lstToMatch, lstToMatchIn ):
 def isFile( sElem ):
     if sElem.find('.') == -1: return None
     return 1
-    
+
 def absPathIfFile( sElem ):
     if isFile(sElem): return sElem
     else:             return abspath(sElem)
