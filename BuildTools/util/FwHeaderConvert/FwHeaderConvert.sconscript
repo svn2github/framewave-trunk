@@ -1,0 +1,32 @@
+#
+# Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
+# This software is subject to the Apache v2.0 License.
+#
+
+
+Import( '*' )
+
+# Project SCons script
+import sys
+from os.path import *
+
+sys.path = lstSysPath
+# import our modules here
+from fwbuild import *
+
+
+if   sys.platform=='win32':
+	exe_name = 'FwHeaderConvert_win'
+elif sys.platform=='linux2':
+	exe_name = 'FwHeaderConvert_lin'
+elif sys.platform=='sunos5':
+	exe_name = 'FwHeaderConvert_sol'
+elif sys.platform=='darwin':
+	exe_name = 'FwHeaderConvert_mac'
+        
+# Project script essentially starts here
+fwHC   = fwProject(oRoot, 'FwHeaderConvert', sProgramName=exe_name)
+
+oLib_HC = fwHC.initBuildObjects()
+
+Return("oLib_HC")

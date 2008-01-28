@@ -1,0 +1,50 @@
+#
+# Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
+# This software is subject to the Apache v2.0 License.
+#
+
+#FwHeaderConvert Project
+
+# Root SCons script
+import sys
+from os.path import *
+
+# Add our include directory to the module search path
+pthBuildScriptsPath = join( abspath(join('..' )), 'buildscripts')
+sys.path+=[pthBuildScriptsPath]
+lstSysPath = sys.path
+# import our modules here
+from fwbuild import *
+
+# Project scripts are specified here
+# Create the root project
+pthBuildRoot   = join(abspath('.'), "build" )
+pthProjectRoot = abspath('.')
+oRoot = fwBuildRoot(pthProjectRoot, pthBuildRoot, pthBuildScripts = pthBuildScriptsPath)
+
+# Set include paths common to Framewave
+#pthFWRoot = abspath(join(abspath(join('..', '..','FW_SourceForge')), 'Framewave', 'domain'))
+
+#setupIncludePaths(oRoot.oEnv,      pthFWRoot                 )
+#setupIncludePaths(oRoot.oEnv, join(pthFWRoot,     'fwBase') )
+#setupIncludePaths(oRoot.oEnv, join(pthFWRoot,     'fwImage'))
+
+#setupIncludePaths(oRoot.oEnv, join(pthProjectRoot, 'common')  )
+#setupIncludePaths(oRoot.oEnv, abspath(join(pthFWRoot, '..', 'sdk')))
+
+
+# Export all the variables we care about using in sub projects
+Export('lstSysPath', 'oRoot', 'pthBuildScriptsPath')
+
+# Subprojects
+oLib_HC      = oRoot.subProject('FwHeaderConvert',      libtypeOverride='exe'   )
+
+
+oLib_HC      = Install(join('..','bin'), oLib_HC     )
+oLib_HC      = Install(buildPath(join(pthBuildRoot,'bin')), oLib_HC     )
+
+
+Alias('FwHeaderConvert',       [oLib_HC     ])
+
+
+
