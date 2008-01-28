@@ -771,15 +771,10 @@ FwStatus STDCALL fwiSumsDiff8x8Blocks4x4_8u16s_C1   ( Fw8u  *pSrc , Fw32s srcSte
 ////////////////////////////////////////////////////////////////
 
 FwStatus STDCALL fwiQuantInvIntra_MPEG2_16s_C1I                   ( Fw16s *pSrcDst, int QP, Fw16s *pQPMatrix );
-
-////////////////////////////////////////////////////////////////
-//                        QuantInv_MPEG2
-////////////////////////////////////////////////////////////////
-
 FwStatus STDCALL fwiQuantInv_MPEG2_16s_C1I                        ( Fw16s *pSrcDst, int QP, Fw16s *pQPMatrix );
 
 ////////////////////////////////////////////////////////////////
-//                        ReconstructDCTBlock_MPEG1
+//                        MPEG-1
 ////////////////////////////////////////////////////////////////
 
 FwStatus STDCALL fwiReconstructDCTBlock_MPEG1_32s                 (      Fw32u **ppBitStream, int *pOffset,
@@ -788,10 +783,6 @@ FwStatus STDCALL fwiReconstructDCTBlock_MPEG1_32s                 (      Fw32u *
                                                                            Fw32s *pScanMatrix , int QP, Fw16s *pQPMatrix,
                                                                            Fw16s *pDstBlock   ,         Fw32s *pDstSize );
 
-////////////////////////////////////////////////////////////////
-//                        ReconstructDCTBlockIntra_MPEG1
-////////////////////////////////////////////////////////////////
-
 FwStatus STDCALL fwiReconstructDCTBlockIntra_MPEG1_32s            (      Fw32u **ppBitStream, int *pOffset,
                                                                      const Fw32s *pDCSizeTable,
                                                                      const Fw32s *pACTable    ,
@@ -799,7 +790,7 @@ FwStatus STDCALL fwiReconstructDCTBlockIntra_MPEG1_32s            (      Fw32u *
                                                                            Fw16s *pDCPred     ,         Fw16s *pDstBlock, Fw32s *pDstSize );
 
 ////////////////////////////////////////////////////////////////
-//                        ReconstructDCTBlock_MPEG2
+//                        MPEG-2
 ////////////////////////////////////////////////////////////////
 
 FwStatus STDCALL fwiReconstructDCTBlock_MPEG2_32s                 (       Fw32u **ppBitStream, int *pOffset,
@@ -807,10 +798,6 @@ FwStatus STDCALL fwiReconstructDCTBlock_MPEG2_32s                 (       Fw32u 
                                                                       const FwVCHuffmanSpec_32s *pACTable,
                                                                             Fw32s *pScanMatrix , int QP, Fw16s *pQPMatrix,
                                                                             Fw16s *pDstBlock   , Fw32s *pDstSize );
-
-////////////////////////////////////////////////////////////////
-//                        ReconstructDCTBlockIntra_MPEG2
-////////////////////////////////////////////////////////////////
 
 FwStatus STDCALL fwiReconstructDCTBlockIntra_MPEG2_32s            (       Fw32u **ppBitStream, int *pOffset,
                                                                       const FwVCHuffmanSpec_32s *pDCSizeTable,
