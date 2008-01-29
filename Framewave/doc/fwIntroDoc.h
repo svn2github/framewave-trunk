@@ -106,7 +106,6 @@ fwStsResFloor - All result values are floored.
 
 <BulletedList>
 <Bullet>The <hlink><uri>need_link</uri><desc>Base</desc></hlink> library consists of functions essential for primary tasks such as memory allocation and functions that manage the performance of other library functions.</Bullet>
-<Bullet>The <hlink><uri>need_link</uri><desc>FFT</desc></hlink> library consists of functions that perform time and frequency domain conversions.</Bullet>
 <Bullet>The <hlink><uri>need_link</uri><desc>Image Processing</desc></hlink> library consists of functions that perform a variety of image processing tasks.</Bullet> 
 <Bullet>The <hlink><uri>need_link</uri><desc>JPEG</desc></hlink> library consists of functions that perform a variety of tasks related to image compression and decompression.</Bullet>
 <Bullet>The <hlink><uri>need_link</uri><desc>Signal Processing</desc></hlink> library consists of primitives that perform signal processing.</Bullet> 
