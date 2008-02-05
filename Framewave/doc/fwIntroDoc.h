@@ -85,11 +85,61 @@ fwStsH263VLCCodeErr - Illegal Huffman code encountered during VLC stream process
 fwStsOutOfRangeErr - An a rgument is out of range or a point is outside an image.
 fwStsResFloor - All result values are floored.
 
- 
-
 */
 
 /*#Documentation
+
+<AncillaryFiles>
+	<FrameMaster></FrameMaster>
+	<HeaderMaster></HeaderMaster>
+	<FooterMaster></FooterMaster>
+	<NavBar></NavBar>
+</AncillaryFiles>
+
+<FrontMatter>
+
+<TitlePage></TitlePage>
+
+<FrontSection>
+
+<FrontHeading>
+<FrontName>Copyright, Trademarks, and Disclaimers</FrontName>
+<FrontLink>aa_007_tcd</FrontLink>
+</FrontHeading>
+
+<Paragraph>Copyright � 2007-2008. All Rights Reserved.</Paragraph>
+<Paragraph>AMD is a registered trademark of Advanced Micro Devices, Inc.</Paragraph>
+<Paragraph>Microsoft, Windows, and Vista are registered trademarks of Microsoft Corporation.</Paragraph>
+<Paragraph>Sun and Solaris are registered trademarks of Sun Microsystems.</Paragraph>
+<Paragraph>Linux is a registered trademark of Linus Torvalds.</Paragraph>
+
+</FrontSection>
+
+<FrontSection>
+
+<FrontHeading>
+<FrontName>Change History</FrontName>
+<FrontLink>aa_004_roc</FrontLink>
+</FrontHeading>
+
+<ChangeEntry>
+<ChangeDate>10/2007</ChangeDate>
+<ChangeDescription>Added platform support for AMD Family 10h processors.</ChangeDescription> 
+<ChangeDescription>Added operating system support for Sun Solaris 32-bit and 64-bit operating systems.</ChangeDescription>
+<ChangeDescription>Added new JPEG, H.264 decode, DCT, and Dilate functions.</ChangeDescription>
+<ChangeDescription>Added additional fixed-precision functions to signal processing library.</ChangeDescription>
+</ChangeEntry>
+<ChangeEntry>
+<ChangeDate>11/2007</ChangeDate>
+<ChangeDescription>
+Added new Change History and Installation sections</ChangeDescription>
+</ChangeEntry>
+
+</ChangeHistory>
+
+</FrontSection>
+
+</FrontMatter>
 
 <Introduction>
 
@@ -98,28 +148,22 @@ fwStsResFloor - All result values are floored.
 <H1Link>aa_005_intro</H1Link>
 </Heading1>
 
-<Paragraph>The Framewave library is a collection of highly-optimized 
+<Paragraph> Framewave (FW) is a collection of libraries that contain highly-optimized 
  functions for use in a variety of programming domains. All implementations 
  of the libraries provide C and C++ programmers ANSI C style interfaces.</Paragraph>
 
 <Paragraph>Framewave consists of the following libraries:</Paragraph>
 
-<BulletedList>
-<Bullet>The <hlink><uri>need_link</uri><desc>Base</desc></hlink> library consists of functions essential for primary tasks such as memory allocation and functions that manage the performance of other library functions.</Bullet>
-<Bullet>The <hlink><uri>need_link</uri><desc>Image Processing</desc></hlink> library consists of functions that perform a variety of image processing tasks.</Bullet> 
-<Bullet>The <hlink><uri>need_link</uri><desc>JPEG</desc></hlink> library consists of functions that perform a variety of tasks related to image compression and decompression.</Bullet>
-<Bullet>The <hlink><uri>need_link</uri><desc>Signal Processing</desc></hlink> library consists of primitives that perform signal processing.</Bullet> 
-<Bullet>The <hlink><uri>need_link</uri><desc>Video</desc></hlink> library consists of functions that encode and decode moving images.</Bullet>
-</BulletedList>
+<IntroLinks></IntroLinks>
 
-<Paragraph>Framewave functions are geared to yield maximum performance on x86 hardware architectures. 
+<Paragraph>Framewave functions are geared to yield maximum performance on the x86 and the AMD64 hardware architectures. 
 Current implementations exploit multicore architecture and single instruction multiple data (SIMD) instructions. 
-Specifically, streaming SIMD extensions and AMD family 10h technologies are used to optimize for speed. 
+Specifically, streaming SIMD extensions and AMD® family 10h technologies are used to optimize for speed. 
 Programmers can concentrate on task functionality because Framewave handles performance. 
 Many of the functions are threaded internally; the programmer has the flexibility of 
 controlling the number of threads and of turning off threading. 
-As the architecture is extended and new instructions are added, new code paths 
-that take advantage of the extensions are added to Framewave, without 
+As architecture changes and new instructions are added, new code paths 
+to take advantage of extensions can be added to Framewave without 
 changing the programming interface and existing functionality.</Paragraph>
 
 <Heading2>
@@ -127,21 +171,11 @@ changing the programming interface and existing functionality.</Paragraph>
 <H2Link>aa_intro_001</H2Link>
 </Heading2>
 
-<Paragraph>
-Each Framewave release includes documentation which is unique to the release. 
-The version number of the released documentation is the same as the version number of the Framewave release. 
-As new groups of functions are added to Framewave, new sections, chapters, and functional descriptions are added to the documentation. 
-There may be interim changes to the documentation to improve, clarify, or modify the content. 
-There may also be changes that reflect interim changes to Framewave.
-The Record of Changes in the on-line version of the documentation includes interim changes made between releases. 
-The Record of Changes in the released documentation provides a summary of the differences between successive releases.
-</Paragraph>
-
-<Paragraph>Framewave documentation is written for experienced software developers. To understand the functional
+<Paragraph>This documentation is intended for experienced software developers. To understand the functional
 descriptions, a developer must be reasonably proficient in the C programming language, and must have 
 a working knowledge of application-specific terminology and techniques.</Paragraph>
 
-<Paragraph>There are sections for each library. Within the sections, <Bold>Basic Concepts</Bold> chapters provide overview information related to the library  
+<Paragraph>The documentation is divided into sections for each library. Within the sections, <Bold>Basic Concepts</Bold> chapters provide overview information related to the library  
 and subsequent chapters provide detailed descriptions of the library functions.</Paragraph>
 
 <Paragraph>Each detailed description consists of a <Bold>Function Name</Bold> followed by a short description, a <Bold>Synopsis</Bold> of the function syntax, 
@@ -153,7 +187,7 @@ does not indicate that all the functions in the group are optimized for that tec
 Absence of optimizations does not mean that a function runs more slowly -- use of a particular optimization may not increase the performance of the function.
 </Paragraph>
 
-<Paragraph>The <hlink><uri>fw_section_070.html</uri><desc>Function Quick Reference</desc></hlink> provides an index and snapshot view of function optimizations.</Paragraph>
+<RefLink></RefLink>
 
 <Heading2>
 <H2Name>Data Types</H2Name>
@@ -174,7 +208,7 @@ precisely reports the result of execution. The following return value definition
 
 #PrintAllReturnValues
 
-<Paragraph>Refer to the individual function descriptions for detailed information about return values.</Paragraph>
+<Paragraph>Refer to individual function descriptions for detailed information about return values.</Paragraph>
 
 <Heading2>
 <H2Name>Processing Operators</H2Name>
@@ -215,6 +249,211 @@ precisely reports the result of execution. The following return value definition
 <ParagraphIndent>Volume 5, <Italic>64-Bit Media and x87 Floating-Point Instructions</Italic>, Order Number 26569</ParagraphIndent>
 
 </Introduction>
+
+<Install>
+
+<Heading1>
+<H1Name>Installation and Operation</H1Name>
+<H1Link>aa_006_install</H1Link>
+</Heading1>
+
+<Paragraph>This section contains general information about installing and using Framewave.</Paragraph>
+
+<Heading2>
+<H2Name>Library Files</H2Name>
+<H2Link>aa_006_install</H2Link>
+</Heading2>
+
+<Paragraph>The top-level directory contains the following files.</Paragraph>
+
+<Paragraph><Bold>fwBase.h </Bold>contains definitions of data types, data structures, 
+	       enumerations, and declarations for core functions.</Paragraph>
+
+<Paragraph><Bold>fwSignal.h </Bold>contains function declarations for signal processing.</Paragraph>
+
+<ParagraphIndent>Essential Vector Calculation (Add, Sub, Or, Xor, etc.)</ParagraphIndent>
+<ParagraphIndent>Fixed Accuracy Arithmetic (Inverse, Divide, Ln, etc.)</ParagraphIndent>
+<ParagraphIndent>Vector Initialization Tasks (Copy, Move, etc.)</ParagraphIndent>
+<ParagraphIndent>Domain Transform (Multiplication of vectors, etc.)</ParagraphIndent>
+
+<Paragraph><Bold>fwImage.h </Bold>contains function declarations for image processing.</Paragraph>
+
+<ParagraphIndent>Arithmetic and Logic operations (Add, Sub, Or, etc.)</ParagraphIndent>
+<ParagraphIndent>Digital Filter Functions (Box Filter, Sobel Filter, etc.)</ParagraphIndent>
+<ParagraphIndent>Color Model Conversion (RGBToYUV, RGBToYCbCr, etc.)</ParagraphIndent>
+<ParagraphIndent>Threshold and Compare</ParagraphIndent>
+<ParagraphIndent>Morphologic Operations</ParagraphIndent>
+<ParagraphIndent>Geometric Operations</ParagraphIndent>
+
+<Paragraph><Bold>fwVideo.h </Bold>contains function declarations for video processing.</Paragraph>
+
+<ParagraphIndent>H.264 Decoder</ParagraphIndent>
+<ParagraphIndent>H.264 Inverse Transform</ParagraphIndent>
+<ParagraphIndent>H.264 Reconstruction</ParagraphIndent>
+<ParagraphIndent>H.264 Intra-predict</ParagraphIndent>
+<ParagraphIndent>H.264 Interpolation</ParagraphIndent>
+<ParagraphIndent>H.264 Deblock filters</ParagraphIndent>
+<ParagraphIndent>Motion Compensation</ParagraphIndent>
+<ParagraphIndent>Motion Estimation</ParagraphIndent>
+
+<Paragraph><Bold>fwJPEG.h </Bold>contains function declarations for JPEG processing.</Paragraph>
+
+<ParagraphIndent>JPEG Color Conversion</ParagraphIndent>
+<ParagraphIndent>JPEG Sampling</ParagraphIndent>
+<ParagraphIndent>JPEG Level Shift, Planar-to-Pixel and Pixel-to-Planar</ParagraphIndent>
+<ParagraphIndent>Quantization and Combined DCT</ParagraphIndent>
+<ParagraphIndent>Huffman Codec</ParagraphIndent>
+
+<Heading2>
+<H2Name>Library Directory Hierarchy</H2Name>
+<H2Link>aa_install_002</H2Link>
+</Heading2>
+
+<Paragraph>The directory hierarchy for each type of installation is as follows.</Paragraph>
+
+<Paragraph><Bold>Microsoft® Windows® Operating System</Bold></Paragraph>
+
+<ParagraphIndent>DLL Directories</ParagraphIndent>
+<ParagraphIndent>The fwImage/fwSignal/fwBase/fwJPEG/fwVideo.lib files contain the 
+import address table (IAT) for the corresponding functions. Rather than fetching the 
+address of the function during run time, the .lib files are used to link against a DLL at compile time.</ParagraphIndent>
+
+<ParagraphIndent>The fwImage/fwSignal/fwBase/fwJPEG/fwVideo.dll files contain implemented functions.</ParagraphIndent>
+
+<ParagraphIndent>LIB Directories</ParagraphIndent>
+
+<ParagraphIndent>The fwImage/fwSignal/fwBase/fwJPEG/fwVideo.lib files are static libraries of 
+implemented functions.</ParagraphIndent>
+ 
+<ParagraphIndent>The fwImaged/fwSignald/fwBased/fwJPEGd/fwVideod.lib files are static 
+release binaries with debug symbols.</ParagraphIndent>
+    
+<Paragraph><Bold>Linux® Operating Systems</Bold></Paragraph>
+
+<ParagraphIndent>LIB Directories</ParagraphIndent>
+
+<ParagraphIndent>The fwImage/fwSignal/fwBase/fwJPEG/fwVideo.a files contain all static and dynamic linked libraries.</ParagraphIndent>     
+
+<Paragraph><Bold>Solaris® Operating System</Bold></Paragraph>
+
+<ParagraphIndent>LIB Directories</ParagraphIndent>
+
+<ParagraphIndent>The fwImage/fwSignal/fwBase/fwJPEG/fwVideo.a files contain all static and dynamic linked libraries.</ParagraphIndent>
+
+<Heading2>
+<H2Name>Setting Up Framewave</H2Name>
+<H2Link>aa_install_003</H2Link>
+</Heading2>
+
+<Paragraph>Set up each type of installation as follows.</Paragraph>
+
+<Paragraph><Bold>Microsoft® Windows® Operating System</Bold></Paragraph>
+<Paragraph>Make sure the DLL files are in the search PATH using one of the following methods.</Paragraph>
+<BulletedList>  
+<Bullet>Copy the DLL files to the same folder as the project executable.</Bullet> 
+<Bullet>Copy the DLL files to a folder that in the search path 
+(for example, the Windows folder).</Bullet>
+<Bullet>Modify the PATH environment variable to include the location of the Framewave DLLs 
+(<Bold>Control Panel&gt;System&gt;Advanced&gt;Environment Variables</Bold>).</Bullet>
+</BulletedList>
+<Paragraph>Add the Framewave folder to the include search path within Microsoft Visual Studio (<Bold>Project&gt;Properties&gt;Configuration Properties&gt;C/C++&gt;General&gt; 
+Additional Include Directories</Bold>).</Paragraph>
+
+<Paragraph>Add the Framewave lib folder to the libraries search path within Visual Studio (<Bold>Project&gt;properties&gt;Configuration Properties&gt;Linker&gt;General&gt; 
+Additional Library Directories</Bold>).</Paragraph>
+
+<Paragraph><Bold>Linux® Operating Systems</Bold></Paragraph>
+
+<Paragraph>Assume this is a 64-bit installation and the installation directory is "ExampleDir".</Paragraph>
+
+<Paragraph>To use the shared libraries, create the following symbolic links.</Paragraph>
+
+<Pseudo>     cd ExampleDir/fw_1.1_Lin64/lib
+     ln -sf ./libfwBase.so.1.1.0 libfwBase.so
+     ln -sf ./libfwImage.so.1.1.0 libfwImage.so
+     ln -sf ./libfwJPEG.so.1.1.0 libfwJPEG.so
+     ln -sf ./libfwSignal.so.1.1.0 libfwSignal.so
+     ln -sf ./libfwVideo.so.1.1.0 libfwVideo.so</Pseudo>
+
+<Paragraph>To compile a cpp file that uses Framewave, for example test.cpp:</Paragraph>
+
+<Pseudo>     g++ -m64 -c -IExampleDir/fw_1.1_Lin64 test.cpp</Pseudo>
+
+<Paragraph>All Framewave libraries have dependency on fwBase.</Paragraph>
+
+<ParagraphIndent>For example, to link with with the Image library,</ParagraphIndent> 
+<Pseudo>     g++ -m64 -LExampleDir/fw_1.1_Lin64/lib test.o -lfwImage -lfwBase</Pseudo>
+
+<Paragraph>It may be necessary to explicitly link in the stdc++, pthreads, 
+or math libraries if they are not automatically linked in.</Paragraph> 
+
+<Paragraph>Before running the application, make sure the ExampleDir/fw_1.1_Lin64/lib 
+is in the shared library search path for the environment.</Paragraph>
+   
+<Paragraph><Bold>Solaris® Operating System</Bold></Paragraph>
+
+<Paragraph>Assume this is a 64-bit installation and the installation directory is "ExampleDir".</Paragraph>
+
+<Paragraph>To use the shared libraries, create the following symbolic links.</Paragraph>
+
+<Pseudo>     cd ExampleDir/fw_1.1_Sol64/lib
+     ln -sf ./libfwBase.so.1.1.0 libfwBase.so
+     ln -sf ./libfwImage.so.1.1.0 libfwImage.so
+     ln -sf ./libfwJPEG.so.1.1.0 libfwJPEG.so
+     ln -sf ./libfwSignal.so.1.1.0 libfwSignal.so
+     ln -sf ./libfwVideo.so.1.1.0 libfwVideo.so</Pseudo>
+
+<Paragraph>To compile a cpp file that uses Framewave, for example test.cpp:</Paragraph>
+
+<Pseudo>     CC -m64 -c -IExampleDir/fw_1.1_Sol64 test.cpp</Pseudo>
+
+<Paragraph>All Framewave libraries have dependency on fwBase.</Paragraph> 
+
+<ParagraphIndent>For example, to link with with the Image library,</ParagraphIndent> 
+<Pseudo>     CC -m64 -LExampleDir/fw_1.1_Sol64/lib test.o -lfwImage -lfwBase -lrt</Pseudo>
+
+<Paragraph>Before running the application, make sure the ExampleDir/fw_1.1_Sol64/lib 
+is in the shared library search path for the environment.</Paragraph>
+
+<Heading2>
+<H2Name>Linker Issues</H2Name>
+<H2Link>aa_install_004</H2Link>
+</Heading2>
+
+<Paragraph>This section describes how to resolve errors that occur while linking code to 
+the Framewave static library for the Microsoft® Windows® operating system. 
+This information does not apply to code that links to the dynamic DLL (shared) version of 
+the Framewave library for Microsoft Windows, or to versions of the Framewave library for other operating systems.</Paragraph>
+
+<Paragraph>Framewave static libraries for Microsoft Windows have a dependency on Microsoft Visual C++ 2005 
+C run-time libraries. The project (executable or DLL) also has a dependency on the C run-time library. 
+The linker automatically links to the run-time library used by the static library as well as to the 
+run-time library specified in the project settings. A version mismatch between the library in the static 
+library and the library specified in the project can cause the linker to display error messages and terminate.</Paragraph>
+
+<Paragraph>To resolve this issue, use a static run-time library in the project.</Paragraph>
+
+<ParagraphIndent>When linking to a release version of the static Framewave library, use the /MT compiler switch 
+in the project settings. This links the project to the same static multithreaded version of the run-time 
+Framewave library used by the static Framewave library.</ParagraphIndent>
+
+<ParagraphIndent>When linking to a debug version of the static Framewave library (common in debug configurations), 
+use the /MTd compiler switch in the project settings.  This links the project to the static multithreaded 
+debug version of the run-time library.</ParagraphIndent>
+
+<Paragraph>Most code generated by the Visual C++ compiler has some dependency on the C runtime libraries. 
+Microsoft provides several different flavors of the run-time libraries (static vs. dynamic (DLL), debug vs. release), 
+and functions are implemented differently in each flavor. These differences can cause linker errors if a project is 
+linked to the wrong library flavor. The runtime library flavor is normally specified by a compiler switch 
+(/MT, /MTd, /MD, /MDd). Mixing different library types in the same module (executable or DLL) can also lead to various 
+linker or run-time issues, and is not recommended.</Paragraph>
+
+<Paragraph>For more information see: </Paragraph>
+
+<ParagraphIndent><hlink><uri>http://msdn2.microsoft.com/en-us/library/2kzt1wy3(VS.80).aspx</uri><target>_blank</target><desc>http://msdn2.microsoft.com/en-us/library/2kzt1wy3(VS.80).aspx</desc></hlink></ParagraphIndent>
+<ParagraphIndent><hlink><uri>http://support.microsoft.com/kb/154753</uri><target>_blank</target><desc>http://support.microsoft.com/kb/154753</desc></hlink></ParagraphIndent>
+
+</Install>
 
 */
 
