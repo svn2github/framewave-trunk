@@ -107,7 +107,7 @@ fwStsResFloor - All result values are floored.
 <FrontLink>aa_007_tcd</FrontLink>
 </FrontHeading>
 
-<Paragraph>Copyright � 2007-2008. All Rights Reserved.</Paragraph>
+<Paragraph>Copyright &#169; 2007-2008. All Rights Reserved.</Paragraph>
 <Paragraph>AMD is a registered trademark of Advanced Micro Devices, Inc.</Paragraph>
 <Paragraph>Microsoft, Windows, and Vista are registered trademarks of Microsoft Corporation.</Paragraph>
 <Paragraph>Sun and Solaris are registered trademarks of Sun Microsystems.</Paragraph>
@@ -158,7 +158,7 @@ Added new Change History and Installation sections</ChangeDescription>
 
 <Paragraph>Framewave functions are geared to yield maximum performance on the x86 and the AMD64 hardware architectures. 
 Current implementations exploit multicore architecture and single instruction multiple data (SIMD) instructions. 
-Specifically, streaming SIMD extensions and AMD® family 10h technologies are used to optimize for speed. 
+Specifically, streaming SIMD extensions and AMD&#174; family 10h technologies are used to optimize for speed. 
 Programmers can concentrate on task functionality because Framewave handles performance. 
 Many of the functions are threaded internally; the programmer has the flexibility of 
 controlling the number of threads and of turning off threading. 
@@ -311,7 +311,7 @@ precisely reports the result of execution. The following return value definition
 
 <Paragraph>The directory hierarchy for each type of installation is as follows.</Paragraph>
 
-<Paragraph><Bold>Microsoft® Windows® Operating System</Bold></Paragraph>
+<Paragraph><Bold>Microsoft�&#174; Windows�&#174; Operating System</Bold></Paragraph>
 
 <ParagraphIndent>DLL Directories</ParagraphIndent>
 <ParagraphIndent>The fwImage/fwSignal/fwBase/fwJPEG/fwVideo.lib files contain the 
@@ -347,7 +347,7 @@ release binaries with debug symbols.</ParagraphIndent>
 
 <Paragraph>Set up each type of installation as follows.</Paragraph>
 
-<Paragraph><Bold>Microsoft® Windows® Operating System</Bold></Paragraph>
+<Paragraph><Bold>Microsoft&#174; Windows&#174; Operating System</Bold></Paragraph>
 <Paragraph>Make sure the DLL files are in the search PATH using one of the following methods.</Paragraph>
 <BulletedList>  
 <Bullet>Copy the DLL files to the same folder as the project executable.</Bullet> 
@@ -362,7 +362,7 @@ Additional Include Directories</Bold>).</Paragraph>
 <Paragraph>Add the Framewave lib folder to the libraries search path within Visual Studio (<Bold>Project&gt;properties&gt;Configuration Properties&gt;Linker&gt;General&gt; 
 Additional Library Directories</Bold>).</Paragraph>
 
-<Paragraph><Bold>Linux® Operating Systems</Bold></Paragraph>
+<Paragraph><Bold>Linux&#174; Operating Systems</Bold></Paragraph>
 
 <Paragraph>Assume this is a 64-bit installation and the installation directory is "ExampleDir".</Paragraph>
 
@@ -390,7 +390,7 @@ or math libraries if they are not automatically linked in.</Paragraph>
 <Paragraph>Before running the application, make sure the ExampleDir/fw_1.1_Lin64/lib 
 is in the shared library search path for the environment.</Paragraph>
    
-<Paragraph><Bold>Solaris® Operating System</Bold></Paragraph>
+<Paragraph><Bold>Solaris&#174; Operating System</Bold></Paragraph>
 
 <Paragraph>Assume this is a 64-bit installation and the installation directory is "ExampleDir".</Paragraph>
 
@@ -421,7 +421,7 @@ is in the shared library search path for the environment.</Paragraph>
 </Heading2>
 
 <Paragraph>This section describes how to resolve errors that occur while linking code to 
-the Framewave static library for the Microsoft® Windows® operating system. 
+the Framewave static library for the Microsoft&#174; Windows&#174; operating system. 
 This information does not apply to code that links to the dynamic DLL (shared) version of 
 the Framewave library for Microsoft Windows, or to versions of the Framewave library for other operating systems.</Paragraph>
 
