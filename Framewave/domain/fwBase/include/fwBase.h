@@ -500,7 +500,7 @@ AutoOff
 /*#Documentation
 <Chapter>
 <ChapterHeading>Library Version</ChapterHeading>
-<Paragraph>This chapter describes the FW function that provides library version information.</Paragraph> 
+<Paragraph>This<ChaptDesc> chapter describes the function that provides library version information.</ChaptDesc></Paragraph> 
 */
 
 /*#FunctionBlock - GetLibVersion
@@ -518,7 +518,7 @@ const FwLibraryVersion* STDCALL fwGetLibVersion ();
 /*#Documentation
 <Chapter>
 <ChapterHeading>Core Functions</ChapterHeading>
-<Paragraph>This chapter describes the status string, CPU type, CPU clocking, CPU initialization, threading control, and memory allocation functions.</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes the status string, CPU type, CPU clocking, CPU initialization, threading control, and memory allocation functions.</ChaptDesc></Paragraph>
 */
 
 /*#FunctionBlock - GetStatusString
