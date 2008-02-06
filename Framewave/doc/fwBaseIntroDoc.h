@@ -52,6 +52,8 @@ a list of function <Bold>Parameters</Bold>, a detailed <Bold>Description</Bold> 
 <Chapter>
 <ChapterHeading>Basic Concepts</ChapterHeading>
 
+<Paragraph>This <ChaptDesc> chapter provides an overview of the information contained in the functional descriptions.</ChaptDesc></Paragraph>
+
 <Paragraph>Base library functional descriptions include the following types of information.</Paragraph>
 
 <Heading2>
