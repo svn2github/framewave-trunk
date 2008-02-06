@@ -1974,6 +1974,8 @@ OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiShear_32f_P4R)(const Fw32
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiGetShearQuad )(FwiRect srcRoi, double quad[4][2], double xShear, double yShear, double xShift, double yShift);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiGetShearBound)(FwiRect srcRoi, double bound[2][2], double xShear, double yShear, double xShift, double yShift);
 
+#ifndef __SUNPRO_CC
+
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_8u_C1R)( const Fw8u * pSrc, int srcStep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_16s_C1R)( const Fw16s * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_32f_C1R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize );
@@ -2674,6 +2676,8 @@ OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLowpass_32f_C
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLowpass_32f_C3R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterLowpass_32f_AC4R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize, FwiMaskSize maskSize );
 
+#endif
+
 OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToXYZ_8u_C3R        )( const Fw8u* pSrc, int srcStep, Fw8u* pDst, int dstStep, FwiSize roiSize );
 OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToXYZ_8u_AC4R       )( const Fw8u* pSrc, int srcStep, Fw8u* pDst, int dstStep, FwiSize roiSize );
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToXYZ_16s_C3R       )( const Fw16s* pSrc, int srcStep, Fw16s* pDst, int dstStep, FwiSize roiSize );
@@ -2833,7 +2837,7 @@ OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr420ToBGR444_8u16u_P3
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr411ToBGR_8u_P3C3R         )(const A8U* const pSrc[3], int srcStep[3], A8U* pDst, int dstStep, FwiSize roiSize );
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr411ToBGR_8u_P3C4R         )(const A8U* const pSrc[3], int srcStep[3], A8U* pDst, int dstStep, FwiSize roiSize, A8U aval );
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr420_8u_C3P3R         )(const A8U* pSrc, int srcStep, A8U* const pDst[3], int dstStep[3], FwiSize roiSize );
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr420ToRGB_8u_P3C3R         )(const A8U* const pSrc[3], int srcStep[3], A8U* pDst, int dstStep, FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr420ToRGB_8u_P3C3R         )(const A8U* const pSrc[3], int srcStep[3], A8U* pDst, int dstStep, FwiSize roiSize );
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGRToYCbCr420_8u_C3P3R         )(const A8U* pSrc, int srcStep, A8U* const pDst[3], int dstStep[3], FwiSize roiSize );
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGRToYCbCr420_8u_AC4P3R        )(const A8U* pSrc, int srcStep, A8U* const pDst[3], int dstStep[3], FwiSize roiSize );
 
@@ -2857,37 +2861,37 @@ OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYUV422_8u_P3        
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYUV422_8u_C3P3R           )( const A8U* pSrc, int srcStep, A8U* pDst[3], int dstStep[3], FwiSize roiSize );
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYUV422_8u_C3P3            )( const A8U* pSrc, A8U* pDst[3], FwiSize imgSize );
 
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV422ToRGB_8u_C2C3R           )( const A8U* pSrc, int srcStep, A8U* pDst, int dstStep, FwiSize roiSize );
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV422ToRGB_8u_P3R             )( const A8U* const pSrc[3], int srcStep[3], A8U* const pDst[3], int dstStep, FwiSize roiSize );
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV422ToRGB_8u_P3              )( const A8U* const pSrc[3], A8U* const pDst[3], FwiSize imgSize );
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV422ToRGB_8u_P3C3R           )( const A8U* const pSrc[3], int srcStep[3], A8U* pDst, int dstStep, FwiSize roiSize );
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV422ToRGB_8u_P3C3            )( const A8U* const pSrc[3], A8U* pDst, FwiSize imgSize );
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV422ToRGB_8u_P3AC4R          )( const A8U* const pSrc[3], int srcStep[3], A8U* pDst, int dstStep, FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV422ToRGB_8u_C2C3R           )( const A8U* pSrc, int srcStep, A8U* pDst, int dstStep, FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV422ToRGB_8u_P3R             )( const A8U* const pSrc[3], int srcStep[3], A8U* const pDst[3], int dstStep, FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV422ToRGB_8u_P3              )( const A8U* const pSrc[3], A8U* const pDst[3], FwiSize imgSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV422ToRGB_8u_P3C3R           )( const A8U* const pSrc[3], int srcStep[3], A8U* pDst, int dstStep, FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV422ToRGB_8u_P3C3            )( const A8U* const pSrc[3], A8U* pDst, FwiSize imgSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV422ToRGB_8u_P3AC4R          )( const A8U* const pSrc[3], int srcStep[3], A8U* pDst, int dstStep, FwiSize roiSize );
 
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYUV420_8u_P3R             )( const A8U* const pSrc[3], int srcStep, A8U* const pDst[3], int dstStep[3], FwiSize roiSize );
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYUV420_8u_P3              )( const A8U* const pSrc[3], A8U* const pDst[3], FwiSize imgSize );
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYUV420_8u_C3P3R           )( const A8U* pSrc, int srcStep, A8U* const pDst[3], int dstStep[3], FwiSize roiSize );
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYUV420_8u_C3P3            )( const A8U* pSrc, A8U* const pDst[3], FwiSize imgSize );
 
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB_8u_P3R             )(const A8U* const pSrc[3], int srcStep[3], A8U* const pDst[3], int dstStep, FwiSize roiSize );
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB_8u_P3              )(const A8U* const pSrc[3], A8U* const pDst[3], FwiSize imgSize );
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB_8u_P3C3R           )(const A8U* const pSrc[3], int srcStep[3], A8U* pDst, int dstStep, FwiSize roiSize );
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB_8u_P3C3            )(const A8U* const pSrc[3], A8U* pDst, FwiSize imgSize );
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB_8u_P3AC4R          )(const A8U* const pSrc[3], int srcStep[3], A8U* pDst, int dstStep, FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB_8u_P3R             )(const A8U* const pSrc[3], int srcStep[3], A8U* const pDst[3], int dstStep, FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB_8u_P3              )(const A8U* const pSrc[3], A8U* const pDst[3], FwiSize imgSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB_8u_P3C3R           )(const A8U* const pSrc[3], int srcStep[3], A8U* pDst, int dstStep, FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB_8u_P3C3            )(const A8U* const pSrc[3], A8U* pDst, FwiSize imgSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB_8u_P3AC4R          )(const A8U* const pSrc[3], int srcStep[3], A8U* pDst, int dstStep, FwiSize roiSize );
 
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToBGR_8u_P3C3R           )(const A8U* const pSrc[3], int srcStep[3], A8U* pDst, int dstStep, FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToBGR_8u_P3C3R           )(const A8U* const pSrc[3], int srcStep[3], A8U* pDst, int dstStep, FwiSize roiSize );
 
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB565_8u16u_P3C3R     )(const A8U* const pSrc[3], int srcStep[3], A16U* pDst, int dstStep, FwiSize roiSize );
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB555_8u16u_P3C3R     )(const A8U* const pSrc[3], int srcStep[3], A16U* pDst, int dstStep, FwiSize roiSize );
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB444_8u16u_P3C3R     )(const A8U* const pSrc[3], int srcStep[3], A16U* pDst, int dstStep, FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB565_8u16u_P3C3R     )(const A8U* const pSrc[3], int srcStep[3], A16U* pDst, int dstStep, FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB555_8u16u_P3C3R     )(const A8U* const pSrc[3], int srcStep[3], A16U* pDst, int dstStep, FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToRGB444_8u16u_P3C3R     )(const A8U* const pSrc[3], int srcStep[3], A16U* pDst, int dstStep, FwiSize roiSize );
 
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToBGR565_8u16u_P3C3R     )(const A8U* const pSrc[3], int srcStep[3], A16U* pDst, int dstStep, FwiSize roiSize );
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToBGR555_8u16u_P3C3R     )(const A8U* const pSrc[3], int srcStep[3], A16U* pDst, int dstStep, FwiSize roiSize );
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToBGR444_8u16u_P3C3R     )(const A8U* const pSrc[3], int srcStep[3], A16U* pDst, int dstStep, FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToBGR565_8u16u_P3C3R     )(const A8U* const pSrc[3], int srcStep[3], A16U* pDst, int dstStep, FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToBGR555_8u16u_P3C3R     )(const A8U* const pSrc[3], int srcStep[3], A16U* pDst, int dstStep, FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiYUV420ToBGR444_8u16u_P3C3R     )(const A8U* const pSrc[3], int srcStep[3], A16U* pDst, int dstStep, FwiSize roiSize );
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr422_8u_C2P3R              )(const Fw8u* pSrc, int srcStep, Fw8u* pDst[3], int dstStep[3], FwiSize roiSize );
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr422_8u_P3C2R              )(const Fw8u* const pSrc[3], int srcStep[3], Fw8u* pDst, int dstStep, FwiSize roiSize );
 
-OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiCbYCr422ToYCbCr420_8u_C2P3R    )( const Fw8u* pSrc, int srcStep, Fw8u* pDst[3], int dstStep[3], FwiSize roiSize );
+OREFR OSSE2 OF10H   FwStatus PREFIX_OPT(OPT_PREFIX, fwiCbYCr422ToYCbCr420_8u_C2P3R    )( const Fw8u* pSrc, int srcStep, Fw8u* pDst[3], int dstStep[3], FwiSize roiSize );
 
 #endif	// __FWIMAGE_OPT_H__
 
