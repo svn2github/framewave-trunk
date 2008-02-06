@@ -12,5 +12,9 @@ DEFINE_CATALOG_TABLE( StatsTestCatalog )
 
 CATALOG_ENTRY( MinMaxTestCatalog )
 CATALOG_ENTRY( NormTestCatalog )
+CATALOG_ENTRY( MeanTestCatalog )
+CATALOG_ENTRY( SumTestCatalog )
+CATALOG_ENTRY( StdDevTestCatalog )
+CATALOG_ENTRY(DotProdTestCatalog)
 
 END_CATALOG_TABLE( StatsTestCatalog )

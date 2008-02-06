@@ -182,6 +182,48 @@ public:
     }
 };
 
+template< typename TS,typename TD>
+class SrcDstLenHint : public StatDstLenBase< TD >
+{
+protected:
+    typedef FwStatus (STDCALL *Fn)( const TS *, int, TD *,FwHintAlgorithm); 
+public:
+    Fn m_fn;
+    const char * m_srcInit;
+    int BuffLen;
+    FwHintAlgorithm hint;
+
+    SrcDstLenHint( UnitTestCatalogBase & parent, const char *name, Fn fn )
+        : StatDstLenBase< TD >( parent, name ), m_fn(fn)
+    {
+    }
+
+    void RunTest( const char *srcInit, const char *dstExpected,int len,FwHintAlgorithm ht= fwAlgHintNone,TD errorMargin = MemOps<TD>::Zero(), const FwStatus expectedReturn = fwStsNoErr )
+    {
+        m_srcInit = srcInit;
+        BuffLen = len;
+        hint = ht;
+        ExecuteTest( NULL, dstExpected, errorMargin, expectedReturn );
+    }
+
+    virtual void CallFn( const AdviceLen & adv, 
+                         FwStatus & stat, 
+                         Buffer<TD>& dst)
+    {
+		Buffer< TS > src( m_srcInit, adv.BufferLength());
+
+        this->timer.Start();
+        try
+        {
+            stat = m_fn( src.Ptr(), BuffLen, dst.Ptr(),hint);
+        }
+        catch( ... )
+        {
+            stat = (FwStatus)EXCEPTION_ERR;
+        }
+        this->timer.Stop();
+    }
+};
 
 template< typename TS1,typename TS2,typename TD>
 class SrcSrcDstLen : public StatDstLenBase< TD >
@@ -273,7 +315,7 @@ template< typename TS1,typename TS2,typename TD>
 class SrcSrcDstLenScale : public StatDstLenBase< TD >
 {
 protected:
-    typedef FwStatus (STDCALL *Fn)( const TS1 *,const TS1 *, int, TD *,int); 
+    typedef FwStatus (STDCALL *Fn)( const TS1 *,const TS2 *, int, TD *,int); 
 public:
     Fn m_fn;
     const char *m_srcInit1, *m_srcInit2;

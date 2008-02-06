@@ -9,5 +9,8 @@ This software is subject to the Apache v2.0 License.
 
 DECLARE_TEST_TABLE( MinMaxTestCatalog )
 DECLARE_TEST_TABLE( NormTestCatalog )
-
+DECLARE_TEST_TABLE( MeanTestCatalog )
+DECLARE_TEST_TABLE( SumTestCatalog )
+DECLARE_TEST_TABLE( StdDevTestCatalog)
+DECLARE_TEST_TABLE( DotProdTestCatalog)
 #endif // __STATSTESTS_H__

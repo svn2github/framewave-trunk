@@ -185,11 +185,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\T_DotProd.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\T_Mean.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\T_MinMax.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\T_Norm.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\T_StdDev.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\T_Sum.cpp"
 				>
 			</File>
 		</Filter>
