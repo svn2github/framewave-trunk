@@ -50,24 +50,19 @@ vsub - Specifies the subtrahend.
 
 <SectionHeading>Signal Processing Library</SectionHeading>
 
-<Paragraph>Signal Processing functions perform a variety of tasks related to signal processing.</Paragraph>
+<Paragraph>Signal Processing<SectDesc> functions perform a variety of tasks related to signal processing.</SectDesc></Paragraph>
 
 <Paragraph>This section is organized as follows.</Paragraph>
 
-<BulletedList>
-<Bullet><hlink><uri>need_link</uri><desc>Basic Concepts</desc></hlink> provides an overview of the information contained in the functional descriptions.</Bullet>
-<Bullet><hlink><uri>need_link</uri><desc>Library Version</desc></hlink> describes the Framewave function that provides library version information.</Bullet> 
-<Bullet><hlink><uri>need_link</uri><desc>Essential Vector Functions</desc></hlink> describes functions that perform vector calculations.</Bullet> 
-<Bullet><hlink><uri>need_link</uri><desc>Fixed Accuracy Arithmetic Functions</desc></hlink> describes functions that perform arithmetic operations at a chosen level of accuracy.</Bullet> 
-<Bullet><hlink><uri>need_link</uri><desc>Vector Initialization Functions</desc></hlink> describes functions that perform vector initialization tasks.</Bullet>
-</BulletedList>
+<SectLinks></SectLinks>
 
 <Paragraph>Within the section, the <Bold>Basic Concepts</Bold> chapter provides overview information related to the functions in the library, 
 and subsequent chapters provide detailed descriptions of library functions that perform operations of the same kind.</Paragraph>
 <Paragraph>Each detailed description consists of a <Bold>Function Name</Bold> followed by a short description, a <Bold>Synopsis</Bold> of the function syntax, 
 a list of function <Bold>Parameters</Bold>, a detailed <Bold>Description</Bold> of the function, and a list of <Bold>Return Values.</Bold></Paragraph> 
 <Paragraph>When a function is optimized for one or more technologies, a list of <Bold>Supported Technologies</Bold> is provided after the short description.</Paragraph>
-<Paragraph>The <hlink><uri>need_link</uri><desc>Function Quick Reference</desc></hlink> provides an index and snapshot view of function optimizations.</Paragraph>
+
+<RefLink></RefLink>
 
 <Chapter>
 <ChapterHeading>Basic Concepts</ChapterHeading>
