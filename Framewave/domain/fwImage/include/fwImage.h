@@ -79,7 +79,7 @@ AutoOff
 
 <Chapter>
 <ChapterHeading>Library Version</ChapterHeading>
-<Paragraph>This chapter describes the FW function that provides library version information.</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes the function that provides library version information.</ChaptDesc></Paragraph> 
 */
 
 /*#FunctionBlock - GetLibVersion
@@ -101,7 +101,7 @@ const FwLibraryVersion* STDCALL fwiGetLibVersion ();
 
 <Chapter>
 <ChapterHeading>Support Functions</ChapterHeading>
-<Paragraph>This chapters describes FW functions that support other FW functions.</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes FW functions that support other FW functions.</ChaptDesc></Paragraph>
 */
 
 /*#FunctionBlock - Malloc
@@ -165,10 +165,13 @@ void STDCALL fwiFree ( void *ptr );
 </Chapter>
 <Chapter>
 <ChapterHeading>Image Data Exchange and Initialization Functions</ChapterHeading>
-<Paragraph>This chapter describes functions that set the initial value of an image data buffer, copy data from one buffer to another, convert data type, and scale image data.
-NOTE: All the functions under this chapter support negative step sizes. The user may want to copy the data from source buffer to destination buffer
-but wants the buffer to be flipped. This is a common requirement when displaying a BMP image. In such a case the user can call the copy function with pSrc, pointing to the last row of the source buffer, a negative srcStep
-pDst, pointing to the start of the destination buffer and a positive dstStep. The result is that the image is flipped horizontally.</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes functions that set the initial value of an image data buffer, copy data from one buffer to another, convert data type, and scale image data.</ChaptDesc></Paragraph> 
+
+<Note>All the data exchange and initialization functions support negative step sizes. Negative step sizes can be used to "flip" data copied from a source buffer to a destination buffer. 
+This is a common requirement when displaying a BMP image. To flip an image horizontally, call the copy function with <ParameterMame>pSrc</ParameterMame> pointing to the last row 
+of the source buffer, a negative <ParameterMame>srcStep</ParameterMame>, </ParameterMame>pDst</ParameterMame> pointing to the start of the destination buffer, and a positive 
+<ParameterMame>dstStep</ParameterMame>.
+</Note>
 */
 
 
@@ -555,11 +558,13 @@ FwStatus STDCALL fwiScale_32f8u_AC4R      ( const Fw32f *pSrc, int srcStep, Fw8u
 
 <Chapter>
 <ChapterHeading>Arithmetic and Logic Functions</ChapterHeading>
-<Paragraph>This chapter describes general-purpose mathematic functions and functions that perform specific mathematic operations related to image processing.
-NOTE: All the functions under this chapter support negative step sizes. The user may want to copy the data from source buffer to destination buffer
-but wants the buffer to be flipped. This is a common requirement when displaying a BMP image. In such a case the user can call the copy function with pSrc, pointing to the last row of the source buffer, a negative srcStep
-pDst, pointing to the start of the destination buffer and a positive dstStep. The result is that the image is flipped horizontally.</Paragraph>
-*/
+<Paragraph>This<ChaptDesc> chapter describes general-purpose mathematic functions and functions that perform specific mathematic operations related to image processing.</ChaptDesc></Paragraph> 
+
+<Note>All the arithmetic and logic functions support negative step sizes. Negative step sizes can be used to "flip" data copied from a source buffer to a destination buffer. 
+This is a common requirement when displaying a BMP image. To flip an image horizontally, call the copy function with <ParameterMame>pSrc</ParameterMame> pointing to the last row 
+of the source buffer, a negative <ParameterMame>srcStep</ParameterMame>, </ParameterMame>pDst</ParameterMame> pointing to the start of the destination buffer, and a positive 
+<ParameterMame>dstStep</ParameterMame>.
+</Note>*/
 
 /*#FunctionBlock - Abs
 TODO:Publish
@@ -1593,7 +1598,7 @@ FwStatus STDCALL fwiXorC_32s_C4R          ( const Fw32s *pSrc, int srcStep, cons
 
 <Chapter>
 <ChapterHeading>Color Model Conversion Functions</ChapterHeading>
-<Paragraph>This chapter describes functions that convert image data from one color model or space to another.</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes functions that convert image data from one color model or space to another.</ChaptDesc></Paragraph>
 */
 
 /*#FunctionBlock - RGBToYUV
@@ -3159,10 +3164,11 @@ FwStatus STDCALL fwiCbYCr422ToYCbCr420_8u_C2P3R       ( const Fw8u *pSrc, int sr
 
 <Chapter>
 <ChapterHeading>Threshold and Compare Functions</ChapterHeading>
-<Paragraph>This chapter describes functions that compare image data and manipulate image data based on compare operations.
-NOTE: All the functions under this chapter support negative step sizes. The user may want to copy the data from source buffer to destination buffer
-but wants the buffer to be flipped. This is a common requirement when displaying a BMP image. In such a case the user can call the copy function with pSrc, pointing to the last row of the source buffer, a negative srcStep
-pDst, pointing to the start of the destination buffer and a positive dstStep. The result is that the image is flipped horizontally.</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes functions that compare image data and manipulate image data based on compare operations.</ChaptDesc></Paragraph> 
+<Note>All the threshold and compare functions support negative step sizes. Negative step sizes can be used to "flip" data copied from a source buffer to a destination buffer. 
+This is a common requirement when displaying a BMP image. To flip an image horizontally, call the copy function with <ParameterMame>pSrc</ParameterMame> pointing to the last row 
+of the source buffer, a negative <ParameterMame>srcStep</ParameterMame>, </ParameterMame>pDst</ParameterMame> pointing to the start of the destination buffer, and a positive 
+<ParameterMame>dstStep</ParameterMame>.
 */
 
 /*#FunctionBlock - Threshold
@@ -3479,7 +3485,7 @@ FwStatus STDCALL fwiCompareEqualEpsC_32f_C4R          ( const Fw32f *pSrc, int s
 
 <Chapter>
 <ChapterHeading>Morphological Operations</ChapterHeading>
-<Paragraph>This chapter describes functions that warp, shear, resize, mirror, and rotate images.</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes functions that warp, shear, resize, mirror, and rotate images.</ChaptDesc></Paragraph>
 */
 
 /*#FunctionBlock - Dilate3X3
@@ -3783,7 +3789,7 @@ FwStatus STDCALL fwiMorphAdvFree                      ( FwiMorphState *pState );
 
 <Chapter>
 <ChapterHeading>Digital Filter Functions</ChapterHeading>
-<Paragraph>This chapter describes functions that alter frequency-related visual properties of images such as sharpness and contrast.</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes functions that alter frequency-related visual properties of images such as sharpness and contrast.</ChaptDesc></Paragraph>
 */
 
 
@@ -5253,8 +5259,8 @@ FwStatus STDCALL fwiConvValid_32f_C3R     ( const Fw32f *pSrc1, int srcStep1, Fw
 
 <Chapter>
 <ChapterHeading>Linear Transformation Functions</ChapterHeading>
-<Paragraph>This chapter describes functions for linear transform operations, including
-Fast Fourier Transform (FFT), Discrete Fourier Transform (DFT), and Discrete Cosine Transform (DCT).</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes functions for linear transform operations, including 
+Fast Fourier Transform (FFT), Discrete Fourier Transform (DFT), and Discrete Cosine Transform (DCT).</ChaptDesc></Paragraph>
 */
 
 /*#FunctionBlock - DCT8X8
@@ -5278,7 +5284,7 @@ FwStatus STDCALL fwiDCT8x8Inv_16s_C1I     (      Fw16s*               pSrcDst);
 
 <Chapter>
 <ChapterHeading>Geometric Transform Functions</ChapterHeading>
-<Paragraph>This chapter describes functions that warp, shear, resize, mirror, and rotate images.</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes functions that warp, shear, resize, mirror, and rotate images.</ChaptDesc></Paragraph>
 */
 
 /*#FunctionBlock - Resize
