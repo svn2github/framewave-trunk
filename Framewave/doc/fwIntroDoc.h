@@ -311,7 +311,7 @@ precisely reports the result of execution. The following return value definition
 
 <Paragraph>The directory hierarchy for each type of installation is as follows.</Paragraph>
 
-<Paragraph><Bold>MicrosoftÂ&#174; WindowsÂ&#174; Operating System</Bold></Paragraph>
+<Paragraph><Bold>Microsoft&#174; Windows&#174; Operating System</Bold></Paragraph>
 
 <ParagraphIndent>DLL Directories</ParagraphIndent>
 <ParagraphIndent>The fwImage/fwSignal/fwBase/fwJPEG/fwVideo.lib files contain the 
@@ -328,13 +328,13 @@ implemented functions.</ParagraphIndent>
 <ParagraphIndent>The fwImaged/fwSignald/fwBased/fwJPEGd/fwVideod.lib files are static 
 release binaries with debug symbols.</ParagraphIndent>
     
-<Paragraph><Bold>LinuxÂ® Operating Systems</Bold></Paragraph>
+<Paragraph><Bold>Linux&#174; Operating Systems</Bold></Paragraph>
 
 <ParagraphIndent>LIB Directories</ParagraphIndent>
 
 <ParagraphIndent>The fwImage/fwSignal/fwBase/fwJPEG/fwVideo.a files contain all static and dynamic linked libraries.</ParagraphIndent>     
 
-<Paragraph><Bold>SolarisÂ® Operating System</Bold></Paragraph>
+<Paragraph><Bold>Solaris&#174; Operating System</Bold></Paragraph>
 
 <ParagraphIndent>LIB Directories</ParagraphIndent>
 
