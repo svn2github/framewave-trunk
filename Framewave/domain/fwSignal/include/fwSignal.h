@@ -25,7 +25,7 @@ AutoOff
 /*#Documentation
 <Chapter>
 <ChapterHeading>Library Version</ChapterHeading>
-<Paragraph>This chapter describes the FW function that provides library version information.</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes the FW function that provides library version information.</ChaptDesc></Paragraph>
 */
 
 /*#FunctionBlock - GetLibVersion
@@ -43,7 +43,7 @@ const FwLibraryVersion* STDCALL fwsGetLibVersion ();
 /*#Documentation
 <Chapter>
 <ChapterHeading>Essential Vector Functions</ChapterHeading>
-<Paragraph>This chapter describes functions that perform vector calculations.</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes functions that perform vector calculations.</ChaptDesc></Paragraph> 
 */
 
 /*#FunctionBlock - Add
@@ -1424,7 +1424,7 @@ FwStatus STDCALL fwsStdDev_16s_Sfs        ( const Fw16s *pSrc, int len, Fw16s *p
 /*#Documentation
 <Chapter>
 <ChapterHeading>Fixed Accuracy Arithmetic Functions</ChapterHeading>
-<Paragraph>This chapter describes functions that perform arithmetic operations at a chosen level of accuracy.</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes functions that perform arithmetic operations at a chosen level of accuracy.</ChaptDesc></Paragraph>
 
 <Paragraph>These functions provide flexible specification of accuracy and support IEEE-754 standards. Choice of accuracy level is based on practical experience and application requirements.</Paragraph>
 <Paragraph>Options are specified by a function name suffix:</Paragraph>
@@ -1794,7 +1794,7 @@ FwStatus STDCALL fwsAtanh_64f_A53         ( const Fw64f *pSrc, Fw64f *pDst, int 
 /*#Documentation
 <Chapter>
 <ChapterHeading>Vector Initialization Functions</ChapterHeading>
-<Paragraph>This chapter describes functions that perform vector initialization tasks.</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes functions that perform vector initialization tasks.</ChaptDesc></Paragraph>
 */
 
 /*#FunctionBlock - Copy
