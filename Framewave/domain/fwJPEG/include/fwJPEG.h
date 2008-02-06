@@ -34,7 +34,7 @@ AutoOff
 
 <Chapter>
 <ChapterHeading>Library Version</ChapterHeading>
-<Paragraph>This chapter describes the FW function that provides library version information.</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes the FW function that provides library version information.</ChaptDesc></Paragraph> 
 */
 
 /*#FunctionBlock - GetLibVersion
@@ -58,7 +58,7 @@ const FwLibraryVersion* STDCALL fwjGetLibVersion ();
 
 <Chapter>
 <ChapterHeading>Image Compression Functions</ChapterHeading>
-<Paragraph>This chapter describes functions that are used in JPEG image compression.</Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes functions that are used in JPEG image compression.</ChaptDesc></Paragraph>
 */
 
 /*#FunctionBlock - RGBToY_JPEG
