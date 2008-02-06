@@ -46,8 +46,8 @@ and subsequent chapters provide detailed descriptions of library functions that 
 <Paragraph>Each detailed description consists of a <Bold>Function Name</Bold> followed by a short description, a <Bold>Synopsis</Bold> of the function syntax, 
 a list of function <Bold>Parameters</Bold>, a detailed <Bold>Description</Bold> of the function, and a list of <Bold>Return Values.</Bold></Paragraph> 
 <Paragraph>When a function is optimized for one or more technologies, a list of <Bold>Supported Technologies</Bold> is provided after the short description.</Paragraph>
-<Paragraph>The <hlink><uri>need_link</uri><desc>Function Quick Reference</desc></hlink> provides an index and snapshot view of function optimizations.</Paragraph>
 
+<RefLink></RefLink>
 
 <Chapter>
 <ChapterHeading>Basic Concepts</ChapterHeading>
