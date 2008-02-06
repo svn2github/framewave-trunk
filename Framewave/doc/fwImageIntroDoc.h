@@ -158,29 +158,19 @@ FwiDitherType - Type of dithering for fwiReduceBits function.
 
 <SectionHeading>Image Processing Library</SectionHeading>
 
-<Paragraph>Image Processing Library functions perform a variety of tasks related to image processing.</Paragraph>
+<Paragraph>Image Processing Library<SectDesc> functions perform a variety of tasks related to image processing.</SectDesc></Paragraph>
 
 <Paragraph>This section is organized as follows.</Paragraph>
 
-<BulletedList>
-<Bullet><hlink><uri>need_link</uri><desc>Basic Concepts</desc></hlink> provides an overview of the information contained in the functional descriptions</Bullet>
-<Bullet><hlink><uri>need_link</uri><desc>Library Version</desc></hlink> describes the function that returns information about the current version of the Framewave.</Bullet>  
-<Bullet><hlink><uri>need_link</uri><desc>Support Functions</desc></hlink> describes functions that are used to set up or maintain other Framewave functions.</Bullet>
-<Bullet><hlink><uri>need_link</uri><desc>Image Data Exchange and Initialization Functions</desc></hlink> describes functions that set the initial value of an image data buffer, copy data from one buffer to another, convert data type, and scale image data.</Bullet> 
-<Bullet><hlink><uri>need_link</uri><desc>Arithmetic and Logic Functions</desc></hlink> describes general-purpose mathematic functions and functions that perform specific mathematic operations related to image processing.</Bullet> 
-<Bullet><hlink><uri>need_link</uri><desc>Color Model Conversion Functions</desc></hlink> describes functions that convert image data from one color model or space to another.</Bullet>
-<Bullet><hlink><uri>need_link</uri><desc>Threshold and Compare Functions</desc></hlink> describes functions that compare image data and manipulate image data based on compare operations.</Bullet> 
-<Bullet><hlink><uri>need_link</uri><desc>Geometric Transform Functions</desc></hlink> describes functions that warp, shear, resize, mirror, and rotate images.</Bullet>
-<Bullet><hlink><uri>need_link</uri><desc>Morphological Functions</desc></hlink> describes functions that change image shapes and boundaries.</Bullet>
-<Bullet><hlink><uri>need_link</uri><desc>Digital Filter Functions</desc></hlink> describes functions that alter frequency-related visual properties of images.</Bullet>
-</BulletedList>
+<SectLinks></SectLinks>
 
 <Paragraph>Within the section, the <Bold>Basic Concepts</Bold> chapter provides overview information related to the functions in the library, 
 and subsequent chapters provide detailed descriptions of library functions that perform operations of the same kind.</Paragraph>
 <Paragraph>Each detailed description consists of a <Bold>Function Name</Bold> followed by a short description, a <Bold>Synopsis</Bold> of the function syntax, 
 a list of function <Bold>Parameters</Bold>, a detailed <Bold>Description</Bold> of the function, and a list of <Bold>Return Values.</Bold></Paragraph> 
 <Paragraph>When a function is optimized for one or more technologies, a list of <Bold>Supported Technologies</Bold> is provided after the short description.</Paragraph>
-<Paragraph>The <hlink><uri>need_link</uri><desc>Function Quick Reference</desc></hlink> provides an index and snapshot view of function optimizations.</Paragraph>
+
+<RefLink></RefLink>
 
 <Chapter>
 <ChapterHeading>Basic Concepts</ChapterHeading>
