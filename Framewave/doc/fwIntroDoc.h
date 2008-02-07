@@ -122,6 +122,8 @@ fwStsResFloor - All result values are floored.
 <FrontLink>aa_004_roc</FrontLink>
 </FrontHeading>
 
+<ChangeHistory>
+
 <ChangeEntry>
 <ChangeDate>10/2007</ChangeDate>
 <ChangeDescription>Added platform support for AMD Family 10h processors.</ChangeDescription> 
