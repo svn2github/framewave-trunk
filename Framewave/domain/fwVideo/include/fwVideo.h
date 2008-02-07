@@ -120,7 +120,7 @@ const FwLibraryVersion* STDCALL fwvGetLibVersion ();
 //  H.264 CAVLC
 // ------------------------------------------------
 /*#FunctionBlock - DecodeCAVLCCoeffs_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Decode CAVLC bitstream
 #Long - <Text>This function parses and decodes a source stream of MPEG-4/AVC Chroma AC and Luma video syntax elements in JVTG050-compliant context-adaptive variable-length coding (CAVLC) format.
@@ -157,7 +157,7 @@ FwStatus STDCALL fwiDecodeCAVLCCoeffs_H264_1u16s                (       Fw32u **
                                                                     const Fw32s  *pScanMatrix );
 
 /*#FunctionBlock - DecodeCAVLCChromaDcCoeffs_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Decode Chroma CAVLC bitstream
 #Long - <Text>This function parses and decodes a source stream of MPEG-4/AVC Chroma DC video syntax elements in CAVLC format.
@@ -184,7 +184,7 @@ FwStatus STDCALL fwiDecodeCAVLCChromaDcCoeffs_H264_1u16s        (       Fw32u **
                                                                     const Fw32s **ppTblRunBefore );
 
 /*#FunctionBlock - DecodeExpGolombOne_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Decode ExpGolomb code
 #Long - <Text>This function decodes a block of MPEG-4/AVC video syntax elements in Exp-Golumb format located in a bitstream. The result is written to a destination buffer.</Text>
@@ -196,7 +196,7 @@ FwStatus STDCALL fwiDecodeExpGolombOne_H264_1u16s               ( Fw32u **ppBitS
 //  H.264 Deblocking Filtering
 // ------------------------------------------------
 /*#FunctionBlock - FilterDeblockingLuma_VerEdge_H264
-ODO:approve
+TODO:approve
 #Technologies - REF, SSE2
 #Short - Deblock luma macroblock vertical edges
 #Long - <Text>This function steps through a source 16X16 luma macroblock and filters artificial discontinuities at block boundaries caused by quantization and other encoding artifacts. It operates on internal or external vertical edges of the macroblock.
@@ -208,7 +208,7 @@ FwStatus STDCALL fwiFilterDeblockingLuma_VerEdge_H264_8u_C1IR   ( Fw8u *pSrcDst 
                                                                     Fw8u *pThresholds, Fw8u *pBS );
 
 /*#FunctionBlock - FilterDeblockingLuma_HorEdge_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Deblock luma macroblock horizontal edges
 #Long - <Text>This function steps through a source 16X16 luma macroblock and filters artificial discontinuities at block boundaries caused by quantization and other encoding artifacts. It operates on internal or external horizontal edges of the macroblock.
@@ -220,7 +220,7 @@ FwStatus STDCALL fwiFilterDeblockingLuma_HorEdge_H264_8u_C1IR   ( Fw8u *pSrcDst 
                                                                     Fw8u *pThresholds, Fw8u *pBS );
 
 /*#FunctionBlock - FilterDeblockingChroma_HorEdge_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Deblock chroma macroblock horizontal edges
 #Long - <Text>This function steps through a source 8X8 chroma macroblock and filters artificial discontinuities at block boundaries caused by quantization and other encoding artifacts. It operates on internal or external horizontal edges of the macroblock.
@@ -232,7 +232,7 @@ FwStatus STDCALL fwiFilterDeblockingChroma_HorEdge_H264_8u_C1IR ( Fw8u *pSrcDst 
                                                                     Fw8u *pThresholds, Fw8u *pBS );
 
 /*#FunctionBlock - FilterDeblockingChroma_VerEdge_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Deblock chroma macroblock vertical edges
 #Long - <Text>This function steps through a source 8X8 chroma macroblock and filters artificial discontinuities at block boundaries caused by quantization and other encoding artifacts. It operates on internal or external vertical edges of the macroblock.
@@ -248,7 +248,7 @@ FwStatus STDCALL fwiFilterDeblockingChroma_VerEdge_H264_8u_C1IR ( Fw8u *pSrcDst 
 // ------------------------------------------------
 
 /*#FunctionBlock - InterpolateLuma_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Interpolate luma component
 #Long - <Text>This function increases the accuracy of inter-frame motion prediction by stepping through a defined region of a source reference frame and performing quarter-pixel luma-component interpolation.
@@ -263,7 +263,7 @@ FwStatus STDCALL fwiInterpolateLuma_H264_8u_C1R                 (const Fw8u *pSr
                                                                          Fw32s dx  , Fw32s dy, FwiSize roiSize );
 
 /*#FunctionBlock - InterpolateLumaTop_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Interpolate luma component at top frame boundary
 #Long - <Text>This function increases the accuracy of inter-frame motion prediction by performing quarter-pixel luma-component interpolation near the top boundary of a defined region of a source reference frame.
@@ -278,7 +278,7 @@ FwStatus STDCALL fwiInterpolateLumaTop_H264_8u_C1R              ( const Fw8u *pS
                                                                           Fw32s dx  , Fw32s dy, Fw32s outPixels, FwiSize roiSize );
 
 /*#FunctionBlock - InterpolateLumaBottom_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Interpolate luma component at bottom frame boundary
 #Long - <Text>This function increases the accuracy of inter-frame motion prediction by performing quarter-pixel luma-component interpolation near the bottom boundary of a defined region of a source reference frame.
@@ -293,7 +293,7 @@ FwStatus STDCALL fwiInterpolateLumaBottom_H264_8u_C1R           ( const Fw8u *pS
                                                                           Fw32s dx  , Fw32s dy, Fw32s outPixels, FwiSize roiSize );
 
 /*#FunctionBlock - InterpolateChroma_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Interpolate chroma component
 #Long - <Text>This function increases the accuracy of inter-frame motion prediction by stepping through a defined region of a source reference frame and performing eighth-pixel chroma-component interpolation.
@@ -308,7 +308,7 @@ FwStatus STDCALL fwiInterpolateChroma_H264_8u_C1R               ( const Fw8u *pS
                                                                           Fw32s dx  , Fw32s dy, FwiSize roiSize );
 
 /*#FunctionBlock - InterpolateChromaTop_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Interpolate chroma component at top frame boundary
 #Long - <Text>This function increases the accuracy of inter-frame motion prediction by performing eighth-pixel chroma-component interpolation near the top boundary of a defined region of a source reference frame.
@@ -323,7 +323,7 @@ FwStatus STDCALL fwiInterpolateChromaTop_H264_8u_C1R            ( const Fw8u *pS
                                                                           Fw32s dx  , Fw32s dy, Fw32s outPixels, FwiSize roiSize );
 
 /*#FunctionBlock - InterpolateChromaBottom_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Interpolate chroma component at bottom frame boundary
 #Long - <Text>This function increases the accuracy of inter-frame motion prediction by performing eighth-pixel chroma-component interpolation near the bottom boundary of a defined region of a source reference frame.
@@ -343,7 +343,7 @@ FwStatus STDCALL fwiInterpolateChromaBottom_H264_8u_C1R         ( const Fw8u *pS
 //  H.264 Intra-predict
 // ------------------------------------------------
 /*#FunctionBlock - PredictIntra_4x4_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Predict motion of luma block intra-frame
 #Long - <Text>This function performs intra-frame motion prediction by comparing a 4X4 luma block to previously-encoded neighboring 4X4 luma blocks within the same frame.
@@ -375,7 +375,7 @@ FwStatus STDCALL fwiPredictIntra_4x4_H264_8u_C1IR               ( Fw8u *pSrcDst,
                                                                     FwIntra4x4PredMode_H264 predMode, Fw32s availability );
 
 /*#FunctionBlock - PredictIntra_16x16_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Predict motion of luma macroblock intra-frame
 #Long - <Text>This function performs intra-frame motion prediction by comparing a 16X16 luma macroblock to previously-encoded neighboring 16X16 luma macroblocks within the same frame.
@@ -402,7 +402,7 @@ FwStatus STDCALL fwiPredictIntra_16x16_H264_8u_C1IR             ( Fw8u *pSrcDst,
                                                                     FwIntra16x16PredMode_H264 predMode, Fw32s availability );
 
 /*#FunctionBlock - PredictIntraChroma8x8_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Predict motion of chroma block intra-frame
 #Long - <Text>This function performs intra-frame motion prediction by comparing an 8X8 chroma block to previously-encoded neighboring 8X8  chroma blocks within the same frame.
@@ -432,7 +432,7 @@ FwStatus STDCALL fwiPredictIntraChroma8x8_H264_8u_C1IR          ( Fw8u *pSrcDst,
 //  H.264 Reconstruction
 // ------------------------------------------------
 /*#FunctionBlock - ReconstructChromaInterMB_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Reconstruct chroma macroblock inter-frame
 #Long - <Text>This function steps through source U and V plane buffers and reconstructs inter-frame predicted 8X8 U and 8X8 V chroma macroblocks as follows.</Text>
@@ -449,7 +449,7 @@ FwStatus STDCALL fwiReconstructChromaInterMB_H264_16s8u_P2R     (       Fw16s **
 
 
 /*#FunctionBlock - ReconstructChromaIntraMB_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Reconstruct chroma macroblock intra-frame
 #Long - <Text>This function steps through source U and V plane buffers and reconstructs intra-frame predicted 8X8 U and 8X8 V chroma macroblocks as follows.</Text>
@@ -467,7 +467,7 @@ FwStatus STDCALL fwiReconstructChromaIntraMB_H264_16s8u_P2R     ( Fw16s **ppSrcC
                                                                     const Fw8u edgeType );
 
 /*#FunctionBlock - ReconstructLumaInterMB_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Reconstruct luma macroblock inter-frame
 #Long - <Text>This functions steps through a source Y plane buffer and reconstructs intra-frame predicted 4X4 luma macroblocks as follows.</Text>
@@ -483,7 +483,7 @@ FwStatus STDCALL fwiReconstructLumaInterMB_H264_16s8u_C1R       (       Fw16s **
                                                                     const Fw32s QP );
 
 /*#FunctionBlock - ReconstructLumaIntraMB_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Reconstruct luma macroblock intra-frame
 #Long - <Text>This functions steps through a source Y plane buffer and reconstructs intra-frame predicted 4X4 luma macroblocks as follows.</Text>
@@ -509,7 +509,7 @@ FwStatus STDCALL fwiReconstructLumaIntraMB_H264_16s8u_C1R       (       Fw16s **
 // H.264 Inverse Transform
 // ------------------------------------------------
 /*#FunctionBlock - TransformDequantChromaDC_H264
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Inverse transform chroma DC
 #Long - <Text>This function steps through a source buffer, performs integer inverse transformation and dequantization of 2X2 chroma DC coefficients in accordance with JVTG050 8.5.7., and writes the results back to the source buffer.</Text>
@@ -531,7 +531,7 @@ FwStatus STDCALL fwiDequantTransformResidual_H264_16s_C1I       ( Fw16s *pSrcDst
 #if BUILD_NUM_AT_LEAST( 101 )
 
 /*#FunctionBlock - HuffmanTableInitAlloc
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2, SSE3
 #Short - Allocate memory and initialize one-to-one Huffman decode table
 #Long - <Text>This function allocates memory and initializes the structure for a Huffman decode table.
@@ -542,7 +542,7 @@ FwStatus STDCALL fwiHuffmanTableInitAlloc_32s                   ( const Fw32s *p
 
 
 /*#FunctionBlock - HuffmanRunLevelTableInitAlloc
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2, SSE3
 #Short - Allocate memory and initialize one-to-two Huffman decode table
 #Long - <Text>This function allocates memory and initializes the structure for a Huffman decode table.
@@ -552,7 +552,7 @@ The table is used to decode bitstreams encoded with variable-length coding in wh
 FwStatus STDCALL fwiHuffmanRunLevelTableInitAlloc_32s           ( const Fw32s *pSrcTable, FwVCHuffmanSpec_32s **ppDstSpec );
 
 /*#FunctionBlock - DecodeHuffmanOne
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2, SSE3
 #Short - Decode Huffman one-to-one
 #Long - <Text>This function decodes a single code from a source bitstream using a specified table, writes a single-value result to a destination buffer,
@@ -562,7 +562,7 @@ and sets the bitstream pointers to new positions. The function uses the table in
 FwStatus STDCALL fwiDecodeHuffmanOne_1u32s                      ( Fw32u **ppBitStream, Fw32s *pOffset, Fw32s *pDst, const FwVCHuffmanSpec_32s *pDecodeTable );
 
 /*#FunctionBlock - DecodeHuffmanPair
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2, SSE3
 #Short - Decode Huffman one-to-two
 #Long - <Text>This function decodes a single code from a source bitstream using a specified table, writes the two resulting values result to separate destination buffers,
@@ -572,7 +572,7 @@ and sets the bitstream pointers to new positions. The function uses the table in
 FwStatus STDCALL fwiDecodeHuffmanPair_1u16s                     ( Fw32u **ppBitStream, Fw32s *pOffset, const FwVCHuffmanSpec_32s *pDecodeTable, Fw8s *pFirst, Fw16s *pSecond );
 
 /*#FunctionBlock - HuffmanTableFree
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2, SSE3
 #Short - Free memory allocated to Huffman decode table
 #Long - <Text>This function frees the memory at the location pointed to by <ParameterName>ppDecodeTable</ParameterName> allocated to a Huffman decode table.</Text>
@@ -589,7 +589,7 @@ FwStatus STDCALL fwiHuffmanTableFree_32s                        ( FwVCHuffmanSpe
 //  Motion Compensation
 // ------------------------------------------------
 /*#FunctionBlock - MC16x16
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for predicted 16X16 block
 #Long - <Text>This function adds a 16X16 predicted block to a 16X16 decoded residual block to reconstruct a source block.
@@ -605,7 +605,7 @@ FwStatus STDCALL fwiMC16x16_8u_C1         ( const Fw8u  *pSrcRef  , Fw32s srcSte
                                                     Fw32s  mcType   , Fw32s roundControl );
 
 /*#FunctionBlock - MC16x8
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for predicted 16X8 block
 #Long - <Text>This function adds a 16X8 predicted block to a 16X8 decoded residual block to reconstruct a source block.
@@ -621,7 +621,7 @@ FwStatus STDCALL fwiMC16x8_8u_C1          ( const Fw8u  *pSrcRef  , Fw32s srcSte
                                                     Fw32s  mcType   , Fw32s roundControl );
 
 /*#FunctionBlock - MC8x16
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for predicted 8X16 block
 #Long - <Text>This function adds an 8X16 predicted block to an 8X16 decoded residual block to reconstruct a source block.
@@ -637,7 +637,7 @@ FwStatus STDCALL fwiMC8x16_8u_C1          ( const Fw8u  *pSrcRef  , Fw32s srcSte
                                                     Fw32s  mcType   , Fw32s roundControl );
 
 /*#FunctionBlock - MC8x8
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for predicted 8X8 block
 #Long - <Text>This function adds an 8X8 predicted block to an 8X8 decoded residual block to reconstruct a source block.
@@ -653,7 +653,7 @@ FwStatus STDCALL fwiMC8x8_8u_C1           ( const Fw8u  *pSrcRef  , Fw32s srcSte
                                                     Fw32s  mcType   , Fw32s roundControl );
 
 /*#FunctionBlock - MC8x4
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for predicted 8X4 block
 #Long - <Text>This function adds an 8X4 predicted block to an 8X4 decoded residual block to reconstruct a source block.
@@ -669,7 +669,7 @@ FwStatus STDCALL fwiMC8x4_8u_C1           ( const Fw8u  *pSrcRef  , Fw32s srcSte
                                                     Fw32s  mcType   , Fw32s roundControl );
 
 /*#FunctionBlock - MC4x8
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for predicted 4X8 block
 #Long - <Text>This function adds a 4X8 predicted block to a 4X8 decoded residual block to reconstruct a source block.
@@ -685,7 +685,7 @@ FwStatus STDCALL fwiMC4x8_8u_C1           ( const Fw8u  *pSrcRef  , Fw32s srcSte
                                                     Fw32s  mcType   , Fw32s roundControl );
 
 /*#FunctionBlock - MC4x4
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for predicted 4X4 block
 #Long - <Text>This function adds a 4X4 predicted block to a 4X4 decoded residual block to reconstruct a source block.
@@ -701,7 +701,7 @@ FwStatus STDCALL fwiMC4x4_8u_C1           ( const Fw8u  *pSrcRef  , Fw32s srcSte
                                                     Fw32s  mcType   , Fw32s roundControl );
 
 /*#FunctionBlock - MC2x4
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for predicted 2X4 block
 #Long - <Text>This function adds a 2X4 predicted block to a 2X4 decoded residual block to reconstruct a source block.
@@ -717,7 +717,7 @@ FwStatus STDCALL fwiMC2x4_8u_C1           ( const Fw8u  *pSrcRef  , Fw32s srcSte
                                                     Fw32s  mcType   , Fw32s roundControl );
 
 /*#FunctionBlock - MC4x2
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for predicted 4X2 block
 #Long - <Text>This function adds a 4X2 predicted block to a 4X2 decoded residual block to reconstruct a source block.
@@ -733,7 +733,7 @@ FwStatus STDCALL fwiMC4x2_8u_C1           ( const Fw8u  *pSrcRef  , Fw32s srcSte
                                                     Fw32s  mcType   , Fw32s roundControl );
 
 /*#FunctionBlock - MC2x2
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for predicted 2X2 block
 #Long - <Text>This function adds a 2X2 predicted block to a 2X2 decoded residual block to reconstruct a source block.
@@ -749,7 +749,7 @@ FwStatus STDCALL fwiMC2x2_8u_C1           ( const Fw8u  *pSrcRef  , Fw32s srcSte
                                                     Fw32s  mcType   , Fw32s roundControl );
 
 /*#FunctionBlock - MC16x4
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for predicted 16X4 UV block
 #Long - <Text>This function adds a 16X4 predicted UV block to a 16X4 decoded residual UV block to reconstruct a source UV block.
@@ -766,7 +766,7 @@ FwStatus STDCALL fwiMC16x4_8u_C1          ( const Fw8u  *pSrcRef  , Fw32s srcSte
                                                     Fw32s  mcType   , Fw32s roundControl );
 
 /*#FunctionBlock - MC16x8UV
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for predicted 16X8 UV block
 #Long - <Text>This function adds a 16X8 predicted UV block to a 16X8 decoded residual UV block to reconstruct a source UV block.
@@ -783,7 +783,7 @@ FwStatus STDCALL fwiMC16x8UV_8u_C1        ( const Fw8u  *pSrcRef  , Fw32s srcSte
                                                     Fw32s  mcType   , Fw32s roundControl );
 
 /*#FunctionBlock - MC16x16B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for bi-predicted 16X16 block
 #Long - <Text>This function adds a 16X16 bi-predicted block to a 16X16 decoded residual block to reconstruct a source block.
@@ -800,7 +800,7 @@ FwStatus STDCALL fwiMC16x16B_8u_C1        ( const Fw8u  *pSrcRefF , Fw32s srcSte
                                                     Fw32s  dstStep  , Fw32s roundControl );
 
 /*#FunctionBlock - MC16x8B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for bi-predicted 16X8 block
 #Long - <Text>This function adds a 16X8 bi-predicted block to a 16X8 decoded residual block to reconstruct a source block.
@@ -817,7 +817,7 @@ FwStatus STDCALL fwiMC16x8B_8u_C1         ( const Fw8u  *pSrcRefF , Fw32s srcSte
                                                     Fw32s  dstStep  , Fw32s roundControl );
 
 /*#FunctionBlock - MC8x16B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for bi-predicted 8X16 block
 #Long - <Text>This function adds an 8X16 bi-predicted block to an 8X16 decoded residual block to reconstruct a source block.
@@ -834,7 +834,7 @@ FwStatus STDCALL fwiMC8x16B_8u_C1         ( const Fw8u  *pSrcRefF , Fw32s srcSte
                                                     Fw32s  dstStep  , Fw32s roundControl );
 
 /*#FunctionBlock - MC8x8B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for bi-predicted 8X8 block
 #Long - <Text>This function adds an 8X8 bi-predicted block to an 8X8 decoded residual block to reconstruct a source block.
@@ -851,7 +851,7 @@ FwStatus STDCALL fwiMC8x8B_8u_C1          ( const Fw8u  *pSrcRefF , Fw32s srcSte
                                                     Fw32s  dstStep  , Fw32s roundControl );
 
 /*#FunctionBlock - MC8x4B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for bi-predicted 8X4 block
 #Long - <Text>This function adds an 8X4 bi-predicted block to an 8X4 decoded residual block to reconstruct a source block.
@@ -868,7 +868,7 @@ FwStatus STDCALL fwiMC8x4B_8u_C1          ( const Fw8u  *pSrcRefF , Fw32s srcSte
                                                     Fw32s  dstStep  , Fw32s roundControl );
 
 /*#FunctionBlock - MC4x8B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for bi-predicted 4X8 block
 #Long - <Text>This function adds a 4X8 bi-predicted block to a 4X8 decoded residual block to reconstruct a source block.
@@ -885,7 +885,7 @@ FwStatus STDCALL fwiMC4x8B_8u_C1          ( const Fw8u  *pSrcRefF , Fw32s srcSte
                                                     Fw32s  dstStep  , Fw32s roundControl );
 
 /*#FunctionBlock - MC4x4B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for bi-predicted 4X4 block
 #Long - <Text>This function adds a 4X4 bi-predicted block to a 4X4 decoded residual block to reconstruct a source block.
@@ -902,7 +902,7 @@ FwStatus STDCALL fwiMC4x4B_8u_C1          ( const Fw8u  *pSrcRefF , Fw32s srcSte
                                                     Fw32s  dstStep  , Fw32s roundControl );
 
 /*#FunctionBlock - MC2x4B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for bi-predicted 2X4 block
 #Long - <Text>This function adds a 2X4 bi-predicted block to a 2X4 decoded residual block to reconstruct a source block.
@@ -919,7 +919,7 @@ FwStatus STDCALL fwiMC2x4B_8u_C1          ( const Fw8u  *pSrcRefF , Fw32s srcSte
                                                     Fw32s  dstStep  , Fw32s roundControl );
 
 /*#FunctionBlock - MC4x2B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for bi-predicted 4X2 block
 #Long - <Text>This function adds a 4X2 bi-predicted block to a 4X2 decoded residual block to reconstruct a source block.
@@ -936,7 +936,7 @@ FwStatus STDCALL fwiMC4x2B_8u_C1          ( const Fw8u  *pSrcRefF , Fw32s srcSte
                                                     Fw32s  dstStep  , Fw32s roundControl );
 
 /*#FunctionBlock - MC2x2B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for bi-predicted 2X2 block
 #Long - <Text>This function adds a 2X2 bi-predicted block to a 2X2 decoded residual block to reconstruct a source block.
@@ -953,7 +953,7 @@ FwStatus STDCALL fwiMC2x2B_8u_C1          ( const Fw8u  *pSrcRefF , Fw32s srcSte
                                                     Fw32s  dstStep  , Fw32s roundControl );
 
 /*#FunctionBlock - MC16x4B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for bi-predicted 16X4 UV block
 #Long - <Text>This function adds a 16X4 bi-predicted UV block to a 16X4 decoded residual UV block to reconstruct a source UV block.
@@ -970,7 +970,7 @@ FwStatus STDCALL fwiMC16x4B_8u_C1         ( const Fw8u  *pSrcRefF , Fw32s srcSte
                                                     Fw32s  dstStep  , Fw32s roundControl );
 
 /*#FunctionBlock - MC16x8BUV
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Motion compensation for bi-predicted 16X8 UV block
 #Long - <Text>This function adds a 16X8 bi-predicted UV block to a 16X8 decoded residual UV block to reconstruct a source UV block.
@@ -990,7 +990,7 @@ FwStatus STDCALL fwiMC16x8BUV_8u_C1       ( const Fw8u  *pSrcRefF , Fw32s srcSte
 //  Motion Estimation
 // ------------------------------------------------
 /*#FunctionBlock - GetDiff16x16
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate predicted 16X16 block
 #Long - <Text>This function compares a 16X16 source block to a 16X16 reference block and writes results to a difference block and a predictor block in a destination plane.
@@ -1009,7 +1009,7 @@ FwStatus STDCALL fwiGetDiff16x16_8u16s_C1 ( const Fw8u  *pSrcCur      , Fw32s sr
                                                     Fw32s  mcType       , Fw32s roundControl );
 
 /*#FunctionBlock - GetDiff16x8
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate predicted 16X8 block
 #Long - <Text>This function compares a 16X8 source block to a 16X8 reference block and writes results to a difference block and a predictor block in a destination plane.
@@ -1029,7 +1029,7 @@ FwStatus STDCALL fwiGetDiff16x8_8u16s_C1  ( const Fw8u  *pSrcCur      , Fw32s sr
 
 
 /*#FunctionBlock - GetDiff8x8
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate predicted 8X8 block
 #Long - <Text>This function compares an 8X8 source block to an 8X8 reference block and writes results to a difference block and a predictor block in a destination plane.
@@ -1048,7 +1048,7 @@ FwStatus STDCALL fwiGetDiff8x8_8u16s_C1   ( const Fw8u  *pSrcCur      , Fw32s sr
                                                     Fw32s  mcType       , Fw32s roundControl );
 
 /*#FunctionBlock - GetDiff8x16
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate predicted 8X16 block
 #Long - <Text>This function compares an 8X16 source block to an 8X16 reference block and writes results to a difference block and a predictor block in a destination plane.
@@ -1067,7 +1067,7 @@ FwStatus STDCALL fwiGetDiff8x16_8u16s_C1  ( const Fw8u  *pSrcCur      , Fw32s sr
                                                     Fw32s  mcType       , Fw32s roundControl );
 
 /*#FunctionBlock - GetDiff8x4
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate predicted 8X4 block
 #Long - <Text>This function compares an 8X4 source block to an 8X4 reference block and writes results to a difference block and a predictor block in a destination plane.
@@ -1086,7 +1086,7 @@ FwStatus STDCALL fwiGetDiff8x4_8u16s_C1   ( const Fw8u  *pSrcCur      , Fw32s sr
                                                     Fw32s  mcType       , Fw32s roundControl );
 
 /*#FunctionBlock - GetDiff4x4
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate predicted 4X4 block
 #Long - <Text>This function compares a 4X4 source block to an 4X4 reference block and writes results to a difference block and a predictor block in a destination plane.
@@ -1105,7 +1105,7 @@ FwStatus STDCALL fwiGetDiff4x4_8u16s_C1   ( const Fw8u  *pSrcCur      , Fw32s sr
                                                     Fw32s  mcType       , Fw32s roundControl );
 
 /*#FunctionBlock - GetDiff16x16B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate bi-predicted 16X16 block
 #Long - <Text>This function compares a 16X16 source block to two 16X16 reference blocks and writes results to a difference block and a predictor block in a destination plane.
@@ -1123,7 +1123,7 @@ FwStatus STDCALL fwiGetDiff16x16B_8u16s_C1 ( const Fw8u  *pSrcCur , Fw32s srcCur
                                                      Fw16s *pDstDiff, Fw32s dstDiffStep, Fw32s roundControl );
 
 /*#FunctionBlock - GetDiff16x8B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate bi-predicted 16X8 block
 #Long - <Text>This function compares a 16X8 source block to two 16X8 reference blocks and writes results to a difference block and a predictor block in a destination plane.
@@ -1141,7 +1141,7 @@ FwStatus STDCALL fwiGetDiff16x8B_8u16s_C1 ( const Fw8u  *pSrcCur , Fw32s srcCurS
                                                     Fw16s *pDstDiff, Fw32s dstDiffStep, Fw32s roundControl );
 
 /*#FunctionBlock - GetDiff8x8B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate bi-predicted 8X8 block
 #Long - <Text>This function compares an 8X8 source block to two 8X8 reference blocks and writes results to a difference block and a predictor block in a destination plane.
@@ -1159,7 +1159,7 @@ FwStatus STDCALL fwiGetDiff8x8B_8u16s_C1  ( const Fw8u  *pSrcCur , Fw32s srcCurS
                                                     Fw16s *pDstDiff, Fw32s dstDiffStep, Fw32s roundControl );
 
 /*#FunctionBlock - GetDiff8x16B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate bi-predicted 8X16 block
 #Long - <Text>This function compares an 8X16 source block to two 8X16 reference blocks and writes results to a difference block and a predictor block in a destination plane.
@@ -1177,7 +1177,7 @@ FwStatus STDCALL fwiGetDiff8x16B_8u16s_C1 ( const Fw8u  *pSrcCur , Fw32s srcCurS
                                                     Fw16s *pDstDiff, Fw32s dstDiffStep, Fw32s roundControl );
 
 /*#FunctionBlock - GetDiff8x4B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate bi-predicted 8X4 block
 #Long - <Text>This function compares an 8X4 source block to two 8X4 reference blocks and writes results to a difference block and a predictor block in a destination plane.
@@ -1195,7 +1195,7 @@ FwStatus STDCALL fwiGetDiff8x4B_8u16s_C1  ( const Fw8u  *pSrcCur , Fw32s srcCurS
                                                     Fw16s *pDstDiff, Fw32s dstDiffStep, Fw32s roundControl );
 
 /*#FunctionBlock - SqrDiff16x16
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate sum of squares, 16X16 block
 #Long - <Text>This function evaluates the sum of squares variance between all the elements of a 16X16 source block and the corresponding elements of a 16X16 reference block.
@@ -1212,7 +1212,7 @@ FwStatus STDCALL fwiSqrDiff16x16_8u32s    ( const Fw8u *pSrc  , Fw32s srcStep,
                                                     Fw32s mcType, Fw32s *pSqrDiff );
 
 /*#FunctionBlock - SqrDiff16x16B
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate sum of squares, bi-predicted 16X16 block
 #Long - <Text>This function evaluates the sum of squares variance between all the elements of a bi-predicted 16X16 source block
@@ -1230,7 +1230,7 @@ FwStatus STDCALL fwiSqrDiff16x16B_8u32s   ( const Fw8u  *pSrc , Fw32s srcStep ,
                                                     Fw32s *pSqrDiff );
 
 /*#FunctionBlock - VarMean8x8
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate mean and variance, 8x8 block
 #Long - <Text>The unsigned 8-bit version of this function evaluates the mean and variance of an 8x8 block of unsigned char values.</Text>
@@ -1242,7 +1242,7 @@ FwStatus STDCALL fwiVarMean8x8_8u32s_C1R  ( const Fw8u  *pSrc, Fw32s srcStep, Fw
 FwStatus STDCALL fwiVarMean8x8_16s32s_C1R ( const Fw16s *pSrc, Fw32s srcStep, Fw32s *pVar, Fw32s *pMean );
 
 /*#FunctionBlock - VarMeanDiff16x16
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate means and variances, four 8X8 blocks of difference between two 16X16 blocks
 #Long - <Text>This function evaluates the means and variances of two 8x8 blocks of difference between two 16x16 blocks of unsigned elements.</Text>
@@ -1257,7 +1257,7 @@ FwStatus STDCALL fwiVarMeanDiff16x16_8u32s_C1R      ( const Fw8u  *pSrc , Fw32s 
                                                               Fw32s *pVar , Fw32s *pMean , Fw32s  mcType );
 
 /*#FunctionBlock - VarMeanDiff16x8
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate means and variances, two 8X8 blocks of difference between two 16X8 blocks
 #Long - <Text>This function evaluates the means and variances of two 8x8 blocks of difference between 16x8 blocks of unsigned elements.</Text>
@@ -1272,7 +1272,7 @@ FwStatus STDCALL fwiVarMeanDiff16x8_8u32s_C1R       ( const Fw8u  *pSrc , Fw32s 
                                                               Fw32s *pVar , Fw32s *pMean , Fw32s  mcType );
 
 /*#FunctionBlock - Variance16x16
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate variance, 16X16 block
 #Long - <Text>This function evaluates the variance of a 16X16 block of unsigned elements.
@@ -1283,7 +1283,7 @@ The result is stored in integer <ParameterName>Var</ParameterName>.</Text>
 FwStatus STDCALL fwiVariance16x16_8u32s             ( const Fw8u *pSrc, Fw32s srcStep, Fw32s *pVar );
 
 /*#FunctionBlock - EdgesDetect16x16
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Detect edges within 16X16 block
 #Long - <Text>This function detects edges within a 16X16 block by finding pairs of adjacent horizontal and vertical
@@ -1295,7 +1295,7 @@ elements with a difference greater than the value specified by <ParameterName>Ed
 FwStatus STDCALL fwiEdgesDetect16x16_8u_C1R         ( const Fw8u *pSrc, Fw32u srcStep, Fw8u EdgePelDifference, Fw8u EdgePelCount, Fw8u *pRes );
 
 /*#FunctionBlock - SAD16x16
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate sum of absolute difference, 16X16 block
 #Long - <Text>This function evaluates the sum of absolute difference between the elements of a 16X16 block and the corresponding elements of a reference block.
@@ -1307,7 +1307,7 @@ FwStatus STDCALL fwiSAD16x16_8u32s                  ( const Fw8u  *pSrc, Fw32s s
                                                               Fw32s *pSAD, Fw32s mcType );
 
 /*#FunctionBlock - SAD8x8
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate sum of absolute difference, 8x8 block
 #Long - <Text>This function evaluates the sum of absolute difference between the elements of an 8X8 block and the corresponding elements of a reference block.
@@ -1319,7 +1319,7 @@ FwStatus STDCALL fwiSAD8x8_8u32s_C1R                ( const Fw8u  *pSrcCur, int 
                                                               Fw32s *pDst   , Fw32s mcType );
 
 /*#FunctionBlock - SAD4x4
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate sum of absolute difference, 4x4 block
 #Long - <Text>This function evaluates the sum of absolute difference between the elements of a 4X4 block and the corresponding elements of a reference block.
@@ -1331,7 +1331,7 @@ FwStatus STDCALL fwiSAD4x4_8u32s                    ( const Fw8u  *pSrc, Fw32s s
                                                               Fw32s *pSAD, Fw32s mcType );
 
 /*#FunctionBlock - SAD16x16Blocks8x8
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate four partial sums of absolute differences, 16x16 block
 #Long - <Text>This function evaluates four partial sums of absolute differences between a 16X16 source block divided into four 8X8 blocks of elements and a 16X16 reference block divided
@@ -1343,7 +1343,7 @@ FwStatus STDCALL fwiSAD16x16Blocks8x8_8u16u         ( const Fw8u  *pSrc   , Fw32
                                                               Fw16u *pDstSAD, Fw32s mcType );
 
 /*#FunctionBlock - SAD16x16Blocks4x4
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate sixteen partial sums of absolute differences, 16x16 block
 #Long - <Text>This function evaluates sixteen partial sums of absolute differences between a 16X16 source block divided into sixteen 4X4 blocks of elements and a 16X16 reference block divided
@@ -1355,7 +1355,7 @@ FwStatus STDCALL fwiSAD16x16Blocks4x4_8u16u         ( const Fw8u  *pSrc   , Fw32
                                                               Fw16u *pDstSAD, Fw32s mcType );
 
 /*#FunctionBlock - SumsDiff16x16Blocks4x4
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate sixteen sums of differences, 16X16
 #Long - <Text>This function evaluates sixteen differences between a 16X16 source block divided into sixteen 4X4 blocks of elements and a 16X16 reference block divided
@@ -1368,7 +1368,7 @@ FwStatus STDCALL fwiSumsDiff16x16Blocks4x4_8u16s_C1 ( Fw8u  *pSrc , Fw32s srcSte
                                                         Fw16s *pSums, Fw16s *pDiff );
 
 /*#FunctionBlock - SumsDiff8x8Blocks4x4
-todo:publish
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Evaluate four sums of differences, 16X16 block
 #Long - <Text>This function evaluates four differences between a 16X16 source block divided into four 8X8 blocks of elements and a 16X16 reference block divided
@@ -1703,4 +1703,4 @@ FwStatus STDCALL fwiDCT8x8Inv_AANTransposed_16s8u_P2C2R           ( const Fw16s 
 #endif
 
 
-#endif // __FWIMAGE_H__
+#endif // __FWVIDEO_H__
