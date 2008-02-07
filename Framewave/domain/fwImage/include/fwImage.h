@@ -168,9 +168,9 @@ void STDCALL fwiFree ( void *ptr );
 <Paragraph>This<ChaptDesc> chapter describes functions that set the initial value of an image data buffer, copy data from one buffer to another, convert data type, and scale image data.</ChaptDesc></Paragraph> 
 
 <Note>All the data exchange and initialization functions support negative step sizes. Negative step sizes can be used to "flip" data copied from a source buffer to a destination buffer. 
-This is a common requirement when displaying a BMP image. To flip an image horizontally, call the copy function with <ParameterMame>pSrc</ParameterMame> pointing to the last row 
-of the source buffer, a negative <ParameterMame>srcStep</ParameterMame>, </ParameterMame>pDst</ParameterMame> pointing to the start of the destination buffer, and a positive 
-<ParameterMame>dstStep</ParameterMame>.
+This is a common requirement when displaying a BMP image. To flip an image horizontally, call the copy function with <ParameterName>pSrc</ParameterName> pointing to the last row 
+of the source buffer, a negative <ParameterName>srcStep</ParameterName>, <ParameterName>pDst</ParameterName> pointing to the start of the destination buffer, and a positive 
+<ParameterName>dstStep</ParameterName>.
 </Note>
 */
 
@@ -561,9 +561,9 @@ FwStatus STDCALL fwiScale_32f8u_AC4R      ( const Fw32f *pSrc, int srcStep, Fw8u
 <Paragraph>This<ChaptDesc> chapter describes general-purpose mathematic functions and functions that perform specific mathematic operations related to image processing.</ChaptDesc></Paragraph> 
 
 <Note>All the arithmetic and logic functions support negative step sizes. Negative step sizes can be used to "flip" data copied from a source buffer to a destination buffer. 
-This is a common requirement when displaying a BMP image. To flip an image horizontally, call the copy function with <ParameterMame>pSrc</ParameterMame> pointing to the last row 
-of the source buffer, a negative <ParameterMame>srcStep</ParameterMame>, </ParameterMame>pDst</ParameterMame> pointing to the start of the destination buffer, and a positive 
-<ParameterMame>dstStep</ParameterMame>.
+This is a common requirement when displaying a BMP image. To flip an image horizontally, call the copy function with <ParameterName>pSrc</ParameterName> pointing to the last row 
+of the source buffer, a negative <ParameterName>srcStep</ParameterName>, <ParameterName>pDst</ParameterName> pointing to the start of the destination buffer, and a positive 
+<ParameterName>dstStep</ParameterName>.
 </Note>*/
 
 /*#FunctionBlock - Abs
@@ -3166,9 +3166,9 @@ FwStatus STDCALL fwiCbYCr422ToYCbCr420_8u_C2P3R       ( const Fw8u *pSrc, int sr
 <ChapterHeading>Threshold and Compare Functions</ChapterHeading>
 <Paragraph>This<ChaptDesc> chapter describes functions that compare image data and manipulate image data based on compare operations.</ChaptDesc></Paragraph> 
 <Note>All the threshold and compare functions support negative step sizes. Negative step sizes can be used to "flip" data copied from a source buffer to a destination buffer. 
-This is a common requirement when displaying a BMP image. To flip an image horizontally, call the copy function with <ParameterMame>pSrc</ParameterMame> pointing to the last row 
-of the source buffer, a negative <ParameterMame>srcStep</ParameterMame>, </ParameterMame>pDst</ParameterMame> pointing to the start of the destination buffer, and a positive 
-<ParameterMame>dstStep</ParameterMame>.
+This is a common requirement when displaying a BMP image. To flip an image horizontally, call the copy function with <ParameterName>pSrc</ParameterName> pointing to the last row 
+of the source buffer, a negative <ParameterName>srcStep</ParameterName>, <ParameterName>pDst</ParameterName> pointing to the start of the destination buffer, and a positive 
+<ParameterName>dstStep</ParameterName>.</Note>
 */
 
 /*#FunctionBlock - Threshold
