@@ -1584,9 +1584,9 @@ TODO:approve
 <Text>The functions first decode 64 quantised DCT coefficients from the bitstream using the run-level tables of the MPEG-1 standard. 
 The coefficients are then rearranged as an 8x8 block as specified by <ParameterName>pScanMatrix</ParameterName> and inverse quantization is performed.
 The functions also perform saturation and mismatch control in accordance with the MPEG-1 standard.</Text> 
-<Text> The <ParameterName>pDCSizeTable</ParameterName> is used to decode the DC coefficient and the <ParameterName>pACTable</ParameterName> 
-is used to decode the AC coefficients. The quantizing scale factor <ParameterName>Qp</ParameterName> and pQPMatrix are used to perform inverse quantization. 
-The reconstructed 8x8 block of DCT coefficients is written to <ParamterName>pDstBlock</ParamterName>. Pointer <ParamterName>*pDstSize</ParamterName> indicates the position of the last non-zero coefficient. 
+<Text>The <ParameterName>pDCSizeTable</ParameterName> is used to decode the DC coefficient and the <ParameterName>pACTable</ParameterName> 
+is used to decode the AC coefficients. The quantizing scale factor <ParameterName>Qp</ParameterName> and <ParameterName>pQPMatrix</ParameterName> are used to perform inverse quantization. 
+The reconstructed 8x8 block of DCT coefficients is written to <ParamterName>pDstBlock</ParamterName>. Pointer <ParameterName>*pDstSize</ParamterName> indicates the position of the last non-zero coefficient. 
 The pointers <ParamterName>ppBitStream</ParamterName> and <ParamterName>pOffset</ParamterName> are updated to the position in the bitstream where decoding of the next 8x8 block begins.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsH263VLCCodeErr
 */
@@ -1607,12 +1607,14 @@ TODO:approve
 #Technologies - REF
 #Short - DCT block reconstruction (MPEG-2)
 #Long - <Text>These functions reconstruct an 8x8 DCT block for non-intra and intra frames in accordance with the MPEG-2 standard.</Text> 
-<Text>The functions first decode 64 quantised DCT coefficients from the bitstream using the run-level tables of the MPEG-2 standard. 
+<Text>The functions first decode 64 quantized DCT coefficients from the bitstream using the run-level tables of the MPEG-2 standard. 
 The coefficients are then rearranged as an 8x8 block as specified by <ParameterName>pScanMatrix</ParameterName> and inverse quantization is performed.
 The functions also perform saturation and mismatch control in accordance with the MPEG-2 standard.</Text>
-<Text> The <ParameterName>pDCTable is used to decode the DC coefficient</ParameterName> is used to decode the DC coefficient and the <ParameterName>pACTableis used to decode the AC coefficients.
-The quantizing scale factor <ParameterName>Qp</ParameterName> and pQPMatrix are used to perform inverse quantization. The reconstructed 8x8 block of DCT coefficients is written to <ParamterName>pDstBlock</ParamterName>. 
-Pointer *pDstSize indicates the position of the last non-zero coefficient. The pointers <ParamterName>ppBitStream</ParamterName> and <ParamterName>pOffset</ParamterName> are updated to the position in the bitstream where decoding of the next 8x8 block begins.</Text>
+<Text>The <ParameterName>pDCTable</ParameterName> is used to decode the DC coefficientand the <ParameterName>pACTable</ParameterName> is used to decode the AC coefficients.
+The quantizing scale factor <ParameterName>Qp</ParameterName> and <ParameterName>pQPMatrix</ParameterName> are used to perform inverse quantization. 
+The reconstructed 8x8 block of DCT coefficients is written to <ParamterName>pDstBlock</ParamterName>. 
+Pointer <ParameterName>*pDstSize</ParameterName> indicates the position of the last non-zero coefficient. 
+The pointers <ParamterName>ppBitStream</ParamterName> and <ParamterName>pOffset</ParameterName> are updated to the position in the bitstream where decoding of the next 8x8 block begins.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsH263VLCCodeErr
 */
 FwStatus STDCALL fwiReconstructDCTBlock_MPEG2_32s                 (       Fw32u **ppBitStream, int *pOffset,
