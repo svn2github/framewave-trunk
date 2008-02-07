@@ -476,7 +476,7 @@ FwStatus STDCALL fwiCMYKToYCCK411LS_MCU_8u16s_C4P4R       ( const Fw8u  *pSrcCMY
 
 /*#FunctionBlock - YCbCr4XXToRGBLS_MCU
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Convert YCbCr MCU to RGB
 #Long - <Text>These functions step through a minimum coded unit in a source buffer, convert the data from the YCbCr color space to the RGB color model, level-shift the signed values to unsigned 8-bit values, and write the converted data to a destination buffer.</Text>
 <Text>There are functions to convert minimum coded units with 4:4:4, 4:2:2, and 4:1:1 chroma sub-sampling.</Text>
