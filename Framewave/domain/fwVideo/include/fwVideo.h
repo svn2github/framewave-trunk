@@ -196,7 +196,7 @@ FwStatus STDCALL fwiDecodeExpGolombOne_H264_1u16s               ( Fw32u **ppBitS
 //  H.264 Deblocking Filtering
 // ------------------------------------------------
 /*#FunctionBlock - FilterDeblockingLuma_VerEdge_H264
-TODO:approve
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Deblock luma macroblock vertical edges
 #Long - <Text>This function steps through a source 16X16 luma macroblock and filters artificial discontinuities at block boundaries caused by quantization and other encoding artifacts. It operates on internal or external vertical edges of the macroblock.
@@ -1554,7 +1554,7 @@ TODO:edit
 FwStatus STDCALL fwiTransformPrediction_H264_8u16s_C1             ( Fw8u *pSrc, Fw32s step, Fw16s *pDst );
 
 /*#FunctionBlock - TransformDequantLumaDC_H264
-TODO:approve
+TODO:publish
 #Technologies - REF, SSE2
 #Short - Inverse transform luma DC
 #Long - <Text>This function steps through a source buffer, performs integer inverse transformation and dequantization of 4X4 luma DC coefficients in accordance with JVTG050 8.5.6., and writes the results back to the source buffer.</Text>
@@ -1566,10 +1566,10 @@ FwStatus STDCALL fwiTransformDequantLumaDC_H264_16s_C1I           ( Fw16s *pSrcD
 
 
 /*#FunctionBlock - QuantInv_MPEG2
-TODO:approve
+TODO:publish
 #Technologies - REF, SSE2, SSE3
 #Short - Inverse inter frame quantization (MPEG-2)
-#Long - <Text>Thls functions perform inverse quantization of inter frames in accordance with the MPEG-2 standard.</Text> 
+#Long - <Text>This function performs inverse quantization of inter frames in accordance with the MPEG-2 standard.</Text> 
 <Text>The 8x8 matrix of DCT coefficients in <ParameterName>pSrcDst</ParameterName> are first multiplied by <ParameterName>Qp</ParameterName>, the quantizing scale factor, and then by 
 the corresponding elements of the 8x8 <ParameterName>pQPMatrix</ParameterName>. The function also performs saturation and mismatch control in accordance with the MPEG-2 standard.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr
@@ -1578,7 +1578,7 @@ FwStatus STDCALL fwiQuantInv_MPEG2_16s_C1I                        ( Fw16s *pSrcD
 
 
 /*#FunctionBlock - QuantInvIntra_MPEG2
-TODO:approve
+TODO:publish
 #Technologies - REF, SSE2, SSE3
 #Short - Inverse intra frame quantization (MPEG-2)
 #Long - <Text>This function performs inverse quantization of intra frames in accordance with the MPEG-2 standard.</Text> 
@@ -1590,7 +1590,7 @@ FwStatus STDCALL fwiQuantInvIntra_MPEG2_16s_C1I                   ( Fw16s *pSrcD
 
 
 /*#FunctionBlock - ReconstructDCTBlock_MPEG1
-TODO:approve
+TODO:publish
 #Technologies - REF
 #Short - Reconstruct inter frame DCT block (MPEG-1)
 #Long - <Text>This function reconstructs an 8x8 DCT block for inter frames in accordance with the MPEG-1 standard.</Text>
@@ -1611,7 +1611,7 @@ FwStatus STDCALL fwiReconstructDCTBlock_MPEG1_32s                 (      Fw32u *
 
 
 /*#FunctionBlock - ReconstructDCTBlockIntra_MPEG1
-TODO:approve
+TODO:publish
 #Technologies - REF
 #Short - Reconstruct intra frame DCT block (MPEG-1)
 #Long - <Text>This function reconstructs an 8x8 DCT block for intra frames in accordance with the MPEG-1 standard.</Text>
@@ -1633,7 +1633,7 @@ FwStatus STDCALL fwiReconstructDCTBlockIntra_MPEG1_32s            (      Fw32u *
 
 
 /*#FunctionBlock - ReconstructDCTBlock_MPEG2
-TODO:approve
+TODO:publish
 #Technologies - REF
 #Short - Reconstruct inter feame DCT block (MPEG-2)
 #Long - <Text>This function reconstructs an 8x8 DCT block for inter frames in accordance with the MPEG-2 standard.</Text> 
@@ -1655,7 +1655,7 @@ FwStatus STDCALL fwiReconstructDCTBlock_MPEG2_32s                 (       Fw32u 
 
 
 /*#FunctionBlock - ReconstructDCTBlockIntra_MPEG2
-TODO:approve
+TODO:publish
 #Technologies - REF
 #Short - Reconstruct intra frame DCT block (MPEG-2)
 #Long - <Text>This function reconstructs an 8x8 DCT block for intra frames in accordance with the MPEG-2 standard.</Text> 
@@ -1679,7 +1679,7 @@ FwStatus STDCALL fwiReconstructDCTBlockIntra_MPEG2_32s            (       Fw32u 
 
 
 /*#FunctionBlock - DCT8x8Inv_AANTransposed_Channel
-TODO:approve
+TODO:publish
 #Technologies - REF, SSE2, SSE3
 #Short - Perform AAN IDCT on an 8X8 block
 #Long - <Text>These functions step through a transposed 8X8 block of DCT coefficients in a source buffer, perform an IDCT based on the AAN algorithm, and write the result to a destination buffer.</Text>
@@ -1689,7 +1689,7 @@ FwStatus STDCALL fwiDCT8x8Inv_AANTransposed_16s_C1R               ( const Fw16s 
 FwStatus STDCALL fwiDCT8x8Inv_AANTransposed_16s8u_C1R             ( const Fw16s *pSrc, Fw8u  *pDst, Fw32s dstStep, Fw32s count );
 
 /*#FunctionBlock - DCT8x8Inv_AANTransposed_Plane
-TODO:approve
+TODO:publish
 #Technologies - REF, SSE2, SSE3
 #Short - Perform AAN IDCT on 8X8 U and V blocks
 #Long - <Text>These functions step through transposed 8X8 U and V block of DCT coefficients in two source buffers, perform an IDCT based on the AAN algorithm, and write the result to a joined UV block in a sestination buffer.</Text>
