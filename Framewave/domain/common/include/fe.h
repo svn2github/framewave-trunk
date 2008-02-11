@@ -106,7 +106,7 @@ const static U32 DEF_BYTES_PER_THREAD = 65536;
                                                                             IV F10H_Init()        { this->SSE2_Init(); } 
 
 #define FE_F10H_PFT_EMULATE_CUSTOM_NO_FB    const static PxFnType f10hPft = PFT_EMULATE_CUSTOM_NO_FB;                       \
-                                                                            IV F10H_Init()        { this->SSE2_Init(); } 
+                                                                            IV F10H_Init()        { this->SSE2_Init(); }    
 
 #define FE_F10H_PFT_CUSTOM                  const static PxFnType f10hPft = PFT_CUSTOM;
 #define FE_F10H_PFT_CUSTOM_NO_FB            const static PxFnType f10hPft = PFT_CUSTOM_NO_FB;
@@ -963,7 +963,7 @@ namespace PREFIX_OPT(OPT_PREFIX, FE_PRIVATE)
         ISV GetDispatch( DispatchType &dt )
         {
 #if   defined(OPT_F10H) || defined(OPT_SSE3)
-            if      ((FE::f10hPft != PFT_ABSENT) && (FE::f10hPft != PFT_EMULATE_CUSTOM)) dt = DT_F10H;
+            if      ((FE::f10hPft != PFT_ABSENT) && (FE::f10hPft != PFT_EMULATE_CUSTOM)&& (FE::f10hPft != PFT_EMULATE_CUSTOM_NO_FB)) dt = DT_F10H;
             else if ((FE::sse2Pft != PFT_ABSENT) && (FE::sse2Pft != PFT_EMULATE_CUSTOM)) dt = DT_SSE2; 
             else if ((FE::refrPft != PFT_ABSENT) && (FE::refrPft != PFT_EMULATE_CUSTOM)) dt = DT_REFR; 
             else                                                                       { assert(false); 
