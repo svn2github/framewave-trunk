@@ -376,6 +376,8 @@ Additional Library Directories</Bold>).</Paragraph>
      ln -sf ./libfwJPEG.so.1.1.0 libfwJPEG.so
      ln -sf ./libfwSignal.so.1.1.0 libfwSignal.so
      ln -sf ./libfwVideo.so.1.1.0 libfwVideo.so</Pseudo>
+     
+<Paragraph>Create similar symbolic links with the .so.1 extension as well.</Paragraph>
 
 <Paragraph>To compile a cpp file that uses Framewave, for example test.cpp:</Paragraph>
 
@@ -404,6 +406,8 @@ is in the shared library search path for the environment.</Paragraph>
      ln -sf ./libfwJPEG.so.1.1.0 libfwJPEG.so
      ln -sf ./libfwSignal.so.1.1.0 libfwSignal.so
      ln -sf ./libfwVideo.so.1.1.0 libfwVideo.so</Pseudo>
+     
+<Paragraph>Create similar symbolic links with the .so.1 extension as well.</Paragraph>
 
 <Paragraph>To compile a cpp file that uses Framewave, for example test.cpp:</Paragraph>
 
