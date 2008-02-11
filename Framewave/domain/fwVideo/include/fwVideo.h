@@ -1383,12 +1383,6 @@ FwStatus STDCALL fwiSumsDiff8x8Blocks4x4_8u16s_C1   ( Fw8u  *pSrc , Fw32s srcSte
 
 #endif // FW_BUILD_NUM
 
-/*#Documentation
-
-</Chapter>
-
-*/
-
 #if BUILD_NUM_AT_LEAST(9999)
 /*#FunctionBlock - DeblockingLuma_VerEdge_MBAFF_H264
 TODO:edit
@@ -1697,6 +1691,12 @@ TODO:publish
 */
 FwStatus STDCALL fwiDCT8x8Inv_AANTransposed_16s_P2C2R             ( const Fw16s *pSrcU, const Fw16s *pSrcV, Fw16s *pDstUV, Fw32s dstStep, Fw32s countU, Fw32s countV );
 FwStatus STDCALL fwiDCT8x8Inv_AANTransposed_16s8u_P2C2R           ( const Fw16s *pSrcU, const Fw16s *pSrcV, Fw8u  *pDstUV, Fw32s dstStep, Fw32s countU, Fw32s countV );
+
+/*#Documentation
+
+</Chapter>
+
+*/
 
 #ifdef __cplusplus
 }
