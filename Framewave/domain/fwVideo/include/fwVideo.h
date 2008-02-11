@@ -1599,8 +1599,8 @@ The coefficients are then rearranged as an 8x8 block as specified by <ParameterN
 The function also performs saturation and mismatch control in accordance with the MPEG-1 standard.</Text> 
 <Text>The <ParameterName>pDCSizeTable</ParameterName> is used to decode the DC coefficient and the <ParameterName>pACTable</ParameterName> 
 is used to decode the AC coefficients. The quantizing scale factor <ParameterName>Qp</ParameterName> and <ParameterName>pQPMatrix</ParameterName> are used to perform inverse quantization. 
-The reconstructed 8x8 block of DCT coefficients is written to <ParamterName>pDstBlock</ParamterName>. Pointer <ParameterName>*pDstSize</ParamterName> indicates the position of the last non-zero coefficient. 
-The pointers <ParamterName>ppBitStream</ParamterName> and <ParamterName>pOffset</ParamterName> are updated to the position in the bitstream where decoding of the next 8x8 block begins.</Text>
+The reconstructed 8x8 block of DCT coefficients is written to <ParameterName>pDstBlock</ParameterName>. Pointer <ParameterName>*pDstSize</ParameterName> indicates the position of the last non-zero coefficient. 
+The pointers <ParameterName>ppBitStream</ParameterName> and <ParameterName>pOffset</ParameterName> are updated to the position in the bitstream where decoding of the next 8x8 block begins.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsH263VLCCodeErr
 */
 FwStatus STDCALL fwiReconstructDCTBlock_MPEG1_32s                 (      Fw32u **ppBitStream, int *pOffset,
@@ -1620,8 +1620,8 @@ The coefficients are then rearranged as an 8x8 block as specified by <ParameterN
 The function also performs saturation and mismatch control in accordance with the MPEG-1 standard.</Text> 
 <Text>The <ParameterName>pDCSizeTable</ParameterName> is used to decode the DC coefficient and the <ParameterName>pACTable</ParameterName> 
 is used to decode the AC coefficients. The quantizing scale factor <ParameterName>Qp</ParameterName> and <ParameterName>pQPMatrix</ParameterName> are used to perform inverse quantization. 
-The reconstructed 8x8 block of DCT coefficients is written to <ParamterName>pDstBlock</ParamterName>. Pointer <ParameterName>*pDstSize</ParamterName> indicates the position of the last non-zero coefficient. 
-The pointers <ParamterName>ppBitStream</ParamterName> and <ParamterName>pOffset</ParamterName> are updated to the position in the bitstream where decoding of the next 8x8 block begins.</Text>
+The reconstructed 8x8 block of DCT coefficients is written to <ParameterName>pDstBlock</ParameterName>. Pointer <ParameterName>*pDstSize</ParameterName> indicates the position of the last non-zero coefficient. 
+The pointers <ParameterName>ppBitStream</ParameterName> and <ParameterName>pOffset</ParameterName> are updated to the position in the bitstream where decoding of the next 8x8 block begins.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsH263VLCCodeErr
 */
 
@@ -1642,9 +1642,9 @@ The coefficients are then rearranged as an 8x8 block as specified by <ParameterN
 The function also performs saturation and mismatch control in accordance with the MPEG-2 standard.</Text>
 <Text>The <ParameterName>pDCTable</ParameterName> is used to decode the DC coefficientand the <ParameterName>pACTable</ParameterName> is used to decode the AC coefficients.
 The quantizing scale factor <ParameterName>Qp</ParameterName> and <ParameterName>pQPMatrix</ParameterName> are used to perform inverse quantization. 
-The reconstructed 8x8 block of DCT coefficients is written to <ParamterName>pDstBlock</ParamterName>. 
+The reconstructed 8x8 block of DCT coefficients is written to <ParameterName>pDstBlock</ParameterName>. 
 Pointer <ParameterName>*pDstSize</ParameterName> indicates the position of the last non-zero coefficient. 
-The pointers <ParamterName>ppBitStream</ParamterName> and <ParamterName>pOffset</ParameterName> are updated to the position in the bitstream where decoding of the next 8x8 block begins.</Text>
+The pointers <ParameterName>ppBitStream</ParameterName> and <ParameterName>pOffset</ParameterName> are updated to the position in the bitstream where decoding of the next 8x8 block begins.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsH263VLCCodeErr
 */
 FwStatus STDCALL fwiReconstructDCTBlock_MPEG2_32s                 (       Fw32u **ppBitStream, int *pOffset,
@@ -1664,9 +1664,9 @@ The coefficients are then rearranged as an 8x8 block as specified by <ParameterN
 The function also performs saturation and mismatch control in accordance with the MPEG-2 standard.</Text>
 <Text>The <ParameterName>pDCTable</ParameterName> is used to decode the DC coefficientand the <ParameterName>pACTable</ParameterName> is used to decode the AC coefficients.
 The quantizing scale factor <ParameterName>Qp</ParameterName> and <ParameterName>pQPMatrix</ParameterName> are used to perform inverse quantization. 
-The reconstructed 8x8 block of DCT coefficients is written to <ParamterName>pDstBlock</ParamterName>. 
+The reconstructed 8x8 block of DCT coefficients is written to <ParameterName>pDstBlock</ParameterName>. 
 Pointer <ParameterName>*pDstSize</ParameterName> indicates the position of the last non-zero coefficient. 
-The pointers <ParamterName>ppBitStream</ParamterName> and <ParamterName>pOffset</ParameterName> are updated to the position in the bitstream where decoding of the next 8x8 block begins.</Text>
+The pointers <ParameterName>ppBitStream</ParameterName> and <ParameterName>pOffset</ParameterName> are updated to the position in the bitstream where decoding of the next 8x8 block begins.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsH263VLCCodeErr
 */
 
