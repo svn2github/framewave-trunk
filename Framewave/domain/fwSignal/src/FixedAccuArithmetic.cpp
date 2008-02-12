@@ -251,21 +251,20 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsPowx_32f_A24 )(const Fw32f* pSrc1, const Fw32
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwsPowx_64f_A50 )(const Fw64f* pSrc1, const Fw64f ConstValue, Fw64f* pDst, int len)
 {
-	if(ConstValue == (Fw64s)ConstValue)
-	{
-		PowXint_64f data(ConstValue);
-		return OPT_LEVEL::fe< PowXint_64f >(data, pSrc1, pDst, len);
-	}
-	else
-	{
+	//if(ConstValue == (Fw64s)ConstValue)
+	//{
+	//	PowXint_64f data(ConstValue);
+	//	return OPT_LEVEL::fe< PowXint_64f >(data, pSrc1, pDst, len);
+	//}
+	//else
+	//{
 		Powx_64f data(ConstValue);
 		return OPT_LEVEL::fe< Powx_64f >(data, pSrc1, pDst, len);
-	}
+	//}
 }
 FwStatus PREFIX_OPT(OPT_PREFIX, fwsPowx_64f_A53 )(const Fw64f* pSrc1,  const Fw64f ConstValue, Fw64f* pDst, int len)
 {
-    /* The commented code is much faster for integr inputs.. but less accurate*/
-	//if(ConstValue == (Fw64s)ConstValue)
+   	//if(ConstValue == (Fw64s)ConstValue)
 	//{
 	//	PowXint_64f data(ConstValue);
 	//	return OPT_LEVEL::fe< PowXint_64f >(data, pSrc1, pDst, len);
