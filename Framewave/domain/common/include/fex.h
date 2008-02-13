@@ -524,6 +524,18 @@ namespace PREFIX_OPT(OPT_PREFIX, FE_PRIVATE)
 
    }
 
+// 2d interface
+    template< class FE >
+    SYS_INLINE FwStatus fex( FE & fe, const typename FE::TS1_ *pSrc, int s1Step, ASZ roi, U32 bytesPerThread=DEF_BYTES_PER_THREAD )
+    {
+         if( FW_REF::PtrNotOK ( pSrc     ) ) return fwStsNullPtrErr;   
+         if( FW_REF::StepZeroNotOK( s1Step ) ) return fwStsStepErr;
+         if( FW_REF::RoiNotOK ( roi   ) ) return fwStsSizeErr;
+
+         PREFIX_OPT(OPT_PREFIX, FE_PRIVATE)::B1St<FE, ALG_2D>( fe, pSrc, s1Step, roi, bytesPerThread );
+         return fwStsNoErr;
+    }
+
 template< class FE >
     SYS_INLINE FwStatus fex( FE & fe, const typename FE::TS1_ *s1, int len, U32 bytesPerThread=DEF_BYTES_PER_THREAD )
     {
@@ -544,6 +556,8 @@ template< class FE >
        PREFIX_OPT(OPT_PREFIX, FE_PRIVATE)::B2St<FE, ALG_1D>( fe, s1, s2, len, bytesPerThread );
        return fwStsNoErr;
     }
+
+
 
 
 }
