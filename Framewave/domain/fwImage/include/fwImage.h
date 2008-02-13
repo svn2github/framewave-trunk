@@ -3160,6 +3160,23 @@ FwStatus STDCALL fwiCbYCr422ToYCbCr420_8u_C2P3R       ( const Fw8u *pSrc, int sr
 
 /*#Documentation
 
+<Chapter>
+<ChapterHeading>Statistical Functions</ChapterHeading>
+<Paragraph>This<ChaptDesc> chapter describes FW functions which perform statistical operations on image data.</ChaptDesc></Paragraph>
+*/
+
+/*#FunctionBlock - Sum
+todo:publish
+#Technologies - REF, SSE2, F10H
+#Short - Perfom sum operation on the image data.
+#Long - <Text>These functions performs sum operation on the given image data.</Text>
+*/
+
+FwStatus STDCALL fwiSum_8u_C1R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f* pSum);
+FwStatus STDCALL fwiSum_16s_C1R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f* pSum);
+
+/*#Documentation
+
 </Chapter>
 
 <Chapter>
