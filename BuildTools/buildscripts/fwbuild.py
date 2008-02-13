@@ -348,9 +348,15 @@ def createDefFile ( pthDevLabRoot, pthProjectRoot, pthBuildRoot, sProjectName ):
     sCommandStr += ' ' + sProjectName + '.dll'                                               # and the dll name for the def file
     exe_name_path = join(pthDevLabRoot,'BuildTools','bin',exe_name)
     
-    if os.access(exe_name_path,os.X_OK) == False:
-        os.chmod(exe_name_path,S_IEXEC | S_IRWXU | S_IXGRP | S_IRGRP | S_IROTH | S_IXOTH)        
-        os.system( sCommandStr )
+    #if os.access(exe_name_path,os.X_OK) == False:
+    #    os.chmod(exe_name_path,S_IEXEC | S_IRWXU | S_IXGRP | S_IRGRP | S_IROTH | S_IXOTH)        
+    #os.system( sCommandStr )
+    
+    if win_sys == 0 and isfile(exe_name_path):
+	os.system('chmod 755 ' + exe_name_path)
+	
+    if isfile(exe_name_path):
+	os.system( sCommandStr )	
 
     def_file_path = join(pthProjectRoot,sProjectName,sProjectName + '.def')
     if win_sys == 0 and isfile(def_file_path) :
