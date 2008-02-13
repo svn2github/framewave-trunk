@@ -101,9 +101,10 @@ This software is subject to the Apache v2.0 License.
 #include <stdlib.h>
 #endif
 
-#if defined( FW_LIN )
-#include <asm/atomic.h>
-#endif
+//SKiran: This is not required since FW use Boost LIBS and help to build on 32bit Linux.
+//#if defined( FW_LIN )
+//#include <asm/atomic.h>
+//#endif
 
 #if defined( FW_SOL )
 #include <sys/atomic.h>
