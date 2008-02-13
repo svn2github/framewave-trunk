@@ -1696,6 +1696,14 @@ FwStatus STDCALL fwiYCbCr422_8u_P3C2R     (const Fw8u * const pSrc[3], int srcSt
 FwStatus STDCALL fwiCbYCr422ToYCbCr420_8u_C2P3R       ( const Fw8u *pSrc, int srcStep, Fw8u *pDst[3], int dstStep[3], FwiSize roiSize );
 
 ////////////////////////////////////////////////////////////////
+//                        Sum
+////////////////////////////////////////////////////////////////
+
+
+FwStatus STDCALL fwiSum_8u_C1R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f* pSum);
+FwStatus STDCALL fwiSum_16s_C1R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f* pSum);
+
+////////////////////////////////////////////////////////////////
 //                        Threshold
 ////////////////////////////////////////////////////////////////
 

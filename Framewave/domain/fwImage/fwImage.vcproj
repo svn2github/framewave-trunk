@@ -875,6 +875,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\StatISum.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\Sub.cpp"
 				>
 			</File>
@@ -1026,6 +1030,10 @@
 			</File>
 			<File
 				RelativePath=".\include\SetDef.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\StatISum.h"
 				>
 			</File>
 			<File
