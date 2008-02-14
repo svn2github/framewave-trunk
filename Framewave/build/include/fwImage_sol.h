@@ -1499,6 +1499,7 @@ FwStatus STDCALL fwiYCbCr420ToRGB_8u_P3C3R            ( const Fw8u * const pSrc[
 
 
 FwStatus STDCALL  fwiYCbCr422ToYCbCr420_8u_P3R ( const Fw8u* pSrc[3], int srcStep[3], Fw8u* pDst[3], int dstStep[3], FwiSize roiSize);
+FwStatus STDCALL  fwiYCbCr422ToYCbCr420_8u_C2P3R(const Fw8u* pSrc, int srcStep, Fw8u* pDst[3], int dstStep[3], FwiSize roiSize);
 
 ////////////////////////////////////////////////////////////////
 //                        YCbCr420ToRGB*
