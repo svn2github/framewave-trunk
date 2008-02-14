@@ -2287,14 +2287,18 @@ todo:publish
 FwStatus STDCALL fwiYCbCr420ToRGB_8u_P3C3R            ( const Fw8u * const pSrc[3], int srcStep[3], Fw8u  *pDst, int dstStep, FwiSize roiSize );
 
 /*#FunctionBlock - YCbCr422ToYCbCr420
-todo:publish
+todo:edit
 #Technologies - REF
 #Short - Convert from YCbCr with 4:2:2 sampling to YCbCr with 4:2:0 sampling
-#Long - <Text>This function steps through an ROI in a source buffer, converts the source data from the YCbCr color space with 4:2:2 chroma subsampling to YCbCr color space with 4:2:0 chroma subsampling, and writes the converted data to a destination buffer.</Text>
+#Long - <Text>These functions step through an ROI in a source buffer(or buffers), convert the source data from the YCbCr color space with 4:2:2 chroma subsampling to YCbCr color space with 4:2:0 chroma subsampling, and writes the converted data to a destination buffer(or buffers).</Text>
+<Text>The source buffer can be 2 channel or 3 planar data. The destination is planar data with 2 or 3 planes.</Text>
+</Text> The format of 2 channel data is Y1, Cb1, Y2, Cr1, Y3, Cb2, Y4, Cr2.. etc</Text>
+</Text> The format of 2 plane data is Y1, Y2, Y3, Y4,.. etc in the first plane and  Cb1, Cr1, Cb2, Cr2.. etc in the second plane.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsSizeErr
 */
 
 FwStatus STDCALL  fwiYCbCr422ToYCbCr420_8u_P3R ( const Fw8u* pSrc[3], int srcStep[3], Fw8u* pDst[3], int dstStep[3], FwiSize roiSize);
+FwStatus STDCALL  fwiYCbCr422ToYCbCr420_8u_C2P3R(const Fw8u* pSrc, int srcStep, Fw8u* pDst[3], int dstStep[3], FwiSize roiSize);
 
 
 /*#FunctionBlock - YCbCr420ToRGB*

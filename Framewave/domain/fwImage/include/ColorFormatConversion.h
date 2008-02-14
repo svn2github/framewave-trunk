@@ -16,7 +16,7 @@ namespace OPT_LEVEL
     FwStatus ConvertYcbcr422toYcbcr420_8uP3(const Fw8u* pSrc[3], int srcStep[3], Fw8u* pDst[3], int dstStep[3], FwiSize roiSize)
     {
 
-        if( FW_REF::PtrNotOK ( pSrc,pDst) ) return fwStsNullPtrErr;   
+        if( FW_REF::PtrNotOK ( pSrc[0], pSrc[1], pSrc[2], pDst[0], pDst[1], pDst[2]) ) return fwStsNullPtrErr;   
         if( FW_REF::StepZeroNotOK( srcStep[0],srcStep[1],srcStep[2],dstStep[0],dstStep[1],dstStep[2]) ) return fwStsStepErr;
         if( FW_REF::RoiNotOK ( roiSize                        ) ) return fwStsSizeErr;
 
@@ -73,6 +73,55 @@ namespace OPT_LEVEL
         }
         return fwStsNoErr;
     }
+
+FwStatus ConvertYcbcr422toYcbcr420_8uC2P3(const Fw8u* pSrc, int srcStep, Fw8u* pDst[3], int dstStep[3], FwiSize roiSize)
+    {
+
+    if( FW_REF::PtrNotOK ( pSrc, pDst[0], pDst[1], pDst[2]) ) return fwStsNullPtrErr;   
+    if( FW_REF::StepZeroNotOK( srcStep, dstStep[0],dstStep[1],dstStep[2]) ) return fwStsStepErr;
+    if( FW_REF::RoiNotOK ( roiSize                        ) ) return fwStsSizeErr;
+
+    int i,j;
+    const Fw8u *pS, *pSRowBegin;   
+    Fw8u *pY,*pCb,*pCr,*pYRowBegin,*pCbRowBegin,*pCrRowBegin;
+
+    pYRowBegin  = pDst[0];
+    pCbRowBegin = pDst[1];
+    pCrRowBegin = pDst[2];
+    pSRowBegin = pSrc;
+
+    for(i=0;i<roiSize.height;i+=2)
+        {        
+        pS  = pSRowBegin;
+        pY  = pYRowBegin;
+        pCb = pCbRowBegin;
+        pCr = pCrRowBegin;
+
+        for(j=0;j<roiSize.width;j+=2)
+            {
+            *pY++  = *pS++;
+            *pCb++ = *pS++;
+            *pY++  = *pS++;
+            *pCr++ = *pS++;
+            }
+
+        pSRowBegin += srcStep;
+        pYRowBegin += dstStep[0];
+        pS  = pSRowBegin;
+        pY  = pYRowBegin;
+
+        for(j=0;j<roiSize.width*2;j+=2)
+            *pY++  = pS[j];
+
+        pSRowBegin += srcStep;
+        pYRowBegin += dstStep[0];
+        pCbRowBegin += dstStep[1];
+        pCrRowBegin += dstStep[2];
+        }
+    return fwStsNoErr;
+    }
+
 }
+
 
 #endif // __COLORFORMATCONVERSION_H__
