@@ -2286,6 +2286,16 @@ todo:publish
 */
 FwStatus STDCALL fwiYCbCr420ToRGB_8u_P3C3R            ( const Fw8u * const pSrc[3], int srcStep[3], Fw8u  *pDst, int dstStep, FwiSize roiSize );
 
+/*#FunctionBlock - YCbCr422ToYCbCr420
+todo:publish
+#Technologies - REF
+#Short - Convert from YCbCr with 4:2:2 sampling to YCbCr with 4:2:0 sampling
+#Long - <Text>This function steps through an ROI in a source buffer, converts the source data from the YCbCr color space with 4:2:2 chroma subsampling to YCbCr color space with 4:2:0 chroma subsampling, and writes the converted data to a destination buffer.</Text>
+#ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsSizeErr
+*/
+
+FwStatus STDCALL  fwiYCbCr422ToYCbCr420_8u_P3R ( const Fw8u* pSrc[3], int srcStep[3], Fw8u* pDst[3], int dstStep[3], FwiSize roiSize);
+
 
 /*#FunctionBlock - YCbCr420ToRGB*
 todo:publish

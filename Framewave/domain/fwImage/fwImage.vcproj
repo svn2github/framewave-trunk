@@ -619,6 +619,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ColorFormatConversion.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\colorModelConversion.cpp"
 				>
 			</File>
@@ -934,6 +938,10 @@
 			</File>
 			<File
 				RelativePath=".\include\color.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\ColorFormatConversion.h"
 				>
 			</File>
 			<File

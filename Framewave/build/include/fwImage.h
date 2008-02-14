@@ -1494,6 +1494,13 @@ FwStatus STDCALL fwiBGRToYCbCr420_8u_AC4P3R           ( const Fw8u *pSrc, int sr
 FwStatus STDCALL fwiYCbCr420ToRGB_8u_P3C3R            ( const Fw8u * const pSrc[3], int srcStep[3], Fw8u  *pDst, int dstStep, FwiSize roiSize );
 
 ////////////////////////////////////////////////////////////////
+//                        YCbCr422ToYCbCr420
+////////////////////////////////////////////////////////////////
+
+
+FwStatus STDCALL  fwiYCbCr422ToYCbCr420_8u_P3R ( const Fw8u* pSrc[3], int srcStep[3], Fw8u* pDst[3], int dstStep[3], FwiSize roiSize);
+
+////////////////////////////////////////////////////////////////
 //                        YCbCr420ToRGB*
 ////////////////////////////////////////////////////////////////
 

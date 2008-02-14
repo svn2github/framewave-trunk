@@ -2896,5 +2896,8 @@ OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiCbYCr422ToYCbCr420_8u_C2P
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSum_8u_C1R             )( const Fw8u* pSrc, int srcStep, FwiSize roiSize, Fw64f* pSum );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSum_16s_C1R            )(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f* pSum);
 
+OREFR   FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiYCbCr422ToYCbCr420_8u_P3R            )( const Fw8u* pSrc[3], int srcStep[3], Fw8u* pDst[3], int dstStep[3], FwiSize roiSize);
+
+
 #endif	// __FWIMAGE_OPT_H__
 
