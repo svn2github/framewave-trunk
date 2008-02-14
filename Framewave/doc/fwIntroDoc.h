@@ -127,16 +127,9 @@ fwStsResFloor - All result values are floored.
 <ChangeHistory>
 
 <ChangeEntry>
-<ChangeDate>10/2007</ChangeDate>
-<ChangeDescription>Added platform support for AMD Family 10h processors.</ChangeDescription> 
-<ChangeDescription>Added operating system support for Sun Solaris 32-bit and 64-bit operating systems.</ChangeDescription>
-<ChangeDescription>Added new JPEG, H.264 decode, DCT, and Dilate functions.</ChangeDescription>
-<ChangeDescription>Added additional fixed-precision functions to signal processing library.</ChangeDescription>
-</ChangeEntry>
-<ChangeEntry>
-<ChangeDate>11/2007</ChangeDate>
-<ChangeDescription>
-Added new Change History and Installation sections</ChangeDescription>
+<ChangeDate>02/2008</ChangeDate>
+<DocVersion>V1.0.0</DocVersion>
+<ChangeDescription>Initial release.</ChangeDescription> 
 </ChangeEntry>
 
 </ChangeHistory>
