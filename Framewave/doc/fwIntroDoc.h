@@ -100,6 +100,8 @@ fwStsResFloor - All result values are floored.
 
 <TitlePage></TitlePage>
 
+<TOC></TOC>
+
 <FrontSection>
 
 <FrontHeading>
@@ -128,7 +130,7 @@ fwStsResFloor - All result values are floored.
 
 <ChangeEntry>
 <ChangeDate>02/2008</ChangeDate>
-<DocVersion>V1.0.0</DocVersion>
+<ChangeVersion>1.0.0</ChangeVersion>
 <ChangeDescription>Initial release.</ChangeDescription> 
 </ChangeEntry>
 
@@ -311,7 +313,7 @@ file in the installation package for the most recent information.</Paragraph>
 
 <Paragraph>The directory hierarchy for each type of installation is as follows.</Paragraph>
 
-<Paragraph><Bold>Microsoft&#174; Windows&#174; Operating System</Bold></Paragraph>
+<Paragraph><Bold>Microsoft&#174; Windows&#174; Operating Systems</Bold></Paragraph>
 
 <ParagraphIndent>DLL Directories</ParagraphIndent>
 <ParagraphIndent>The fwImage/fwSignal/fwBase/fwJPEG/fwVideo.lib files contain the 
@@ -326,7 +328,7 @@ address of the function during run time, the .lib files are used to link against
 
 <ParagraphIndent>The libfwImage.so/libfwSignal.so/libfwBase.so/libfwJPEG.so/libfwVideo.so files contain all shared libraries.</ParagraphIndent>
 
-<Paragraph><Bold>Solaris&#174; Operating System</Bold></Paragraph>
+<Paragraph><Bold>Sun&#174; Solaris&#174; Operating System</Bold></Paragraph>
 
 <ParagraphIndent>LIB Directories</ParagraphIndent>
 
@@ -390,7 +392,7 @@ or math libraries if they are not automatically linked in.</Paragraph>
 <Paragraph>Before running the application, make sure the ExampleDir/FW_1.0_Lin64/lib 
 is in the shared library search path for the environment.</Paragraph>
    
-<Paragraph><Bold>Sun&#174; Solaris&#174; Operating System</Bold></Paragraph>
+<Paragraph><Bold>Sun&#174; Solaris&#174; Operating Systems</Bold></Paragraph>
 
 <Paragraph>Assume this is a 64-bit installation and the installation directory is "ExampleDir".</Paragraph>
 
