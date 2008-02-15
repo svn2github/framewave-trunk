@@ -40,20 +40,12 @@ namespace OPT_LEVEL
         const Fw8u* sbeginCr= pSrc[2];
 
 
-        for(Fw32s bufHeight = 0; bufHeight< roiSize.height; bufHeight++)
-        {
-            dcompY = dbeginY;
-            scompY = sbeginY;
-            for(Fw32s bufwidth = 0; bufwidth<roiSize.width; bufwidth++)
-            {
-                   *dcompY++ = *scompY++;                   
-            }
-            dbeginY+=dstStep[0];
-            sbeginY+=srcStep[0];
-        }
 
         for(Fw32s bufHeight = 0; bufHeight< cbcrHeight; bufHeight++)
         {
+            dcompY = dbeginY;
+            scompY = sbeginY;
+            
             dcompCb = dbeginCb;
             scompCb = sbeginCb;
 
@@ -62,15 +54,31 @@ namespace OPT_LEVEL
 
             for(Fw32s bufwidth = 0; bufwidth<cbcrWidth; bufwidth++)
             {
-                   *dcompCb++ = *scompCb++;      
-                   *dcompCr++ = *scompCr++;     
+                *dcompY++ = *scompY++; 
+                *dcompCb++ = *scompCb++;      
+                *dcompCr++ = *scompCr++;     
             }
+
             dbeginCb+=(dstStep[1]);
             sbeginCb+=(srcStep[1] * 2);
             dbeginCr+=(dstStep[2]);
             sbeginCr+=(srcStep[2] * 2);
 
+            for(Fw32s bufwidth = 0; bufwidth<cbcrWidth; bufwidth++)
+            {
+                *dcompY++ = *scompY++;                   
+            }
+
+            dbeginY+=dstStep[0];
+            sbeginY+=srcStep[0];
+            for(Fw32s bufwidth = 0; bufwidth<roiSize.width; bufwidth++)
+            {
+                *dcompY++ = *scompY++;                   
+            }
+            dbeginY+=dstStep[0];
+            sbeginY+=srcStep[0];
         }
+
         return fwStsNoErr;
     }
 
