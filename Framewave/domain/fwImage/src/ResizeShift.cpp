@@ -504,6 +504,120 @@ namespace OPT_LEVEL
 		return fwStsNoErr;
 	}
 
+template< class TS, CH chSrc,  DispatchType disp >
+	FwStatus My_FW_ResizeSqrPixel_SSE2(const TS *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
+		TS*pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+		double xShift, double yShift, int interpolation, Fw8u *pBuffer)
+	{
+		// doesn't see the need for pBuffer, should we check?
+		// if (pBuffer==0) return fwStsNullPtrErr;
+		pBuffer;
+
+		if (xFactor <= 0.0 || yFactor <= 0.0)	
+			return fwStsResizeFactorErr;	
+
+		if (interpolation != FWI_INTER_LINEAR && interpolation != FWI_INTER_NN &&
+			interpolation != FWI_INTER_CUBIC && interpolation != FWI_INTER_LANCZOS)	
+			return fwStsInterpolationErr;
+
+		int channel=ChannelCount(chSrc);
+		FwStatus status = My_FW_ParaCheck2<TS>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep,
+			dstRoi, channel);
+		if (status !=fwStsNoErr) return status;
+
+		
+		//double xmap, ymap;
+		int x, y, flagX=0, flagY=0;
+
+		//dstStep and srcStep are byte size
+		//we need to change it with data array size
+		dstStep = dstStep / (sizeof(TS));
+		srcStep = srcStep / (sizeof(TS));
+
+		//int channel1;
+		// Will not change 4th channel element in AC4
+		/*if (chSrc == AC4) channel1=3;
+		else channel1=channel;*/
+		//Fw32f round;
+		// 32f is supported, but not 32u and 32s
+		// No rounding is needed for 32f type
+		//if (sizeof(TS) == 4) round=0;
+		//else round=0.5;
+
+		int* XMM_xmap = (int*) fwMalloc((dstRoi.width + dstRoi.x) * sizeof(int));
+		int* XMM_ymap = (int*) fwMalloc((dstRoi.height + dstRoi.y) * sizeof(int));
+
+        int newDstX = dstRoi.x, newDstWidth = dstRoi.width;
+        int newDstY = dstRoi.y, newDstHeight = dstRoi.height;
+
+		for (y=dstRoi.y; y<(dstRoi.y+dstRoi.height); y++)
+        {
+            int ymap = (y-yShift)/yFactor;
+            if (ymap < 0)
+            {   
+                newDstY = y + 1;
+                continue;
+            }
+            if (ymap > srcRoi.height - 1)
+            {
+                newDstHeight = y - 1;
+                break;
+            }
+            XMM_ymap[y] = (int)ymap + srcRoi.y;
+            flagY = 1;
+        }
+
+        
+		for (x=dstRoi.x; x<(dstRoi.x+dstRoi.width);x++)
+        {
+            int xmap = (x-xShift)/xFactor;
+            if (xmap < 0)
+            {   
+                newDstX = x + 1;
+                continue;
+            }
+            if (xmap > srcRoi.width - 1)
+            {
+                newDstWidth = x - 1;
+                break;
+            }
+            XMM_xmap[x] = xmap+ srcRoi.x;
+            flagX = 1;
+        }
+
+        XMM128 pp={0};
+		for (y=newDstY; y<(dstRoi.y+newDstHeight); y++) {
+			//ymap = (y-yShift)/yFactor;
+            int &yint = XMM_ymap[y];
+            int y_dstStep = y * dstStep;
+            int yint_srcStep = yint*srcStep;
+			for (x=newDstX; x<(dstRoi.x+newDstWidth)-16; x = x + 16) {
+            //for (x=newDstX; x<(dstRoi.x+newDstWidth); x++ ) {
+                //_mm_prefetch((char*)(XMM_xmap + x), _MM_HINT_T1);
+                //_mm_prefetch((char*)(XMM_xmap + x + 4), _MM_HINT_T1);
+                //_mm_prefetch((char*)(XMM_xmap + x + 8), _MM_HINT_T1);
+                //_mm_prefetch((char*)(XMM_xmap + x + 12), _MM_HINT_T1);
+				for(int xx = 0; xx < 16; xx++)
+                { 
+                    int xint = (int)XMM_xmap[x + xx];
+                    //int xint = (int)XMM_xmap[x];
+			        //*(pDst+y_dstStep+x ) = *(pSrc+ yint_srcStep+xint);
+					pp.u8[xx] = *(pSrc+ yint_srcStep+xint);
+                }
+               _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x), pp.i);
+			}
+            for (; x<(dstRoi.x+newDstWidth); x++ )
+            {
+                int &xint = XMM_xmap[x];
+                *(pDst+y_dstStep+x ) = *(pSrc+ yint_srcStep+xint);
+            }
+		}
+        //if no point is handled, return warning
+		if (flagX == 0 || flagY == 0) return fwStsWrongIntersectQuad; //todo
+
+		return fwStsNoErr;
+	}
+
 } // namespace OPT_LEVEL
 
 using namespace OPT_LEVEL;
@@ -829,8 +943,19 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_C1R)(
 	Fw8u *pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 	double xShift, double yShift, int interpolation, Fw8u *pBuffer)
 {
-	return My_FW_ResizeSqrPixel<Fw8u, C1, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+	switch( Dispatch::Type<DT_SSE2>() )
+    //switch( Dispatch::Type() )
+	{
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_ResizeSqrPixel_SSE2<Fw8u, C1, DT_SSE2>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
 		yFactor, xShift, yShift, interpolation, pBuffer);
+			
+	default: 
+	        return My_FW_ResizeSqrPixel<Fw8u, C1, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+		yFactor, xShift, yShift, interpolation, pBuffer);
+	}
 }
 
 // 8u data type with 3 channels
