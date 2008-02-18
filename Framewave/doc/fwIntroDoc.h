@@ -89,6 +89,11 @@ fwStsResFloor - All result values are floored.
 
 /*#Documentation
 
+<VersionData>
+<VersionNumber>1.0.0</VersionNumber>
+<VersionDate>February, 2008</VersionDate>
+</VersionData>
+
 <AncillaryFiles>
 	<FrameMaster></FrameMaster>
 	<HeaderMaster></HeaderMaster>
@@ -105,7 +110,7 @@ fwStsResFloor - All result values are floored.
 <FrontSection>
 
 <FrontHeading>
-<FrontName>Copyright, Trademarks, and Disclaimers</FrontName>
+<FrontName>Copyright and Trademarks</FrontName>
 <FrontLink>aa_007_tcd</FrontLink>
 </FrontHeading>
 
