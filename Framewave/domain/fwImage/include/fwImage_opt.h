@@ -1429,16 +1429,16 @@ OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_32f_P4R)( con
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixelGetBufSize)(FwiSize dstSize, int nChannel,int interpolation, int* pBufferSize);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_C1R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_C1R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 			Fw8u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_C3R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_C3R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 			Fw8u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_C4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_C4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 			Fw8u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_AC4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_AC4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 			Fw8u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_16u_C1R)(const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
