@@ -536,8 +536,8 @@ template< class TS, CH chSrc,  DispatchType disp >
 
 		//int channel1;
 		// Will not change 4th channel element in AC4
-		/*if (chSrc == AC4) channel1=3;
-		else channel1=channel;*/
+		//if (chSrc == AC4) channel1=4;
+		//else channel1=channel;
 		//Fw32f round;
 		// 32f is supported, but not 32u and 32s
 		// No rounding is needed for 32f type
@@ -585,31 +585,87 @@ template< class TS, CH chSrc,  DispatchType disp >
             flagX = 1;
         }
 
-        XMM128 pp={0};
+        
 		for (y=newDstY; y<(dstRoi.y+newDstHeight); y++) {
 			//ymap = (y-yShift)/yFactor;
             int &yint = XMM_ymap[y];
             int y_dstStep = y * dstStep;
             int yint_srcStep = yint*srcStep;
-			for (x=newDstX; x<(dstRoi.x+newDstWidth)-16; x = x + 16) {
-            //for (x=newDstX; x<(dstRoi.x+newDstWidth); x++ ) {
-                //_mm_prefetch((char*)(XMM_xmap + x), _MM_HINT_T1);
-                //_mm_prefetch((char*)(XMM_xmap + x + 4), _MM_HINT_T1);
-                //_mm_prefetch((char*)(XMM_xmap + x + 8), _MM_HINT_T1);
-                //_mm_prefetch((char*)(XMM_xmap + x + 12), _MM_HINT_T1);
-				for(int xx = 0; xx < 16; xx++)
-                { 
-                    int xint = (int)XMM_xmap[x + xx];
-                    //int xint = (int)XMM_xmap[x];
-			        //*(pDst+y_dstStep+x ) = *(pSrc+ yint_srcStep+xint);
-					pp.u8[xx] = *(pSrc+ yint_srcStep+xint);
+            if( chSrc == C1)
+            {   XMM128 pp={0};
+			    for (x=newDstX; x<(dstRoi.x+newDstWidth)-16; x = x + 16) {
+                //for (x=newDstX; x<(dstRoi.x+newDstWidth); x++ ) {
+                    //_mm_prefetch((char*)(XMM_xmap + x), _MM_HINT_T1);
+                    //_mm_prefetch((char*)(XMM_xmap + x + 4), _MM_HINT_T1);
+                    //_mm_prefetch((char*)(XMM_xmap + x + 8), _MM_HINT_T1);
+                    //_mm_prefetch((char*)(XMM_xmap + x + 12), _MM_HINT_T1);
+				    for(int xx = 0; xx < 16; xx++)
+                    { 
+                        int &xint = XMM_xmap[x + xx];
+                        //int xint = (int)XMM_xmap[x];
+			            //*(pDst+y_dstStep+x ) = *(pSrc+ yint_srcStep+xint);
+					    pp.u8[xx] = *(pSrc+ yint_srcStep+xint);
+                    }
+                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x), pp.i);
+			    }
+                for (; x<(dstRoi.x+newDstWidth); x++ )
+                {
+                    int &xint = XMM_xmap[x];
+                    *(pDst+y_dstStep+x ) = *(pSrc+ yint_srcStep+xint);
                 }
-               _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x), pp.i);
-			}
-            for (; x<(dstRoi.x+newDstWidth); x++ )
-            {
-                int &xint = XMM_xmap[x];
-                *(pDst+y_dstStep+x ) = *(pSrc+ yint_srcStep+xint);
+            }
+            else if(chSrc == C4)
+            {   XMM128 pp={0};
+			    for (x=newDstX; x<(dstRoi.x+newDstWidth)-4; x = x + 4) {
+				    for(int xx = 0; xx < 4; xx++)
+                    { 
+                        int &xint = XMM_xmap[x + xx];
+					    pp.u32[xx] = *((Fw32u*)(pSrc+ yint_srcStep+xint*channel));
+                    }
+                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel), pp.i);
+			    }
+                for (; x<(dstRoi.x+newDstWidth); x++ )
+                {
+                    int &xint = XMM_xmap[x];
+                    *((Fw32u*)(pDst+y_dstStep+x*channel )) = *((Fw32u*)(pSrc+ yint_srcStep+xint*channel));
+                }
+            }
+            else if(chSrc == AC4)
+            {   
+                for (x=newDstX; x<(dstRoi.x+newDstWidth); x++ )
+                {
+                    int &xint = XMM_xmap[x];
+                    *((Fw16u*)(pDst+y_dstStep+x*channel) ) = *((Fw16u*)(pSrc+ yint_srcStep+xint*channel));
+                    *(pDst+y_dstStep+x*channel + 2) = *(pSrc+ yint_srcStep+xint*channel + 2);
+                }
+            }
+            else //if(chSrc == C3)
+            {   //XMM128 pp={0};
+                Fw8u *pp = (Fw8u*)fwMalloc(16 * 3);
+			    for (x=newDstX; x<(dstRoi.x+newDstWidth)-16; x = x + 16) {
+                   for(int xx = 0; xx < 16; xx++)
+                    { 
+                        int &xint = XMM_xmap[x + xx];
+                        *((Fw16u*)(pp + xx * channel) ) = *((Fw16u*)(pSrc+ yint_srcStep+xint*channel));
+                        *(pp + xx * channel + 2) = *(pSrc+ yint_srcStep+xint*channel + 2);
+                    }
+                   __m128i xmm0 = _mm_load_si128((__m128i*)pp);
+                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel), xmm0);
+
+                   __m128i xmm1 = _mm_load_si128((__m128i*)(pp + 16));
+                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel + 16), xmm1);    
+
+                   __m128i xmm2 = _mm_load_si128((__m128i*)(pp + 32));
+                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel + 32), xmm2);
+			    }
+                for (; x<(dstRoi.x+newDstWidth); x++ )
+                {
+                    int &xint = XMM_xmap[x];
+                    *(pDst+y_dstStep+x*channel ) = *(pSrc+ yint_srcStep+xint*channel);
+                    *(pDst+y_dstStep+x*channel + 1) = *(pSrc+ yint_srcStep+xint*channel + 1);
+                    *(pDst+y_dstStep+x*channel + 2) = *(pSrc+ yint_srcStep+xint*channel + 2);
+                }
+                fwFree(pp);
             }
 		}
         //if no point is handled, return warning
@@ -944,7 +1000,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_C1R)(
 	double xShift, double yShift, int interpolation, Fw8u *pBuffer)
 {
 	switch( Dispatch::Type<DT_SSE2>() )
-    //switch( Dispatch::Type() )
 	{
     case DT_SSE3:
 	case DT_SSE2:
@@ -964,8 +1019,18 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_C3R)(
 	Fw8u *pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 	double xShift, double yShift, int interpolation, Fw8u *pBuffer)
 {
-	return My_FW_ResizeSqrPixel<Fw8u, C3, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+	switch( Dispatch::Type<DT_SSE2>() )
+	{
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_ResizeSqrPixel_SSE2<Fw8u, C3, DT_SSE2>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
 		yFactor, xShift, yShift, interpolation, pBuffer);
+			
+	default: 
+	        return My_FW_ResizeSqrPixel<Fw8u, C3, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+		yFactor, xShift, yShift, interpolation, pBuffer);
+	}
 }
 
 // 8u data type with 4 channels
@@ -974,8 +1039,18 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_C4R)(
 	Fw8u *pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 	double xShift, double yShift, int interpolation, Fw8u *pBuffer)
 {
-	return My_FW_ResizeSqrPixel<Fw8u, C4, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+	switch( Dispatch::Type<DT_SSE2>() )
+    {
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_ResizeSqrPixel_SSE2<Fw8u, C4, DT_SSE2>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
 		yFactor, xShift, yShift, interpolation, pBuffer);
+			
+	default: 
+	        return My_FW_ResizeSqrPixel<Fw8u, C4, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+		yFactor, xShift, yShift, interpolation, pBuffer);
+    }
 }
 
 //8u data type with 4 channels (alpha channel will not be changed in the destination buffer during transformation)
@@ -984,8 +1059,18 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_AC4R)(
 	Fw8u *pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 	double xShift, double yShift, int interpolation, Fw8u *pBuffer)
 {
-	return My_FW_ResizeSqrPixel<Fw8u, AC4, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+	switch( Dispatch::Type<DT_SSE2>() )
+    {
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_ResizeSqrPixel_SSE2<Fw8u, AC4, DT_SSE2>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
 		yFactor, xShift, yShift, interpolation, pBuffer);
+			
+	default: 
+	        return My_FW_ResizeSqrPixel<Fw8u, AC4, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+		yFactor, xShift, yShift, interpolation, pBuffer);
+	}
 }
 
 // unsigned short data type with 1 channel
