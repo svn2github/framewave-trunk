@@ -552,7 +552,7 @@ template< class TS, CH chSrc,  DispatchType disp >
 
 		for (y=dstRoi.y; y<(dstRoi.y+dstRoi.height); y++)
         {
-            int ymap = (y-yShift)/yFactor;
+            int ymap = (int)((y-yShift)/yFactor);
             if (ymap < 0)
             {   
                 newDstY = y + 1;
@@ -570,7 +570,7 @@ template< class TS, CH chSrc,  DispatchType disp >
         
 		for (x=dstRoi.x; x<(dstRoi.x+dstRoi.width);x++)
         {
-            int xmap = (x-xShift)/xFactor;
+            int xmap = (int)((x-xShift)/xFactor);
             if (xmap < 0)
             {   
                 newDstX = x + 1;
