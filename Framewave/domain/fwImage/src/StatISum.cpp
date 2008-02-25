@@ -35,4 +35,4 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_16s_C1R)(const Fw16s* pSrc, int srcStep,F
 
 
 // Please do NOT remove the above line for CPP files that need to be multipass compiled
-// OREFR OSSE2 
+// OREFR OSSE2
