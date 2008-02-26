@@ -1,6 +1,9 @@
 /*
 Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
-This software is subject to the Apache v2.0 License.
+This software is subject to the Apache v2.0 License except function C_faandct().
+
+Function C_faandct() is based upon FFMPEG's faandct.c from Michael Niedermayer 
+<michaelni@gmx.at> under BSD license. See function comments for more details.
 */
 
 //------------------------------------------------------------------------
@@ -862,47 +865,119 @@ void Idct(const float c[8][8], const Fw16s* pSrc, Fw16s* pDst)
 }
 
 //-----------------------------------------------------------------------------
+//The following function C_faandct is modified from FFMPEG's AAN DCT code in 
+//faandct.c, with copyright (c) 2003 Michael Niedermayer <michaelni@gmx.at>, 
+//and under BSD license.
+//The original source can be found from the following link.
+//http://svn.mplayerhq.hu/ffmpeg/trunk/libavcodec/faandct.c?view=markup&pathrev=12212
+//
+#define F (float)
 
-static float one_pixel_dct(const Fw16s *pSrc, unsigned int u, unsigned int v)
-{
-    const float PI8 = 0.392699081f; //Pi/8
+#define W1 F 0.70710678118654752438 // cos(pi*4/16)
+#define W2 F 0.54119610014619698435 // cos(pi*6/16)sqrt(2)
+#define W5 F 0.38268343236508977170 // cos(pi*6/16)
+#define W4 F 1.30656296487637652774 // cos(pi*2/16)sqrt(2)
 
-    unsigned int x, y;
-
-    float sum = 0;
-    for(x=0; x<8; x++)
-    {
-        for(y=0; y<8; y++)
-        {
-			 sum += (pSrc[x*8+y])*cos(PI8*(x+0.5f)*u)*cos(PI8*(y+0.5f)*v);
-        }
-    }
-
-    return sum;
-}
+extern const float dct_Scale[64];
+//static float dct_Scale[64]=
+//{
+//	F 1.000000, F 0.720960, F 0.765367, F 0.850430, F 1.000000, F 1.272759, F 1.847759, F 3.624510,
+//	F 0.720960, F 0.519783, F 0.551799, F 0.613126, F 0.720960, F 0.917608, F 1.332160, F 2.613126,
+//	F 0.765367, F 0.551799, F 0.585786, F 0.650891, F 0.765367, F 0.974127, F 1.414214, F 2.774080,
+//	F 0.850430, F 0.613126, F 0.650891, F 0.723231, F 0.850430, F 1.082392, F 1.571390, F 3.082392,
+//	F 1.000000, F 0.720960, F 0.765367, F 0.850430, F 1.000000, F 1.272759, F 1.847759, F 3.624510,
+//	F 1.272759, F 0.917608, F 0.974127, F 1.082392, F 1.272759, F 1.619914, F 2.351751, F 4.613126,
+//	F 1.847759, F 1.332160, F 1.414214, F 1.571390, F 1.847759, F 2.351751, F 3.414214, F 6.697221,
+//	F 3.624510, F 2.613126, F 2.774080, F 3.082392, F 3.624510, F 4.613126, F 6.697221, F 13.137072
+//};
 
 void C_faandct(const Fw16s* pSrc, Fw16s* pDst, float round)
 {
-    const float SQRT_1BY2 = 0.707106781f;
+	float tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
+	float tmp10, tmp11, tmp12, tmp13;
+	float temp[64];
+	int i;
 
-    const float NORM_FACTOR = 0.25f;
 
-	float result;
-    
-    unsigned int u, v;
+	for (i=0; i<8*8; i+=8) {
+		tmp0= F (pSrc[0 + i] + pSrc[7 + i]);
+		tmp7= F (pSrc[0 + i] - pSrc[7 + i]);
+		tmp1= F (pSrc[1 + i] + pSrc[6 + i]);
+		tmp6= F (pSrc[1 + i] - pSrc[6 + i]);
+		tmp2= F (pSrc[2 + i] + pSrc[5 + i]);
+		tmp5= F (pSrc[2 + i] - pSrc[5 + i]);
+		tmp3= F (pSrc[3 + i] + pSrc[4 + i]);
+		tmp4= F (pSrc[3 + i] - pSrc[4 + i]);
 
-    for(u=0; u<8; u++)
-    {
-        const float C_U = ((u==0) ? SQRT_1BY2 : 1.0f);
-        for(v=0; v<8; v++)
-        {
-            const float C_V = ((v==0) ? SQRT_1BY2 : 1.0f);
+		tmp10= tmp0 + tmp3;
+		tmp13= tmp0 - tmp3;
+		tmp11= tmp1 + tmp2;
+		tmp12= tmp1 - tmp2;
 
-            //pDst[u*8+v] = (Fw16s)((C_U * C_V * NORM_FACTOR * one_pixel_dct(pSrc,u,v)) + round);
-			result = C_U * C_V * NORM_FACTOR * one_pixel_dct(pSrc,u,v);
-			pDst[u*8+v] = (Fw16s)((result >0) ? (result+round) : (result-round));
-        }
-    }
+		temp[0 + i]= tmp10 + tmp11;
+		temp[4 + i]= tmp10 - tmp11;
+
+		tmp12= (tmp12 + tmp13)*W1;
+		temp[2 + i]= tmp13 + tmp12;
+		temp[6 + i]= tmp13 - tmp12;
+
+		tmp10= tmp4 + tmp5;
+		tmp11= tmp5 + tmp6;
+		tmp12= tmp6 + tmp7;
+
+		tmp1= (tmp10 - tmp12) * W5;
+		tmp2= tmp10*W2 + tmp1;
+		tmp4= tmp12*W4 + tmp1;
+		tmp3= tmp11*W1;
+
+		tmp11= tmp7 + tmp3;
+		tmp13= tmp7 - tmp3;
+
+		temp[5 + i]= tmp13 + tmp2;
+		temp[3 + i]= tmp13 - tmp2;
+		temp[1 + i]= tmp11 + tmp4;
+		temp[7 + i]= tmp11 - tmp4;
+	}    
+
+	for (i=0; i<8; i++) {
+		tmp0= temp[8*0 + i] + temp[8*7 + i];
+		tmp7= temp[8*0 + i] - temp[8*7 + i];
+		tmp1= temp[8*1 + i] + temp[8*6 + i];
+		tmp6= temp[8*1 + i] - temp[8*6 + i];
+		tmp2= temp[8*2 + i] + temp[8*5 + i];
+		tmp5= temp[8*2 + i] - temp[8*5 + i];
+		tmp3= temp[8*3 + i] + temp[8*4 + i];
+		tmp4= temp[8*3 + i] - temp[8*4 + i];
+
+		tmp10= tmp0 + tmp3;
+		tmp13= tmp0 - tmp3;
+		tmp11= tmp1 + tmp2;
+		tmp12= tmp1 - tmp2;
+
+		pDst[8*0 + i]= (short) floor(dct_Scale[8*0 + i]/8.0 * (tmp10 + tmp11) + round);
+		pDst[8*4 + i]= (short) floor(dct_Scale[8*4 + i]/8.0 * (tmp10 - tmp11) + round);
+
+		tmp12= (tmp12 + tmp13)* W1;
+		pDst[8*2 + i]= (short) floor(dct_Scale[8*2 + i]/8.0 * (tmp13 + tmp12) + round);
+		pDst[8*6 + i]= (short) floor(dct_Scale[8*6 + i]/8.0 * (tmp13 - tmp12) + round);
+
+		tmp10= tmp4 + tmp5;
+		tmp11= tmp5 + tmp6;
+		tmp12= tmp6 + tmp7;
+
+		tmp1= (tmp10 - tmp12) * W5;
+		tmp2= tmp10*W2 + tmp1;
+		tmp4= tmp12*W4 + tmp1;
+		tmp3= tmp11*W1;
+
+		tmp11= tmp7 + tmp3;
+		tmp13= tmp7 - tmp3;
+
+		pDst[8*5 + i]= (short)floor(dct_Scale[8*5 + i]/8.0 * (tmp13 + tmp2) + round);
+		pDst[8*3 + i]= (short)floor(dct_Scale[8*3 + i]/8.0 * (tmp13 - tmp2) + round);
+		pDst[8*1 + i]= (short)floor(dct_Scale[8*1 + i]/8.0 * (tmp11 + tmp4) + round);
+		pDst[8*7 + i]= (short)floor(dct_Scale[8*7 + i]/8.0 * (tmp11 - tmp4) + round);
+	}
 }
 
 #endif //BUILD_NUM_AT_LEAST

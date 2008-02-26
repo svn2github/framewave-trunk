@@ -1,9 +1,3 @@
-/*
-Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
-This software is subject to the Apache v2.0 License.
-*/
-
-
 #include "Constants.h"
 
 namespace Const
@@ -962,6 +956,26 @@ extern SYS_FORCEALIGN_16 const Fw16s fdct_weighting[]=
 	-21746, -21746, -21746, -21746, -21746, -21746, -21746, -21746, // tg * (2<<16) + 0.5
 	23170,  23170,  23170,  23170,  23170,  23170,  23170,  23170   //cos * (2<<15) + 0.5
 }; 
+
+extern const float dct_Scale[64]=
+{
+	(float)1.000000, (float)0.720960, (float)0.765367, (float)0.850430, 
+	(float)1.000000, (float)1.272759, (float)1.847759, (float)3.624510,
+	(float)0.720960, (float)0.519783, (float)0.551799, (float)0.613126, 
+	(float)0.720960, (float)0.917608, (float)1.332160, (float)2.613126,
+	(float)0.765367, (float)0.551799, (float)0.585786, (float)0.650891, 
+	(float)0.765367, (float)0.974127, (float)1.414214, (float)2.774080,
+	(float)0.850430, (float)0.613126, (float)0.650891, (float)0.723231, 
+	(float)0.850430, (float)1.082392, (float)1.571390, (float)3.082392,
+	(float)1.000000, (float)0.720960, (float)0.765367, (float)0.850430,
+	(float)1.000000, (float)1.272759, (float)1.847759, (float)3.624510,
+	(float)1.272759, (float)0.917608, (float)0.974127, (float)1.082392,
+	(float)1.272759, (float)1.619914, (float)2.351751, (float)4.613126,
+	(float)1.847759, (float)1.332160, (float)1.414214, (float)1.571390,
+	(float)1.847759, (float)2.351751, (float)3.414214, (float)6.697221,
+	(float)3.624510, (float)2.613126, (float)2.774080, (float)3.082392,
+	(float)3.624510, (float)4.613126, (float)6.697221, (float)13.137072
+};
 
 // Constants Used in Video
 
