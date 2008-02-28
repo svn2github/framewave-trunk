@@ -110,6 +110,405 @@ void My_FW_Rotate_Region(float xltop, float yltop, float xlbot, float ylbot,
 	return;
 }
 
+template< class TS, DispatchType disp >
+void My_FW_Rotate_Region_8u_SSE2(float xltop, float yltop, float xlbot, float ylbot,
+						 float xrtop, float yrtop, float xrbot, float yrbot,
+						 int ystart, int yend, float coeffs[2][3],
+						 const TS* pSrc, int srcStep, FwiRect srcRoi,
+						 TS* pDst, int dstStep, FwiRect dstRoi,
+						 int /*interpolation*/, int* flag, 
+						 int /*channel*/, int /*channel1*/, Fw32f /*round*/)
+{
+	float ratel, rater, coeffl, coeffr, xleft, xright;
+	float tx, ty,cy;//, xmap, ymap;
+	int x, y, xstart, xend;
+
+	ratel  = (xlbot-xltop)/(ylbot-yltop);
+	coeffl = xltop - yltop * ratel;
+	rater  = (xrbot-xrtop)/(yrbot-yrtop);
+	coeffr = xrtop - yrtop * rater;
+    float* cx = (float*)fwMalloc((dstRoi.width) * sizeof(float));
+    float* cx_coeff00 = (float*)fwMalloc((dstRoi.width) * sizeof(float));
+    float* cx_coeff01 = (float*)fwMalloc((dstRoi.width) * sizeof(float));
+
+    for (x=dstRoi.x; x<=(dstRoi.x+dstRoi.width); x++) 
+    {
+        cx[x - dstRoi.x] = x - coeffs[0][2];
+        cx_coeff00[x - dstRoi.x] = cx[x - dstRoi.x] * coeffs[0][0];
+        cx_coeff01[x - dstRoi.x] = cx[x - dstRoi.x] * coeffs[0][1];
+    }
+	for (y=ystart;y<=yend;y++) {
+		xleft  = ratel * y + coeffl;
+		xright = rater * y + coeffr;
+		xstart = (int) (FW_MAX(xleft, dstRoi.x));
+		xend   = (int) (FW_MIN(xright, (dstRoi.x + dstRoi.width -1)));
+					
+		cy = y - coeffs[1][2];
+		tx = coeffs[1][0] * cy; //-sin(theta)*cy
+		ty = coeffs[1][1] * cy; //cos(theta)*cy
+        __m128 txXMM = _mm_set1_ps(tx);
+        __m128 tyXMM = _mm_set1_ps(ty);
+
+        XMM128 cxCoeff00 = {0}, cxCoeff01 = {0};
+        XMM128 dst = {0};
+        int y_dstStep = y * dstStep;
+		for (x=xstart; x<=xend-16; x+=16) {
+
+            for(int xx = 0 ; xx < 16; xx = xx + 4)
+            {
+                
+                cxCoeff00.f = _mm_loadu_ps(cx_coeff00+(x+xx-dstRoi.x));
+                cxCoeff01.f = _mm_loadu_ps(cx_coeff01+(x+xx-dstRoi.x));
+                
+                cxCoeff00.f = _mm_add_ps(cxCoeff00.f, txXMM);
+                cxCoeff01.f = _mm_add_ps(cxCoeff01.f, tyXMM);
+
+                cxCoeff00.i = _mm_cvttps_epi32 (cxCoeff00.f);
+                cxCoeff01.i = _mm_cvttps_epi32 (cxCoeff01.f);
+
+                for(int xxx = 0; xxx < 4; xxx++)
+                {
+                    int &xmap = cxCoeff00.s32[xxx];
+                    int &ymap = cxCoeff01.s32[xxx];
+
+                    if (xmap < 0 || xmap > srcRoi.width - 1 ||
+			            ymap < 0 || ymap > srcRoi.height- 1) {
+				        continue;
+		            }
+
+		            xmap += srcRoi.x;
+		            ymap += srcRoi.y;
+
+				    dst.u8[xx + xxx] =	*(pSrc+ ymap*srcStep+xmap);
+                    *flag = 1;
+                }
+            }
+
+            _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x), dst.i);
+		}
+        for (; x<=xend; x++) {
+			
+            int xmap = (int)(cx_coeff00[ x - dstRoi.x] + tx);
+            int ymap = (int)(cx_coeff01[ x - dstRoi.x] + ty);
+
+            if (xmap < 0 || xmap > srcRoi.width - 1 ||
+			        ymap < 0 || ymap > srcRoi.height- 1) {
+				    continue;
+		    }
+
+	        xmap += srcRoi.x;
+	        ymap += srcRoi.y;
+
+            *(pDst+y_dstStep+x) =	*(pSrc+ ymap*srcStep+xmap);
+            *flag = 1;
+				
+		}
+	}
+    fwFree (cx);
+    fwFree (cx_coeff00);
+    fwFree (cx_coeff01);
+    
+	return;
+}
+
+template< class TS, CH chSrc, DispatchType disp >
+static FwStatus My_FW_Rotate_8u_SSE2(const TS* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi, 
+					   TS* pDst, int dstStep, FwiRect dstRoi, 
+					   double angle, double xShift, double yShift, int interpolation)
+{
+	int interpolation_E = interpolation ^ FWI_SMOOTH_EDGE;
+	if (interpolation != FWI_INTER_NN && interpolation != FWI_INTER_LINEAR 
+		&& interpolation != FWI_INTER_CUBIC) {
+		if ( interpolation_E != FWI_INTER_NN && interpolation_E != FWI_INTER_LINEAR 
+			&& interpolation_E != FWI_INTER_CUBIC)
+			return fwStsInterpolationErr;	
+		interpolation = interpolation_E;
+		interpolation_E = FWI_SMOOTH_EDGE;
+	}
+	
+	int channel=ChannelCount(chSrc);
+	FwStatus status = My_FW_ParaCheck2<TS>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep,
+		dstRoi, channel);
+	if (status !=fwStsNoErr) return status;
+
+	float theta;
+	float coeffs[2][3];
+
+	// [ cos (theta)   sin(theta) ]
+	// [-sin (theta)   cos(theta) ]
+	// theta is in the counter-clockwise, but y axis is down direction
+	theta = (float)(0.0174532925199 * angle);//(3.14159265359/180.0)
+	//cos and sin value need to be fixed
+	coeffs[0][0] = (float)((int)(cos(theta)*32768))/32768;
+	coeffs[0][1] = (float)((int)(sin(theta)*32768))/32768;
+	coeffs[0][2] = (float)xShift;
+	coeffs[1][0] =-coeffs[0][1];//-sin(theta)
+	coeffs[1][1] = coeffs[0][0];//cos(theta)
+	coeffs[1][2] = (float)yShift;
+
+	//return My_FW_WarpAffine <TS, chSrc, disp> (pSrc, srcSize, srcStep, srcRoi, 
+	//	pDst, dstStep, dstRoi, coeffs, interpolation);
+	int channel1;
+	// Will not change 4th channel element in AC4
+	if (chSrc == AC4) channel1=3;
+	else channel1=channel;
+	Fw32f round;
+	// 32f is supported, but not 32u and 32s
+	// No rounding is needed for 32f type
+	if (sizeof(TS) == 4) round=0;
+	else round=0.5;
+
+	float sortX[4], sortY[4];
+	float mapX[4], mapY[4], tempx;
+	float temp1, temp2;
+
+	//srcROI mapped area
+	//Force to be floating data
+	mapX[0]=(float)(coeffs[0][0] * srcRoi.x + coeffs[0][1] * srcRoi.y + coeffs[0][2]);
+	mapY[0]=(float)(coeffs[1][0] * srcRoi.x + coeffs[1][1] * srcRoi.y + coeffs[1][2]);
+	mapX[1]=(float)(mapX[0]+coeffs[0][0]*(srcRoi.width-1));
+	mapY[1]=(float)(mapY[0]+coeffs[1][0]*(srcRoi.width-1));
+	temp1 = (float)(coeffs[0][1] * (srcRoi.height-1));
+	temp2 = (float)(coeffs[1][1] * (srcRoi.height-1));
+	mapX[2]=mapX[1] + (float)temp1;
+	mapY[2]=mapY[1] + (float)temp2;
+	mapX[3]=mapX[0] + (float)temp1;
+	mapY[3]=mapY[0] + (float)temp2;
+
+	//Sort X,Y coordinator according to Y value
+	//Before any pexchange, possible orders
+	//Angle [0, 90) 1<=0<=2<=3 or 1<=2<=0<=3
+	//Angle [90, 180)2<=3<=1<=0 or 2<=1<=3<=0
+	//Angle [180, 270) 3<=2<=0<=1 or 3<=0<=2<=1
+	//Angle [270, 360) 0<=1<=3<=2 or 0<=3<=1<=2
+	if (mapY[0] > mapY[2]){
+		sortX[0]=mapX[2];
+		sortY[0]=mapY[2];
+		sortX[2]=mapX[0];
+		sortY[2]=mapY[0];
+	} else {
+		sortX[0]=mapX[0];
+		sortY[0]=mapY[0];
+		sortX[2]=mapX[2];
+		sortY[2]=mapY[2];
+	}
+
+	if (mapY[1] > mapY[3]) {
+		sortX[1]=mapX[3];
+		sortY[1]=mapY[3];
+		sortX[3]=mapX[1];
+		sortY[3]=mapY[1];
+	} else {
+		sortX[1]=mapX[1];
+		sortY[1]=mapY[1];
+		sortX[3]=mapX[3];
+		sortY[3]=mapY[3];
+	}
+
+	//After two exchanges, we have 1<=0<=2<=3 or 0<=1<=3<=2
+	if (sortY[0]>sortY[1]) {
+		FW_SWAP(sortY[0], sortY[1], tempx);
+		FW_SWAP(sortX[0], sortX[1], tempx);
+		FW_SWAP(sortY[2], sortY[3], tempx);
+		FW_SWAP(sortX[2], sortX[3], tempx);
+	}
+	//We have 0<=1<=3<=2 after sorting
+
+	int xstart, xend, ystart, yend;
+	int x, y, flag=0;
+	float cy, tx, ty;
+	//float xmap, ymap;
+
+	//dstStep and srcStep are byte size
+	//we need to change it with data array size
+	dstStep = dstStep / (sizeof(TS));
+	srcStep = srcStep / (sizeof(TS));
+
+	if (FW_ZERO(sortY[0]-sortY[1])) {//sortY[0]==sortY[1], sortY[2]=sortY[3]
+		// In this case, the rotation angle must be 0, 90, 180, 270
+		// We should seperate the case for best performance
+		
+		ystart = (int) (FW_MAX(sortY[0], dstRoi.y));
+		yend   = (int) (FW_MIN(sortY[3], (dstRoi.y + dstRoi.height -1)));
+		if (sortX[0] < sortX[1]) {
+			xstart = (int) (FW_MAX(sortX[0], dstRoi.x));
+			xend = (int) (FW_MIN(sortX[1], (dstRoi.x + dstRoi.width -1)));
+		} else {
+			xstart = (int) (FW_MAX(sortX[1], dstRoi.x));
+			xend = (int) (FW_MIN(sortX[0], (dstRoi.x + dstRoi.width -1)));
+		}
+
+        float* cx = (float*)fwMalloc((dstRoi.width) * sizeof(float));
+        float* cx_coeff00 = (float*)fwMalloc((dstRoi.width) * sizeof(float));
+        float* cx_coeff01 = (float*)fwMalloc((dstRoi.width) * sizeof(float));
+
+        for (x=dstRoi.x; x<=(dstRoi.x+dstRoi.width); x++) 
+        {
+            cx[x - dstRoi.x] = x - coeffs[0][2];
+            cx_coeff00[x - dstRoi.x] = cx[x - dstRoi.x] * coeffs[0][0];
+            cx_coeff01[x - dstRoi.x] = cx[x - dstRoi.x] * coeffs[0][1];
+        }
+
+
+		for (y=ystart;y<=yend;y++) {
+			cy = y - coeffs[1][2];
+			tx = coeffs[1][0] * cy; //-sin(theta)*cy
+			ty = coeffs[1][1] * cy; //cos(theta)*cy
+
+			/*for (x=xstart; x<=xend; x++) {
+				cx = x - coeffs[0][2];
+				xmap = coeffs[0][0] * cx + tx;
+				ymap = coeffs[0][1] * cx + ty;
+				
+				My_FW_PointHandle<TS, disp> (xmap, ymap, x, y, pSrc, srcStep, srcRoi, 
+					pDst, dstStep, interpolation, &flag, channel, channel1, round);
+			}*/
+
+            __m128 txXMM = _mm_set1_ps(tx);
+            __m128 tyXMM = _mm_set1_ps(ty);
+    
+            XMM128 cxCoeff00 = {0}, cxCoeff01 = {0};
+            XMM128 dst = {0};
+            int y_dstStep = y * dstStep;
+	        for (x=xstart; x<=xend-16; x+=16) {
+
+                for(int xx = 0 ; xx < 16; xx = xx + 4)
+                {                   
+                    cxCoeff00.f = _mm_loadu_ps(cx_coeff00+(x+xx-dstRoi.x));
+                    cxCoeff01.f = _mm_loadu_ps(cx_coeff01+(x+xx-dstRoi.x));
+                    
+                    cxCoeff00.f = _mm_add_ps(cxCoeff00.f, txXMM);
+                    cxCoeff01.f = _mm_add_ps(cxCoeff01.f, tyXMM);
+
+                    cxCoeff00.i = _mm_cvttps_epi32 (cxCoeff00.f);
+                    cxCoeff01.i = _mm_cvttps_epi32 (cxCoeff01.f);
+
+                    for(int xxx = 0; xxx < 4; xxx++)
+                    {
+                        int &xmap = cxCoeff00.s32[xxx];
+                        int &ymap = cxCoeff01.s32[xxx];
+
+                        if (xmap < 0 || xmap > srcRoi.width - 1 ||
+			                ymap < 0 || ymap > srcRoi.height- 1) {
+				            continue;
+		                }
+
+		                xmap += srcRoi.x;
+		                ymap += srcRoi.y;
+
+				        dst.u8[xx + xxx] =	*(pSrc+ ymap*srcStep+xmap);
+                        flag = 1;
+                    }
+                }
+                _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x), dst.i);
+	        }
+            for (; x<=xend; x++) {
+
+                int xmap = (int)(cx_coeff00[ x - dstRoi.x] + tx);
+                int ymap = (int)(cx_coeff01[ x - dstRoi.x] + ty);
+
+                if (xmap < 0 || xmap > srcRoi.width - 1 ||
+		                ymap < 0 || ymap > srcRoi.height- 1) {
+			            continue;
+	            }
+
+                xmap += srcRoi.x;
+                ymap += srcRoi.y;
+
+                *(pDst+y_dstStep+x) =	*(pSrc+ ymap*srcStep+xmap);
+                flag = 1;
+	        }
+		}
+	} else if (FW_ZERO(sortY[1]-sortY[3])) {//sortY[1]==sortY[3]
+		if (sortX[1] < sortX[3]) {
+			FW_SWAP(sortX[1], sortX[3], tempx);
+		}
+
+		//First part
+		ystart = (int) (FW_MAX(sortY[0], dstRoi.y));
+		yend   = (int) (FW_MIN(sortY[3], (dstRoi.y + dstRoi.height -1)));
+		
+		My_FW_Rotate_Region_8u_SSE2 <TS, disp> (sortX[0], sortY[0], sortX[3], sortY[3], 
+			sortX[0], sortY[0], sortX[1], sortY[1], ystart, yend, coeffs,
+			pSrc, srcStep, srcRoi, pDst, dstStep, dstRoi, interpolation, &flag, 
+			channel, channel1, round);
+
+		//Second part
+		ystart = (int) (FW_MAX(sortY[3], dstRoi.y));
+		yend   = (int) (FW_MIN(sortY[2], (dstRoi.y + dstRoi.height -1)));
+		
+		My_FW_Rotate_Region_8u_SSE2 <TS, disp> (sortX[3], sortY[3], sortX[2], sortY[2], 
+			sortX[1], sortY[1], sortX[2], sortY[2], ystart, yend, coeffs,
+			pSrc, srcStep, srcRoi, pDst, dstStep, dstRoi, interpolation, &flag, 
+			channel, channel1, round);
+	} else { //general case
+
+		if (sortX[1] < sortX[3]) {
+			//First part
+			ystart = (int) (FW_MAX(sortY[0], dstRoi.y));
+			yend   = (int) (FW_MIN(sortY[1], (dstRoi.y + dstRoi.height -1)));
+		
+			My_FW_Rotate_Region_8u_SSE2 <TS, disp> (sortX[0], sortY[0], sortX[1], sortY[1], 
+				sortX[0], sortY[0], sortX[3], sortY[3], ystart, yend, coeffs,
+				pSrc, srcStep, srcRoi, pDst, dstStep, dstRoi, interpolation, &flag, 
+				channel, channel1, round);
+
+			//Second part
+			ystart = (int) (FW_MAX(sortY[1], dstRoi.y));
+			yend   = (int) (FW_MIN(sortY[3], (dstRoi.y + dstRoi.height -1)));
+			
+			My_FW_Rotate_Region_8u_SSE2 <TS, disp> (sortX[1], sortY[1], sortX[2], sortY[2], 
+				sortX[0], sortY[0], sortX[3], sortY[3], ystart, yend, coeffs,
+				pSrc, srcStep, srcRoi, pDst, dstStep, dstRoi, interpolation, &flag, 
+				channel, channel1, round);
+
+			//Third part
+			ystart = (int) (FW_MAX(sortY[3], dstRoi.y));
+			yend   = (int) (FW_MIN(sortY[2], (dstRoi.y + dstRoi.height -1)));
+			
+			My_FW_Rotate_Region_8u_SSE2 <TS, disp> (sortX[1], sortY[1], sortX[2], sortY[2], 
+				sortX[3], sortY[3], sortX[2], sortY[2], ystart, yend, coeffs,
+				pSrc, srcStep, srcRoi, pDst, dstStep, dstRoi, interpolation, &flag, 
+				channel, channel1, round);
+		} else {//sortX[1] >= sortX[3]
+			//First part
+			ystart = (int) (FW_MAX(sortY[0], dstRoi.y));
+			yend   = (int) (FW_MIN(sortY[1], (dstRoi.y + dstRoi.height -1)));
+		
+			My_FW_Rotate_Region_8u_SSE2 <TS, disp> (sortX[0], sortY[0], sortX[3], sortY[3], 
+				sortX[0], sortY[0], sortX[1], sortY[1], ystart, yend, coeffs,
+				pSrc, srcStep, srcRoi, pDst, dstStep, dstRoi, interpolation, &flag, 
+				channel, channel1, round);
+
+			//Second part
+			ystart = (int) (FW_MAX(sortY[1], dstRoi.y));
+			yend   = (int) (FW_MIN(sortY[3], (dstRoi.y + dstRoi.height -1)));
+			
+			My_FW_Rotate_Region_8u_SSE2 <TS, disp> (sortX[0], sortY[0], sortX[3], sortY[3], 
+				sortX[1], sortY[1], sortX[2], sortY[2], ystart, yend, coeffs,
+				pSrc, srcStep, srcRoi, pDst, dstStep, dstRoi, interpolation, &flag, 
+				channel, channel1, round);
+
+			//Third part
+			ystart = (int) (FW_MAX(sortY[3], dstRoi.y));
+			yend   = (int) (FW_MIN(sortY[2], (dstRoi.y + dstRoi.height -1)));
+			
+			My_FW_Rotate_Region_8u_SSE2 <TS, disp> (sortX[3], sortY[3], sortX[2], sortY[2], 
+				sortX[1], sortY[1], sortX[2], sortY[2], ystart, yend, coeffs,
+				pSrc, srcStep, srcRoi, pDst, dstStep, dstRoi, interpolation, &flag, 
+				channel, channel1, round);
+		}
+	}
+
+	//if no point is handled, return warning
+	if (flag==0) return fwStsWrongIntersectROI;
+
+	return fwStsNoErr;
+}
+
+
+
+
 template< class TS, CH chSrc, DispatchType disp >
 static FwStatus My_FW_Rotate(const TS* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi, 
 					   TS* pDst, int dstStep, FwiRect dstRoi, 
@@ -366,8 +765,19 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiRotate_8u_C1R)(const Fw8u *pSrc, FwiSize srcS
 							Fw8u *pDst, int dstStep, FwiRect dstRoi, 
 							double angle, double xShift, double yShift, int interpolation)
 {
-	return My_FW_Rotate <Fw8u, C1, DT_REFR> (pSrc, srcSize, srcStep, srcRoi, 
+	
+    switch( Dispatch::Type<DT_SSE2>() )
+	{
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_Rotate_8u_SSE2 <Fw8u, C1, DT_REFR> (pSrc, srcSize, srcStep, srcRoi, 
 		pDst, dstStep, dstRoi, angle, xShift, yShift, interpolation);
+			
+	default: 
+	        return My_FW_Rotate <Fw8u, C1, DT_REFR> (pSrc, srcSize, srcStep, srcRoi, 
+		pDst, dstStep, dstRoi, angle, xShift, yShift, interpolation);
+	}
 }
 
 // 8u data type with 3 channels
