@@ -2899,6 +2899,24 @@ OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_16s_C1R              
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr422ToYCbCr420_8u_P3R      )( const Fw8u* pSrc[3], int srcStep[3], Fw8u* pDst[3], int dstStep[3], FwiSize roiSize);
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr422ToYCbCr420_8u_C2P3R    )(const Fw8u* pSrc, int srcStep, Fw8u* pDst[3], int dstStep[3], FwiSize roiSize);
 
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiColorToGray_8u_C3C1R           )(const Fw8u* pSrc, int srcStep, Fw8u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiColorToGray_16u_C3C1R          )(const Fw16u* pSrc, int srcStep, Fw16u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiColorToGray_16s_C3C1R          )(const Fw16s* pSrc, int srcStep, Fw16s* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiColorToGray_32f_C3C1R          )(const Fw32f* pSrc, int srcStep, Fw32f* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiColorToGray_8u_AC4C1R          )(const Fw8u* pSrc, int srcStep, Fw8u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiColorToGray_16u_AC4C1R         )(const Fw16u* pSrc, int srcStep, Fw16u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiColorToGray_16s_AC4C1R         )(const Fw16s* pSrc, int srcStep, Fw16s* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiColorToGray_32f_AC4C1R         )(const Fw32f* pSrc, int srcStep, Fw32f* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToGray_8u_C3C1R             )(const Fw8u* pSrc, int srcStep,Fw8u* pDst, int dstStep, FwiSize roiSize);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToGray_16u_C3C1R            )(const Fw16u* pSrc, int srcStep,Fw16u* pDst, int dstStep, FwiSize roiSize);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToGray_16s_C3C1R            )(const Fw16s* pSrc, int srcStep,Fw16s* pDst, int dstStep, FwiSize roiSize);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToGray_32f_C3C1R            )(const Fw32f* pSrc, int srcStep,Fw32f* pDst, int dstStep, FwiSize roiSize);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToGray_8u_AC4C1R            )(const Fw8u* pSrc, int srcStep,Fw8u* pDst, int dstStep, FwiSize roiSize);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToGray_16u_AC4C1R           )(const Fw16u* pSrc, int srcStep,Fw16u* pDst, int dstStep, FwiSize roiSize);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToGray_16s_AC4C1R           )(const Fw16s* pSrc, int srcStep,Fw16s* pDst, int dstStep, FwiSize roiSize);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToGray_32f_AC4C1R           )(const Fw32f* pSrc, int srcStep,Fw32f* pDst, int dstStep, FwiSize roiSize);
+
+
 
 #endif	// __FWIMAGE_OPT_H__
 

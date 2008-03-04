@@ -635,6 +635,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\ColorToGray.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\Compare.cpp"
 				>
 			</File>
@@ -962,6 +966,10 @@
 			</File>
 			<File
 				RelativePath=".\include\colorModelConvSpecialDef.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\ColorToGray.h"
 				>
 			</File>
 			<File
