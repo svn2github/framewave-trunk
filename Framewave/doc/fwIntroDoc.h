@@ -89,6 +89,11 @@ fwStsResFloor - All result values are floored.
 
 /*#Documentation
 
+<VersionData>
+<VersionNumber>1.0.1</VersionNumber>
+<VersionDate>March, 2008</VersionDate>
+</VersionData>
+
 <AncillaryFiles>
 	<FrameMaster></FrameMaster>
 	<HeaderMaster></HeaderMaster>
@@ -132,6 +137,11 @@ fwStsResFloor - All result values are floored.
 <ChangeDate>02/2008</ChangeDate>
 <ChangeVersion>1.0.0</ChangeVersion>
 <ChangeDescription>Initial release.</ChangeDescription> 
+</ChangeEntry>
+<ChangeEntry>
+<ChangeDate>03/2008</ChangeDate>
+<ChangeVersion>1.0.1</ChangeVersion>
+<ChangeDescription>Removed Video Library.</ChangeDescription> 
 </ChangeEntry>
 
 </ChangeHistory>
