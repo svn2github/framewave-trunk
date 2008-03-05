@@ -89,11 +89,6 @@ fwStsResFloor - All result values are floored.
 
 /*#Documentation
 
-<VersionData>
-<VersionNumber>1.0.0</VersionNumber>
-<VersionDate>February, 2008</VersionDate>
-</VersionData>
-
 <AncillaryFiles>
 	<FrameMaster></FrameMaster>
 	<HeaderMaster></HeaderMaster>
@@ -110,7 +105,7 @@ fwStsResFloor - All result values are floored.
 <FrontSection>
 
 <FrontHeading>
-<FrontName>Copyright and Trademarks</FrontName>
+<FrontName>Copyright, Trademarks, and Disclaimers</FrontName>
 <FrontLink>aa_007_tcd</FrontLink>
 </FrontHeading>
 
@@ -290,19 +285,6 @@ file in the installation package for the most recent information.</Paragraph>
 <ParagraphIndent>Morphologic Operations</ParagraphIndent>
 <ParagraphIndent>Geometric Operations</ParagraphIndent>
 
-<Paragraph><Bold>fwVideo.h </Bold>contains function declarations for video processing.</Paragraph>
-
-<ParagraphIndent>H.264 Decoder</ParagraphIndent>
-<ParagraphIndent>H.264 Inverse Transform</ParagraphIndent>
-<ParagraphIndent>H.264 Reconstruction</ParagraphIndent>
-<ParagraphIndent>H.264 Intra-predict</ParagraphIndent>
-<ParagraphIndent>H.264 Interpolation</ParagraphIndent>
-<ParagraphIndent>H.264 Deblock filters</ParagraphIndent>
-<ParagraphIndent>Motion Compensation</ParagraphIndent>
-<ParagraphIndent>Motion Estimation</ParagraphIndent>
-<ParagraphIndent>MPEG-1:Decoder, Inverse DCT, Inverse Quantization, Reconstruction of DCT block, Variable Length decoding</ParagraphIndent>
-<ParagraphIndent>MPEG-2:Decoder, Inverse DCT, Inverse Quantization, Reconstruction of DCT block, Variable Length decoding</ParagraphIndent>
-
 <Paragraph><Bold>fwJPEG.h </Bold>contains function declarations for JPEG processing.</Paragraph>
 
 <ParagraphIndent>JPEG Color Conversion</ParagraphIndent>
@@ -321,29 +303,29 @@ file in the installation package for the most recent information.</Paragraph>
 <Paragraph><Bold>Microsoft&#174; Windows&#174; Operating Systems</Bold></Paragraph>
 
 <ParagraphIndent>DLL Directories</ParagraphIndent>
-<ParagraphIndent>The fwImage/fwSignal/fwBase/fwJPEG/fwVideo.lib files contain the 
+<ParagraphIndent>The fwImage/fwSignal/fwBase/fwJPEG.lib files contain the 
 import address table (IAT) for the corresponding functions. Rather than fetching the 
 address of the function during run time, the .lib files are used to link against a DLL at compile time.</ParagraphIndent>
 
-<ParagraphIndent>The fwImage/fwSignal/fwBase/fwJPEG/fwVideo.dll files contain implemented functions.</ParagraphIndent>
+<ParagraphIndent>The fwImage/fwSignal/fwBase/fwJPEG.dll files contain implemented functions.</ParagraphIndent>
 
 <Paragraph><Bold>Linux&#174; Operating Systems</Bold></Paragraph>
 
 <ParagraphIndent>LIB Directories</ParagraphIndent>
 
-<ParagraphIndent>The libfwImage.so/libfwSignal.so/libfwBase.so/libfwJPEG.so/libfwVideo.so files contain all shared libraries.</ParagraphIndent>
+<ParagraphIndent>The libfwImage.so/libfwSignal.so/libfwBase.so/libfwJPEG.so files contain all shared libraries.</ParagraphIndent>
 
 <Paragraph><Bold>Sun&#174; Solaris&#174; Operating System</Bold></Paragraph>
 
 <ParagraphIndent>LIB Directories</ParagraphIndent>
 
-<ParagraphIndent>The libfwImage.so/libfwSignal.so/libfwBase.so/libfwJPEG.so/libfwVideo.so files contain all shared libraries.</ParagraphIndent>
+<ParagraphIndent>The libfwImage.so/libfwSignal.so/libfwBase.so/libfwJPEG.so files contain all shared libraries.</ParagraphIndent>
 
 <Paragraph><Bold>Apple&#174; Mac OS&#174; Operating Systems</Bold></Paragraph>
 
 <ParagraphIndent>LIB Directories</ParagraphIndent>
 
-<ParagraphIndent>The libfwImage.dylib/libfwSignal.dylib/libfwBase.dylib/libfwJPEG.dylib/libfwVideo.dylib files contain all shared libraries.</ParagraphIndent>
+<ParagraphIndent>The libfwImage.dylib/libfwSignal.dylib/libfwBase.dylib/libfwJPEG.dylib files contain all shared libraries.</ParagraphIndent>
 
 <Heading2>
 <H2Name>Setting Up Framewave</H2Name>
@@ -377,9 +359,8 @@ Additional Library Directories</Bold>).</Paragraph>
      ln -sf ./libfwBase.so.1.0.0 libfwBase.so
      ln -sf ./libfwImage.so.1.0.0 libfwImage.so
      ln -sf ./libfwJPEG.so.1.0.0 libfwJPEG.so
-     ln -sf ./libfwSignal.so.1.0.0 libfwSignal.so
-     ln -sf ./libfwVideo.so.1.0.0 libfwVideo.so</Pseudo>
-     
+     ln -sf ./libfwSignal.so.1.0.0 libfwSignal.so</Pseudo>
+
 <Paragraph>Create similar symbolic links with the .so.1 extension.</Paragraph>
 
 <Paragraph>To compile a cpp file that uses Framewave, for example test.cpp:</Paragraph>
@@ -407,9 +388,8 @@ is in the shared library search path for the environment.</Paragraph>
      ln -sf ./libfwBase.so.1.0.0 libfwBase.so
      ln -sf ./libfwImage.so.1.0.0 libfwImage.so
      ln -sf ./libfwJPEG.so.1.0.0 libfwJPEG.so
-     ln -sf ./libfwSignal.so.1.0.0 libfwSignal.so
-     ln -sf ./libfwVideo.so.1.0.0 libfwVideo.so</Pseudo>
-     
+     ln -sf ./libfwSignal.so.1.0.0 libfwSignal.so</Pseudo>
+
 <Paragraph>Create similar symbolic links with the .so.1 extension.</Paragraph>
 
 <Paragraph>To compile a cpp file that uses Framewave, for example test.cpp:</Paragraph>
@@ -434,9 +414,8 @@ is in the shared library search path for the environment.</Paragraph>
     ln -sf ./libfwBase-1.0.dylib libfwBase.dylib
     ln -sf ./libfwImage-1.0.dylib libfwImage.dylib
     ln -sf ./libfwJPEG-1.0.dylib libfwJPEG.dylib
-    ln -sf ./libfwSignal-1.0.dylib libfwSignal.dylib
-    ln -sf ./libfwVideo-1.0.dylib libfwVideo.dylib</Pseudo>
-     
+    ln -sf ./libfwSignal-1.0.dylib libfwSignal.dylib</Pseudo>
+
 <Paragraph>Create similar symbolic links with the .1.dylib extension.</Paragraph>
 
 <Paragraph>To compile a cpp file that uses Framewave, for example test.cpp:</Paragraph>
