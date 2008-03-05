@@ -117,7 +117,7 @@ void My_FW_Rotate_Region_8u_SSE2(float xltop, float yltop, float xlbot, float yl
 						 const TS* pSrc, int srcStep, FwiRect srcRoi,
 						 TS* pDst, int dstStep, FwiRect dstRoi,
 						 int /*interpolation*/, int* flag, 
-						 int /*channel*/, int /*channel1*/, Fw32f /*round*/)
+						 int channel, int chSrc, Fw32f /*round*/)
 {
 	float ratel, rater, coeffl, coeffr, xleft, xright;
 	float tx, ty,cy;//, xmap, ymap;
@@ -152,57 +152,123 @@ void My_FW_Rotate_Region_8u_SSE2(float xltop, float yltop, float xlbot, float yl
         XMM128 cxCoeff00 = {0}, cxCoeff01 = {0};
         XMM128 dst = {0};
         int y_dstStep = y * dstStep;
-		for (x=xstart; x<=xend-16; x+=16) {
-
-            for(int xx = 0 ; xx < 16; xx = xx + 4)
+		
+            if(chSrc == C1)
             {
-                
-                cxCoeff00.f = _mm_loadu_ps(cx_coeff00+(x+xx-dstRoi.x));
-                cxCoeff01.f = _mm_loadu_ps(cx_coeff01+(x+xx-dstRoi.x));
-                
-                cxCoeff00.f = _mm_add_ps(cxCoeff00.f, txXMM);
-                cxCoeff01.f = _mm_add_ps(cxCoeff01.f, tyXMM);
+	            for (x=xstart; x<=xend-16; x+=16) {
 
-                cxCoeff00.i = _mm_cvttps_epi32 (cxCoeff00.f);
-                cxCoeff01.i = _mm_cvttps_epi32 (cxCoeff01.f);
+                    for(int xx = 0 ; xx < 16; xx = xx + 4)
+                    {                   
+                        cxCoeff00.f = _mm_loadu_ps(cx_coeff00+(x+xx-dstRoi.x));
+                        cxCoeff01.f = _mm_loadu_ps(cx_coeff01+(x+xx-dstRoi.x));
+                        
+                        cxCoeff00.f = _mm_add_ps(cxCoeff00.f, txXMM);
+                        cxCoeff01.f = _mm_add_ps(cxCoeff01.f, tyXMM);
 
-                for(int xxx = 0; xxx < 4; xxx++)
-                {
-                    int &xmap = cxCoeff00.s32[xxx];
-                    int &ymap = cxCoeff01.s32[xxx];
+                        cxCoeff00.i = _mm_cvttps_epi32 (cxCoeff00.f);
+                        cxCoeff01.i = _mm_cvttps_epi32 (cxCoeff01.f);
+
+                        for(int xxx = 0; xxx < 4; xxx++)
+                        {
+                            int &xmap = cxCoeff00.s32[xxx];
+                            int &ymap = cxCoeff01.s32[xxx];
+
+                            if (xmap < 0 || xmap > srcRoi.width - 1 ||
+			                    ymap < 0 || ymap > srcRoi.height- 1) {
+				                continue;
+		                    }
+
+		                    xmap += srcRoi.x;
+		                    ymap += srcRoi.y;
+
+				            dst.u8[xx + xxx] =	*(pSrc+ ymap*srcStep+xmap);
+                            *flag = 1;
+                        }
+                    }
+                    _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x), dst.i);
+	            }
+                for (; x<=xend; x++) {
+
+                    int xmap = (int)(cx_coeff00[ x - dstRoi.x] + tx);
+                    int ymap = (int)(cx_coeff01[ x - dstRoi.x] + ty);
 
                     if (xmap < 0 || xmap > srcRoi.width - 1 ||
-			            ymap < 0 || ymap > srcRoi.height- 1) {
-				        continue;
-		            }
+		                    ymap < 0 || ymap > srcRoi.height- 1) {
+			                continue;
+	                }
 
-		            xmap += srcRoi.x;
-		            ymap += srcRoi.y;
+                    xmap += srcRoi.x;
+                    ymap += srcRoi.y;
 
-				    dst.u8[xx + xxx] =	*(pSrc+ ymap*srcStep+xmap);
+                    *(pDst+y_dstStep+x) =	*(pSrc+ ymap*srcStep+xmap);
+                    *flag = 1;
+	            }
+		    }//end of C1
+            else //if(chSrc == C4 || chSrc == AC4)
+            {
+                for (x=xstart; x<=xend-4; x+=4) {
+
+                    //for(int xx = 0 ; xx < 16; xx = xx + 4)
+                    //{                   
+                        cxCoeff00.f = _mm_loadu_ps(cx_coeff00+(x-dstRoi.x));
+                        cxCoeff01.f = _mm_loadu_ps(cx_coeff01+(x-dstRoi.x));
+                        
+                        cxCoeff00.f = _mm_add_ps(cxCoeff00.f, txXMM);
+                        cxCoeff01.f = _mm_add_ps(cxCoeff01.f, tyXMM);
+
+                        cxCoeff00.i = _mm_cvttps_epi32 (cxCoeff00.f);
+                        cxCoeff01.i = _mm_cvttps_epi32 (cxCoeff01.f);
+
+                        for(int xxx = 0; xxx < 4; xxx++)
+                        {
+                            int &xmap = cxCoeff00.s32[xxx];
+                            int &ymap = cxCoeff01.s32[xxx];
+
+                            if (xmap < 0 || xmap > srcRoi.width - 1 ||
+		                        ymap < 0 || ymap > srcRoi.height- 1) {
+			                    continue;
+	                        }
+
+	                        xmap += srcRoi.x;
+	                        ymap += srcRoi.y;
+
+			                //dst.u32[xxx] =	
+                            if(chSrc == C4)
+                            *((Fw32u*)(pDst+y_dstStep+(x+xxx) * channel)) = *((Fw32u*)(pSrc+ ymap*srcStep+xmap * channel));
+                            else //if(chSrc == AC4)
+                            {   
+                                *((Fw16u*)(pDst+y_dstStep+(x+xxx) * channel)) = *((Fw16u*)(pSrc+ ymap*srcStep+xmap * channel));
+                                *(pDst+y_dstStep+(x+xxx) * channel + 2) = *(pSrc+ ymap*srcStep+xmap * channel+2);
+                            }
+                            *flag = 1;
+                        }
+                    //}
+                    //_mm_storeu_si128((__m128i *)(pDst+y_dstStep+x * channel), dst.i);
+                }
+                for (; x<=xend; x++) {
+
+                    int xmap = (int)(cx_coeff00[ x - dstRoi.x] + tx);
+                    int ymap = (int)(cx_coeff01[ x - dstRoi.x] + ty);
+
+                    if (xmap < 0 || xmap > srcRoi.width - 1 ||
+	                        ymap < 0 || ymap > srcRoi.height- 1) {
+		                    continue;
+                    }
+
+                    xmap += srcRoi.x;
+                    ymap += srcRoi.y;
+
+                    //*((Fw32u*)(pDst+y_dstStep+x*channel)) =	*((Fw32u*)(pSrc+ ymap*srcStep+xmap * channel));
+                    if(chSrc == C4)
+                    *((Fw32u*)(pDst+y_dstStep+x * channel)) = *((Fw32u*)(pSrc+ ymap*srcStep+xmap * channel));
+                    else //if(chSrc == AC4)
+                    {   
+                        *((Fw16u*)(pDst+y_dstStep+x * channel)) = *((Fw16u*)(pSrc+ ymap*srcStep+xmap * channel));
+                        *(pDst+y_dstStep+x * channel +2) = *(pSrc+ ymap*srcStep+xmap * channel + 2);
+                    }
                     *flag = 1;
                 }
-            }
-
-            _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x), dst.i);
-		}
-        for (; x<=xend; x++) {
-			
-            int xmap = (int)(cx_coeff00[ x - dstRoi.x] + tx);
-            int ymap = (int)(cx_coeff01[ x - dstRoi.x] + ty);
-
-            if (xmap < 0 || xmap > srcRoi.width - 1 ||
-			        ymap < 0 || ymap > srcRoi.height- 1) {
-				    continue;
-		    }
-
-	        xmap += srcRoi.x;
-	        ymap += srcRoi.y;
-
-            *(pDst+y_dstStep+x) =	*(pSrc+ ymap*srcStep+xmap);
-            *flag = 1;
-				
-		}
+	        }//end of C4, AC4
 	}
     fwFree (cx);
     fwFree (cx_coeff00);
@@ -250,7 +316,7 @@ static FwStatus My_FW_Rotate_8u_SSE2(const TS* pSrc, FwiSize srcSize, int srcSte
 	//	pDst, dstStep, dstRoi, coeffs, interpolation);
 	int channel1;
 	// Will not change 4th channel element in AC4
-	if (chSrc == AC4) channel1=3;
+	if (chSrc == AC4) channel1=5;
 	else channel1=channel;
 	Fw32f round;
 	// 32f is supported, but not 32u and 32s
@@ -370,55 +436,127 @@ static FwStatus My_FW_Rotate_8u_SSE2(const TS* pSrc, FwiSize srcSize, int srcSte
             XMM128 cxCoeff00 = {0}, cxCoeff01 = {0};
             XMM128 dst = {0};
             int y_dstStep = y * dstStep;
-	        for (x=xstart; x<=xend-16; x+=16) {
+            if(chSrc == C1)
+            {
+	            for (x=xstart; x<=xend-16; x+=16) {
 
-                for(int xx = 0 ; xx < 16; xx = xx + 4)
-                {                   
-                    cxCoeff00.f = _mm_loadu_ps(cx_coeff00+(x+xx-dstRoi.x));
-                    cxCoeff01.f = _mm_loadu_ps(cx_coeff01+(x+xx-dstRoi.x));
-                    
-                    cxCoeff00.f = _mm_add_ps(cxCoeff00.f, txXMM);
-                    cxCoeff01.f = _mm_add_ps(cxCoeff01.f, tyXMM);
+                    for(int xx = 0 ; xx < 16; xx = xx + 4)
+                    {                   
+                        cxCoeff00.f = _mm_loadu_ps(cx_coeff00+(x+xx-dstRoi.x));
+                        cxCoeff01.f = _mm_loadu_ps(cx_coeff01+(x+xx-dstRoi.x));
+                        
+                        cxCoeff00.f = _mm_add_ps(cxCoeff00.f, txXMM);
+                        cxCoeff01.f = _mm_add_ps(cxCoeff01.f, tyXMM);
 
-                    cxCoeff00.i = _mm_cvttps_epi32 (cxCoeff00.f);
-                    cxCoeff01.i = _mm_cvttps_epi32 (cxCoeff01.f);
+                        cxCoeff00.i = _mm_cvttps_epi32 (cxCoeff00.f);
+                        cxCoeff01.i = _mm_cvttps_epi32 (cxCoeff01.f);
 
-                    for(int xxx = 0; xxx < 4; xxx++)
-                    {
-                        int &xmap = cxCoeff00.s32[xxx];
-                        int &ymap = cxCoeff01.s32[xxx];
+                        for(int xxx = 0; xxx < 4; xxx++)
+                        {
+                            int &xmap = cxCoeff00.s32[xxx];
+                            int &ymap = cxCoeff01.s32[xxx];
 
-                        if (xmap < 0 || xmap > srcRoi.width - 1 ||
-			                ymap < 0 || ymap > srcRoi.height- 1) {
-				            continue;
-		                }
+                            if (xmap < 0 || xmap > srcRoi.width - 1 ||
+			                    ymap < 0 || ymap > srcRoi.height- 1) {
+				                continue;
+		                    }
 
-		                xmap += srcRoi.x;
-		                ymap += srcRoi.y;
+		                    xmap += srcRoi.x;
+		                    ymap += srcRoi.y;
 
-				        dst.u8[xx + xxx] =	*(pSrc+ ymap*srcStep+xmap);
-                        flag = 1;
+				            dst.u8[xx + xxx] =	*(pSrc+ ymap*srcStep+xmap);
+                            flag = 1;
+                        }
                     }
-                }
-                _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x), dst.i);
-	        }
-            for (; x<=xend; x++) {
-
-                int xmap = (int)(cx_coeff00[ x - dstRoi.x] + tx);
-                int ymap = (int)(cx_coeff01[ x - dstRoi.x] + ty);
-
-                if (xmap < 0 || xmap > srcRoi.width - 1 ||
-		                ymap < 0 || ymap > srcRoi.height- 1) {
-			            continue;
+                    _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x), dst.i);
 	            }
+                for (; x<=xend; x++) {
 
-                xmap += srcRoi.x;
-                ymap += srcRoi.y;
+                    int xmap = (int)(cx_coeff00[ x - dstRoi.x] + tx);
+                    int ymap = (int)(cx_coeff01[ x - dstRoi.x] + ty);
 
-                *(pDst+y_dstStep+x) =	*(pSrc+ ymap*srcStep+xmap);
-                flag = 1;
-	        }
-		}
+                    if (xmap < 0 || xmap > srcRoi.width - 1 ||
+		                    ymap < 0 || ymap > srcRoi.height- 1) {
+			                continue;
+	                }
+
+                    xmap += srcRoi.x;
+                    ymap += srcRoi.y;
+
+                    *(pDst+y_dstStep+x) =	*(pSrc+ ymap*srcStep+xmap);
+                    flag = 1;
+	            }
+		    }//end of C1
+            else //if(chSrc == C4 || chSrc == AC4)
+            {
+                for (x=xstart; x<=xend-4; x+=4) {
+
+                    //for(int xx = 0 ; xx < 16; xx = xx + 4)
+                    //{                   
+                        cxCoeff00.f = _mm_loadu_ps(cx_coeff00+(x-dstRoi.x));
+                        cxCoeff01.f = _mm_loadu_ps(cx_coeff01+(x-dstRoi.x));
+                        
+                        cxCoeff00.f = _mm_add_ps(cxCoeff00.f, txXMM);
+                        cxCoeff01.f = _mm_add_ps(cxCoeff01.f, tyXMM);
+
+                        cxCoeff00.i = _mm_cvttps_epi32 (cxCoeff00.f);
+                        cxCoeff01.i = _mm_cvttps_epi32 (cxCoeff01.f);
+
+                        for(int xxx = 0; xxx < 4; xxx++)
+                        {
+                            int &xmap = cxCoeff00.s32[xxx];
+                            int &ymap = cxCoeff01.s32[xxx];
+
+                            if (xmap < 0 || xmap > srcRoi.width - 1 ||
+		                        ymap < 0 || ymap > srcRoi.height- 1) {
+			                    continue;
+	                        }
+
+	                        xmap += srcRoi.x;
+	                        ymap += srcRoi.y;
+
+			                //dst.u32[xxx] =	
+                            if(chSrc == C4)
+                            *((Fw32u*)(pDst+y_dstStep+(x+xxx) * channel)) = *((Fw32u*)(pSrc+ ymap*srcStep+xmap * channel));
+                            else //if(chSrc == AC4)
+                            {   
+                                *((Fw16u*)(pDst+y_dstStep+(x+xxx) * channel)) = *((Fw16u*)(pSrc+ ymap*srcStep+xmap * channel));
+                                *(pDst+y_dstStep+(x+xxx) * channel + 2) = *(pSrc+ ymap*srcStep+xmap * channel);
+                            }
+                            flag = 1;
+                        }
+                    //}
+                    //_mm_storeu_si128((__m128i *)(pDst+y_dstStep+x * channel), dst.i);
+                }
+                for (; x<=xend; x++) {
+
+                    int xmap = (int)(cx_coeff00[ x - dstRoi.x] + tx);
+                    int ymap = (int)(cx_coeff01[ x - dstRoi.x] + ty);
+
+                    if (xmap < 0 || xmap > srcRoi.width - 1 ||
+	                        ymap < 0 || ymap > srcRoi.height- 1) {
+		                    continue;
+                    }
+
+                    xmap += srcRoi.x;
+                    ymap += srcRoi.y;
+
+                    //*((Fw32u*)(pDst+y_dstStep+x*channel)) =	*((Fw32u*)(pSrc+ ymap*srcStep+xmap * channel));
+                    if(chSrc == C4)
+                    *((Fw32u*)(pDst+y_dstStep+x * channel)) = *((Fw32u*)(pSrc+ ymap*srcStep+xmap * channel));
+                    else //if(chSrc == AC4)
+                    {   
+                        *((Fw16u*)(pDst+y_dstStep+x * channel)) = *((Fw16u*)(pSrc+ ymap*srcStep+xmap * channel));
+                        *(pDst+y_dstStep+x * channel +2) = *(pSrc+ ymap*srcStep+xmap * channel);
+                    }
+                    flag = 1;
+                }
+	        }//end of C4, AC4
+            fwFree (cx);
+            fwFree (cx_coeff00);
+            fwFree (cx_coeff01);
+        }
+
 	} else if (FW_ZERO(sortY[1]-sortY[3])) {//sortY[1]==sortY[3]
 		if (sortX[1] < sortX[3]) {
 			FW_SWAP(sortX[1], sortX[3], tempx);
@@ -785,8 +923,18 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiRotate_8u_C3R)(const Fw8u *pSrc, FwiSize srcS
 							Fw8u *pDst, int dstStep, FwiRect dstRoi, 
 							double angle, double xShift, double yShift, int interpolation)
 {
-	return My_FW_Rotate <Fw8u, C3, DT_REFR> (pSrc, srcSize, srcStep, srcRoi, 
+	switch( Dispatch::Type<DT_SSE2>() )
+	{
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_Rotate_8u_SSE2 <Fw8u, C3, DT_REFR> (pSrc, srcSize, srcStep, srcRoi, 
 		pDst, dstStep, dstRoi, angle, xShift, yShift, interpolation);
+			
+	default:
+        return My_FW_Rotate <Fw8u, C3, DT_REFR> (pSrc, srcSize, srcStep, srcRoi, 
+		pDst, dstStep, dstRoi, angle, xShift, yShift, interpolation);
+    }
 }
 
 // 8u data type with 4 channels
@@ -794,8 +942,18 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiRotate_8u_C4R)(const Fw8u *pSrc, FwiSize srcS
 							Fw8u *pDst, int dstStep, FwiRect dstRoi, 
 							double angle, double xShift, double yShift, int interpolation)
 {
-	return My_FW_Rotate <Fw8u, C4, DT_REFR> (pSrc, srcSize, srcStep, srcRoi, 
+	switch( Dispatch::Type<DT_SSE2>() )
+	{
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_Rotate_8u_SSE2 <Fw8u, C4, DT_REFR> (pSrc, srcSize, srcStep, srcRoi, 
 		pDst, dstStep, dstRoi, angle, xShift, yShift, interpolation);
+			
+	default:
+        return My_FW_Rotate <Fw8u, C4, DT_REFR> (pSrc, srcSize, srcStep, srcRoi, 
+		pDst, dstStep, dstRoi, angle, xShift, yShift, interpolation);
+    }
 }
 
 //8u data type with 4 channels (alpha channel will not be changed in the destination buffer during transformation)
@@ -803,8 +961,18 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiRotate_8u_AC4R)(const Fw8u *pSrc, FwiSize src
 							Fw8u *pDst, int dstStep, FwiRect dstRoi, 
 							double angle, double xShift, double yShift, int interpolation)
 {
-	return My_FW_Rotate <Fw8u, AC4, DT_REFR> (pSrc, srcSize, srcStep, srcRoi, 
+	switch( Dispatch::Type<DT_SSE2>() )
+	{
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_Rotate_8u_SSE2 <Fw8u, AC4, DT_REFR> (pSrc, srcSize, srcStep, srcRoi, 
 		pDst, dstStep, dstRoi, angle, xShift, yShift, interpolation);
+			
+	default:
+        return My_FW_Rotate <Fw8u, AC4, DT_REFR> (pSrc, srcSize, srcStep, srcRoi, 
+		pDst, dstStep, dstRoi, angle, xShift, yShift, interpolation);
+    }
 }
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiRotate_16u_C1R)(const Fw16u *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi, 
