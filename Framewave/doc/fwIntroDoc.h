@@ -89,17 +89,11 @@ fwStsResFloor - All result values are floored.
 
 /*#Documentation
 
-<VersionData>
 <VersionNumber>1.0.1</VersionNumber>
 <VersionDate>March, 2008</VersionDate>
-</VersionData>
-
-<AncillaryFiles>
-	<FrameMaster></FrameMaster>
-	<HeaderMaster></HeaderMaster>
-	<FooterMaster></FooterMaster>
-	<NavBar></NavBar>
-</AncillaryFiles>
+<FrameMaster></FrameMaster>
+<HeaderMaster></HeaderMaster>
+<NavBar></NavBar>
 
 <FrontMatter>
 
