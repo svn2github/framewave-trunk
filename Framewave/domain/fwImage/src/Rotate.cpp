@@ -533,10 +533,11 @@ static FwStatus My_FW_Rotate_8u_SSE2(const TS* pSrc, FwiSize srcSize, int srcSte
                     flag = 1;
                 }
 	        }//end of C4, AC4
-            fwFree (cx);
-            fwFree (cx_coeff00);
-            fwFree (cx_coeff01);
+
         }
+        fwFree (cx);
+        fwFree (cx_coeff00);
+        fwFree (cx_coeff01);
 
 	} else if (FW_ZERO(sortY[1]-sortY[3])) {//sortY[1]==sortY[3]
 		if (sortX[1] < sortX[3]) {
