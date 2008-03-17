@@ -611,10 +611,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\fwSignal.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\ArithmeticS.cpp"
 				>
 			</File>
@@ -631,7 +627,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\Find.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\FixedAccuArithmetic.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\fwSignal.cpp"
 				>
 			</File>
 			<File
@@ -701,18 +705,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\include\fwSignal.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\fwSignal_opt.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\fwSignalIntroDoc.h"
-				>
-			</File>
-			<File
 				RelativePath=".\include\arithmeticS.h"
 				>
 			</File>
@@ -726,6 +718,18 @@
 			</File>
 			<File
 				RelativePath=".\include\DivSqrtCbrt.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\fwSignal.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\fwSignal_opt.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\fwSignalIntroDoc.h"
 				>
 			</File>
 			<File

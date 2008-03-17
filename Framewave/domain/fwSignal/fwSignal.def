@@ -805,3 +805,13 @@ fwsZero_32f
 fwsZero_64f
 fwsZero_16sc
 fwsZero_32fc
+
+fwsFind_8u
+fwsFind_16u
+fwsFindRev_8u
+fwsFindRev_16u
+
+fwsFindC_8u
+fwsFindC_16u
+fwsFindRevC_8u
+fwsFindRevC_16u

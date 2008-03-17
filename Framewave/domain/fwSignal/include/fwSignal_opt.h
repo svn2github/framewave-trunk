@@ -749,4 +749,13 @@ OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsZero_32f)(Fw32f* pD
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsZero_32fc)(Fw32fc* pDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsZero_64f)(Fw64f* pDst, int len);
 
+OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsFind_8u)(const Fw8u* pSrc, int len, const Fw8u* pFind, int lenFind, int* pIndex);
+OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsFind_16u)(const Fw16u* pSrc, int len, const Fw16u* pFind, int lenFind, int* pIndex);
+OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsFindRev_8u)(const Fw8u* pSrc, int len, const Fw8u* pFind, int lenFind, int* pIndex);
+OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsFindRev_16u)(const Fw16u* pSrc, int len, const Fw16u* pFind, int lenFind, int* pIndex);
+OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsFindC_8u)(const Fw8u* pSrc, int len, Fw8u valFind, int* pIndex);
+OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsFindC_16u)(const Fw16u* pSrc, int len, Fw16u valFind, int* pIndex);
+OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsFindRevC_8u)(const Fw8u* pSrc, int len, Fw8u valFind, int* pIndex);
+OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsFindRevC_16u)(const Fw16u* pSrc, int len, Fw16u valFind, int* pIndex);
+
 #endif // __FWSIGNAL_OPT_H__

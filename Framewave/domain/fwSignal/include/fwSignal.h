@@ -1862,6 +1862,34 @@ FwStatus STDCALL fwsZero_64f              ( Fw64f  *pDst, int len );
 FwStatus STDCALL fwsZero_16sc             ( Fw16sc *pDst, int len );
 FwStatus STDCALL fwsZero_32fc             ( Fw32fc *pDst, int len );
 
+
+
+/*#FunctionBlock - Find Sbubstring
+TODO:publish
+#Technologies - REF
+#Short - Find substring in a string
+#Long - <Text>Find substring in a string</Text>
+#ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsLengthErr
+*/
+
+FwStatus fwsFind_8u(const Fw8u* pSrc, int len, const Fw8u* pFind, int lenFind, int* pIndex);
+FwStatus fwsFind_16u(const Fw16u* pSrc, int len, const Fw16u* pFind, int lenFind, int* pIndex);
+FwStatus fwsFindRev_8u(const Fw8u* pSrc, int len, const Fw8u* pFind, int lenFind, int* pIndex);
+FwStatus fwsFindRev_16u(const Fw16u* pSrc, int len, const Fw16u* pFind, int lenFind, int* pIndex);
+
+/*#FunctionBlock - Find Value
+TODO:publish
+#Technologies - REF
+#Short - Find the specified element in a given buffer
+#Long - <Text>Find the specified element in a given buffer</Text>
+#ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsLengthErr
+*/
+
+FwStatus fwsFindC_8u(const Fw8u* pSrc, int len, Fw8u valFind, int* pIndex);
+FwStatus fwsFindC_16u(const Fw16u* pSrc, int len, Fw16u valFind, int* pIndex);
+FwStatus fwsFindRevC_8u(const Fw8u* pSrc, int len, Fw8u valFind, int* pIndex);
+FwStatus fwsFindRevC_16u(const Fw16u* pSrc, int len, Fw16u valFind, int* pIndex);
+
 /*#Documentation
 </Chapter>
 */
