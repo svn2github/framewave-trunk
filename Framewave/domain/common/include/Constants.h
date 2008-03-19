@@ -47,4 +47,18 @@ enum ConvFunc
     CF_MAXConv
 };
 
+// Video structures 
+typedef struct  
+{
+    Fw8u len;
+    Fw8u uNumTrailingOnes;
+    Fw8u uNumCoeff;
+} vlc_coeff_token_t;
+
+typedef struct  
+{
+    Fw8u num;
+    Fw8u len;
+} zero_count_t;
+
 #endif // __CONSTANTS_H__

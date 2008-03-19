@@ -54,7 +54,8 @@ AddPostAction(oLib_fwBase, Action(postAction))
 # Other subprojects dependent on fwBase
 lstProjects = [ 'fwImage',  \
                 'fwJPEG',   \
-                'fwSignal'  ]
+                'fwSignal', \
+                'fwVideo'   ]
 
 dctFWProjects = {}
 for p in lstProjects:
