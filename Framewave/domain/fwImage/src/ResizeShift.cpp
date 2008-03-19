@@ -504,6 +504,223 @@ namespace OPT_LEVEL
 		return fwStsNoErr;
 	}
 
+  template< CH chSrc>
+       void ResizeSqrPizel_SSE2_NN(const Fw8u *pSrc, int srcStep, Fw8u*pDst, int dstStep,  FwiRect dstRoi, int* XMM_ymap, int* XMM_xmap, 
+        int newDstX, int newDstWidth, int newDstY, int newDstHeight, int channel)
+
+    {
+        int x, y;
+        for (y=newDstY; y<(dstRoi.y+newDstHeight); y++) {
+			//ymap = (y-yShift)/yFactor;
+            int &yint = XMM_ymap[y];
+            int y_dstStep = y * dstStep;
+            int yint_srcStep = yint*srcStep;
+            if( chSrc == C1)
+            {   XMM128 pp={0};
+			    for (x=newDstX; x<(dstRoi.x+newDstWidth)-16; x = x + 16) {
+                  for(int xx = 0; xx < 16; xx++)
+                    { 
+                        int &xint = XMM_xmap[x + xx];
+                        pp.u8[xx] = *(pSrc+ yint_srcStep+xint);
+                    }
+                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x), pp.i);
+			    }
+                for (; x<(dstRoi.x+newDstWidth); x++ )
+                {
+                    int &xint = XMM_xmap[x];
+                    *(pDst+y_dstStep+x ) = *(pSrc+ yint_srcStep+xint);
+                }
+            }
+            else if(chSrc == C4)
+            {   XMM128 pp={0};
+			    for (x=newDstX; x<(dstRoi.x+newDstWidth)-4; x = x + 4) {
+				    for(int xx = 0; xx < 4; xx++)
+                    { 
+                        int &xint = XMM_xmap[x + xx];
+					    pp.u32[xx] = *((Fw32u*)(pSrc+ yint_srcStep+xint*channel));
+                    }
+                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel), pp.i);
+			    }
+                for (; x<(dstRoi.x+newDstWidth); x++ )
+                {
+                    int &xint = XMM_xmap[x];
+                    *((Fw32u*)(pDst+y_dstStep+x*channel )) = *((Fw32u*)(pSrc+ yint_srcStep+xint*channel));
+                }
+            }
+            else if(chSrc == AC4)
+            {   
+                for (x=newDstX; x<(dstRoi.x+newDstWidth); x++ )
+                {
+                    int &xint = XMM_xmap[x];
+                    *((Fw16u*)(pDst+y_dstStep+x*channel) ) = *((Fw16u*)(pSrc+ yint_srcStep+xint*channel));
+                    *(pDst+y_dstStep+x*channel + 2) = *(pSrc+ yint_srcStep+xint*channel + 2);
+                }
+            }
+            else 
+            {   
+                Fw8u *pp = (Fw8u*)fwMalloc(16 * 3);
+			    for (x=newDstX; x<(dstRoi.x+newDstWidth)-16; x = x + 16) {
+                   for(int xx = 0; xx < 16; xx++)
+                    { 
+                        int &xint = XMM_xmap[x + xx];
+                        *((Fw16u*)(pp + xx * channel) ) = *((Fw16u*)(pSrc+ yint_srcStep+xint*channel));
+                        *(pp + xx * channel + 2) = *(pSrc+ yint_srcStep+xint*channel + 2);
+                    }
+                   __m128i xmm0 = _mm_load_si128((__m128i*)pp);
+                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel), xmm0);
+
+                   __m128i xmm1 = _mm_load_si128((__m128i*)(pp + 16));
+                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel + 16), xmm1);    
+
+                   __m128i xmm2 = _mm_load_si128((__m128i*)(pp + 32));
+                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel + 32), xmm2);
+			    }
+                for (; x<(dstRoi.x+newDstWidth); x++ )
+                {
+                    int &xint = XMM_xmap[x];
+                    *(pDst+y_dstStep+x*channel ) = *(pSrc+ yint_srcStep+xint*channel);
+                    *(pDst+y_dstStep+x*channel + 1) = *(pSrc+ yint_srcStep+xint*channel + 1);
+                    *(pDst+y_dstStep+x*channel + 2) = *(pSrc+ yint_srcStep+xint*channel + 2);
+                }
+                fwFree(pp);
+            }
+		}
+}
+
+
+   template< CH chSrc>
+       void ResizeSqrPizel_SSE2_NN(const Fw16u *pSrc, int srcStep, Fw16u*pDst, int dstStep,  FwiRect dstRoi, int* XMM_ymap, int* XMM_xmap, 
+        int newDstX, int newDstWidth, int newDstY, int newDstHeight, int channel)
+
+    {
+        int x, y;
+        for (y=newDstY; y<(dstRoi.y+newDstHeight); y++) {
+			//ymap = (y-yShift)/yFactor;
+            int &yint = XMM_ymap[y];
+            int y_dstStep = y * dstStep;
+            int yint_srcStep = yint*srcStep;
+            if( chSrc == C1)
+            {   XMM128 pp={0};
+			    for (x=newDstX; x<(dstRoi.x+newDstWidth)-8; x = x + 8) {
+				    for(int xx = 0; xx < 8; xx++)
+                    { 
+                        int &xint = XMM_xmap[x + xx];
+					    pp.u16[xx] = *(pSrc+ yint_srcStep+xint);
+                    }
+                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x), pp.i);
+			    }
+                for (; x<(dstRoi.x+newDstWidth); x++ )
+                {
+                    int &xint = XMM_xmap[x];
+                    *(pDst+y_dstStep+x ) = *(pSrc+ yint_srcStep+xint);
+                }
+            }
+            else if(chSrc == C4)
+            {   XMM128 pp={0};
+			    for (x=newDstX; x<(dstRoi.x+newDstWidth)-2; x = x + 2) {
+				   for(int xx = 0; xx < 2; xx = xx++)
+                    { 
+                        int &xint = XMM_xmap[x + xx];
+					    pp.u32[xx*2] = *((Fw32u*)(pSrc+ yint_srcStep+xint*channel));
+                        pp.u32[xx*2+1] = *((Fw32u*)(pSrc+ yint_srcStep+xint*channel + 2));
+                    }
+                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel), pp.i);
+			    }
+                for (; x<(dstRoi.x+newDstWidth); x++ )
+                {
+                    int &xint = XMM_xmap[x];
+                    *((Fw32u*)(pDst+y_dstStep+x*channel )) = *((Fw32u*)(pSrc+ yint_srcStep+xint*channel));
+                    *((Fw32u*)(pDst+y_dstStep+x*channel + 2)) = *((Fw32u*)(pSrc+ yint_srcStep+xint*channel +2));
+                }
+            }
+            else if(chSrc == AC4)
+            {   
+                for (x=newDstX; x<(dstRoi.x+newDstWidth); x++ )
+                {
+                    int &xint = XMM_xmap[x];
+                    *((Fw32u*)(pDst+y_dstStep+x*channel )) = *((Fw32u*)(pSrc+ yint_srcStep+xint*channel));
+                    *(pDst+y_dstStep+x*channel + 2) = *(pSrc+ yint_srcStep+xint*channel + 2);
+                }
+            }
+            else 
+            {   //XMM128 pp={0};
+                Fw16u *pp = (Fw16u*)fwMalloc(16 * 3);
+			    for (x=newDstX; x<(dstRoi.x+newDstWidth)-8; x = x + 8) {
+                   for(int xx = 0; xx < 8; xx++)
+                    { 
+                        int &xint = XMM_xmap[x + xx];
+                        *((Fw32u*)(pp + xx * channel )) = *((Fw32u*)(pSrc+ yint_srcStep+xint*channel));
+                        *(pp + xx * channel + 2) = *(pSrc+ yint_srcStep+xint*channel + 2);
+                    }
+                   __m128i xmm0 = _mm_load_si128((__m128i*)pp);
+                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel), xmm0);
+
+                   __m128i xmm1 = _mm_load_si128((__m128i*)(pp + 8));
+                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel + 8), xmm1);    
+
+                   __m128i xmm2 = _mm_load_si128((__m128i*)(pp + 16));
+                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel + 16), xmm2);
+			    }
+                for (; x<(dstRoi.x+newDstWidth); x++ )
+                {
+                    int &xint = XMM_xmap[x];
+                    *((Fw32u*)(pDst+y_dstStep+x*channel) ) = *((Fw32u*)(pSrc+ yint_srcStep+xint*channel));
+                    *(pDst+y_dstStep+x*channel + 2) = *(pSrc+ yint_srcStep+xint*channel + 2);
+                }
+                fwFree(pp);
+            }
+		}
+}
+
+template< CH chSrc>
+       void ResizeSqrPizel_SSE2_NN(const Fw32f *pSrc, int srcStep, Fw32f*pDst, int dstStep,  FwiRect dstRoi, int* XMM_ymap, int* XMM_xmap, 
+        int newDstX, int newDstWidth, int newDstY, int newDstHeight, int channel)
+
+    {
+        int x, y;
+        for (y=newDstY; y<(dstRoi.y+newDstHeight); y++) {
+            int &yint = XMM_ymap[y];
+            int y_dstStep = y * dstStep;
+            int yint_srcStep = yint*srcStep;
+            if( chSrc == C1)
+            {   XMM128 pp={0};
+			    for (x=newDstX; x<(dstRoi.x+newDstWidth)-4; x = x + 4) {
+				    for(int xx = 0; xx < 4; xx++)
+                    { 
+                        int &xint = XMM_xmap[x + xx];
+					    pp.f32[xx] = *(pSrc+ yint_srcStep+xint);
+                    }
+                   _mm_storeu_ps((pDst+y_dstStep+x), pp.f);
+			    }
+                for (; x<(dstRoi.x+newDstWidth); x++ )
+                {
+                    int &xint = XMM_xmap[x];
+                    *(pDst+y_dstStep+x ) = *(pSrc+ yint_srcStep+xint);
+                }
+            }
+            else if(chSrc == C4)
+            {   XMM128 pp={0};
+                for (x=newDstX; x<(dstRoi.x+newDstWidth); x++ )
+                {
+                    int &xint = XMM_xmap[x];
+                    pp.f = _mm_load_ps(pSrc+ yint_srcStep+xint*channel);
+                    _mm_storeu_ps((pDst+y_dstStep+x*channel), pp.f);
+                }
+            }
+            else 
+            {   
+                for (x=newDstX; x<(dstRoi.x+newDstWidth); x++ )
+                {
+                    int &xint = XMM_xmap[x];
+                    *(pDst+y_dstStep+x*channel ) = *(pSrc+ yint_srcStep+xint*channel);
+                    *(pDst+y_dstStep+x*channel + 1) = *(pSrc+ yint_srcStep+xint*channel + 1);
+                    *(pDst+y_dstStep+x*channel + 2) = *(pSrc+ yint_srcStep+xint*channel + 2);
+                }
+            }
+		}
+}
+
+
 template< class TS, CH chSrc,  DispatchType disp >
 	FwStatus My_FW_ResizeSqrPixel_SSE2(const TS *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 		TS*pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
@@ -533,16 +750,6 @@ template< class TS, CH chSrc,  DispatchType disp >
 		//we need to change it with data array size
 		dstStep = dstStep / (sizeof(TS));
 		srcStep = srcStep / (sizeof(TS));
-
-		//int channel1;
-		// Will not change 4th channel element in AC4
-		//if (chSrc == AC4) channel1=4;
-		//else channel1=channel;
-		//Fw32f round;
-		// 32f is supported, but not 32u and 32s
-		// No rounding is needed for 32f type
-		//if (sizeof(TS) == 4) round=0;
-		//else round=0.5;
 
 		int* XMM_xmap = (int*) fwMalloc((dstRoi.width + dstRoi.x) * sizeof(int));
 		int* XMM_ymap = (int*) fwMalloc((dstRoi.height + dstRoi.y) * sizeof(int));
@@ -584,90 +791,9 @@ template< class TS, CH chSrc,  DispatchType disp >
             XMM_xmap[x] = xmap+ srcRoi.x;
             flagX = 1;
         }
-
+        ResizeSqrPizel_SSE2_NN<chSrc>(pSrc, srcStep, pDst, dstStep, dstRoi, XMM_ymap, XMM_xmap, 
+            newDstX, newDstWidth, newDstY, newDstHeight, channel);
         
-		for (y=newDstY; y<(dstRoi.y+newDstHeight); y++) {
-			//ymap = (y-yShift)/yFactor;
-            int &yint = XMM_ymap[y];
-            int y_dstStep = y * dstStep;
-            int yint_srcStep = yint*srcStep;
-            if( chSrc == C1)
-            {   XMM128 pp={0};
-			    for (x=newDstX; x<(dstRoi.x+newDstWidth)-16; x = x + 16) {
-                //for (x=newDstX; x<(dstRoi.x+newDstWidth); x++ ) {
-                    //_mm_prefetch((char*)(XMM_xmap + x), _MM_HINT_T1);
-                    //_mm_prefetch((char*)(XMM_xmap + x + 4), _MM_HINT_T1);
-                    //_mm_prefetch((char*)(XMM_xmap + x + 8), _MM_HINT_T1);
-                    //_mm_prefetch((char*)(XMM_xmap + x + 12), _MM_HINT_T1);
-				    for(int xx = 0; xx < 16; xx++)
-                    { 
-                        int &xint = XMM_xmap[x + xx];
-                        //int xint = (int)XMM_xmap[x];
-			            //*(pDst+y_dstStep+x ) = *(pSrc+ yint_srcStep+xint);
-					    pp.u8[xx] = *(pSrc+ yint_srcStep+xint);
-                    }
-                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x), pp.i);
-			    }
-                for (; x<(dstRoi.x+newDstWidth); x++ )
-                {
-                    int &xint = XMM_xmap[x];
-                    *(pDst+y_dstStep+x ) = *(pSrc+ yint_srcStep+xint);
-                }
-            }
-            else if(chSrc == C4)
-            {   XMM128 pp={0};
-			    for (x=newDstX; x<(dstRoi.x+newDstWidth)-4; x = x + 4) {
-				    for(int xx = 0; xx < 4; xx++)
-                    { 
-                        int &xint = XMM_xmap[x + xx];
-					    pp.u32[xx] = *((Fw32u*)(pSrc+ yint_srcStep+xint*channel));
-                    }
-                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel), pp.i);
-			    }
-                for (; x<(dstRoi.x+newDstWidth); x++ )
-                {
-                    int &xint = XMM_xmap[x];
-                    *((Fw32u*)(pDst+y_dstStep+x*channel )) = *((Fw32u*)(pSrc+ yint_srcStep+xint*channel));
-                }
-            }
-            else if(chSrc == AC4)
-            {   
-                for (x=newDstX; x<(dstRoi.x+newDstWidth); x++ )
-                {
-                    int &xint = XMM_xmap[x];
-                    *((Fw16u*)(pDst+y_dstStep+x*channel) ) = *((Fw16u*)(pSrc+ yint_srcStep+xint*channel));
-                    *(pDst+y_dstStep+x*channel + 2) = *(pSrc+ yint_srcStep+xint*channel + 2);
-                }
-            }
-            else //if(chSrc == C3)
-            {   //XMM128 pp={0};
-                Fw8u *pp = (Fw8u*)fwMalloc(16 * 3);
-			    for (x=newDstX; x<(dstRoi.x+newDstWidth)-16; x = x + 16) {
-                   for(int xx = 0; xx < 16; xx++)
-                    { 
-                        int &xint = XMM_xmap[x + xx];
-                        *((Fw16u*)(pp + xx * channel) ) = *((Fw16u*)(pSrc+ yint_srcStep+xint*channel));
-                        *(pp + xx * channel + 2) = *(pSrc+ yint_srcStep+xint*channel + 2);
-                    }
-                   __m128i xmm0 = _mm_load_si128((__m128i*)pp);
-                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel), xmm0);
-
-                   __m128i xmm1 = _mm_load_si128((__m128i*)(pp + 16));
-                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel + 16), xmm1);    
-
-                   __m128i xmm2 = _mm_load_si128((__m128i*)(pp + 32));
-                   _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x*channel + 32), xmm2);
-			    }
-                for (; x<(dstRoi.x+newDstWidth); x++ )
-                {
-                    int &xint = XMM_xmap[x];
-                    *(pDst+y_dstStep+x*channel ) = *(pSrc+ yint_srcStep+xint*channel);
-                    *(pDst+y_dstStep+x*channel + 1) = *(pSrc+ yint_srcStep+xint*channel + 1);
-                    *(pDst+y_dstStep+x*channel + 2) = *(pSrc+ yint_srcStep+xint*channel + 2);
-                }
-                fwFree(pp);
-            }
-		}
         //if no point is handled, return warning
 		if (flagX == 0 || flagY == 0) return fwStsWrongIntersectQuad; //todo
 
@@ -1079,8 +1205,18 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_16u_C1R)(
 	Fw16u *pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 	double xShift, double yShift, int interpolation, Fw8u *pBuffer)
 {
-	return My_FW_ResizeSqrPixel<Fw16u, C1, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+	switch( Dispatch::Type<DT_SSE2>() )
+	{
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_ResizeSqrPixel_SSE2<Fw16u, C1, DT_SSE2>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
 		yFactor, xShift, yShift, interpolation, pBuffer);
+			
+	default: 
+	        return My_FW_ResizeSqrPixel<Fw16u, C1, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+		yFactor, xShift, yShift, interpolation, pBuffer);
+    }
 }
 
 // unsigned short data type with 3 channels
@@ -1089,8 +1225,18 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_16u_C3R)(
 	Fw16u *pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 	double xShift, double yShift, int interpolation, Fw8u *pBuffer)
 {
-	return My_FW_ResizeSqrPixel<Fw16u, C3, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+	switch( Dispatch::Type<DT_SSE2>() )
+	{
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_ResizeSqrPixel_SSE2<Fw16u, C3, DT_SSE2>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
 		yFactor, xShift, yShift, interpolation, pBuffer);
+			
+	default: 
+	        return My_FW_ResizeSqrPixel<Fw16u, C3, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+		yFactor, xShift, yShift, interpolation, pBuffer);
+    }
 }
 
 // unsigned short data type with 4 channels
@@ -1099,8 +1245,18 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_16u_C4R)(
 	Fw16u *pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 	double xShift, double yShift, int interpolation, Fw8u *pBuffer)
 {
-	return My_FW_ResizeSqrPixel<Fw16u, C4, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+	switch( Dispatch::Type<DT_SSE2>() )
+	{
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_ResizeSqrPixel_SSE2<Fw16u, C4, DT_SSE2>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
 		yFactor, xShift, yShift, interpolation, pBuffer);
+			
+	default: 
+	        return My_FW_ResizeSqrPixel<Fw16u, C4, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+		yFactor, xShift, yShift, interpolation, pBuffer);
+    }
 }
 
 // unsigned short data type with 4(3+alpha) channels
@@ -1109,8 +1265,18 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_16u_AC4R)(
 	Fw16u *pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 	double xShift, double yShift, int interpolation, Fw8u *pBuffer)
 {
-	return My_FW_ResizeSqrPixel<Fw16u, AC4, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+	switch( Dispatch::Type<DT_SSE2>() )
+	{
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_ResizeSqrPixel_SSE2<Fw16u, AC4, DT_SSE2>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
 		yFactor, xShift, yShift, interpolation, pBuffer);
+			
+	default: 
+	        return My_FW_ResizeSqrPixel<Fw16u, AC4, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+		yFactor, xShift, yShift, interpolation, pBuffer);
+    }
 }
 
 //float data with 1 channel
@@ -1119,8 +1285,18 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_32f_C1R)(
 	Fw32f *pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 	double xShift, double yShift, int interpolation, Fw8u *pBuffer)
 {
-	return My_FW_ResizeSqrPixel<Fw32f, C1, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+	switch( Dispatch::Type<DT_SSE2>() )
+	{
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_ResizeSqrPixel_SSE2<Fw32f, C1, DT_SSE2>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
 		yFactor, xShift, yShift, interpolation, pBuffer);
+			
+	default: 
+	        return My_FW_ResizeSqrPixel<Fw32f, C1, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+		yFactor, xShift, yShift, interpolation, pBuffer);
+    }
 }
 
 //float data with 3 channels
@@ -1129,8 +1305,18 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_32f_C3R)(
 	Fw32f *pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 	double xShift, double yShift, int interpolation, Fw8u *pBuffer)
 {
-	return My_FW_ResizeSqrPixel<Fw32f, C3, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+	switch( Dispatch::Type<DT_SSE2>() )
+	{
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_ResizeSqrPixel_SSE2<Fw32f, C3, DT_SSE2>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
 		yFactor, xShift, yShift, interpolation, pBuffer);
+			
+	default: 
+	        return My_FW_ResizeSqrPixel<Fw32f, C3, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+		yFactor, xShift, yShift, interpolation, pBuffer);
+    }
 }
 
 //float data with 4 channels
@@ -1139,8 +1325,18 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_32f_C4R)(
 	Fw32f *pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 	double xShift, double yShift, int interpolation, Fw8u *pBuffer)
 {
-	return My_FW_ResizeSqrPixel<Fw32f, C4, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+	switch( Dispatch::Type<DT_SSE2>() )
+	{
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_ResizeSqrPixel_SSE2<Fw32f, C4, DT_SSE2>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
 		yFactor, xShift, yShift, interpolation, pBuffer);
+			
+	default: 
+	        return My_FW_ResizeSqrPixel<Fw32f, C4, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+		yFactor, xShift, yShift, interpolation, pBuffer);
+    }
 }
 
 //float data with 3+ alpha channels, destination alpha channel data will not be changed.
@@ -1149,8 +1345,18 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_32f_AC4R)(
 	Fw32f *pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
 	double xShift, double yShift, int interpolation, Fw8u *pBuffer)
 {
-	return My_FW_ResizeSqrPixel<Fw32f, AC4, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+	switch( Dispatch::Type<DT_SSE2>() )
+	{
+    case DT_SSE3:
+	case DT_SSE2:
+		if (interpolation==FWI_INTER_NN) 
+			return My_FW_ResizeSqrPixel_SSE2<Fw32f, AC4, DT_SSE2>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
 		yFactor, xShift, yShift, interpolation, pBuffer);
+			
+	default: 
+	        return My_FW_ResizeSqrPixel<Fw32f, AC4, DT_REFR>(pSrc, srcSize, srcStep, srcRoi, pDst, dstStep, dstRoi, xFactor,
+		yFactor, xShift, yShift, interpolation, pBuffer);
+    }
 }
 
 //8u data with 3 planars
