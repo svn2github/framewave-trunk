@@ -13,7 +13,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMax_16s)(const Fw16s* pSrc, int len, Fw16s* p
 	if (len == 1) { *pMax = pSrc[0]; return fwStsNoErr;}
 	FwStatus retStatus;
 	StatMax_16s data;
-	retStatus = OPT_LEVEL::fex<StatMax_16s>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMax_16s>(data,pSrc,len); 
 	*pMax = data.max;
 	return retStatus;
 }
@@ -23,7 +23,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMax_32s)(const Fw32s* pSrc, int len, Fw32s* p
 	if (len == 1) { *pMax = pSrc[0]; return fwStsNoErr;}
 	FwStatus retStatus;	
 	StatMax_32s data;
-	retStatus = OPT_LEVEL::fex<StatMax_32s>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMax_32s>(data,pSrc,len); 
 	*pMax = data.max;
 	return retStatus;
 }
@@ -32,7 +32,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMax_32f)(const Fw32f* pSrc, int len, Fw32f* p
 	if (len == 1) { *pMax = pSrc[0]; return fwStsNoErr;}
 	FwStatus retStatus;	
 	StatMax_32f data;
-	retStatus = OPT_LEVEL::fex<StatMax_32f>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMax_32f>(data,pSrc,len); 
 	*pMax = data.max;
 	return retStatus;
 }
@@ -41,7 +41,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMax_64f)(const Fw64f* pSrc, int len, Fw64f* p
 	if (len == 1) { *pMax = pSrc[0]; return fwStsNoErr;}
 	FwStatus retStatus;	
 	StatMax_64f data;
-	retStatus = OPT_LEVEL::fex<StatMax_64f>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMax_64f>(data,pSrc,len); 
 	*pMax = data.max;
 	return retStatus;
 }
@@ -51,7 +51,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMin_16s)(const Fw16s* pSrc, int len, Fw16s* p
 	if (len == 1) { *pMin = pSrc[0]; return fwStsNoErr;}
 	FwStatus retStatus;
 	StatMin_16s data;
-	retStatus = OPT_LEVEL::fex<StatMin_16s>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMin_16s>(data,pSrc,len); 
 	*pMin = data.min;
 	return retStatus;
 }
@@ -60,7 +60,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMin_32s)(const Fw32s* pSrc, int len, Fw32s* p
 	if (len == 1) { *pMin = pSrc[0]; return fwStsNoErr;}
 	FwStatus retStatus;
 	StatMin_32s data;
-	retStatus = OPT_LEVEL::fex<StatMin_32s>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMin_32s>(data,pSrc,len); 
 	*pMin = data.min;
 	return retStatus;
 }
@@ -69,7 +69,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMin_32f)(const Fw32f* pSrc, int len, Fw32f* p
 	if (len == 1) { *pMin = pSrc[0]; return fwStsNoErr;}
 	FwStatus retStatus;
 	StatMin_32f data;
-	retStatus = OPT_LEVEL::fex<StatMin_32f>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMin_32f>(data,pSrc,len); 
 	*pMin = data.min;
 	return retStatus;
 }
@@ -78,7 +78,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMin_64f)(const Fw64f* pSrc, int len, Fw64f* p
 	if (len == 1) { *pMin = pSrc[0]; return fwStsNoErr;}
 	FwStatus retStatus;
 	StatMin_64f data;
-	retStatus = OPT_LEVEL::fex<StatMin_64f>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMin_64f>(data,pSrc,len); 
 	*pMin = data.min;
 	return retStatus;
 }
@@ -88,7 +88,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinMax_8u)(const Fw8u* pSrc, int len, Fw8u* p
 	if (len == 1) { *pMin = *pMax =  pSrc[0]; return fwStsNoErr;}
 	FwStatus retStatus;
 	StatMinMax_8u data;
-	retStatus = OPT_LEVEL::fex<StatMinMax_8u>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMinMax_8u>(data,pSrc,len); 
 	*pMin = data.min;
 	*pMax = data.max;
 	return retStatus;
@@ -98,7 +98,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinMax_16u)(const Fw16u* pSrc, int len, Fw16u
 	if (len == 1) { *pMin = *pMax =  pSrc[0]; return fwStsNoErr;}
 	FwStatus retStatus;
 	StatMinMax_16u data;
-	retStatus = OPT_LEVEL::fex<StatMinMax_16u>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMinMax_16u>(data,pSrc,len); 
 	*pMin = data.min;
 	*pMax = data.max;
 	return retStatus;
@@ -108,7 +108,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinMax_16s)(const Fw16s* pSrc, int len, Fw16s
 	if (len == 1) { *pMin = *pMax =  pSrc[0]; return fwStsNoErr;}
 	FwStatus retStatus;
 	StatMinMax_16s data;
-	retStatus = OPT_LEVEL::fex<StatMinMax_16s>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMinMax_16s>(data,pSrc,len); 
 	*pMin = data.min;
 	*pMax = data.max;
 	return retStatus;
@@ -118,7 +118,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinMax_32u)(const Fw32u* pSrc, int len, Fw32u
 	if (len == 1) { *pMin = *pMax =  pSrc[0]; return fwStsNoErr;}
 	FwStatus retStatus;
 	StatMinMax_32u data;
-	retStatus = OPT_LEVEL::fex<StatMinMax_32u>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMinMax_32u>(data,pSrc,len); 
 	*pMin = data.min;
 	*pMax = data.max;
 	return retStatus;
@@ -128,7 +128,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinMax_32s)(const Fw32s* pSrc, int len, Fw32s
 	if (len == 1) { *pMin = *pMax =  pSrc[0]; return fwStsNoErr;}
 	FwStatus retStatus;
 	StatMinMax_32s data;
-	retStatus = OPT_LEVEL::fex<StatMinMax_32s>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMinMax_32s>(data,pSrc,len); 
 	*pMin = data.min;
 	*pMax = data.max;
 	return retStatus;
@@ -138,7 +138,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinMax_32f)(const Fw32f* pSrc, int len, Fw32f
 	if (len == 1) { *pMin = *pMax =  pSrc[0]; return fwStsNoErr;}
 	FwStatus retStatus;
 	StatMinMax_32f data;
-	retStatus = OPT_LEVEL::fex<StatMinMax_32f>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMinMax_32f>(data,pSrc,len);
 	*pMin = data.min;
 	*pMax = data.max;
 	return retStatus;
@@ -148,7 +148,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinMax_64f)(const Fw64f* pSrc, int len, Fw64f
 	if (len == 1) { *pMin = *pMax =  pSrc[0]; return fwStsNoErr;}
 	FwStatus retStatus;
 	StatMinMax_64f data;
-	retStatus = OPT_LEVEL::fex<StatMinMax_64f>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMinMax_64f>(data,pSrc,len); 
 	*pMin = data.min;
 	*pMax = data.max;
 	return retStatus;
@@ -160,7 +160,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMaxAbs_16s)(const Fw16s* pSrc, int len, Fw16s
 	if( FW_REF::SizeNotOK( len   ) ) return fwStsSizeErr;
 
 	StatMinMax_16s data;
-	retStatus = OPT_LEVEL::fex<StatMinMax_16s>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMinMax_16s>(data,pSrc,len); 
 
 	if(data.min == (Fw16s)FW_REF::Limits<S16>::MinValue())	*pMaxAbs = (Fw16s)FW_REF::Limits<S16>::MaxValue();	
 	else 	*pMaxAbs = MAX<Fw16s>(FW_REF::ABS_S<S16>::ABS( data.min ),FW_REF::ABS_S<S16>::ABS( data.max ));
@@ -182,7 +182,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMaxAbs_32s)(const Fw32s* pSrc, int len, Fw32s
 
 	FwStatus retStatus;
 	StatMaxAbs_32s data;
-	retStatus = OPT_LEVEL::fex<StatMaxAbs_32s>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMaxAbs_32s>(data,pSrc,len);
 	*pMaxAbs = data.max;
 	return retStatus;	
 }
@@ -192,7 +192,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinAbs_16s)(const Fw16s* pSrc, int len, Fw16s
 {
 	FwStatus retStatus;
 	StatMinAbs_16s data;
-	retStatus = OPT_LEVEL::fex<StatMinAbs_16s>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMinAbs_16s>(data,pSrc,len); 
 
     Fw16s complement, sign  ;		//Finding the absolute value
     sign = (Fw16s)data.min >> 15;
@@ -208,7 +208,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinAbs_32s)(const Fw32s* pSrc, int len, Fw32s
 {
 	FwStatus retStatus;
 	StatMinAbs_32s data;
-	retStatus = OPT_LEVEL::fex<StatMinAbs_32s>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMinAbs_32s>(data,pSrc,len);
    
     Fw32s complement, sign  ;		//Finding the absolute value
     sign = (Fw32s)data.min >> 31;
@@ -231,7 +231,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMaxIndx_16s)(const Fw16s* pSrc, int len, Fw16
 	
 
 	StatMax_16s data;
-	retStatus = OPT_LEVEL::fex<StatMax_16s>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMax_16s>(data,pSrc,len); 
 	*pMax = data.max;
 
 	int i;
@@ -341,7 +341,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinIndx_16s)(const Fw16s* pSrc, int len, Fw16
 	if( FW_REF::SizeNotOK( len   ) ) return fwStsSizeErr;
 
 	StatMin_16s data;
-	retStatus = OPT_LEVEL::fex<StatMin_16s>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMin_16s>(data,pSrc,len); 
 	*pMin = data.min;
 
 	int i;
@@ -401,7 +401,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinIndx_32f)(const Fw32f* pSrc, int len, Fw32
 
 
 	StatMin_32f data;
-	retStatus = OPT_LEVEL::fex<StatMin_32f>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMin_32f>(data,pSrc,len); 
 	*pMin = data.min;
 
 	int i;
@@ -418,7 +418,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinIndx_64f)(const Fw64f* pSrc, int len, Fw64
 	if( FW_REF::SizeNotOK( len   ) ) return fwStsSizeErr;
 
 	StatMin_64f data;
-	retStatus = OPT_LEVEL::fex<StatMin_64f>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMin_64f>(data,pSrc,len); 
 	*pMin = data.min;
 
 	int i;
@@ -438,7 +438,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMaxAbsIndx_16s)(const Fw16s* pSrc, int len, F
 	if( FW_REF::SizeNotOK( len   ) ) return fwStsSizeErr;
 
 	StatMinMax_16s data;
-	retStatus = OPT_LEVEL::fex<StatMinMax_16s>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMinMax_16s>(data,pSrc,len);
 	*pMin = data.min;
 	*pMax = data.max;
 
@@ -585,7 +585,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinMaxIndx_8u)(const Fw8u* pSrc, int len, Fw8
 	if( FW_REF::SizeNotOK( len   ) ) return fwStsSizeErr;	
 
 	StatMinMax_8u data;
-	retStatus = OPT_LEVEL::fex<StatMinMax_8u>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMinMax_8u>(data,pSrc,len); 
 	*pMin = data.min;
 	*pMax = data.max;
 
@@ -607,7 +607,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinMaxIndx_16u)(const Fw16u* pSrc, int len, F
 	if( FW_REF::SizeNotOK( len   ) ) return fwStsSizeErr;
 
 	StatMinMax_16u data;
-	retStatus = OPT_LEVEL::fex<StatMinMax_16u>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMinMax_16u>(data,pSrc,len); 
 	*pMin = data.min;
 	*pMax = data.max;
 
@@ -625,7 +625,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinMaxIndx_16s)(const Fw16s* pSrc, int len, F
 	if( FW_REF::SizeNotOK( len   ) ) return fwStsSizeErr;
 	
 	StatMinMax_16s data;
-	retStatus = OPT_LEVEL::fex<StatMinMax_16s>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMinMax_16s>(data,pSrc,len);
 	*pMin = data.min;
 	*pMax = data.max;
 
@@ -744,7 +744,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMinMaxIndx_32f)(const Fw32f* pSrc, int len, F
 
 
 	StatMinMax_32f data;
-	retStatus = OPT_LEVEL::fex<StatMinMax_32f>(data,pSrc,len,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatMinMax_32f>(data,pSrc,len); 
 	*pMin = data.min;
 	*pMax = data.max;
 	
