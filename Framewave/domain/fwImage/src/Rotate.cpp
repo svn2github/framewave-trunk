@@ -131,7 +131,7 @@ void My_FW_Rotate_Region_8u_SSE2(float xltop, float yltop, float xlbot, float yl
     float* cx_coeff00 = (float*)fwMalloc((dstRoi.width) * sizeof(float));
     float* cx_coeff01 = (float*)fwMalloc((dstRoi.width) * sizeof(float));
 
-    for (x=dstRoi.x; x<=(dstRoi.x+dstRoi.width); x++) 
+    for (x=dstRoi.x; x<(dstRoi.x+dstRoi.width); x++) 
     {
         cx[x - dstRoi.x] = x - coeffs[0][2];
         cx_coeff00[x - dstRoi.x] = cx[x - dstRoi.x] * coeffs[0][0];
@@ -404,7 +404,7 @@ static FwStatus My_FW_Rotate_8u_SSE2(const TS* pSrc, FwiSize srcSize, int srcSte
         float* cx_coeff00 = (float*)fwMalloc((dstRoi.width) * sizeof(float));
         float* cx_coeff01 = (float*)fwMalloc((dstRoi.width) * sizeof(float));
 
-        for (x=dstRoi.x; x<=(dstRoi.x+dstRoi.width); x++) 
+        for (x=dstRoi.x; x<(dstRoi.x+dstRoi.width); x++) 
         {
             cx[x - dstRoi.x] = x - coeffs[0][2];
             cx_coeff00[x - dstRoi.x] = cx[x - dstRoi.x] * coeffs[0][0];
@@ -653,7 +653,7 @@ void My_FW_Rotate_Region_16u_SSE2(float xltop, float yltop, float xlbot, float y
     float* cx_coeff00 = (float*)fwMalloc((dstRoi.width) * sizeof(float));
     float* cx_coeff01 = (float*)fwMalloc((dstRoi.width) * sizeof(float));
 
-    for (x=dstRoi.x; x<=(dstRoi.x+dstRoi.width); x++) 
+    for (x=dstRoi.x; x<(dstRoi.x+dstRoi.width); x++) 
     {
         cx[x - dstRoi.x] = x - coeffs[0][2];
         cx_coeff00[x - dstRoi.x] = cx[x - dstRoi.x] * coeffs[0][0];
@@ -1187,7 +1187,7 @@ void My_FW_Rotate_Region_32f_SSE2(float xltop, float yltop, float xlbot, float y
     float* cx_coeff00 = (float*)fwMalloc((dstRoi.width) * sizeof(float));
     float* cx_coeff01 = (float*)fwMalloc((dstRoi.width) * sizeof(float));
 
-    for (x=dstRoi.x; x<=(dstRoi.x+dstRoi.width); x++) 
+    for (x=dstRoi.x; x<(dstRoi.x+dstRoi.width); x++) 
     {
         cx[x - dstRoi.x] = x - coeffs[0][2];
         cx_coeff00[x - dstRoi.x] = cx[x - dstRoi.x] * coeffs[0][0];
@@ -1238,7 +1238,7 @@ void My_FW_Rotate_Region_32f_SSE2(float xltop, float yltop, float xlbot, float y
 				            dst.f32[xxx] =	*(pSrc+ ymap*srcStep+xmap);
                             *flag = 1;
                         }
-                    _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x), dst.i);
+                    _mm_storeu_ps((pDst+y_dstStep+x), dst.f);
 	            }
                 for (; x<=xend; x++) {
 
@@ -1286,7 +1286,7 @@ void My_FW_Rotate_Region_32f_SSE2(float xltop, float yltop, float xlbot, float y
                             if(chSrc == C4)
                             {
                                 dst.f = _mm_loadu_ps(pSrc+ ymap*srcStep+xmap * channel);
-                                _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x * channel), dst.i);
+                                _mm_storeu_ps((pDst+y_dstStep+(x+xxx) * channel), dst.f);
                             }
                             else 
                             {   
@@ -1313,10 +1313,9 @@ void My_FW_Rotate_Region_32f_SSE2(float xltop, float yltop, float xlbot, float y
                     
                     if(chSrc == C4)
                     {
-                        *(pDst+y_dstStep+(x) * channel) = *(pSrc+ ymap*srcStep+xmap * channel);
-                        *(pDst+y_dstStep+(x) * channel + 1) = *(pSrc+ ymap*srcStep+xmap * channel + 1);
-                        *(pDst+y_dstStep+(x) * channel + 2) = *(pSrc+ ymap*srcStep+xmap * channel + 2);
-                        *(pDst+y_dstStep+(x) * channel + 3) = *(pSrc+ ymap*srcStep+xmap * channel + 3);
+                        dst.f = _mm_loadu_ps(pSrc+ ymap*srcStep+xmap * channel);
+                        _mm_storeu_ps((pDst+y_dstStep+(x) * channel), dst.f);
+
                     }
                     else 
                     {   
@@ -1514,15 +1513,14 @@ static FwStatus My_FW_Rotate_32f_SSE2(const Fw32f* pSrc, FwiSize srcSize, int sr
 				            dst.f32[xxx] =	*(pSrc+ ymap*srcStep+xmap);
                             flag = 1;
                         }
-                    _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x), dst.i);
+                    _mm_storeu_ps((pDst+y_dstStep+x), dst.f);
 	            }
                 for (; x<=xend; x++) {
 
                     int xmap = (int)(cx_coeff00[ x - dstRoi.x] + tx);
                     int ymap = (int)(cx_coeff01[ x - dstRoi.x] + ty);
 
-                    if (xmap < 0 || xmap > srcRoi.width - 1 ||
-		                    ymap < 0 || ymap > srcRoi.height- 1) {
+                    if (xmap < 0 || xmap > srcRoi.width - 1 ||ymap < 0 || ymap > srcRoi.height- 1) {
 			                continue;
 	                }
 
@@ -1561,10 +1559,8 @@ static FwStatus My_FW_Rotate_32f_SSE2(const Fw32f* pSrc, FwiSize srcSize, int sr
 
                             if(chSrc == C4)
                             {
-                                *(pDst+y_dstStep+(x+xxx) * channel) = *(pSrc+ ymap*srcStep+xmap * channel);
-                                *(pDst+y_dstStep+(x+xxx) * channel + 1) = *(pSrc+ ymap*srcStep+xmap * channel + 1);
-                                *(pDst+y_dstStep+(x+xxx) * channel + 2) = *(pSrc+ ymap*srcStep+xmap * channel + 2);
-                                *(pDst+y_dstStep+(x+xxx) * channel + 3) = *(pSrc+ ymap*srcStep+xmap * channel + 3);
+                                dst.f = _mm_loadu_ps(pSrc+ ymap*srcStep+xmap * channel);
+                                _mm_storeu_ps(pDst+y_dstStep+(x+xxx) * channel, dst.f);
                             }
                             else //if(chSrc == AC4)
                             {   
@@ -1592,7 +1588,7 @@ static FwStatus My_FW_Rotate_32f_SSE2(const Fw32f* pSrc, FwiSize srcSize, int sr
                     if(chSrc == C4)
                     {
                         dst.f = _mm_loadu_ps(pSrc+ ymap*srcStep+xmap * channel);
-                        _mm_storeu_si128((__m128i *)(pDst+y_dstStep+x * channel), dst.i);
+                        _mm_storeu_ps(pDst+y_dstStep+x * channel, dst.f);
                     }
                     else 
                     {   
