@@ -1766,7 +1766,9 @@ namespace FiltersGeneral
                         pd = FW_REF::Offset( pd, data[i].dstRoiSize.height * dstStep );
                     }
 
-                    ThreadPool::Wait();			
+                    ThreadPool::Wait();
+					//SKiran: Freeing pKernelBuffer in response to Bug# 1906299
+					fwFree(pKernelBuffer);
                     return fwStsNoErr; 
                 }
         
@@ -1889,7 +1891,9 @@ namespace FiltersGeneral
                         pd = FW_REF::Offset( pd, data[i].dstRoiSize.height * dstStep );
                     }
 
-                    ThreadPool::Wait();			
+                    ThreadPool::Wait();
+					//SKiran: Freeing pKernelBuffer in response to Bug# 1906299
+					fwFree(pKernelBuffer);
                     return fwStsNoErr; 
                 }
         
