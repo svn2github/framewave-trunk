@@ -655,12 +655,10 @@ int IdctQuant_LS_SSE2(const Fw16s *pSrc, Fw8u *pDst, int dstStp, const Fw16u *pQ
 	__m128i rxmm0,  rxmm1,  rxmm2,  rxmm3,  rxmm4,  rxmm5,  rxmm6,  rxmm7;
 	__m128i rxmm8,  rxmm9,  rxmm10, rxmm11, rxmm12, rxmm13, rxmm14, rxmm15;
 	__m128i quantCoef;
+    SYS_FORCEALIGN_16 Fw16s pedx[64];
 	Fw16s *peax = (Fw16s*)pSrc;
-	Fw16s *pedx;
 	Fw16s *pesi, *pecx;
 	Fw8u *pedi  = pDst;
-
-    pedx = (Fw16s *) fwMalloc(128); //64 array of Fw16s type
 
 	pesi = (Fw16s *)idct_weighting;
 	pecx = (Fw16s *)(idct_weighting+64);
@@ -1047,7 +1045,6 @@ int IdctQuant_LS_SSE2(const Fw16s *pSrc, Fw8u *pDst, int dstStp, const Fw16u *pQ
 	rxmm3 = _mm_packus_epi16(rxmm3, rxmm3);
 	_mm_storel_epi64((__m128i *)(pedi+dstStp*6), rxmm3);	// row 6
 
-    fwFree(pedx);
 
 	return(0);
 }
