@@ -32,7 +32,7 @@ namespace OPT_LEVEL
 
                 if(strend == str)
                 {
-                    index = (src - lenfind) - start ;
+                    index = ((int)src - lenfind) - (int)start ;
                     return index;
                 }
 
@@ -61,7 +61,7 @@ namespace OPT_LEVEL
 
                 if(strend == str && *strend == *src)
                 {
-                    index = (end- start - lenfind + 1) ;
+                    index = ((int)(end- start) - lenfind + 1) ;
                     return index;
                 }
             }
@@ -83,7 +83,7 @@ namespace OPT_LEVEL
 
             if(substr == *srcstr)
             {
-                index = srcstr - start;
+                index = (int)(srcstr - start);
             }
             return index;
         }
@@ -100,7 +100,7 @@ namespace OPT_LEVEL
 
             if(substr == *end)
             {
-                index = end - start;
+                index = (int)(end - start);
             }
             return index;
         }
