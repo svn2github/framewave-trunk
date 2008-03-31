@@ -148,6 +148,7 @@ namespace OPT_LEVEL
 		//Multi-thread setup
 		ThreadPool::Init();
 		int total_thread_num = ThreadPool::ThreadCount();
+        getOptThreadNum(total_thread_num, srcRoi);
 
 		FW_Resize_8u_Linear resizePar[MAX_THREADS];
 
@@ -321,6 +322,7 @@ namespace OPT_LEVEL
 		//Multi-thread setup
 		ThreadPool::Init();
 		int total_thread_num = ThreadPool::ThreadCount();
+        getOptThreadNum(total_thread_num, srcRoi);
 
 		////debug
 		//total_thread_num=1;
@@ -478,6 +480,7 @@ namespace OPT_LEVEL
 		//Multi-thread setup
 		ThreadPool::Init();
 		int total_thread_num = ThreadPool::ThreadCount();
+        getOptThreadNum(total_thread_num, srcRoi);
 		FW_Resize_32f_Linear resizePar[MAX_THREADS];
 
 		if(total_thread_num > 1) {
@@ -1513,6 +1516,7 @@ namespace OPT_LEVEL
 				int threadNum;
 
 				if(total_thread_num > MAX_THREADS) total_thread_num=MAX_THREADS;
+                getOptThreadNum(total_thread_num, srcRoi);
 				int threadheight = resizeHeight/total_thread_num;
 
 				//seperate the region to be multi-threaded
@@ -1625,6 +1629,7 @@ namespace OPT_LEVEL
 			//Multi-thread setup
 			ThreadPool::Init();
 			int total_thread_num = ThreadPool::ThreadCount();
+            getOptThreadNum(total_thread_num, srcRoi);
 			FW_Resize_16u_NN resizePar[MAX_THREADS];
 
 			if(total_thread_num > 1) {
@@ -1743,6 +1748,7 @@ namespace OPT_LEVEL
 			//Multi-thread setup
 			ThreadPool::Init();
 			int total_thread_num = ThreadPool::ThreadCount();
+            getOptThreadNum(total_thread_num, srcRoi);
 			FW_Resize_32f_NN resizePar[MAX_THREADS];
 
 			if(total_thread_num > 1) {
