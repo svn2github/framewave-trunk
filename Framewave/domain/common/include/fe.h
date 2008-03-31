@@ -214,9 +214,364 @@ struct RegDesc
     const static U32 REGCOUNT = (BYTES+15)/16;                                    
 };
 
-
 struct LoadStoreModules 
-{
+{   
+    // Single precision floating point load/store
+    //REFR, Unaligned
+   template< U32 bytes, DispatchType dt, IsAlign ia, IsStream is >             
+   struct MEMf
+   {
+        ISV Load ( XMM128 * reg, const void* src )
+        { 
+            reg;
+            src; 
+        }
+        ISV Store( XMM128 * reg,       void* dst )
+        { 
+            reg;
+            dst;
+        }
+   };
+
+ 
+   template< U32 bytes >
+   struct MEMf< bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >                      
+   {
+
+      //SSE2 Unaligned Load of specified number of bytes
+      ISV Load( XMM128 * reg, const void* src )   
+      {   float * mem = (float*)src;   
+         switch( bytes )
+         {
+         case 64:   reg[3].f = _mm_loadu_ps( mem + (3 * 4) );      
+         case 48:   reg[2].f = _mm_loadu_ps( mem + (2 * 4) );
+         case 32:   reg[1].f = _mm_loadu_ps( mem + (1 * 4) );
+         case 16:   reg[0].f = _mm_loadu_ps( mem + 0 );  
+                    break;
+         case 24:   CBL_OPTLEVEL::Load_192(reg[0].i, reg[1].i, (__m128i*)mem);                   
+                    break;
+         case 12:   CBL_OPTLEVEL::Load_96 (reg[0].i, (__m128i*)mem);
+                    break;
+         case  8:   CBL_OPTLEVEL::Load_64 (reg[0].i, (__m128i*)mem);
+                    break;
+         case  4:   CBL_OPTLEVEL::Load_32 (reg[0].i, (__m128i*)mem);
+                    break;
+         case  3:   CBL_OPTLEVEL::Load_24 (reg[0].i, (__m128i*)mem);
+                    break;
+         case  2:   CBL_OPTLEVEL::Load_16 (reg[0].i, (__m128i*)mem);
+                    break;
+         case  1:   CBL_OPTLEVEL::Load_8  (reg[0].i, (__m128i*)mem);
+                    break;
+         default:   assert(false);
+         }
+      }
+
+      //SSE2 Unaligned Store of specified number of bytes
+      ISV Store( XMM128 * reg, void* dst )
+      {   float* mem = (float*)dst;
+         switch( bytes )
+         {
+         case 64:   _mm_storeu_ps( mem + (3 * 4), reg[3].f );                     
+         case 48:   _mm_storeu_ps( mem + (2 * 4), reg[2].f );
+         case 32:   _mm_storeu_ps( mem + (1 * 4), reg[1].f );
+         case 16:   _mm_storeu_ps( mem + 0, reg[0].f );
+                    break;
+         case 24:   CBL_OPTLEVEL::Store_192((__m128i*)mem, reg[0].i, reg[1].i);
+                    break;
+         case 12:   CBL_OPTLEVEL::Store_96 ((__m128i*)mem, reg[0].i);
+                    break;
+         case  8:   CBL_OPTLEVEL::Store_64 ((__m128i*)mem, reg[0].i);
+                    break;
+         case  4:   CBL_OPTLEVEL::Store_32 ((__m128i*)mem, reg[0].i);
+                    break;   
+         case  3:   CBL_OPTLEVEL::Store_24 ((__m128i*)mem, reg[0].i);
+                    break;
+         case  2:   CBL_OPTLEVEL::Store_16 ((__m128i*)mem, reg[0].i);
+                    break;
+         case  1:   CBL_OPTLEVEL::Store_8  ((__m128i*)mem, reg[0].i);
+                    break;
+         default:   assert(false);
+         }
+      }
+   };
+
+   template< U32 bytes >
+   struct MEMf< bytes, DT_F10H, ALIGN_FLSE, STREAM_FLSE >                       
+   {
+        //F10H Unaligned Load falls back to SSE2 Unaligned Load
+		ISV Load( XMM128 * reg, const void* src ) { MEMf<bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Load(reg, src);  }
+        //F10H Unaligned Store falls back to SSE2 Unaligned Store
+		ISV Store( XMM128 * reg, void* dst )		{ MEMf<bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Store(reg, dst); }
+   };
+
+   template< U32 bytes >
+   struct MEMf< bytes, DT_SSE2, ALIGN_FLSE, STREAM_TRUE >                       
+   {
+       // SSE2, Unaligned, Stream
+		ISV Load( XMM128 * reg, const void* src ) { MEMf<bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Load(reg, src);  }
+		ISV Store( XMM128 * reg, void* dst )		{ MEMf<bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Store(reg, dst); }
+   };
+
+   template< U32 bytes >
+   struct MEMf< bytes, DT_F10H, ALIGN_FLSE, STREAM_TRUE >                      
+   {    
+        // F10H, Unaligned, Stream
+		ISV Load( XMM128 * reg, const void* src ) { MEMf<bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Load(reg, src);  }
+		ISV Store( XMM128 * reg, void* dst )		{ MEMf<bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Store(reg, dst); }
+   };
+
+   template< U32 bytes >
+   struct MEMf< bytes, DT_SSE2, ALIGN_TRUE, STREAM_FLSE >                       
+   {
+      //SSE2 Aligned Load of specified number of bytes
+      ISV Load( XMM128 * reg, const void* src )                              
+      {   float * mem = (float*)src;      
+         switch( bytes )
+         {
+         case 64:   reg[3].f = _mm_load_ps( mem + (3 * 4) );                      
+         case 48:   reg[2].f = _mm_load_ps( mem + (2 * 4) );
+         case 32:   reg[1].f = _mm_load_ps( mem + (1 * 4) );
+         case 16:   reg[0].f = _mm_load_ps( mem + 0 );                  
+                    break;
+         default:   
+             //Partial Aligned Load falls back to Unaligned case
+            MEMf< bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Load( reg, mem );   
+         }
+      }
+      //SSE2 Aligned Store of specified number of bytes
+      ISV Store( XMM128 * reg, void* dst )
+      {   float* mem = (float*)dst;
+         switch( bytes )
+         {
+         case 64:   _mm_store_ps( mem + (3 * 4), reg[3].f );                     
+         case 48:   _mm_store_ps( mem + (2 * 4), reg[2].f );
+         case 32:   _mm_store_ps( mem + (1 * 4), reg[1].f );
+         case 16:   _mm_store_ps( mem + 0, reg[0].f );                  
+                    break;
+         default:
+             //Partial Aligned Store falls back to Unaligned case
+            MEMf< bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Store( reg, mem ); 
+         }
+      }
+   };
+
+
+   template< U32 bytes >
+   struct MEMf< bytes, DT_F10H, ALIGN_TRUE, STREAM_FLSE >                       
+   {
+        //F10H Aligned Load falls back to SSE2 Aligned Load
+	    ISV Load( XMM128 * reg, const void* src ) { MEMf<bytes, DT_SSE2, ALIGN_TRUE, STREAM_FLSE >::Load(reg, src);  }
+		//F10H Aligned Store falls back to SSE2 Aligned Store
+        ISV Store( XMM128 * reg, void* dst )		{ MEMf<bytes, DT_SSE2, ALIGN_TRUE, STREAM_FLSE >::Store(reg, dst); }
+   };
+
+   template< U32 bytes >
+   struct MEMf< bytes, DT_SSE2, ALIGN_TRUE, STREAM_TRUE >                       
+   {
+      // SSE2, Aligned, Stream
+      ISV Load ( XMM128 * reg, const void* src ){ MEMf< bytes, DT_SSE2, ALIGN_TRUE, STREAM_FLSE >::Load( reg, src ); }
+      ISV Store( XMM128 * reg,       void* dst )
+      {   float* mem = (float*)dst;
+         switch( bytes )
+         {
+         case 64:   _mm_stream_ps( mem + (3 * 4), reg[3].f );                     
+         case 48:   _mm_stream_ps( mem + (2 * 4), reg[2].f );
+         case 32:   _mm_stream_ps( mem + (1 * 4), reg[1].f );
+         case 16:   _mm_stream_ps( mem + 0, reg[0].f );                 
+                    break;         
+         default:   
+            MEMf< bytes, DT_SSE2, ALIGN_FLSE, STREAM_TRUE >::Store( reg, mem ); 
+         }
+      }      
+   };
+
+   // F10H, Aligned, No Stream
+   template< U32 bytes >
+   struct MEMf< bytes, DT_F10H, ALIGN_TRUE, STREAM_TRUE >                       
+   {
+		ISV Load( XMM128 * reg, const void* src ) { MEMf<bytes, DT_SSE2, ALIGN_TRUE, STREAM_TRUE >::Load(reg, src);  }
+		ISV Store( XMM128 * reg, void* dst )		{ MEMf<bytes, DT_SSE2, ALIGN_TRUE, STREAM_TRUE >::Store(reg, dst); }
+   };
+    
+    
+    //Double load/store
+
+       // REFR, Unaligned
+   template< U32 bytes, DispatchType dt, IsAlign ia, IsStream is >             
+   struct MEMd
+   {
+        ISV Load ( XMM128 * reg, const void* src )
+        { 
+            reg;
+            src; 
+        }
+        ISV Store( XMM128 * reg,       void* dst )
+        { 
+            reg;
+            dst;
+        }
+   };
+
+ 
+   template< U32 bytes >
+   struct MEMd< bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >                      
+   {
+
+      //SSE2 Unaligned Load of specified number of bytes
+      ISV Load( XMM128 * reg, const void* src )   
+      {   double * mem = (double*)src;   
+         switch( bytes )
+         {
+         case 64:   reg[3].d = _mm_loadu_pd( mem + (3 * 2) );      
+         case 48:   reg[2].d = _mm_loadu_pd( mem + (2 * 2) );
+         case 32:   reg[1].d = _mm_loadu_pd( mem + (1 * 2) );
+         case 16:   reg[0].d = _mm_loadu_pd( mem + 0 );  
+                    break;
+         case 24:   CBL_OPTLEVEL::Load_192(reg[0].i, reg[1].i, (__m128i*)mem);                   
+                    break;
+         case 12:   CBL_OPTLEVEL::Load_96 (reg[0].i, (__m128i*)mem);
+                    break;
+         case  8:   CBL_OPTLEVEL::Load_64 (reg[0].i, (__m128i*)mem);
+                    break;
+         case  4:   CBL_OPTLEVEL::Load_32 (reg[0].i, (__m128i*)mem);
+                    break;
+         case  3:   CBL_OPTLEVEL::Load_24 (reg[0].i, (__m128i*)mem);
+                    break;
+         case  2:   CBL_OPTLEVEL::Load_16 (reg[0].i, (__m128i*)mem);
+                    break;
+         case  1:   CBL_OPTLEVEL::Load_8  (reg[0].i, (__m128i*)mem);
+                    break;
+         default:   assert(false);
+         }
+      }
+
+      //SSE2 Unaligned Store of specified number of bytes
+      ISV Store( XMM128 * reg, void* dst )
+      {   double* mem = (double*)dst;
+         switch( bytes )
+         {
+         case 64:   _mm_storeu_pd( mem + (3 * 2), reg[3].d );                     
+         case 48:   _mm_storeu_pd( mem + (2 * 2), reg[2].d );
+         case 32:   _mm_storeu_pd( mem + (1 * 2), reg[1].d );
+         case 16:   _mm_storeu_pd( mem + 0, reg[0].d );
+                    break;
+         case 24:   CBL_OPTLEVEL::Store_192((__m128i*)mem, reg[0].i, reg[1].i);
+                    break;
+         case 12:   CBL_OPTLEVEL::Store_96 ((__m128i*)mem, reg[0].i);
+                    break;
+         case  8:   CBL_OPTLEVEL::Store_64 ((__m128i*)mem, reg[0].i);
+                    break;
+         case  4:   CBL_OPTLEVEL::Store_32 ((__m128i*)mem, reg[0].i);
+                    break;   
+         case  3:   CBL_OPTLEVEL::Store_24 ((__m128i*)mem, reg[0].i);
+                    break;
+         case  2:   CBL_OPTLEVEL::Store_16 ((__m128i*)mem, reg[0].i);
+                    break;
+         case  1:   CBL_OPTLEVEL::Store_8  ((__m128i*)mem, reg[0].i);
+                    break;
+         default:   assert(false);
+         }
+      }
+   };
+
+   template< U32 bytes >
+   struct MEMd< bytes, DT_F10H, ALIGN_FLSE, STREAM_FLSE >                       
+   {
+        //F10H Unaligned Load falls back to SSE2 Unaligned Load
+		ISV Load( XMM128 * reg, const void* src ) { MEMd<bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Load(reg, src);  }
+        //F10H Unaligned Store falls back to SSE2 Unaligned Store
+		ISV Store( XMM128 * reg, void* dst )		{ MEMd<bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Store(reg, dst); }
+   };
+
+   template< U32 bytes >
+   struct MEMd< bytes, DT_SSE2, ALIGN_FLSE, STREAM_TRUE >                       
+   {
+       // SSE2, Unaligned, Stream
+		ISV Load( XMM128 * reg, const void* src ) { MEMd<bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Load(reg, src);  }
+		ISV Store( XMM128 * reg, void* dst )		{ MEMd<bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Store(reg, dst); }
+   };
+
+   template< U32 bytes >
+   struct MEMd< bytes, DT_F10H, ALIGN_FLSE, STREAM_TRUE >                      
+   {    
+        // F10H, Unaligned, Stream
+		ISV Load( XMM128 * reg, const void* src ) { MEMd<bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Load(reg, src);  }
+		ISV Store( XMM128 * reg, void* dst )		{ MEMd<bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Store(reg, dst); }
+   };
+
+   template< U32 bytes >
+   struct MEMd< bytes, DT_SSE2, ALIGN_TRUE, STREAM_FLSE >                       
+   {
+      //SSE2 Aligned Load of specified number of bytes
+      ISV Load( XMM128 * reg, const void* src )                              
+      {   double * mem = (double*)src;      
+         switch( bytes )
+         {
+         case 64:   reg[3].d = _mm_load_pd( mem + (3 * 2) );                      
+         case 48:   reg[2].d = _mm_load_pd( mem + (2 * 2) );
+         case 32:   reg[1].d = _mm_load_pd( mem + (1 * 2) );
+         case 16:   reg[0].d = _mm_load_pd( mem + 0 );                  
+                    break;
+         default:   
+             //Partial Aligned Load falls back to Unaligned case
+            MEMd< bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Load( reg, mem );   
+         }
+      }
+      //SSE2 Aligned Store of specified number of bytes
+      ISV Store( XMM128 * reg, void* dst )
+      {   double* mem = (double*)dst;
+         switch( bytes )
+         {
+         case 64:   _mm_store_pd( mem + (3 * 2), reg[3].d );                     
+         case 48:   _mm_store_pd( mem + (2 * 2), reg[2].d );
+         case 32:   _mm_store_pd( mem + (1 * 2), reg[1].d );
+         case 16:   _mm_store_pd( mem + 0, reg[0].d );                  
+                    break;
+         default:
+             //Partial Aligned Store falls back to Unaligned case
+            MEMd< bytes, DT_SSE2, ALIGN_FLSE, STREAM_FLSE >::Store( reg, mem ); 
+         }
+      }
+   };
+
+
+   template< U32 bytes >
+   struct MEMd< bytes, DT_F10H, ALIGN_TRUE, STREAM_FLSE >                       
+   {
+        //F10H Aligned Load falls back to SSE2 Aligned Load
+	    ISV Load( XMM128 * reg, const void* src ) { MEMd<bytes, DT_SSE2, ALIGN_TRUE, STREAM_FLSE >::Load(reg, src);  }
+		//F10H Aligned Store falls back to SSE2 Aligned Store
+        ISV Store( XMM128 * reg, void* dst )		{ MEMd<bytes, DT_SSE2, ALIGN_TRUE, STREAM_FLSE >::Store(reg, dst); }
+   };
+
+   template< U32 bytes >
+   struct MEMd< bytes, DT_SSE2, ALIGN_TRUE, STREAM_TRUE >                       
+   {
+      // SSE2, Aligned, Stream
+      ISV Load ( XMM128 * reg, const void* src ){ MEMd< bytes, DT_SSE2, ALIGN_TRUE, STREAM_FLSE >::Load( reg, src ); }
+      ISV Store( XMM128 * reg,       void* dst )
+      {   double* mem = (double*)dst;
+         switch( bytes )
+         {
+         case 64:   _mm_stream_pd( mem + (3 * 2), reg[3].d );                     
+         case 48:   _mm_stream_pd( mem + (2 * 2), reg[2].d );
+         case 32:   _mm_stream_pd( mem + (1 * 2), reg[1].d );
+         case 16:   _mm_stream_pd( mem + 0, reg[0].d );                 
+                    break;         
+         default:   
+            MEMd< bytes, DT_SSE2, ALIGN_FLSE, STREAM_TRUE >::Store( reg, mem ); 
+         }
+      }      
+   };
+
+   // F10H, Aligned, No Stream
+   template< U32 bytes >
+   struct MEMd< bytes, DT_F10H, ALIGN_TRUE, STREAM_TRUE >                       
+   {
+		ISV Load( XMM128 * reg, const void* src ) { MEMd<bytes, DT_SSE2, ALIGN_TRUE, STREAM_TRUE >::Load(reg, src);  }
+		ISV Store( XMM128 * reg, void* dst )		{ MEMd<bytes, DT_SSE2, ALIGN_TRUE, STREAM_TRUE >::Store(reg, dst); }
+   };
+
     // REFR, Unaligned
     template< U32 bytes, DispatchType dt, IsAlign ia, IsStream is >             
     struct MEM
@@ -409,6 +764,30 @@ struct LoadStoreModules
     ISV STORE(XMM128 * reg,  void* src)    
     {
         MEM< bytes,DISPATCH,ia,is >::Store(reg,src);
+    }
+
+    template< U32 bytes, DispatchType dt, IsAlign ia, IsStream is >
+    ISV LOAD(XMM128 * reg, const Fw64f* src)    
+    {
+        MEMd< bytes,DISPATCH,ia,is >::Load(reg,src);
+    }
+
+    template< U32 bytes, DispatchType dt, IsAlign ia, IsStream is >
+    ISV STORE(XMM128 * reg,  Fw64f* src)    
+    {
+        MEMd< bytes,DISPATCH,ia,is >::Store(reg,src);
+    }
+
+    template< U32 bytes, DispatchType dt, IsAlign ia, IsStream is >
+    ISV LOAD(XMM128 * reg, const Fw32f* src)    
+    {
+        MEMf< bytes,DISPATCH,ia,is >::Load(reg,src);
+    }
+
+    template< U32 bytes, DispatchType dt, IsAlign ia, IsStream is >
+    ISV STORE(XMM128 * reg,  Fw32f* src)    
+    {
+        MEMf< bytes,DISPATCH,ia,is >::Store(reg,src);
     }
 
     template<class T>
