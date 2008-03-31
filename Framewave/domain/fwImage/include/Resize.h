@@ -163,6 +163,12 @@ namespace OPT_LEVEL
 			Linear_Array *pX_Array_Value, Linear_Array *pY_Array_Value, 
 			int xBegin, int xEnd, int yBegin, int yEnd, Fw16u *pIfx, Fw16u *pIofx, int channel);
 
+        static void SYS_INLINE getOptThreadNum(int& total_thread_num, FwiRect& srcRoi)
+        {
+            if ( srcRoi.height * srcRoi.width < 256 * 256)
+                total_thread_num = 1;
+        }
+
 		//internal function for mutithreading unsigned char data, Linear interpolation
 		void My_FW_Resize_8u_LN_Thread (void *param)
 		{
