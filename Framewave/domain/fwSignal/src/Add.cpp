@@ -13,6 +13,13 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsAdd_16s		)(const Fw16s* pSrc1, const Fw16s* p
 	DEF_ADD::ADD::C1::Add_16s<0> data(0);
 	return OPT_LEVEL::fe< DEF_ADD::ADD::C1::Add_16s<0> > (data, pSrc1, pSrc2, pDst, len);
 }
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwsAdd_64s		)(const Fw64s* pSrc1, const Fw64s* pSrc2, Fw64s* pDst, int len)
+{ 
+	DEF_ADD::ADD::C1::Add_64s data;
+	return OPT_LEVEL::fe< DEF_ADD::ADD::C1::Add_64s > (data, pSrc1, pSrc2, pDst, len);
+}
+
 FwStatus PREFIX_OPT(OPT_PREFIX, fwsAdd_32f		)(const Fw32f* pSrc1, const Fw32f* pSrc2, Fw32f* pDst, int len)
 {
 	DEF_ADD::ADD::C1::Add_32f data;
