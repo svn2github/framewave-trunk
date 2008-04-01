@@ -282,6 +282,22 @@ namespace DEF_SUB
 				}  
 			};
 
+         struct Sub_64s	: public fe3< Fw64s, OPT_LEVEL::C1, Fw64s, OPT_LEVEL::C1, Fw64s, OPT_LEVEL::C1 >
+			{
+				FE_SSE2_REF 
+				IV SSE2_Init() 
+				{
+				}
+				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
+				{
+					r.dst[0].i = _mm_sub_epi64( r.src2[0].i, r.src1[0].i );
+				}      
+				IV REFR(const Fw64s *s1, const Fw64s *s2, Fw64s *d) const	// REFR Pixel function
+				{
+					SUB_REF::SUB::SubF(s1, OPT_LEVEL::C1, s2, OPT_LEVEL::C1, d, OPT_LEVEL::C1);
+				}  
+			};
+
 			struct Sub_64f	: public fe3< Fw64f, OPT_LEVEL::C1, Fw64f, OPT_LEVEL::C1, Fw64f, OPT_LEVEL::C1 >
 			{
 				FE_SSE2_REF 
