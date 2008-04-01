@@ -59,6 +59,7 @@ unsigned integers and write 32-bit floating point results.</Text>
 FwStatus STDCALL fwsAdd_8u16u             ( const Fw8u   *pSrc1, const Fw8u   *pSrc2  , Fw16u  *pDst, int len );
 FwStatus STDCALL fwsAdd_32u               ( const Fw32u  *pSrc1, const Fw32u  *pSrc2  , Fw32u  *pDst, int len );
 FwStatus STDCALL fwsAdd_32f               ( const Fw32f  *pSrc1, const Fw32f  *pSrc2  , Fw32f  *pDst, int len );
+FwStatus STDCALL fwsAdd_64s		         (const Fw64s* pSrc1, const Fw64s* pSrc2, Fw64s* pDst, int len);
 FwStatus STDCALL fwsAdd_64f               ( const Fw64f  *pSrc1, const Fw64f  *pSrc2  , Fw64f  *pDst, int len );
 FwStatus STDCALL fwsAdd_32fc              ( const Fw32fc *pSrc1, const Fw32fc *pSrc2  , Fw32fc *pDst, int len );
 FwStatus STDCALL fwsAdd_64fc              ( const Fw64fc *pSrc1, const Fw64fc *pSrc2  , Fw64fc *pDst, int len );
@@ -129,6 +130,7 @@ TODO:publish
 FwStatus STDCALL fwsSub_16s               ( const Fw16s  *pSrc1, const Fw16s  *pSrc2  , Fw16s  *pDst, int len );
 FwStatus STDCALL fwsSub_32f               ( const Fw32f  *pSrc1, const Fw32f  *pSrc2  , Fw32f  *pDst, int len );
 FwStatus STDCALL fwsSub_64f               ( const Fw64f  *pSrc1, const Fw64f  *pSrc2  , Fw64f  *pDst, int len );
+FwStatus STDCALL fwsSub_64s               ( const Fw64s  *pSrc1, const Fw64s  *pSrc2  , Fw64s  *pDst, int len );
 FwStatus STDCALL fwsSub_32fc              ( const Fw32fc *pSrc1, const Fw32fc *pSrc2  , Fw32fc *pDst, int len );
 FwStatus STDCALL fwsSub_64fc              ( const Fw64fc *pSrc1, const Fw64fc *pSrc2  , Fw64fc *pDst, int len );
 FwStatus STDCALL fwsSub_16s32f            ( const Fw16s  *pSrc1, const Fw16s  *pSrc2  , Fw32f  *pDst, int len );
