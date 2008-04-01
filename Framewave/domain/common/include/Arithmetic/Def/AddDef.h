@@ -363,6 +363,25 @@ namespace DEF_ADD
 				}  
 			};
 
+         struct Add_64s	: public fe3< Fw64s, OPT_LEVEL::C1, Fw64s, OPT_LEVEL::C1, Fw64s, OPT_LEVEL::C1 >
+			{
+				FE_SSE2_REF 
+				
+            // SSE2 Pixel function
+				IV SSE2( RegFile & r ) const								
+				{
+					r.dst[0].i = _mm_add_epi64(r.src2[0].i, r.src1[0].i); 
+				}
+
+            // REFR Pixel Funtion
+				IV REFR(const Fw64s *s1, const Fw64s *s2, Fw64s *d) const
+				{
+					ADD_REF::ADD::AddINS(s1, OPT_LEVEL::C1, s2, OPT_LEVEL::C1, d, OPT_LEVEL::C1);
+				}
+
+			};
+
+
 			struct Add_64f	: public fe3< Fw64f, OPT_LEVEL::C1, Fw64f, OPT_LEVEL::C1, Fw64f, OPT_LEVEL::C1 >
 			{
 				FE_SSE2_REF 
