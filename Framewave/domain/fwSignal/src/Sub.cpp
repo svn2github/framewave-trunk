@@ -20,13 +20,11 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsSub_32f		)(const Fw32f* pSrc1, const Fw32f* p
 	return OPT_LEVEL::fe< DEF_SUB::SUB::C1::Sub_32f> (data, pSrc1, pSrc2, pDst, len);
 }
 
-//Begin:[SKiran] Sub_64s declaration
 FwStatus PREFIX_OPT(OPT_PREFIX, fwsSub_64s		)(const Fw64s* pSrc1, const Fw64s* pSrc2, Fw64s* pDst, int len)
 {
 	DEF_SUB::SUB::C1::Sub_64s data;
 	return OPT_LEVEL::fe< DEF_SUB::SUB::C1::Sub_64s> (data, pSrc1, pSrc2, pDst, len);
 }
-//End:[SKiran] Sub_64s declaration
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwsSub_64f		)(const Fw64f* pSrc1, const Fw64f* pSrc2, Fw64f* pDst, int len)
 {
