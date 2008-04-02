@@ -52,12 +52,12 @@ using namespace OPT_LEVEL;
 #define FWJ_LIMIT6(val) (((val)<=0)?0:(((val)>=0x3f)?0x3f:((unsigned short)(val))))
 #endif
 
-namespace
+namespace OPT_LEVEL
 {	
 	#define STEPCHECK1(X) if (X<=0) return fwStsStepErr
 
 	template <typename LoadClass, void StoreClass( const __m128i & r, const __m128i & g, const __m128i & b, void * pAlignedData )>
-static	SYS_INLINE void ProcessHalfBlock (Fw16s *pSrcYa, Fw16s *pSrcYb, Fw16s *pSrcCb, Fw16s *pSrcCr, Fw8u *pDstRGB, int dstStep)
+	static	SYS_INLINE void ProcessHalfBlock (Fw16s *pSrcYa, Fw16s *pSrcYb, Fw16s *pSrcCb, Fw16s *pSrcCr, Fw8u *pDstRGB, int dstStep)
 	{
 		// Y:				Cb:					Cr:									RGB:
 		//		  ----8----		  ---4-----4---		  ---4-----4---		==>		  --8---8--
@@ -176,11 +176,11 @@ static	SYS_INLINE void ProcessHalfBlock (Fw16s *pSrcYa, Fw16s *pSrcYb, Fw16s *pS
 		
 		// Convert 16x8pixels
 		if ( IS_ALIGNED16_5(pSrcYA, pSrcYB, pSrcCb, pSrcCr, pDst) && IS_ALIGNED16_1(dstStep) )
-			ProcessHalfBlock <	CBL_LIBRARY::CBL_AlignedLoad,
-								CBL_SSE2::ConvertAndStoreAligned_3P_to_3C_8bit	> (pSrcYA, pSrcYB, pSrcCb, pSrcCr, pDst, dstStep);
+		ProcessHalfBlock <	CBL_LIBRARY::CBL_AlignedLoad,
+		CBL_SSE2::ConvertAndStoreAligned_3P_to_3C_8bit	> (pSrcYA, pSrcYB, pSrcCb, pSrcCr, pDst, dstStep);
 		else
-			ProcessHalfBlock <	CBL_LIBRARY::CBL_UnalignedLoad, 
-								CBL_SSE2::ConvertAndStoreUnaligned_3P_to_3C_8bit> (pSrcYA, pSrcYB, pSrcCb, pSrcCr, pDst, dstStep);
+		ProcessHalfBlock <	CBL_LIBRARY::CBL_UnalignedLoad, 
+		CBL_SSE2::ConvertAndStoreUnaligned_3P_to_3C_8bit> (pSrcYA, pSrcYB, pSrcCb, pSrcCr, pDst, dstStep);
 
 		pSrcYA = (S16*)pSrcMCU[0] + 8*16;	// 128 pixels from block A to C
 		pSrcYB = pSrcYA + 8*8;				// 64 pixels between Sections C & D for Y
@@ -190,16 +190,16 @@ static	SYS_INLINE void ProcessHalfBlock (Fw16s *pSrcYa, Fw16s *pSrcYb, Fw16s *pS
 		
 		// Convert 16x8pixels
 		if ( IS_ALIGNED16_5(pSrcYA, pSrcYB, pSrcCb, pSrcCr, pDst) && IS_ALIGNED16_1(dstStep) )
-			ProcessHalfBlock <	CBL_LIBRARY::CBL_AlignedLoad, 
-								CBL_SSE2::ConvertAndStoreAligned_3P_to_3C_8bit	> (pSrcYA, pSrcYB, pSrcCb, pSrcCr, pDst, dstStep);
+		ProcessHalfBlock <	CBL_LIBRARY::CBL_AlignedLoad, 
+		CBL_SSE2::ConvertAndStoreAligned_3P_to_3C_8bit	> (pSrcYA, pSrcYB, pSrcCb, pSrcCr, pDst, dstStep);
 		else
-			ProcessHalfBlock <	CBL_LIBRARY::CBL_UnalignedLoad, 
-								CBL_SSE2::ConvertAndStoreUnaligned_3P_to_3C_8bit> (pSrcYA, pSrcYB, pSrcCb, pSrcCr, pDst, dstStep);
+		ProcessHalfBlock <	CBL_LIBRARY::CBL_UnalignedLoad, 
+		CBL_SSE2::ConvertAndStoreUnaligned_3P_to_3C_8bit> (pSrcYA, pSrcYB, pSrcCb, pSrcCr, pDst, dstStep);
 
 		return fwStsNoErr;
 	}
 
-static SYS_INLINE void fwiYCbCr411ToRGBLS_MCU_16s8u_P3C3R_8x8Block (Fw16s *pSrcY, Fw16s *pSrcCb, Fw16s *pSrcCr, Fw8u *pDstRGB, int dstStep)
+	static SYS_INLINE void fwiYCbCr411ToRGBLS_MCU_16s8u_P3C3R_8x8Block (Fw16s *pSrcY, Fw16s *pSrcCb, Fw16s *pSrcCr, Fw8u *pDstRGB, int dstStep)
 	{
 		A32S y, x;
 		A32S dstPos, srcYPos=0, srcCPos;
@@ -262,13 +262,782 @@ static SYS_INLINE void fwiYCbCr411ToRGBLS_MCU_16s8u_P3C3R_8x8Block (Fw16s *pSrcY
 			pSrcCr = (Fw16s*)pSrcMCU[2] + srcCOffset;
 			pDstRGB_T = pDstRGB + (y&0x1)*8*3 + ((y>>1)*8*dstStep);
 			//pDstRGB_T = pDstRGB + (y&0x1)*8*3 + ((y>>1)*8*dstStep);
- 
+
 			// Process each 8x8 block
 			fwiYCbCr411ToRGBLS_MCU_16s8u_P3C3R_8x8Block (pSrcY, pSrcCb, pSrcCr, pDstRGB_T, dstStep);
 		}
 
 		return fwStsNoErr;
 	}
+
+	//-----------------------------------------------------------------------
+	//Creates a YCCK Image and then converts to CMYK format
+	//-----------------------------------------------------------------------
+	static SYS_INLINE void fwiYCCK4xxToCMYKLS_MCU_16s8u_P4C4R_8x8Block (
+	const Fw16s *pSrcMCU[4], Fw8u *pDstCMYK, int dstStep, int blocknum,
+	int xshift, int yshift)
+	{
+		//Reference code only.
+		//SSE2 code need to shift 16 bit 
+		int x, y;
+		unsigned char RVal, GVal, BVal;
+		int ysrcPos, csrcPos, coffset, cPos, doffset, dstPos;
+
+		ysrcPos = blocknum<<6;//*64
+		coffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
+		doffset = ((blocknum&0x1)<<5) + ((blocknum&0x2)<<2)* dstStep;
+
+		for (y=0; y<8; y++) {
+			csrcPos = (y>>yshift)*8 + coffset;
+			dstPos = y*dstStep + doffset;
+			for (x=0;x<8;x++) {
+				//add 128 for each element of YCCK
+				cPos = csrcPos + (x>>xshift);
+				RVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos] + 
+				1.402*pSrcMCU[2][cPos] + 128.5);
+				GVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos] - 
+				0.34414*pSrcMCU[1][cPos] - 0.71414*pSrcMCU[2][cPos]+ 128.5);
+				BVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos] + 
+				1.772*pSrcMCU[1][cPos] + 128.5);
+				pDstCMYK[dstPos++] = ~RVal; //C=255-R
+				pDstCMYK[dstPos++] = ~GVal; //M=255-G
+				pDstCMYK[dstPos++] = ~BVal; //Y=255-B
+				pDstCMYK[dstPos++] = (Fw8u)(pSrcMCU[3][ysrcPos++]+128);
+			}
+		}
+
+		return;
+	}
+
+	static SYS_INLINE void fwiYCbCr4xxToBGR555LS_MCU_16s16u_P3C3R_8x8Block (
+	const Fw16s *pSrcMCU[3], Fw16u *pDstBGR, int dstStep, int blocknum,
+	int xshift, int yshift)
+	{
+		//Reference code only.
+		//SSE2 code need to shift 16 bit 
+		int x, y;
+		unsigned short RVal, GVal, BVal;
+		int ysrcPos, csrcPos, coffset, cPos, doffset, dstPos;
+		double val;
+
+		ysrcPos = blocknum<<6;//*64
+		coffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
+		doffset = ((blocknum&0x1)<<3) + ((blocknum&0x2)<<2)* dstStep;
+
+		for (y=0; y<8; y++) {
+			csrcPos = (y>>yshift)*8 + coffset;
+			dstPos = y*dstStep + doffset;
+			for (x=0;x<8;x++) {
+				//add 128 for each element of YCC
+				cPos = csrcPos + (x>>xshift);
+				val = (pSrcMCU[0][ysrcPos] + 1.402*pSrcMCU[2][cPos] + 128.5)/8;
+				RVal = FWJ_LIMIT5(val) << 10;
+				val = (pSrcMCU[0][ysrcPos] - 0.34414*pSrcMCU[1][cPos] - 
+				0.71414*pSrcMCU[2][cPos]+ 128.5)/8;
+				GVal = FWJ_LIMIT5(val) << 5;
+				val = (pSrcMCU[0][ysrcPos] + 1.772*pSrcMCU[1][cPos] + 128.5)/8;
+				BVal = FWJ_LIMIT5(val);
+
+				ysrcPos++;
+				pDstBGR[dstPos++]=RVal|GVal|BVal;
+			}
+		}
+
+		return;
+	}
+
+	//-----------------------------------------------------------------------
+	//Creates a YCBCr image from MCU and then converts it to RGB format
+	//-----------------------------------------------------------------------
+	static FwStatus iYCbCr444ToRGBLS_MCU_16s8u_P3C3R_REF(const Fw16s *pSrcMCU[3], Fw8u *pDstRGB, int dstStep)
+	{
+
+		if (pDstRGB==0 || pSrcMCU==0) return fwStsNullPtrErr;
+		if (pSrcMCU[0]==0 ||pSrcMCU[1]==0 ||pSrcMCU[2]==0)
+		return fwStsNullPtrErr;
+		STEPCHECK1(dstStep);
+
+		//Reference code only.
+		//SSE2 code need to shift 16 bit 
+		int x, y;
+		int srcPos=0, dstPos;
+		Fw16s cbVal, crVal;
+
+		for (y=0;y<8; y++) {
+			//srcPos = y*8;
+			dstPos = y*dstStep;
+			for (x=0;x<8;x++) {
+				cbVal = pSrcMCU[1][srcPos];
+				crVal = pSrcMCU[2][srcPos];
+				pDstRGB[dstPos++] = FW_REF::Limits<U8>::Sat(pSrcMCU[0][srcPos] + 1.402*crVal + 128.5);
+				pDstRGB[dstPos++] = FW_REF::Limits<U8>::Sat(pSrcMCU[0][srcPos] - 0.34414*cbVal - 0.71414*crVal+ 128.5);
+				pDstRGB[dstPos++] = FW_REF::Limits<U8>::Sat(pSrcMCU[0][srcPos++] + 1.772*cbVal + 128.5);
+			}
+		}
+		return fwStsNoErr;
+	}
+
+	template <typename LoadClass, typename StoreClass>
+	static SYS_INLINE void fwiYCbCr444ToRGBLS_MCU_16s8u_P3C3R_SSE2_8x1 (Fw16s *ptrY, Fw16s *ptrCb, Fw16s *ptrCr, Fw8u *pDst)
+	{
+		__m128i y, c, r, g, b, constant;
+
+		constant = _mm_set1_epi16 ( (S16)(128.5*64)	);
+		LoadClass::Load	(y, (__m128i *)ptrY);
+		LoadClass::Load (c, (__m128i *)ptrCr);
+
+		// RED
+		r = _mm_set1_epi16		( (S16)90		);		// R = ( 1.402*2^6 )
+		r = _mm_mullo_epi16		( r, c			);		// R = ( 1.402*Cr )*(2^6)
+		r = _mm_adds_epi16		( r, constant	);		// R = ( 128.5 + 1.402*Cr )*(2^6)
+		r = _mm_srai_epi16		( r, 6			);		// R = ((128.5 + 1.402*Cr )*(2^6)) / (2^6)
+		r = _mm_adds_epi16		( r, y			);		// R = Y + 128.5 + 1.402*Cr
+
+		// GREEN
+		g = _mm_set1_epi16		( (S16)(-46)	);		// G = ( -.71414*2^6 )
+		g = _mm_mullo_epi16		( g, c			);		// G = ( -.71414*Cr )*(2^6)
+		LoadClass::Load			( c, (__m128i *)ptrCb);
+		g = _mm_adds_epi16		( g, constant	);		// G = ( -.71414*Cr + 128.5 )*(2^6)
+		b = _mm_set1_epi16		( (short)(-22)	);		// cr= ( -0.34414*(2^6) )
+		b = _mm_mullo_epi16		( b, c			);		// cr= ( -0.34414*Cb )*(2^6)
+		g = _mm_adds_epi16		( g, b			);		// G = ( -.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)
+		g = _mm_srai_epi16		( g, 6			);		// G = ((-.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)) / (2^6)
+		g = _mm_adds_epi16		( g, y			);		// G = Y - 0.34414*Cb - 0.71414*Cr + 128.5 
+
+		// BLUE
+		b = _mm_set1_epi16		( (S16)(113)	);		// B = ( 1.772*(2^6) )
+		b = _mm_mullo_epi16		( b, c			);		// B = ( 1.772*Cb )*(2^6)
+		b = _mm_adds_epi16		( b, constant	);		// B = ( 1.772*Cb + 128.5 )*(2^6)
+		b = _mm_srai_epi16		( b, 6			);		// B = ((1.772*Cb + 128.5 )*(2^6)) / (2^6)
+		b = _mm_adds_epi16		( b, y			);		// B = Y + 1.772*Cb + 128.5
+
+		CBL_SSE2::Convert_3P_to_3C_16bit( r, g, b);
+		// r = {g2,r2,b1,g1,r1,b0,g0,r0}
+		// g = {r5,b4,g4,r4,b3,g3,r3,b2}
+		// b = {b7,g7,r7,b6,g6,r6,b5,g5}
+
+		r = _mm_packus_epi16 (r, g);			// r = {r5,b4,g4,r4,b3,g3,r3,b2,g2,r2,b1,g1,r1,b0,g0,r0}
+#pragma warning( disable: 4328 )
+		StoreClass::Store ((__m128i*)pDst, r);
+		b = _mm_packus_epi16 (b, b);			// b = {b7,g7,r7,b6,g6,r6,b5,g5,b7,g7,r7,b6,g6,r6,b5,g5}
+		_mm_storel_epi64 ( ((__m128i*)pDst+1), b );
+#pragma warning( default: 4328 )
+	}
+
+	static FwStatus iYCbCr444ToRGBLS_MCU_16s8u_P3C3R_SSE2(const Fw16s *pSrcMCU[3], Fw8u *pDstRGB, int dstStep)
+	{
+		Fw16s *pSrcY=(Fw16s*)pSrcMCU[0], *pSrcCb=(Fw16s*)pSrcMCU[1], *pSrcCr=(Fw16s*)pSrcMCU[2];
+		Fw8u *pDst;
+
+		if (IS_ALIGNED16_5(pSrcY, pSrcCb, pSrcCr, pDstRGB, dstStep)){
+			for (S32 j=0; j<8; ++j) {
+				pDst = j*dstStep + pDstRGB;
+				fwiYCbCr444ToRGBLS_MCU_16s8u_P3C3R_SSE2_8x1<CBL_LIBRARY::CBL_AlignedLoad, 
+				CBL_LIBRARY::CBL_StreamingStore>(pSrcY, pSrcCb, pSrcCr, pDst);
+				pSrcY += 8; 
+				pSrcCb += 8; 
+				pSrcCr += 8;	
+			}
+		} else {
+			for (S32 j=0; j<8; ++j){
+				pDst = j*dstStep + pDstRGB;
+				fwiYCbCr444ToRGBLS_MCU_16s8u_P3C3R_SSE2_8x1<CBL_LIBRARY::CBL_UnalignedLoad,
+				CBL_LIBRARY::CBL_UnalignedStore> (pSrcY, pSrcCb, pSrcCr, pDst);
+				pSrcY += 8; 
+				pSrcCb += 8; 
+				pSrcCr += 8;
+			}
+		}
+		return fwStsNoErr;
+	}
+
+	static SYS_INLINE void fwiYCbCr4xxToRGBLS_MCU_16s8u_P3C3R_8x8Block (
+	const Fw16s *pSrcMCU[3], Fw8u *pDstRGB, int dstStep, int blocknum, 
+	int xshift, int yshift)
+	{
+		//Reference code only.
+		//SSE2 code need to shift 16 bit 
+		int x, y;
+		unsigned char RVal, GVal, BVal;
+		int ysrcPos, csrcPos, coffset, cPos, doffset, dstPos;
+
+		ysrcPos = blocknum<<6;//*64
+		coffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
+		doffset = ((blocknum&0x1)<<3) * 3 + ((blocknum&0x2)<<2)* dstStep;
+
+		for (y=0; y<8; y++) {
+			csrcPos = (y>>yshift)*8 + coffset;
+			dstPos = y*dstStep + doffset;
+			for (x=0;x<8;x++) {
+				//add 128 for each element of YCC
+				cPos = csrcPos + (x>>xshift);
+				RVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos] + 
+				1.402*pSrcMCU[2][cPos] + 128.5);
+				GVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos] - 
+				0.34414*pSrcMCU[1][cPos] - 0.71414*pSrcMCU[2][cPos]+ 128.5);
+				BVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos++] + 
+				1.772*pSrcMCU[1][cPos] + 128.5);
+				pDstRGB[dstPos++] = RVal; 
+				pDstRGB[dstPos++] = GVal; 
+				pDstRGB[dstPos++] = BVal; 
+			}
+		}
+
+		return;
+	}
+
+	//-----------------------------------------------------------------------
+	//Creates a YCbCr Image and then converts to BGR format
+	//-----------------------------------------------------------------------
+	static SYS_INLINE void fwiYCbCr4xxToBGRLS_MCU_16s8u_P3C3R_8x8Block (
+	const Fw16s *pSrcMCU[3], Fw8u *pDstBGR, int dstStep, int blocknum, 
+	int xshift, int yshift)
+	{
+		//Reference code only.
+		//SSE2 code need to shift 16 bit 
+		int x, y;
+		unsigned char RVal, GVal, BVal;
+		int ysrcPos, csrcPos, coffset, cPos, doffset, dstPos;
+
+		ysrcPos = blocknum<<6;//*64
+		coffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
+		doffset = ((blocknum&0x1)<<3) * 3 + ((blocknum&0x2)<<2)* dstStep;
+
+		for (y=0; y<8; y++) {
+			csrcPos = (y>>yshift)*8 + coffset;
+			dstPos = y*dstStep + doffset;
+			for (x=0;x<8;x++) {
+				//add 128 for each element of YCC
+				cPos = csrcPos + (x>>xshift);
+				RVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos] + 
+				1.402*pSrcMCU[2][cPos] + 128.5);
+				GVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos] - 
+				0.34414*pSrcMCU[1][cPos] - 0.71414*pSrcMCU[2][cPos]+ 128.5);
+				BVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos++] + 
+				1.772*pSrcMCU[1][cPos] + 128.5);
+				pDstBGR[dstPos++] = BVal; 
+				pDstBGR[dstPos++] = GVal; 
+				pDstBGR[dstPos++] = RVal; 
+			}
+		}
+
+		return;
+	}
+
+	static SYS_INLINE void fwiYCbCr4xxToBGR565LS_MCU_16s16u_P3C3R_8x8Block (
+	const Fw16s *pSrcMCU[3], Fw16u *pDstBGR, int dstStep, int blocknum,
+	int xshift, int yshift)
+	{
+		//Reference code only.
+		//SSE2 code need to shift 16 bit 
+		int x, y;
+		unsigned short RVal, GVal, BVal;
+		int ysrcPos, csrcPos, coffset, cPos, doffset, dstPos;
+		double val;
+
+		ysrcPos = blocknum<<6;//*64
+		coffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
+		doffset = ((blocknum&0x1)<<3) + ((blocknum&0x2)<<2)* dstStep;
+
+		for (y=0; y<8; y++) {
+			csrcPos = (y>>yshift)*8 + coffset;
+			dstPos = y*dstStep + doffset;
+			for (x=0;x<8;x++) {
+				//add 128 for each element of YCC
+				cPos = csrcPos + (x>>xshift);
+				val = (pSrcMCU[0][ysrcPos] + 1.402*pSrcMCU[2][cPos] + 128.5)/8;
+				RVal = FWJ_LIMIT5(val) << 11;
+				val = (pSrcMCU[0][ysrcPos] - 0.34414*pSrcMCU[1][cPos] - 
+				0.71414*pSrcMCU[2][cPos]+ 128.5)/4;
+				GVal = FWJ_LIMIT6(val) << 5;
+				val = (pSrcMCU[0][ysrcPos] + 1.772*pSrcMCU[1][cPos] + 128.5)/8;
+				BVal = FWJ_LIMIT5(val);
+
+				ysrcPos++;
+				pDstBGR[dstPos++]=RVal|GVal|BVal;
+			}
+		}
+
+		return;
+	}
+
+	static void fwiBGR555ToYCbCr422LS_MCU_16u16s_C3P3R_8x8Block(
+	const Fw16u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3], int blocknum)
+	{
+		unsigned short RVal, GVal, BVal;
+		int result, x, y;
+		int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
+		int elementCb=0, elementCr=0;
+
+		srcOffset  = blocknum << 3;
+		dstCOffset = blocknum << 2;
+		dstYPos    = blocknum << 6;
+
+		//DEV code use shift 8 bit data for coeffcients
+		//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
+		//We use 77, 150, 29 as the modified coeff, and then shift the result
+		//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
+		//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
+
+		for (y=0;y<8; y++) {
+			srcPos = y*srcStep + srcOffset;
+			dstCPos = y*8 + dstCOffset;
+			for (x=0;x<8;x++) {		
+				BVal=(pSrcBGR[srcPos]&0x1f)<<3; 
+				GVal=((pSrcBGR[srcPos]>>5)&0x1f)<<3;
+				RVal=(pSrcBGR[srcPos++]>>10)<<3;
+
+				result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+				pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
+
+				if (!(x&1)){
+					elementCb = -43 * RVal - 85 * GVal + 128 * BVal;
+					elementCr = 128 * RVal - 107 * GVal - 21 * BVal;
+				} else {
+					result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb + 256;
+					pDstMCU [1][dstCPos] = (Fw16s)(result>>9);
+					result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr + 256;
+					pDstMCU [2][dstCPos++] = (Fw16s)(result>>9);
+				}	
+			}
+		}
+
+		return;
+	}
+
+	//-----------------------------------------------------------------------
+	//Convert an 16*16 BGR image to the YCbCr color mode and create 411MCU
+	//
+	//-----------------------------------------------------------------------
+	static void fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R_8x8Block(
+	const Fw8u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3], int blocknum)
+	{
+		unsigned char RVal, GVal, BVal;
+		int result, x, y, x1;
+		int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
+		int elementCb[4]={0, 0, 0, 0}; 
+		int elementCr[4]={0, 0, 0, 0};
+
+		srcOffset  = ((blocknum&0x1)<<3)*3 + ((blocknum&0x2)<<2)*srcStep;
+		dstCOffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
+		dstYPos    = blocknum << 6;
+
+		//DEV code use shift 8 bit data for coeffcients
+		//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
+		//We use 77, 150, 29 as the modified coeff, and then shift the result
+		//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
+		//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
+
+		for (y=0;y<8; y++) {
+			srcPos = y*srcStep + srcOffset;
+			if (!(y&1)) {
+				for (x=0;x<8;x++) {
+					BVal = pSrcBGR[srcPos++];
+					GVal = pSrcBGR[srcPos++];
+					RVal = pSrcBGR[srcPos++];
+					result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+					pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
+
+					x1=x>>1;
+					elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
+					elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
+				}
+			} else {
+				dstCPos = (y>>1)*8 + dstCOffset;
+				for (x=0;x<8;x++) {
+					RVal = pSrcBGR[srcPos++];
+					GVal = pSrcBGR[srcPos++];
+					BVal = pSrcBGR[srcPos++];
+					result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+					pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
+
+					x1=x>>1;
+					if (!(x&1)) {
+						elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
+						elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
+					} else {
+						result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb[x1] + 512;
+						pDstMCU [1][dstCPos] = (Fw16s)(result>>10);
+						elementCb[x1] = 0; //clean after using the value
+						result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr[x1] + 512;
+						pDstMCU [2][dstCPos++] = (Fw16s)(result>>10);
+						elementCr[x1] = 0;
+					}	
+				}
+			}
+		}
+
+		return;
+	}
+
+	static void fwiBGR565ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block(
+	const Fw16u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3], int blocknum)
+	{
+		unsigned short RVal, GVal, BVal;
+		int result, x, y, x1;
+		int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
+		int elementCb[4]={0, 0, 0, 0}; 
+		int elementCr[4]={0, 0, 0, 0};
+
+		srcOffset  = ((blocknum&0x1)<<3) + ((blocknum&0x2)<<2)*srcStep;
+		dstCOffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
+		dstYPos    = blocknum << 6;
+
+		//DEV code use shift 8 bit data for coeffcients
+		//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
+		//We use 77, 150, 29 as the modified coeff, and then shift the result
+		//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
+		//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
+
+		for (y=0;y<8; y++) {
+			srcPos = y*srcStep + srcOffset;
+			if (!(y&1)) {
+				for (x=0;x<8;x++) {				
+					BVal=(pSrcBGR[srcPos]&0x1f)<<3; 
+					GVal=((pSrcBGR[srcPos]>>5)&0x3f)<<2;
+					RVal=(pSrcBGR[srcPos++]>>11)<<3;
+
+					result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+					pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
+
+					x1=x>>1;
+					elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
+					elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
+				}
+			} else {
+				dstCPos = (y>>1)*8 + dstCOffset;
+				for (x=0;x<8;x++) {
+					BVal=(pSrcBGR[srcPos]&0x1f)<<3; 
+					GVal=((pSrcBGR[srcPos]>>5)&0x3f)<<2;
+					RVal=(pSrcBGR[srcPos++]>>11)<<3;
+
+					result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+					pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
+
+					x1=x>>1;
+					if (!(x&1)) {
+						elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
+						elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
+					} else {
+						result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb[x1] + 512;
+						pDstMCU [1][dstCPos] = (Fw16s)(result>>10);
+						elementCb[x1] = 0; //clean after using the value
+						result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr[x1] + 512;
+						pDstMCU [2][dstCPos++] = (Fw16s)(result>>10);
+						elementCr[x1] = 0;
+					}	
+				}
+			}
+		}
+
+		return;
+	}
+
+	static void fwiBGR555ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block(
+	const Fw16u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3], int blocknum)
+	{
+		unsigned short RVal, GVal, BVal;
+		int result, x, y, x1;
+		int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
+		int elementCb[4]={0, 0, 0, 0}; 
+		int elementCr[4]={0, 0, 0, 0};
+
+		srcOffset  = ((blocknum&0x1)<<3) + ((blocknum&0x2)<<2)*srcStep;
+		dstCOffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
+		dstYPos    = blocknum << 6;
+
+		//DEV code use shift 8 bit data for coeffcients
+		//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
+		//We use 77, 150, 29 as the modified coeff, and then shift the result
+		//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
+		//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
+
+		for (y=0;y<8; y++) {
+			srcPos = y*srcStep + srcOffset;
+			if (!(y&1)) {
+				for (x=0;x<8;x++) {				
+					BVal=(pSrcBGR[srcPos]&0x1f)<<3; 
+					GVal=((pSrcBGR[srcPos]>>5)&0x1f)<<3;
+					RVal=(pSrcBGR[srcPos++]>>10)<<3;
+
+					result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+					pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
+
+					x1=x>>1;
+					elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
+					elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
+				}
+			} else {
+				dstCPos = (y>>1)*8 + dstCOffset;
+				for (x=0;x<8;x++) {
+					BVal=(pSrcBGR[srcPos]&0x1f)<<3; 
+					GVal=((pSrcBGR[srcPos]>>5)&0x1f)<<3;
+					RVal=(pSrcBGR[srcPos++]>>10)<<3;
+
+					result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+					pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
+
+					x1=x>>1;
+					if (!(x&1)) {
+						elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
+						elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
+					} else {
+						result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb[x1] + 512;
+						pDstMCU [1][dstCPos] = (Fw16s)(result>>10);
+						elementCb[x1] = 0; //clean after using the value
+						result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr[x1] + 512;
+						pDstMCU [2][dstCPos++] = (Fw16s)(result>>10);
+						elementCr[x1] = 0;
+					}	
+				}
+			}
+		}
+
+		return;
+	}
+
+	static void fwiCMYKToYCCK422LS_MCU_8u16s_C4P4R_8x8Block(
+	const Fw8u *pSrcCMYK, int srcStep, Fw16s *pDstMCU[4], int blocknum)
+	{
+		unsigned char RVal, GVal, BVal;
+		int result, x, y;
+		int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
+		int elementCb=0, elementCr=0;
+
+		srcOffset  = blocknum << 5;
+		dstCOffset = blocknum << 2;
+		dstYPos    = blocknum << 6;
+
+		//DEV code use shift 8 bit data for coeffcients
+		//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
+		//We use 77, 150, 29 as the modified coeff, and then shift the result
+		//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
+		//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
+
+		for (y=0;y<8; y++) {
+			srcPos = y*srcStep + srcOffset;
+			dstCPos = y*8 + dstCOffset;
+			for (x=0;x<8;x++) {
+				RVal = ~(pSrcCMYK[srcPos++]);//R=255-C
+				GVal = ~(pSrcCMYK[srcPos++]);//G=255-M
+				BVal = ~(pSrcCMYK[srcPos++]);//B=255-Y
+				result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+				pDstMCU [0][dstYPos] = (Fw16s)((result>>8)-128);
+				pDstMCU [3][dstYPos++] = pSrcCMYK[srcPos++]-128;
+				if (!(x&1)){
+					elementCb = -43 * RVal - 85 * GVal + 128 * BVal;
+					elementCr = 128 * RVal - 107 * GVal - 21 * BVal;
+				} else {
+					result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb + 256;
+					pDstMCU [1][dstCPos] = (Fw16s)(result>>9);
+					result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr + 256;
+					pDstMCU [2][dstCPos++] = (Fw16s)(result>>9);
+				}	
+			}
+		}
+
+		return;
+	}
+
+	static void fwiCMYKToYCCK411LS_MCU_8u16s_C4P4R_8x8Block(
+	const Fw8u *pSrcCMYK, int srcStep, Fw16s *pDstMCU[4], int blocknum)
+	{
+		unsigned char RVal, GVal, BVal;
+		int result, x, y, x1;
+		int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
+		int elementCb[4]={0, 0, 0, 0}; 
+		int elementCr[4]={0, 0, 0, 0};
+
+		srcOffset  = ((blocknum&0x1)<<5) + ((blocknum&0x2)<<2)*srcStep;
+		dstCOffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
+		dstYPos    = blocknum << 6;
+
+		//DEV code use shift 8 bit data for coeffcients
+		//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
+		//We use 77, 150, 29 as the modified coeff, and then shift the result
+		//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
+		//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
+
+		for (y=0;y<8; y++) {
+			srcPos = y*srcStep + srcOffset;
+			if (!(y&1)) {
+				for (x=0;x<8;x++) {
+					RVal = ~(pSrcCMYK[srcPos++]);//R=255-C
+					GVal = ~(pSrcCMYK[srcPos++]);//G=255-M
+					BVal = ~(pSrcCMYK[srcPos++]);//B=255-Y
+					result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+					pDstMCU [0][dstYPos] = (Fw16s)((result>>8)-128);
+					pDstMCU [3][dstYPos++] = pSrcCMYK[srcPos++]-128;
+					x1=x>>1;
+					elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
+					elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
+				}
+			} else {
+				dstCPos = (y>>1)*8 + dstCOffset;
+				for (x=0;x<8;x++) {
+					RVal = ~(pSrcCMYK[srcPos++]);//R=255-C
+					GVal = ~(pSrcCMYK[srcPos++]);//G=255-M
+					BVal = ~(pSrcCMYK[srcPos++]);//B=255-Y
+					result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+					pDstMCU [0][dstYPos] = (Fw16s)((result>>8)-128);
+					pDstMCU [3][dstYPos++] = pSrcCMYK[srcPos++]-128;
+					x1=x>>1;
+					if (!(x&1)) {
+						elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
+						elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
+					} else {
+						result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb[x1] + 512;
+						pDstMCU [1][dstCPos] = (Fw16s)(result>>10);
+						elementCb[x1] = 0; //clean after using the value
+						result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr[x1] + 512;
+						pDstMCU [2][dstCPos++] = (Fw16s)(result>>10);
+						elementCr[x1] = 0;
+					}	
+				}
+			}
+		}
+
+		return;
+	}
+
+	//-----------------------------------------------------------------------
+	//Convert an 16*8 RGB image to the YCbCr color mode and create 422MCU
+	//
+	//-----------------------------------------------------------------------
+	static void fwiRGBToYCbCr422LS_MCU_8u16s_C3P3R_8x8Block(
+	const Fw8u *pSrcRGB, int srcStep, Fw16s *pDstMCU[3], int blocknum)
+	{
+		unsigned char RVal, GVal, BVal;
+		int result, x, y;
+		int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
+		int elementCb=0, elementCr=0;
+
+		srcOffset  = (blocknum<<3)*3;
+		dstCOffset = blocknum << 2;
+		dstYPos    = blocknum << 6;
+
+		//DEV code use shift 8 bit data for coeffcients
+		//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
+		//We use 77, 150, 29 as the modified coeff, and then shift the result
+		//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
+		//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
+
+		for (y=0;y<8; y++) {
+			srcPos = y*srcStep + srcOffset;
+			dstCPos = y*8 + dstCOffset;
+			for (x=0;x<8;x++) {
+				RVal = pSrcRGB[srcPos++];
+				GVal = pSrcRGB[srcPos++];
+				BVal = pSrcRGB[srcPos++];
+				result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+				pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
+
+				if (!(x&1)){
+					elementCb = -43 * RVal - 85 * GVal + 128 * BVal;
+					elementCr = 128 * RVal - 107 * GVal - 21 * BVal;
+				} else {
+					result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb + 256;
+					pDstMCU [1][dstCPos] = (Fw16s)(result>>9);
+					result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr + 256;
+					pDstMCU [2][dstCPos++] = (Fw16s)(result>>9);
+				}	
+			}
+		}
+
+		return;
+	}
+
+	//-----------------------------------------------------------------------
+	//Convert an 16*8 BGR image to the YCbCr color mode and create 422MCU
+	//
+	//-----------------------------------------------------------------------
+	static void fwiBGRToYCbCr422LS_MCU_8u16s_C3P3R_8x8Block(
+	const Fw8u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3], int blocknum)
+	{
+		unsigned char RVal, GVal, BVal;
+		int result, x, y;
+		int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
+		int elementCb=0, elementCr=0;
+
+		srcOffset  = (blocknum<<3)*3;
+		dstCOffset = blocknum << 2;
+		dstYPos    = blocknum << 6;
+
+		//DEV code use shift 8 bit data for coeffcients
+		//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
+		//We use 77, 150, 29 as the modified coeff, and then shift the result
+		//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
+		//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
+
+		for (y=0;y<8; y++) {
+			srcPos = y*srcStep + srcOffset;
+			dstCPos = y*8 + dstCOffset;
+			for (x=0;x<8;x++) {
+				BVal = pSrcBGR[srcPos++];
+				GVal = pSrcBGR[srcPos++];
+				RVal = pSrcBGR[srcPos++];
+				result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+				pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
+
+				if (!(x&1)){
+					elementCb = -43 * RVal - 85 * GVal + 128 * BVal;
+					elementCr = 128 * RVal - 107 * GVal - 21 * BVal;
+				} else {
+					result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb + 256;
+					pDstMCU [1][dstCPos] = (Fw16s)(result>>9);
+					result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr + 256;
+					pDstMCU [2][dstCPos++] = (Fw16s)(result>>9);
+				}	
+			}
+		}
+
+		return;
+	}
+
+	static void fwiBGR565ToYCbCr422LS_MCU_16u16s_C3P3R_8x8Block(
+	const Fw16u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3], int blocknum)
+	{
+		unsigned short RVal, GVal, BVal;
+		int result, x, y;
+		int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
+		int elementCb=0, elementCr=0;
+
+		srcOffset  = blocknum << 3;
+		dstCOffset = blocknum << 2;
+		dstYPos    = blocknum << 6;
+
+		//DEV code use shift 8 bit data for coeffcients
+		//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
+		//We use 77, 150, 29 as the modified coeff, and then shift the result
+		//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
+		//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
+
+		for (y=0;y<8; y++) {
+			srcPos = y*srcStep + srcOffset;
+			dstCPos = y*8 + dstCOffset;
+			for (x=0;x<8;x++) {		
+				BVal=(pSrcBGR[srcPos]&0x1f)<<3; 
+				GVal=((pSrcBGR[srcPos]>>5)&0x3f)<<2;
+				RVal=(pSrcBGR[srcPos++]>>11)<<3;
+
+				result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+				pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
+
+				if (!(x&1)){
+					elementCb = -43 * RVal - 85 * GVal + 128 * BVal;
+					elementCr = 128 * RVal - 107 * GVal - 21 * BVal;
+				} else {
+					result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb + 256;
+					pDstMCU [1][dstCPos] = (Fw16s)(result>>9);
+					result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr + 256;
+					pDstMCU [2][dstCPos++] = (Fw16s)(result>>9);
+				}	
+			}
+		}
+
+		return;
+	}
+
 };
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr411ToRGBLS_MCU_16s8u_P3C3R)( const Fw16s *pSrcMCU[3], Fw8u *pDstRGB, int dstStep )
@@ -323,53 +1092,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr444LS_MCU_8u16s_C3P3R)(const Fw8u *
 	}
 
 	return fwStsNoErr;
-}
-
-//-----------------------------------------------------------------------
-//Convert an 16*8 RGB image to the YCbCr color mode and create 422MCU
-//
-//-----------------------------------------------------------------------
-static void fwiRGBToYCbCr422LS_MCU_8u16s_C3P3R_8x8Block(
-	const Fw8u *pSrcRGB, int srcStep, Fw16s *pDstMCU[3], int blocknum)
-{
-	unsigned char RVal, GVal, BVal;
-	int result, x, y;
-	int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
-	int elementCb=0, elementCr=0;
-
-	srcOffset  = (blocknum<<3)*3;
-	dstCOffset = blocknum << 2;
-	dstYPos    = blocknum << 6;
-
-	//DEV code use shift 8 bit data for coeffcients
-	//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
-	//We use 77, 150, 29 as the modified coeff, and then shift the result
-	//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
-	//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
-
-	for (y=0;y<8; y++) {
-		srcPos = y*srcStep + srcOffset;
-		dstCPos = y*8 + dstCOffset;
-		for (x=0;x<8;x++) {
-			RVal = pSrcRGB[srcPos++];
-			GVal = pSrcRGB[srcPos++];
-			BVal = pSrcRGB[srcPos++];
-			result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-			pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
-
-			if (!(x&1)){
-				elementCb = -43 * RVal - 85 * GVal + 128 * BVal;
-				elementCr = 128 * RVal - 107 * GVal - 21 * BVal;
-			} else {
-				result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb + 256;
-				pDstMCU [1][dstCPos] = (Fw16s)(result>>9);
-				result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr + 256;
-				pDstMCU [2][dstCPos++] = (Fw16s)(result>>9);
-			}	
-		}
-	}
-
-	return;
 }
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr422LS_MCU_8u16s_C3P3R)(const Fw8u *pSrcRGB, int srcStep, Fw16s *pDstMCU[3])
@@ -744,53 +1466,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGR555ToYCbCr444LS_MCU_16u16s_C3P3R)(const Fw
 	return fwStsNoErr;
 }
 
-//-----------------------------------------------------------------------
-//Convert an 16*8 BGR image to the YCbCr color mode and create 422MCU
-//
-//-----------------------------------------------------------------------
-static void fwiBGRToYCbCr422LS_MCU_8u16s_C3P3R_8x8Block(
-	const Fw8u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3], int blocknum)
-{
-	unsigned char RVal, GVal, BVal;
-	int result, x, y;
-	int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
-	int elementCb=0, elementCr=0;
-
-	srcOffset  = (blocknum<<3)*3;
-	dstCOffset = blocknum << 2;
-	dstYPos    = blocknum << 6;
-
-	//DEV code use shift 8 bit data for coeffcients
-	//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
-	//We use 77, 150, 29 as the modified coeff, and then shift the result
-	//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
-	//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
-
-	for (y=0;y<8; y++) {
-		srcPos = y*srcStep + srcOffset;
-		dstCPos = y*8 + dstCOffset;
-		for (x=0;x<8;x++) {
-			BVal = pSrcBGR[srcPos++];
-			GVal = pSrcBGR[srcPos++];
-			RVal = pSrcBGR[srcPos++];
-			result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-			pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
-
-			if (!(x&1)){
-				elementCb = -43 * RVal - 85 * GVal + 128 * BVal;
-				elementCr = 128 * RVal - 107 * GVal - 21 * BVal;
-			} else {
-				result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb + 256;
-				pDstMCU [1][dstCPos] = (Fw16s)(result>>9);
-				result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr + 256;
-				pDstMCU [2][dstCPos++] = (Fw16s)(result>>9);
-			}	
-		}
-	}
-
-	return;
-}
-
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGRToYCbCr422LS_MCU_8u16s_C3P3R)(const Fw8u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3])
 {
 
@@ -810,50 +1485,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGRToYCbCr422LS_MCU_8u16s_C3P3R)(const Fw8u *
 	fwiBGRToYCbCr422LS_MCU_8u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 1);
 
 	return fwStsNoErr;
-}
-
-static void fwiBGR565ToYCbCr422LS_MCU_16u16s_C3P3R_8x8Block(
-	const Fw16u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3], int blocknum)
-{
-	unsigned short RVal, GVal, BVal;
-	int result, x, y;
-	int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
-	int elementCb=0, elementCr=0;
-
-	srcOffset  = blocknum << 3;
-	dstCOffset = blocknum << 2;
-	dstYPos    = blocknum << 6;
-
-	//DEV code use shift 8 bit data for coeffcients
-	//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
-	//We use 77, 150, 29 as the modified coeff, and then shift the result
-	//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
-	//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
-
-	for (y=0;y<8; y++) {
-		srcPos = y*srcStep + srcOffset;
-		dstCPos = y*8 + dstCOffset;
-		for (x=0;x<8;x++) {		
-			BVal=(pSrcBGR[srcPos]&0x1f)<<3; 
-			GVal=((pSrcBGR[srcPos]>>5)&0x3f)<<2;
-			RVal=(pSrcBGR[srcPos++]>>11)<<3;
-
-			result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-			pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
-
-			if (!(x&1)){
-				elementCb = -43 * RVal - 85 * GVal + 128 * BVal;
-				elementCr = 128 * RVal - 107 * GVal - 21 * BVal;
-			} else {
-				result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb + 256;
-				pDstMCU [1][dstCPos] = (Fw16s)(result>>9);
-				result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr + 256;
-				pDstMCU [2][dstCPos++] = (Fw16s)(result>>9);
-			}	
-		}
-	}
-
-	return;
 }
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGR565ToYCbCr422LS_MCU_16u16s_C3P3R)(const Fw16u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3])
@@ -880,50 +1511,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGR565ToYCbCr422LS_MCU_16u16s_C3P3R)(const Fw
 	return fwStsNoErr;
 }
 
-static void fwiBGR555ToYCbCr422LS_MCU_16u16s_C3P3R_8x8Block(
-	const Fw16u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3], int blocknum)
-{
-	unsigned short RVal, GVal, BVal;
-	int result, x, y;
-	int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
-	int elementCb=0, elementCr=0;
-
-	srcOffset  = blocknum << 3;
-	dstCOffset = blocknum << 2;
-	dstYPos    = blocknum << 6;
-
-	//DEV code use shift 8 bit data for coeffcients
-	//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
-	//We use 77, 150, 29 as the modified coeff, and then shift the result
-	//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
-	//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
-
-	for (y=0;y<8; y++) {
-		srcPos = y*srcStep + srcOffset;
-		dstCPos = y*8 + dstCOffset;
-		for (x=0;x<8;x++) {		
-			BVal=(pSrcBGR[srcPos]&0x1f)<<3; 
-			GVal=((pSrcBGR[srcPos]>>5)&0x1f)<<3;
-			RVal=(pSrcBGR[srcPos++]>>10)<<3;
-
-			result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-			pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
-
-			if (!(x&1)){
-				elementCb = -43 * RVal - 85 * GVal + 128 * BVal;
-				elementCr = 128 * RVal - 107 * GVal - 21 * BVal;
-			} else {
-				result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb + 256;
-				pDstMCU [1][dstCPos] = (Fw16s)(result>>9);
-				result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr + 256;
-				pDstMCU [2][dstCPos++] = (Fw16s)(result>>9);
-			}	
-		}
-	}
-
-	return;
-}
-
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGR555ToYCbCr422LS_MCU_16u16s_C3P3R)(const Fw16u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3])
 {
 
@@ -946,71 +1533,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGR555ToYCbCr422LS_MCU_16u16s_C3P3R)(const Fw
 	fwiBGR555ToYCbCr422LS_MCU_16u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 1);
 
 	return fwStsNoErr;
-}
-
-//-----------------------------------------------------------------------
-//Convert an 16*16 BGR image to the YCbCr color mode and create 411MCU
-//
-//-----------------------------------------------------------------------
-static void fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R_8x8Block(
-	const Fw8u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3], int blocknum)
-{
-	unsigned char RVal, GVal, BVal;
-	int result, x, y, x1;
-	int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
-	int elementCb[4]={0, 0, 0, 0}; 
-	int elementCr[4]={0, 0, 0, 0};
-
-	srcOffset  = ((blocknum&0x1)<<3)*3 + ((blocknum&0x2)<<2)*srcStep;
-	dstCOffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
-	dstYPos    = blocknum << 6;
-
-	//DEV code use shift 8 bit data for coeffcients
-	//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
-	//We use 77, 150, 29 as the modified coeff, and then shift the result
-	//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
-	//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
-
-	for (y=0;y<8; y++) {
-		srcPos = y*srcStep + srcOffset;
-		if (!(y&1)) {
-			for (x=0;x<8;x++) {
-				BVal = pSrcBGR[srcPos++];
-				GVal = pSrcBGR[srcPos++];
-				RVal = pSrcBGR[srcPos++];
-				result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-				pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
-
-				x1=x>>1;
-				elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
-				elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
-			}
-		} else {
-			dstCPos = (y>>1)*8 + dstCOffset;
-			for (x=0;x<8;x++) {
-				RVal = pSrcBGR[srcPos++];
-				GVal = pSrcBGR[srcPos++];
-				BVal = pSrcBGR[srcPos++];
-				result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-				pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
-
-				x1=x>>1;
-				if (!(x&1)) {
-					elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
-					elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
-				} else {
-					result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb[x1] + 512;
-					pDstMCU [1][dstCPos] = (Fw16s)(result>>10);
-					elementCb[x1] = 0; //clean after using the value
-					result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr[x1] + 512;
-					pDstMCU [2][dstCPos++] = (Fw16s)(result>>10);
-					elementCr[x1] = 0;
-				}	
-			}
-		}
-	}
-
-	return;
 }
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R)(const Fw8u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3])
@@ -1038,69 +1560,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R)(const Fw8u *
 	return fwStsNoErr;
 }
 
-static void fwiBGR565ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block(
-	const Fw16u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3], int blocknum)
-{
-	unsigned short RVal, GVal, BVal;
-	int result, x, y, x1;
-	int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
-	int elementCb[4]={0, 0, 0, 0}; 
-	int elementCr[4]={0, 0, 0, 0};
-
-	srcOffset  = ((blocknum&0x1)<<3) + ((blocknum&0x2)<<2)*srcStep;
-	dstCOffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
-	dstYPos    = blocknum << 6;
-
-	//DEV code use shift 8 bit data for coeffcients
-	//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
-	//We use 77, 150, 29 as the modified coeff, and then shift the result
-	//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
-	//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
-
-	for (y=0;y<8; y++) {
-		srcPos = y*srcStep + srcOffset;
-		if (!(y&1)) {
-			for (x=0;x<8;x++) {				
-				BVal=(pSrcBGR[srcPos]&0x1f)<<3; 
-				GVal=((pSrcBGR[srcPos]>>5)&0x3f)<<2;
-				RVal=(pSrcBGR[srcPos++]>>11)<<3;
-
-				result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-				pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
-
-				x1=x>>1;
-				elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
-				elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
-			}
-		} else {
-			dstCPos = (y>>1)*8 + dstCOffset;
-			for (x=0;x<8;x++) {
-				BVal=(pSrcBGR[srcPos]&0x1f)<<3; 
-				GVal=((pSrcBGR[srcPos]>>5)&0x3f)<<2;
-				RVal=(pSrcBGR[srcPos++]>>11)<<3;
-
-				result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-				pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
-
-				x1=x>>1;
-				if (!(x&1)) {
-					elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
-					elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
-				} else {
-					result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb[x1] + 512;
-					pDstMCU [1][dstCPos] = (Fw16s)(result>>10);
-					elementCb[x1] = 0; //clean after using the value
-					result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr[x1] + 512;
-					pDstMCU [2][dstCPos++] = (Fw16s)(result>>10);
-					elementCr[x1] = 0;
-				}	
-			}
-		}
-	}
-
-	return;
-}
-
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGR565ToYCbCr411LS_MCU_16u16s_C3P3R)(const Fw16u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3])
 {
 
@@ -1125,97 +1584,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGR565ToYCbCr411LS_MCU_16u16s_C3P3R)(const Fw
 	fwiBGR565ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 1);
 	fwiBGR565ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 2);
 	fwiBGR565ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 3);
-
-	return fwStsNoErr;
-}
-
-static void fwiBGR555ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block(
-	const Fw16u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3], int blocknum)
-{
-	unsigned short RVal, GVal, BVal;
-	int result, x, y, x1;
-	int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
-	int elementCb[4]={0, 0, 0, 0}; 
-	int elementCr[4]={0, 0, 0, 0};
-
-	srcOffset  = ((blocknum&0x1)<<3) + ((blocknum&0x2)<<2)*srcStep;
-	dstCOffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
-	dstYPos    = blocknum << 6;
-
-	//DEV code use shift 8 bit data for coeffcients
-	//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
-	//We use 77, 150, 29 as the modified coeff, and then shift the result
-	//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
-	//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
-
-	for (y=0;y<8; y++) {
-		srcPos = y*srcStep + srcOffset;
-		if (!(y&1)) {
-			for (x=0;x<8;x++) {				
-				BVal=(pSrcBGR[srcPos]&0x1f)<<3; 
-				GVal=((pSrcBGR[srcPos]>>5)&0x1f)<<3;
-				RVal=(pSrcBGR[srcPos++]>>10)<<3;
-
-				result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-				pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
-
-				x1=x>>1;
-				elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
-				elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
-			}
-		} else {
-			dstCPos = (y>>1)*8 + dstCOffset;
-			for (x=0;x<8;x++) {
-				BVal=(pSrcBGR[srcPos]&0x1f)<<3; 
-				GVal=((pSrcBGR[srcPos]>>5)&0x1f)<<3;
-				RVal=(pSrcBGR[srcPos++]>>10)<<3;
-
-				result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-				pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
-
-				x1=x>>1;
-				if (!(x&1)) {
-					elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
-					elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
-				} else {
-					result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb[x1] + 512;
-					pDstMCU [1][dstCPos] = (Fw16s)(result>>10);
-					elementCb[x1] = 0; //clean after using the value
-					result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr[x1] + 512;
-					pDstMCU [2][dstCPos++] = (Fw16s)(result>>10);
-					elementCr[x1] = 0;
-				}	
-			}
-		}
-	}
-
-	return;
-}
-
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGR555ToYCbCr411LS_MCU_16u16s_C3P3R)(const Fw16u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3])
-{
-
-	if (pSrcBGR==0 || pDstMCU==0) return fwStsNullPtrErr;
-	if (pDstMCU[0]==0 ||pDstMCU[1]==0 ||pDstMCU[2]==0)
-		return fwStsNullPtrErr;
-	STEPCHECK1(srcStep);
-
-	//srcStep is byte size
-	srcStep = srcStep / sizeof (Fw16u);
-
-	// RGB:				 Y:			 Cb:				Cr:				
-	//	--8---8--	==>	  ----8----	     ---4-----4---	---4-----4---	  
-	//	8 | A | B |	==>	8 |   Ay   |	4 |A_cb | B_cb|	4 |A_cr | B_cr|
-	//	---------	==>	8 |   By   |	-------------	-------------	  
-	//	8 | C | D |	==>	8 |   Cy   |	4 |C_cb | D_cb|	4 |C_cr | D_cr|
-	//	---------	==>	8 |   Dy   |	-------------	-------------	
-	//					  ----------
-	// Proces each block independently
-
-	fwiBGR555ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 0);
-	fwiBGR555ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 1);
-	fwiBGR555ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 2);
-	fwiBGR555ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 3);
 
 	return fwStsNoErr;
 }
@@ -1267,47 +1635,32 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK444LS_MCU_8u16s_C4P4R)(const Fw8u *
 	return fwStsNoErr;
 }
 
-static void fwiCMYKToYCCK422LS_MCU_8u16s_C4P4R_8x8Block(
-	const Fw8u *pSrcCMYK, int srcStep, Fw16s *pDstMCU[4], int blocknum)
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGR555ToYCbCr411LS_MCU_16u16s_C3P3R)(const Fw16u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3])
 {
-	unsigned char RVal, GVal, BVal;
-	int result, x, y;
-	int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
-	int elementCb=0, elementCr=0;
 
-	srcOffset  = blocknum << 5;
-	dstCOffset = blocknum << 2;
-	dstYPos    = blocknum << 6;
+	if (pSrcBGR==0 || pDstMCU==0) return fwStsNullPtrErr;
+	if (pDstMCU[0]==0 ||pDstMCU[1]==0 ||pDstMCU[2]==0)
+		return fwStsNullPtrErr;
+	STEPCHECK1(srcStep);
 
-	//DEV code use shift 8 bit data for coeffcients
-	//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
-	//We use 77, 150, 29 as the modified coeff, and then shift the result
-	//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
-	//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
+	//srcStep is byte size
+	srcStep = srcStep / sizeof (Fw16u);
 
-	for (y=0;y<8; y++) {
-		srcPos = y*srcStep + srcOffset;
-		dstCPos = y*8 + dstCOffset;
-		for (x=0;x<8;x++) {
-			RVal = ~(pSrcCMYK[srcPos++]);//R=255-C
-			GVal = ~(pSrcCMYK[srcPos++]);//G=255-M
-			BVal = ~(pSrcCMYK[srcPos++]);//B=255-Y
-			result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-			pDstMCU [0][dstYPos] = (Fw16s)((result>>8)-128);
-			pDstMCU [3][dstYPos++] = pSrcCMYK[srcPos++]-128;
-			if (!(x&1)){
-				elementCb = -43 * RVal - 85 * GVal + 128 * BVal;
-				elementCr = 128 * RVal - 107 * GVal - 21 * BVal;
-			} else {
-				result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb + 256;
-				pDstMCU [1][dstCPos] = (Fw16s)(result>>9);
-				result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr + 256;
-				pDstMCU [2][dstCPos++] = (Fw16s)(result>>9);
-			}	
-		}
-	}
+	// RGB:				 Y:			 Cb:				Cr:				
+	//	--8---8--	==>	  ----8----	     ---4-----4---	---4-----4---	  
+	//	8 | A | B |	==>	8 |   Ay   |	4 |A_cb | B_cb|	4 |A_cr | B_cr|
+	//	---------	==>	8 |   By   |	-------------	-------------	  
+	//	8 | C | D |	==>	8 |   Cy   |	4 |C_cb | D_cb|	4 |C_cr | D_cr|
+	//	---------	==>	8 |   Dy   |	-------------	-------------	
+	//					  ----------
+	// Proces each block independently
 
-	return;
+	fwiBGR555ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 0);
+	fwiBGR555ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 1);
+	fwiBGR555ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 2);
+	fwiBGR555ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 3);
+
+	return fwStsNoErr;
 }
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK422LS_MCU_8u16s_C4P4R)(const Fw8u *pSrcCMYK, int srcStep, Fw16s *pDstMCU[4])
@@ -1330,67 +1683,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK422LS_MCU_8u16s_C4P4R)(const Fw8u *
 	fwiCMYKToYCCK422LS_MCU_8u16s_C4P4R_8x8Block (pSrcCMYK, srcStep, pDstMCU, 1);
 
 	return fwStsNoErr;
-}
-
-static void fwiCMYKToYCCK411LS_MCU_8u16s_C4P4R_8x8Block(
-	const Fw8u *pSrcCMYK, int srcStep, Fw16s *pDstMCU[4], int blocknum)
-{
-	unsigned char RVal, GVal, BVal;
-	int result, x, y, x1;
-	int srcPos, srcOffset, dstYPos, dstCOffset, dstCPos;
-	int elementCb[4]={0, 0, 0, 0}; 
-	int elementCr[4]={0, 0, 0, 0};
-
-	srcOffset  = ((blocknum&0x1)<<5) + ((blocknum&0x2)<<2)*srcStep;
-	dstCOffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
-	dstYPos    = blocknum << 6;
-
-	//DEV code use shift 8 bit data for coeffcients
-	//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
-	//We use 77, 150, 29 as the modified coeff, and then shift the result
-	//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
-	//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
-
-	for (y=0;y<8; y++) {
-		srcPos = y*srcStep + srcOffset;
-		if (!(y&1)) {
-			for (x=0;x<8;x++) {
-				RVal = ~(pSrcCMYK[srcPos++]);//R=255-C
-				GVal = ~(pSrcCMYK[srcPos++]);//G=255-M
-				BVal = ~(pSrcCMYK[srcPos++]);//B=255-Y
-				result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-				pDstMCU [0][dstYPos] = (Fw16s)((result>>8)-128);
-				pDstMCU [3][dstYPos++] = pSrcCMYK[srcPos++]-128;
-				x1=x>>1;
-				elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
-				elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
-			}
-		} else {
-			dstCPos = (y>>1)*8 + dstCOffset;
-			for (x=0;x<8;x++) {
-				RVal = ~(pSrcCMYK[srcPos++]);//R=255-C
-				GVal = ~(pSrcCMYK[srcPos++]);//G=255-M
-				BVal = ~(pSrcCMYK[srcPos++]);//B=255-Y
-				result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-				pDstMCU [0][dstYPos] = (Fw16s)((result>>8)-128);
-				pDstMCU [3][dstYPos++] = pSrcCMYK[srcPos++]-128;
-				x1=x>>1;
-				if (!(x&1)) {
-					elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
-					elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
-				} else {
-					result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb[x1] + 512;
-					pDstMCU [1][dstCPos] = (Fw16s)(result>>10);
-					elementCb[x1] = 0; //clean after using the value
-					result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr[x1] + 512;
-					pDstMCU [2][dstCPos++] = (Fw16s)(result>>10);
-					elementCr[x1] = 0;
-				}	
-			}
-		}
-	}
-
-	return;
 }
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK411LS_MCU_8u16s_C4P4R)(const Fw8u *pSrcCMYK, int srcStep, Fw16s *pDstMCU[4])
@@ -1419,110 +1711,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK411LS_MCU_8u16s_C4P4R)(const Fw8u *
 	return fwStsNoErr;
 }
 
-//-----------------------------------------------------------------------
-//Creates a YCBCr image from MCU and then converts it to RGB format
-//-----------------------------------------------------------------------
-static FwStatus iYCbCr444ToRGBLS_MCU_16s8u_P3C3R_REF(const Fw16s *pSrcMCU[3], Fw8u *pDstRGB, int dstStep)
-{
-
-	if (pDstRGB==0 || pSrcMCU==0) return fwStsNullPtrErr;
-	if (pSrcMCU[0]==0 ||pSrcMCU[1]==0 ||pSrcMCU[2]==0)
-		return fwStsNullPtrErr;
-	STEPCHECK1(dstStep);
-
-	//Reference code only.
-	//SSE2 code need to shift 16 bit 
-	int x, y;
-	int srcPos=0, dstPos;
-	Fw16s cbVal, crVal;
-
-	for (y=0;y<8; y++) {
-		//srcPos = y*8;
-		dstPos = y*dstStep;
-		for (x=0;x<8;x++) {
-			cbVal = pSrcMCU[1][srcPos];
-			crVal = pSrcMCU[2][srcPos];
-			pDstRGB[dstPos++] = FW_REF::Limits<U8>::Sat(pSrcMCU[0][srcPos] + 1.402*crVal + 128.5);
-			pDstRGB[dstPos++] = FW_REF::Limits<U8>::Sat(pSrcMCU[0][srcPos] - 0.34414*cbVal - 0.71414*crVal+ 128.5);
-			pDstRGB[dstPos++] = FW_REF::Limits<U8>::Sat(pSrcMCU[0][srcPos++] + 1.772*cbVal + 128.5);
-		}
-	}
-	return fwStsNoErr;
-}
-
-template <typename LoadClass, typename StoreClass>
-static SYS_INLINE void fwiYCbCr444ToRGBLS_MCU_16s8u_P3C3R_SSE2_8x1 (Fw16s *ptrY, Fw16s *ptrCb, Fw16s *ptrCr, Fw8u *pDst)
-{
-	__m128i y, c, r, g, b, constant;
-
-	constant = _mm_set1_epi16 ( (S16)(128.5*64)	);
-	LoadClass::Load	(y, (__m128i *)ptrY);
-	LoadClass::Load (c, (__m128i *)ptrCr);
-
-	// RED
-	r = _mm_set1_epi16		( (S16)90		);		// R = ( 1.402*2^6 )
-	r = _mm_mullo_epi16		( r, c			);		// R = ( 1.402*Cr )*(2^6)
-	r = _mm_adds_epi16		( r, constant	);		// R = ( 128.5 + 1.402*Cr )*(2^6)
-	r = _mm_srai_epi16		( r, 6			);		// R = ((128.5 + 1.402*Cr )*(2^6)) / (2^6)
-	r = _mm_adds_epi16		( r, y			);		// R = Y + 128.5 + 1.402*Cr
-
-	// GREEN
-	g = _mm_set1_epi16		( (S16)(-46)	);		// G = ( -.71414*2^6 )
-	g = _mm_mullo_epi16		( g, c			);		// G = ( -.71414*Cr )*(2^6)
-	LoadClass::Load			( c, (__m128i *)ptrCb);
-	g = _mm_adds_epi16		( g, constant	);		// G = ( -.71414*Cr + 128.5 )*(2^6)
-	b = _mm_set1_epi16		( (short)(-22)	);		// cr= ( -0.34414*(2^6) )
-	b = _mm_mullo_epi16		( b, c			);		// cr= ( -0.34414*Cb )*(2^6)
-	g = _mm_adds_epi16		( g, b			);		// G = ( -.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)
-	g = _mm_srai_epi16		( g, 6			);		// G = ((-.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)) / (2^6)
-	g = _mm_adds_epi16		( g, y			);		// G = Y - 0.34414*Cb - 0.71414*Cr + 128.5 
-
-	// BLUE
-	b = _mm_set1_epi16		( (S16)(113)	);		// B = ( 1.772*(2^6) )
-	b = _mm_mullo_epi16		( b, c			);		// B = ( 1.772*Cb )*(2^6)
-	b = _mm_adds_epi16		( b, constant	);		// B = ( 1.772*Cb + 128.5 )*(2^6)
-	b = _mm_srai_epi16		( b, 6			);		// B = ((1.772*Cb + 128.5 )*(2^6)) / (2^6)
-	b = _mm_adds_epi16		( b, y			);		// B = Y + 1.772*Cb + 128.5
-
-	CBL_SSE2::Convert_3P_to_3C_16bit( r, g, b);
-	// r = {g2,r2,b1,g1,r1,b0,g0,r0}
-	// g = {r5,b4,g4,r4,b3,g3,r3,b2}
-	// b = {b7,g7,r7,b6,g6,r6,b5,g5}
-
-	r = _mm_packus_epi16 (r, g);			// r = {r5,b4,g4,r4,b3,g3,r3,b2,g2,r2,b1,g1,r1,b0,g0,r0}
-#pragma warning( disable: 4328 )
-	StoreClass::Store ((__m128i*)pDst, r);
-	b = _mm_packus_epi16 (b, b);			// b = {b7,g7,r7,b6,g6,r6,b5,g5,b7,g7,r7,b6,g6,r6,b5,g5}
-	_mm_storel_epi64 ( ((__m128i*)pDst+1), b );
-#pragma warning( default: 4328 )
-}
-
-static FwStatus iYCbCr444ToRGBLS_MCU_16s8u_P3C3R_SSE2(const Fw16s *pSrcMCU[3], Fw8u *pDstRGB, int dstStep)
-{
-	Fw16s *pSrcY=(Fw16s*)pSrcMCU[0], *pSrcCb=(Fw16s*)pSrcMCU[1], *pSrcCr=(Fw16s*)pSrcMCU[2];
-	Fw8u *pDst;
-
-	if (IS_ALIGNED16_5(pSrcY, pSrcCb, pSrcCr, pDstRGB, dstStep)){
-		for (S32 j=0; j<8; ++j) {
-			pDst = j*dstStep + pDstRGB;
-			fwiYCbCr444ToRGBLS_MCU_16s8u_P3C3R_SSE2_8x1<CBL_LIBRARY::CBL_AlignedLoad, 
-				CBL_LIBRARY::CBL_StreamingStore>(pSrcY, pSrcCb, pSrcCr, pDst);
-			pSrcY += 8; 
-			pSrcCb += 8; 
-			pSrcCr += 8;	
-		}
-	} else {
-		for (S32 j=0; j<8; ++j){
-			pDst = j*dstStep + pDstRGB;
-			fwiYCbCr444ToRGBLS_MCU_16s8u_P3C3R_SSE2_8x1<CBL_LIBRARY::CBL_UnalignedLoad,
-				CBL_LIBRARY::CBL_UnalignedStore> (pSrcY, pSrcCb, pSrcCr, pDst);
-			pSrcY += 8; 
-			pSrcCb += 8; 
-			pSrcCr += 8;
-		}
-	}
-	return fwStsNoErr;
-}
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr444ToRGBLS_MCU_16s8u_P3C3R)(const Fw16s *pSrcMCU[3], Fw8u *pDstRGB, int dstStep)
 {
 	if (pDstRGB==0 || pSrcMCU==0) return fwStsNullPtrErr;
@@ -1541,40 +1729,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr444ToRGBLS_MCU_16s8u_P3C3R)(const Fw16s 
 	}
 }
 
-static SYS_INLINE void fwiYCbCr4xxToRGBLS_MCU_16s8u_P3C3R_8x8Block (
-	const Fw16s *pSrcMCU[3], Fw8u *pDstRGB, int dstStep, int blocknum, 
-	int xshift, int yshift)
-{
-	//Reference code only.
-	//SSE2 code need to shift 16 bit 
-	int x, y;
-	unsigned char RVal, GVal, BVal;
-	int ysrcPos, csrcPos, coffset, cPos, doffset, dstPos;
-
-	ysrcPos = blocknum<<6;//*64
-	coffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
-	doffset = ((blocknum&0x1)<<3) * 3 + ((blocknum&0x2)<<2)* dstStep;
-
-	for (y=0; y<8; y++) {
-		csrcPos = (y>>yshift)*8 + coffset;
-		dstPos = y*dstStep + doffset;
-		for (x=0;x<8;x++) {
-			//add 128 for each element of YCC
-			cPos = csrcPos + (x>>xshift);
-			RVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos] + 
-				1.402*pSrcMCU[2][cPos] + 128.5);
-			GVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos] - 
-				0.34414*pSrcMCU[1][cPos] - 0.71414*pSrcMCU[2][cPos]+ 128.5);
-			BVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos++] + 
-				1.772*pSrcMCU[1][cPos] + 128.5);
-			pDstRGB[dstPos++] = RVal; 
-			pDstRGB[dstPos++] = GVal; 
-			pDstRGB[dstPos++] = BVal; 
-		}
-	}
-
-	return;
-}
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr422ToRGBLS_MCU_16s8u_P3C3R)(const Fw16s *pSrcMCU[3],
 						Fw8u *pDstRGB, int dstStep)
@@ -1596,43 +1750,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr422ToRGBLS_MCU_16s8u_P3C3R)(const Fw16s 
 	return fwStsNoErr;
 }
 
-//-----------------------------------------------------------------------
-//Creates a YCbCr Image and then converts to BGR format
-//-----------------------------------------------------------------------
-static SYS_INLINE void fwiYCbCr4xxToBGRLS_MCU_16s8u_P3C3R_8x8Block (
-	const Fw16s *pSrcMCU[3], Fw8u *pDstBGR, int dstStep, int blocknum, 
-	int xshift, int yshift)
-{
-	//Reference code only.
-	//SSE2 code need to shift 16 bit 
-	int x, y;
-	unsigned char RVal, GVal, BVal;
-	int ysrcPos, csrcPos, coffset, cPos, doffset, dstPos;
-
-	ysrcPos = blocknum<<6;//*64
-	coffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
-	doffset = ((blocknum&0x1)<<3) * 3 + ((blocknum&0x2)<<2)* dstStep;
-
-	for (y=0; y<8; y++) {
-		csrcPos = (y>>yshift)*8 + coffset;
-		dstPos = y*dstStep + doffset;
-		for (x=0;x<8;x++) {
-			//add 128 for each element of YCC
-			cPos = csrcPos + (x>>xshift);
-			RVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos] + 
-				1.402*pSrcMCU[2][cPos] + 128.5);
-			GVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos] - 
-				0.34414*pSrcMCU[1][cPos] - 0.71414*pSrcMCU[2][cPos]+ 128.5);
-			BVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos++] + 
-				1.772*pSrcMCU[1][cPos] + 128.5);
-			pDstBGR[dstPos++] = BVal; 
-			pDstBGR[dstPos++] = GVal; 
-			pDstBGR[dstPos++] = RVal; 
-		}
-	}
-
-	return;
-}
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr444ToBGRLS_MCU_16s8u_P3C3R)(const Fw16s *pSrcMCU[3],
 						Fw8u *pDstBGR, int dstStep)
@@ -1651,43 +1768,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr444ToBGRLS_MCU_16s8u_P3C3R)(const Fw16s 
 	fwiYCbCr4xxToBGRLS_MCU_16s8u_P3C3R_8x8Block (pSrcMCU, pDstBGR, dstStep, 0, 0, 0);
 
 	return fwStsNoErr;
-}
-
-static SYS_INLINE void fwiYCbCr4xxToBGR565LS_MCU_16s16u_P3C3R_8x8Block (
-	const Fw16s *pSrcMCU[3], Fw16u *pDstBGR, int dstStep, int blocknum,
-	int xshift, int yshift)
-{
-	//Reference code only.
-	//SSE2 code need to shift 16 bit 
-	int x, y;
-	unsigned short RVal, GVal, BVal;
-	int ysrcPos, csrcPos, coffset, cPos, doffset, dstPos;
-	double val;
-
-	ysrcPos = blocknum<<6;//*64
-	coffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
-	doffset = ((blocknum&0x1)<<3) + ((blocknum&0x2)<<2)* dstStep;
-
-	for (y=0; y<8; y++) {
-		csrcPos = (y>>yshift)*8 + coffset;
-		dstPos = y*dstStep + doffset;
-		for (x=0;x<8;x++) {
-			//add 128 for each element of YCC
-			cPos = csrcPos + (x>>xshift);
-			val = (pSrcMCU[0][ysrcPos] + 1.402*pSrcMCU[2][cPos] + 128.5)/8;
-			RVal = FWJ_LIMIT5(val) << 11;
-			val = (pSrcMCU[0][ysrcPos] - 0.34414*pSrcMCU[1][cPos] - 
-				0.71414*pSrcMCU[2][cPos]+ 128.5)/4;
-			GVal = FWJ_LIMIT6(val) << 5;
-			val = (pSrcMCU[0][ysrcPos] + 1.772*pSrcMCU[1][cPos] + 128.5)/8;
-			BVal = FWJ_LIMIT5(val);
-
-			ysrcPos++;
-			pDstBGR[dstPos++]=RVal|GVal|BVal;
-		}
-	}
-
-	return;
 }
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr444ToBGR565LS_MCU_16s16u_P3C3R)(const Fw16s *pSrcMCU[3],
@@ -1712,43 +1792,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr444ToBGR565LS_MCU_16s16u_P3C3R)(const Fw
 	return fwStsNoErr;
 }
 
-
-static SYS_INLINE void fwiYCbCr4xxToBGR555LS_MCU_16s16u_P3C3R_8x8Block (
-	const Fw16s *pSrcMCU[3], Fw16u *pDstBGR, int dstStep, int blocknum,
-	int xshift, int yshift)
-{
-	//Reference code only.
-	//SSE2 code need to shift 16 bit 
-	int x, y;
-	unsigned short RVal, GVal, BVal;
-	int ysrcPos, csrcPos, coffset, cPos, doffset, dstPos;
-	double val;
-
-	ysrcPos = blocknum<<6;//*64
-	coffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
-	doffset = ((blocknum&0x1)<<3) + ((blocknum&0x2)<<2)* dstStep;
-
-	for (y=0; y<8; y++) {
-		csrcPos = (y>>yshift)*8 + coffset;
-		dstPos = y*dstStep + doffset;
-		for (x=0;x<8;x++) {
-			//add 128 for each element of YCC
-			cPos = csrcPos + (x>>xshift);
-			val = (pSrcMCU[0][ysrcPos] + 1.402*pSrcMCU[2][cPos] + 128.5)/8;
-			RVal = FWJ_LIMIT5(val) << 10;
-			val = (pSrcMCU[0][ysrcPos] - 0.34414*pSrcMCU[1][cPos] - 
-				0.71414*pSrcMCU[2][cPos]+ 128.5)/8;
-			GVal = FWJ_LIMIT5(val) << 5;
-			val = (pSrcMCU[0][ysrcPos] + 1.772*pSrcMCU[1][cPos] + 128.5)/8;
-			BVal = FWJ_LIMIT5(val);
-
-			ysrcPos++;
-			pDstBGR[dstPos++]=RVal|GVal|BVal;
-		}
-	}
-
-	return;
-}
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr444ToBGR555LS_MCU_16s16u_P3C3R)(const Fw16s *pSrcMCU[3],
 						Fw16u *pDstBGR, int dstStep)
@@ -1925,44 +1968,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr411ToBGR555LS_MCU_16s16u_P3C3R)(const Fw
 	return fwStsNoErr;
 }
 
-//-----------------------------------------------------------------------
-//Creates a YCCK Image and then converts to CMYK format
-//-----------------------------------------------------------------------
-static SYS_INLINE void fwiYCCK4xxToCMYKLS_MCU_16s8u_P4C4R_8x8Block (
-	const Fw16s *pSrcMCU[4], Fw8u *pDstCMYK, int dstStep, int blocknum,
-	int xshift, int yshift)
-{
-	//Reference code only.
-	//SSE2 code need to shift 16 bit 
-	int x, y;
-	unsigned char RVal, GVal, BVal;
-	int ysrcPos, csrcPos, coffset, cPos, doffset, dstPos;
-
-	ysrcPos = blocknum<<6;//*64
-	coffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
-	doffset = ((blocknum&0x1)<<5) + ((blocknum&0x2)<<2)* dstStep;
-
-	for (y=0; y<8; y++) {
-		csrcPos = (y>>yshift)*8 + coffset;
-		dstPos = y*dstStep + doffset;
-		for (x=0;x<8;x++) {
-			//add 128 for each element of YCCK
-			cPos = csrcPos + (x>>xshift);
-			RVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos] + 
-				1.402*pSrcMCU[2][cPos] + 128.5);
-			GVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos] - 
-				0.34414*pSrcMCU[1][cPos] - 0.71414*pSrcMCU[2][cPos]+ 128.5);
-			BVal = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos] + 
-				1.772*pSrcMCU[1][cPos] + 128.5);
-			pDstCMYK[dstPos++] = ~RVal; //C=255-R
-			pDstCMYK[dstPos++] = ~GVal; //M=255-G
-			pDstCMYK[dstPos++] = ~BVal; //Y=255-B
-			pDstCMYK[dstPos++] = (Fw8u)(pSrcMCU[3][ysrcPos++]+128);
-		}
-	}
-
-	return;
-}
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCCK444ToCMYKLS_MCU_16s8u_P4C4R)(const Fw16s *pSrcMCU[4],
 			Fw8u *pDstCMYK, int dstStep)
