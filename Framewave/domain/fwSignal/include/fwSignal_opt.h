@@ -62,9 +62,7 @@ OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsSub_64fc			)(const 
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsSub_16s32f			)(const Fw16s* pSrc1, const Fw16s* pSrc2, Fw32f* pDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsSub_16s_I			)(const Fw16s* pSrc, Fw16s* pSrcDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsSub_32f_I			)(const Fw32f* pSrc, Fw32f* pSrcDst, int len);
-//Begin:[SKiran] Declaration of fwsSub_64s
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsSub_64s				)(const Fw64s* pSrc1, const Fw64s* pSrc2, Fw64s* pDst, int len);
-//End:[SKiran] Declaration of fwsSub_64s
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsSub_64f_I			)(const Fw64f* pSrc, Fw64f* pSrcDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsSub_32fc_I			)(const Fw32fc* pSrc, Fw32fc* pSrcDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsSub_64fc_I			)(const Fw64fc* pSrc, Fw64fc* pSrcDst, int len);
