@@ -1119,248 +1119,522 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr422LS_MCU_8u16s_C3P3R)(const Fw8u *
 //Convert an 16*16 RGB image to the YCbCr color mode and create 411MCU
 //
 //-----------------------------------------------------------------------
+//Optimized version of the code
+FwStatus static SYS_INLINE RGBToYCbCr411LS_MCU_8u16s_C3P3R(const Fw8u *pSrcRGB, int srcStep, Fw16s *pDstMCU[3])
+{
 
+    //A16U rVal, gVal, bVal;
+    //A16S result;
+    //A32U rSum[8] = {0,0,0,0,0,0,0,0}, gSum[8] = {0,0,0,0,0,0,0,0}, bSum[8] = {0,0,0,0,0,0,0,0};
+    A32S x, y, srcPos, dstYPos=0, dstCPos=0;
+    XMM128 rVal = {0} , gVal = {0}, bVal = {0};
+    XMM128 rVal2 = {0}, gVal2 = {0}, bVal2 = {0};
+    XMM128 xmm1, xmm2, xmm3, accumulator;
+    XMM128 rSum, gSum, bSum;
+
+    // Process 2 8x8 block: A & B
+    // Proces 2 rows at a time							//  Pixels
+    for (y=0; y<16; ++y)									//  -------			---------	------	------
+    {													//  | a b |	  -->	| ay by |	| cb |	| cr |
+	    // First Row									//	| c d |			| cy dy	|	------	------
+	                        							//	-------			---------
+        if( y == 8) dstYPos = 128;
+        srcPos = y*srcStep;	
+        
+        
+	    for (x=0; x<8; x++)
+	    {					
+            rVal.u16[x] = pSrcRGB[srcPos++];
+		    gVal.u16[x] = pSrcRGB[srcPos++];
+		    bVal.u16[x] = pSrcRGB[srcPos++];
+        }
+
+        xmm1.i = _mm_set1_epi16(77);
+        xmm2.i = _mm_set1_epi16(150);
+        xmm3.i = _mm_set1_epi16(29);
+
+        xmm1.i = _mm_mullo_epi16(xmm1.i, rVal.i);
+        xmm2.i = _mm_mullo_epi16(xmm2.i, gVal.i);
+        xmm3.i = _mm_mullo_epi16(xmm3.i, bVal.i);
+        
+        xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);
+        xmm1.i = _mm_srli_epi16(xmm1.i, 4);
+        xmm2.i = _mm_srli_epi16(xmm2.i, 4);
+
+        xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
+        xmm1.i = _mm_srli_epi16(xmm1.i, 4);
+
+        xmm2.i = _mm_set1_epi16(128);
+        xmm1.i = _mm_sub_epi16(xmm1.i, xmm2.i);
+
+        _mm_storeu_si128  ((__m128i *)(&pDstMCU[0][dstYPos]),xmm1.i);	
+
+	    dstYPos = dstYPos+64;
+
+        accumulator.i = _mm_srli_epi32(rVal.i, 16);
+        rVal.i = _mm_slli_epi32(rVal.i, 16);
+        rVal.i = _mm_srli_epi32(rVal.i, 16);
+        rVal.i = _mm_add_epi16(accumulator.i, rVal.i);
+
+
+        accumulator.i = _mm_srli_epi32(gVal.i, 16);
+        gVal.i = _mm_slli_epi32(gVal.i, 16);
+        gVal.i = _mm_srli_epi32(gVal.i, 16);
+        gVal.i = _mm_add_epi16(accumulator.i, gVal.i);
+
+        accumulator.i = _mm_srli_epi32(bVal.i, 16);
+        bVal.i = _mm_slli_epi32(bVal.i, 16);
+        bVal.i = _mm_srli_epi32(bVal.i, 16);
+        bVal.i = _mm_add_epi16(accumulator.i, bVal.i);
+
+        for ( ; x<16; x++)
+	    {
+		    rVal2.u16[x - 8] = pSrcRGB[srcPos++];
+		    gVal2.u16[x - 8] = pSrcRGB[srcPos++];
+		    bVal2.u16[x - 8] = pSrcRGB[srcPos++];
+        }
+
+        xmm1.i = _mm_set1_epi16(77);
+        xmm2.i = _mm_set1_epi16(150);
+        xmm3.i = _mm_set1_epi16(29);
+
+        xmm1.i = _mm_mullo_epi16(xmm1.i, rVal2.i);
+        xmm2.i = _mm_mullo_epi16(xmm2.i, gVal2.i);
+        xmm3.i = _mm_mullo_epi16(xmm3.i, bVal2.i);
+        
+        xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);
+        xmm1.i = _mm_srli_epi16(xmm1.i, 4);
+        xmm2.i = _mm_srli_epi16(xmm2.i, 4);
+
+        xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
+        xmm1.i = _mm_srli_epi16(xmm1.i, 4);
+
+        xmm2.i = _mm_set1_epi16(128);
+        xmm1.i = _mm_sub_epi16(xmm1.i, xmm2.i);
+
+        _mm_storeu_si128  ((__m128i *)(&pDstMCU[0][dstYPos]),xmm1.i);	
+
+	    dstYPos = dstYPos-56;
+
+        accumulator.i = _mm_srli_epi32(rVal2.i, 16);
+        rVal2.i = _mm_slli_epi32(rVal2.i, 16);
+        rVal2.i = _mm_srli_epi32(rVal2.i, 16);
+        rVal2.i = _mm_add_epi16(accumulator.i, rVal2.i);
+
+
+        accumulator.i = _mm_srli_epi32(gVal2.i, 16);
+        gVal2.i = _mm_slli_epi32(gVal2.i, 16);
+        gVal2.i = _mm_srli_epi32(gVal2.i, 16);
+        gVal2.i = _mm_add_epi16(accumulator.i, gVal2.i);
+
+        accumulator.i = _mm_srli_epi32(bVal2.i, 16);
+        bVal2.i = _mm_slli_epi32(bVal2.i, 16);
+        bVal2.i = _mm_srli_epi32(bVal2.i, 16);
+        bVal2.i = _mm_add_epi16(accumulator.i, bVal2.i);
+		
+
+        rSum.i = _mm_packs_epi32( rVal.i, rVal2.i);
+        gSum.i = _mm_packs_epi32( gVal.i, gVal2.i);
+        bSum.i = _mm_packs_epi32( bVal.i, bVal2.i);
+
+	    // Second Row
+	    srcPos = (++y)*srcStep;
+
+        for (x=0; x<8; x++)
+	    {					
+            rVal.u16[x] = pSrcRGB[srcPos++];
+		    gVal.u16[x] = pSrcRGB[srcPos++];
+		    bVal.u16[x] = pSrcRGB[srcPos++];
+        }
+
+        xmm1.i = _mm_set1_epi16(77);
+        xmm2.i = _mm_set1_epi16(150);
+        xmm3.i = _mm_set1_epi16(29);
+
+        xmm1.i = _mm_mullo_epi16(xmm1.i, rVal.i);
+        xmm2.i = _mm_mullo_epi16(xmm2.i, gVal.i);
+        xmm3.i = _mm_mullo_epi16(xmm3.i, bVal.i);
+        
+        xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);
+        xmm1.i = _mm_srli_epi16(xmm1.i, 4);
+        xmm2.i = _mm_srli_epi16(xmm2.i, 4);
+
+        xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
+        xmm1.i = _mm_srli_epi16(xmm1.i, 4);
+
+        xmm2.i = _mm_set1_epi16(128);
+        xmm1.i = _mm_sub_epi16(xmm1.i, xmm2.i);
+
+        _mm_storeu_si128  ((__m128i *)(&pDstMCU[0][dstYPos]),xmm1.i);	
+
+	    dstYPos = dstYPos+64;
+
+        accumulator.i = _mm_srli_epi32(rVal.i, 16);
+        rVal.i = _mm_slli_epi32(rVal.i, 16);
+        rVal.i = _mm_srli_epi32(rVal.i, 16);
+        rVal.i = _mm_add_epi16(accumulator.i, rVal.i);
+
+
+        accumulator.i = _mm_srli_epi32(gVal.i, 16);
+        gVal.i = _mm_slli_epi32(gVal.i, 16);
+        gVal.i = _mm_srli_epi32(gVal.i, 16);
+        gVal.i = _mm_add_epi16(accumulator.i, gVal.i);
+
+        accumulator.i = _mm_srli_epi32(bVal.i, 16);
+        bVal.i = _mm_slli_epi32(bVal.i, 16);
+        bVal.i = _mm_srli_epi32(bVal.i, 16);
+        bVal.i = _mm_add_epi16(accumulator.i, bVal.i);
+
+        for ( ; x<16; x++)
+	    {
+		    rVal2.u16[x - 8] = pSrcRGB[srcPos++];
+		    gVal2.u16[x - 8] = pSrcRGB[srcPos++];
+		    bVal2.u16[x - 8] = pSrcRGB[srcPos++];
+        }
+
+        xmm1.i = _mm_set1_epi16(77);
+        xmm2.i = _mm_set1_epi16(150);
+        xmm3.i = _mm_set1_epi16(29);
+
+        xmm1.i = _mm_mullo_epi16(xmm1.i, rVal2.i);
+        xmm2.i = _mm_mullo_epi16(xmm2.i, gVal2.i);
+        xmm3.i = _mm_mullo_epi16(xmm3.i, bVal2.i);
+        
+        xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);
+        xmm1.i = _mm_srli_epi16(xmm1.i, 4);
+        xmm2.i = _mm_srli_epi16(xmm2.i, 4);
+
+        xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
+        xmm1.i = _mm_srli_epi16(xmm1.i, 4);
+
+        xmm2.i = _mm_set1_epi16(128);
+        xmm1.i = _mm_sub_epi16(xmm1.i, xmm2.i);
+
+        _mm_storeu_si128  ((__m128i *)(&pDstMCU[0][dstYPos]),xmm1.i);	
+
+        accumulator.i = _mm_srli_epi32(rVal2.i, 16);
+        rVal2.i = _mm_slli_epi32(rVal2.i, 16);
+        rVal2.i = _mm_srli_epi32(rVal2.i, 16);
+        rVal2.i = _mm_add_epi16(accumulator.i, rVal2.i);
+
+
+        accumulator.i = _mm_srli_epi32(gVal2.i, 16);
+        gVal2.i = _mm_slli_epi32(gVal2.i, 16);
+        gVal2.i = _mm_srli_epi32(gVal2.i, 16);
+        gVal2.i = _mm_add_epi16(accumulator.i, gVal2.i);
+
+        accumulator.i = _mm_srli_epi32(bVal2.i, 16);
+        bVal2.i = _mm_slli_epi32(bVal2.i, 16);
+        bVal2.i = _mm_srli_epi32(bVal2.i, 16);
+        bVal2.i = _mm_add_epi16(accumulator.i, bVal2.i);
+
+	    dstYPos = dstYPos-56;
+
+        rVal.i = _mm_packs_epi32( rVal.i, rVal2.i);
+        gVal.i = _mm_packs_epi32( gVal.i, gVal2.i);
+        bVal.i = _mm_packs_epi32( bVal.i, bVal2.i);
+
+        rSum.i = _mm_add_epi16( rSum.i, rVal.i);
+        gSum.i = _mm_add_epi16( gSum.i, gVal.i);
+        bSum.i = _mm_add_epi16( bSum.i, bVal.i);
+
+        rSum.i = _mm_srli_epi32(rSum.i, 2);
+        gSum.i = _mm_srli_epi32(gSum.i, 2);
+        bSum.i = _mm_srli_epi32(bSum.i, 2);
+		
+        xmm1.i = _mm_set1_epi16(-43);
+        xmm2.i = _mm_set1_epi16(-85);
+        xmm3.i = _mm_set1_epi16(128);
+
+
+        xmm1.i = _mm_mullo_epi16(xmm1.i, rSum.i);
+        xmm2.i = _mm_mullo_epi16(xmm2.i, gSum.i);
+        xmm3.i = _mm_mullo_epi16(xmm3.i, bSum.i);
+        
+        xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
+        xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);
+
+        xmm2.i = _mm_set1_epi16(128);
+        xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
+        xmm1.i = _mm_srai_epi16(xmm1.i, 8);
+
+        _mm_storeu_si128  ((__m128i *)(&pDstMCU[1][dstCPos]),xmm1.i);	
+
+
+        xmm1.i = _mm_set1_epi16(128);
+        xmm2.i = _mm_set1_epi16(-107);
+        xmm3.i = _mm_set1_epi16(-21);
+
+
+        xmm1.i = _mm_mullo_epi16(xmm1.i, rSum.i);
+        xmm2.i = _mm_mullo_epi16(xmm2.i, gSum.i);
+        xmm3.i = _mm_mullo_epi16(xmm3.i, bSum.i);
+        
+        xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
+        xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);
+
+        xmm2.i = _mm_set1_epi16(128);
+        xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
+        xmm1.i = _mm_srai_epi16(xmm1.i, 8);
+
+        _mm_storeu_si128  ((__m128i *)(&pDstMCU[2][dstCPos]),xmm1.i);	
+
+        dstCPos += 8;
+    }
+    
+    return fwStsNoErr;
+}
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr411LS_MCU_8u16s_C3P3R)(const Fw8u *pSrcRGB, int srcStep, Fw16s *pDstMCU[3])
 {
 
-	if (pSrcRGB==0 || pDstMCU==0) return fwStsNullPtrErr;
-	if (pDstMCU[0]==0 ||pDstMCU[1]==0 ||pDstMCU[2]==0)
-		return fwStsNullPtrErr;
-	STEPCHECK1(srcStep);
-	// 8x8 blocks:
-	//				---------
-	//				| A | B |
-	//				---------
-	//				| C | D |
-	//				---------
-	// Y:								Cb:								Cr:
-	//		---------						-------------					-------------
-	//		|   Ay  |						|A_cb | B_cb|					|A_cr | B_cr|
-	//		|   By  |						-------------					-------------
-	//		|   Cy  |						|C_cb | D_cb|					|C_cr | D_cr|
-	//		|   Dy  |						-------------					-------------
-	//		---------
+     if (pSrcRGB==0 || pDstMCU==0) return fwStsNullPtrErr;
+	    if (pDstMCU[0]==0 ||pDstMCU[1]==0 ||pDstMCU[2]==0)
+		    return fwStsNullPtrErr;
+	    STEPCHECK1(srcStep);
+	    // 8x8 blocks:
+	    //				---------
+	    //				| A | B |
+	    //				---------
+	    //				| C | D |
+	    //				---------
+	    // Y:								Cb:								Cr:
+	    //		---------						-------------					-------------
+	    //		|   Ay  |						|A_cb | B_cb|					|A_cr | B_cr|
+	    //		|   By  |						-------------					-------------
+	    //		|   Cy  |						|C_cb | D_cb|					|C_cr | D_cr|
+	    //		|   Dy  |						-------------					-------------
+	    //		---------
 
-	A16U rVal, gVal, bVal;
-	A16S result;
-	A32U rSum[8] = {0,0,0,0,0,0,0,0}, gSum[8] = {0,0,0,0,0,0,0,0}, bSum[8] = {0,0,0,0,0,0,0,0};
-	A32S x, y, srcPos, dstYPos=0, dstCPos=0;
-
-	// Process 2 8x8 block: A & B
-	// Proces 2 rows at a time							//  Pixels
-	for (y=0; y<8; ++y)									//  -------			---------	------	------
-	{													//  | a b |	  -->	| ay by |	| cb |	| cr |
-		// First Row									//	| c d |			| cy dy	|	------	------
-		srcPos = y*srcStep;								//	-------			---------
-		for (x=0; x<8; x+=2)
-		{												
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
-			rSum[x>>1]+=rVal;
-			gSum[x>>1]+=gVal;
-			bSum[x>>1]+=bVal;
-			
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
-			rSum[x>>1]+=rVal;
-			gSum[x>>1]+=gVal;
-			bSum[x>>1]+=bVal;
-		}
-		dstYPos = dstYPos+56;
-		for ( ; x<16; x+=2)
-		{
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
-			rSum[x>>1] += rVal;
-			gSum[x>>1] += gVal;
-			bSum[x>>1] += bVal;
-			
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
-			rSum[x>>1] += rVal;
-			gSum[x>>1] += gVal;
-			bSum[x>>1] += bVal;
-		}
-		dstYPos = dstYPos-64;
-		
-		// Second Row
-		srcPos = (++y)*srcStep;
-		for (x=0; x<8; x+=2)
-		{												
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
-			rSum[x>>1] += rVal;
-			gSum[x>>1] += gVal;
-			bSum[x>>1] += bVal;
-			
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
-			rSum[x>>1] += rVal;
-			gSum[x>>1] += gVal;
-			bSum[x>>1] += bVal;
-		}
-		dstYPos = dstYPos+56;
-		for ( ; x<16; x+=2)
-		{
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
-			rSum[x>>1] += rVal;
-			gSum[x>>1] += gVal;
-			bSum[x>>1] += bVal;
-			
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
-			rSum[x>>1] += rVal;
-			gSum[x>>1] += gVal;
-			bSum[x>>1] += bVal;
-		}
-		dstYPos = dstYPos-64;
-		
-		// Compute and store Cb & Cr Values
-		for (x=0; x<8; ++x)
-		{
-			rSum[x] = rSum[x]>>2;	// Average of 4 values
-			gSum[x] = gSum[x]>>2;	// Average of 4 values
-			bSum[x] = bSum[x]>>2;	// Average of 4 values
-			result = (A16S)(-43 * rSum[x] - 85 * gSum[x] + 128 * bSum[x] + 128);
-			pDstMCU[1][dstCPos] = (result>>8);		// cb
-			result = (A16S)(128 * rSum[x] - 107 * gSum[x] - 21 * bSum[x] + 128);
-			pDstMCU[2][dstCPos++] = (result>>8);	// cr
-			rSum[x] = gSum[x] = bSum[x] = 0;
-		}
-	}
-	// Process 2 8x8 block: C & D
-	dstYPos = 128;
-	for ( ; y<16; ++y)
+    switch( Dispatch::Type<DT_SSE2>() )
 	{
-		// First Row
-		srcPos = y*srcStep;
-		for (x=0; x<8; x+=2)
-		{												
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
-			rSum[x>>1] += rVal;
-			gSum[x>>1] += gVal;
-			bSum[x>>1] += bVal;
-			
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
-			rSum[x>>1] += rVal;
-			gSum[x>>1] += gVal;
-			bSum[x>>1] += bVal;
-		}
-		dstYPos = dstYPos+56;
-		for ( ; x<16; x+=2)
-		{
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
-			rSum[x>>1] += rVal;
-			gSum[x>>1] += gVal;
-			bSum[x>>1] += bVal;
-			
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
-			rSum[x>>1] += rVal;
-			gSum[x>>1] += gVal;
-			bSum[x>>1] += bVal;
-		}
-		dstYPos = dstYPos-64;
-		
-		// Second Row
-		srcPos = (++y)*srcStep;
-		for (x=0; x<8; x+=2)
-		{												
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
-			rSum[x>>1] += rVal;
-			gSum[x>>1] += gVal;
-			bSum[x>>1] += bVal;
-			
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
-			rSum[x>>1] += rVal;
-			gSum[x>>1] += gVal;
-			bSum[x>>1] += bVal;
-		}
-		dstYPos = dstYPos+56;
-		for ( ; x<16; x+=2)
-		{
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
-			rSum[x>>1] += rVal;
-			gSum[x>>1] += gVal;
-			bSum[x>>1] += bVal;
-			
-			rVal = pSrcRGB[srcPos++];
-			gVal = pSrcRGB[srcPos++];
-			bVal = pSrcRGB[srcPos++];
-			result = (rVal*77 + gVal*150 + bVal*29) >> 8;
-			pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
-			rSum[x>>1] += rVal;
-			gSum[x>>1] += gVal;
-			bSum[x>>1] += bVal;
-		}
-		dstYPos = dstYPos-64;
-		
-		// Compute and store Cb & Cr
-		for (x=0; x<8; ++x)
-		{
-			rSum[x] = rSum[x]>>2;	// Average of 4 values
-			gSum[x] = gSum[x]>>2;	// Average of 4 values
-			bSum[x] = bSum[x]>>2;	// Average of 4 values
-			result = (A16S)(-43 * rSum[x] - 85 * gSum[x] + 128 * bSum[x] + 128);
-			pDstMCU[1][dstCPos] = (result>>8);		// cb
-			result = (A16S)(128 * rSum[x] - 107 * gSum[x] - 21 * bSum[x] + 128);
-			pDstMCU[2][dstCPos++] = (result>>8);	// cr
-			rSum[x] = gSum[x] = bSum[x] = 0;
-		}
-	}
-	return fwStsNoErr;
+	case DT_SSE3:
+	case DT_SSE2:
+		//SSE Code goes here
+        return RGBToYCbCr411LS_MCU_8u16s_C3P3R(pSrcRGB, srcStep, pDstMCU);
+	default:
+
+	   
+	    A16U rVal, gVal, bVal;
+	    A16S result;
+	    A32U rSum[8] = {0,0,0,0,0,0,0,0}, gSum[8] = {0,0,0,0,0,0,0,0}, bSum[8] = {0,0,0,0,0,0,0,0};
+	    A32S x, y, srcPos, dstYPos=0, dstCPos=0;
+
+	    // Process 2 8x8 block: A & B
+	    // Proces 2 rows at a time							//  Pixels
+	    for (y=0; y<8; ++y)									//  -------			---------	------	------
+	    {													//  | a b |	  -->	| ay by |	| cb |	| cr |
+		    // First Row									//	| c d |			| cy dy	|	------	------
+		    srcPos = y*srcStep;								//	-------			---------
+		    for (x=0; x<8; x+=2)
+		    {												
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
+			    rSum[x>>1]+=rVal;
+			    gSum[x>>1]+=gVal;
+			    bSum[x>>1]+=bVal;
+    			
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
+			    rSum[x>>1]+=rVal;
+			    gSum[x>>1]+=gVal;
+			    bSum[x>>1]+=bVal;
+		    }
+		    dstYPos = dstYPos+56;
+		    for ( ; x<16; x+=2)
+		    {
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
+			    rSum[x>>1] += rVal;
+			    gSum[x>>1] += gVal;
+			    bSum[x>>1] += bVal;
+    			
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
+			    rSum[x>>1] += rVal;
+			    gSum[x>>1] += gVal;
+			    bSum[x>>1] += bVal;
+		    }
+		    dstYPos = dstYPos-64;
+    		
+		    // Second Row
+		    srcPos = (++y)*srcStep;
+		    for (x=0; x<8; x+=2)
+		    {												
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
+			    rSum[x>>1] += rVal;
+			    gSum[x>>1] += gVal;
+			    bSum[x>>1] += bVal;
+    			
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
+			    rSum[x>>1] += rVal;
+			    gSum[x>>1] += gVal;
+			    bSum[x>>1] += bVal;
+		    }
+		    dstYPos = dstYPos+56;
+		    for ( ; x<16; x+=2)
+		    {
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
+			    rSum[x>>1] += rVal;
+			    gSum[x>>1] += gVal;
+			    bSum[x>>1] += bVal;
+    			
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
+			    rSum[x>>1] += rVal;
+			    gSum[x>>1] += gVal;
+			    bSum[x>>1] += bVal;
+		    }
+		    dstYPos = dstYPos-64;
+    		
+		    // Compute and store Cb & Cr Values
+		    for (x=0; x<8; ++x)
+		    {
+			    rSum[x] = rSum[x]>>2;	// Average of 4 values
+			    gSum[x] = gSum[x]>>2;	// Average of 4 values
+			    bSum[x] = bSum[x]>>2;	// Average of 4 values
+			    result = (A16S)(-43 * rSum[x] - 85 * gSum[x] + 128 * bSum[x] + 128);
+			    pDstMCU[1][dstCPos] = (result>>8);		// cb
+			    result = (A16S)(128 * rSum[x] - 107 * gSum[x] - 21 * bSum[x] + 128);
+			    pDstMCU[2][dstCPos++] = (result>>8);	// cr
+			    rSum[x] = gSum[x] = bSum[x] = 0;
+		    }
+	    }
+	    // Process 2 8x8 block: C & D
+	    dstYPos = 128;
+	    for ( ; y<16; ++y)
+	    {
+		    // First Row
+		    srcPos = y*srcStep;
+		    for (x=0; x<8; x+=2)
+		    {												
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
+			    rSum[x>>1] += rVal;
+			    gSum[x>>1] += gVal;
+			    bSum[x>>1] += bVal;
+    			
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
+			    rSum[x>>1] += rVal;
+			    gSum[x>>1] += gVal;
+			    bSum[x>>1] += bVal;
+		    }
+		    dstYPos = dstYPos+56;
+		    for ( ; x<16; x+=2)
+		    {
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
+			    rSum[x>>1] += rVal;
+			    gSum[x>>1] += gVal;
+			    bSum[x>>1] += bVal;
+    			
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
+			    rSum[x>>1] += rVal;
+			    gSum[x>>1] += gVal;
+			    bSum[x>>1] += bVal;
+		    }
+		    dstYPos = dstYPos-64;
+    		
+		    // Second Row
+		    srcPos = (++y)*srcStep;
+		    for (x=0; x<8; x+=2)
+		    {												
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
+			    rSum[x>>1] += rVal;
+			    gSum[x>>1] += gVal;
+			    bSum[x>>1] += bVal;
+    			
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
+			    rSum[x>>1] += rVal;
+			    gSum[x>>1] += gVal;
+			    bSum[x>>1] += bVal;
+		    }
+		    dstYPos = dstYPos+56;
+		    for ( ; x<16; x+=2)
+		    {
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (ay,cy)
+			    rSum[x>>1] += rVal;
+			    gSum[x>>1] += gVal;
+			    bSum[x>>1] += bVal;
+    			
+			    rVal = pSrcRGB[srcPos++];
+			    gVal = pSrcRGB[srcPos++];
+			    bVal = pSrcRGB[srcPos++];
+			    result = (rVal*77 + gVal*150 + bVal*29) >> 8;
+			    pDstMCU[0][dstYPos++] = (result - 128);			// (by,dy)
+			    rSum[x>>1] += rVal;
+			    gSum[x>>1] += gVal;
+			    bSum[x>>1] += bVal;
+		    }
+		    dstYPos = dstYPos-64;
+    		
+		    // Compute and store Cb & Cr
+		    for (x=0; x<8; ++x)
+		    {
+			    rSum[x] = rSum[x]>>2;	// Average of 4 values
+			    gSum[x] = gSum[x]>>2;	// Average of 4 values
+			    bSum[x] = bSum[x]>>2;	// Average of 4 values
+			    result = (A16S)(-43 * rSum[x] - 85 * gSum[x] + 128 * bSum[x] + 128);
+			    pDstMCU[1][dstCPos] = (result>>8);		// cb
+			    result = (A16S)(128 * rSum[x] - 107 * gSum[x] - 21 * bSum[x] + 128);
+			    pDstMCU[2][dstCPos++] = (result>>8);	// cr
+			    rSum[x] = gSum[x] = bSum[x] = 0;
+		    }
+	    }
+    }//end of switch
+	    return fwStsNoErr;
 }
 
 //-----------------------------------------------------------------------
