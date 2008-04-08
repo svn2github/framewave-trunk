@@ -72,7 +72,7 @@ OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiRGBToYCbCr444LS_MCU_8u16
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiRGBToYCbCr422LS_MCU_8u16s_C3P3R)(const Fw8u* pSrcRGB, int srcStep, 
 							Fw16s* pDstMCU[3]);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiRGBToYCbCr411LS_MCU_8u16s_C3P3R)(const Fw8u* pSrcRGB, int srcStep, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiRGBToYCbCr411LS_MCU_8u16s_C3P3R)(const Fw8u* pSrcRGB, int srcStep, 
 							Fw16s* pDstMCU[3]);
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiBGRToYCbCr444LS_MCU_8u16s_C3P3R)(const Fw8u* pSrcBGR, int srcStep, 
@@ -147,7 +147,7 @@ OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiQuantFwd8x8_JPEG_16s_C1I)
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiQuantInvTableInit_JPEG_8u16u)(const Fw8u* pQuantRawTable, 
 							Fw16u* pQuantInvTable);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiQuantInv8x8_JPEG_16s_C1I)(Fw16s* pSrcDst, const Fw16u*
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiQuantInv8x8_JPEG_16s_C1I)(Fw16s* pSrcDst, const Fw16u*
 							pQuantInvTable);
 
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCTQuantFwd8x8_JPEG_16s_C1)( const Fw16s* pSrc,
