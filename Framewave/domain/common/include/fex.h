@@ -27,6 +27,9 @@ namespace OPT_LEVEL
 																	template<class FE>							\
 																	IV F10H_Post( FE &f ) { this->template SSE2_Post<FE>(f); }
 
+#define FEX_REF                                  FE_F10H_PFT_ABSENT                  \
+                                                FE_SSE2_PFT_ABSENT                  \
+                                                FE_REFR_PFT_NORMAL
 
 #define FEX_SSE2_REF				FEX_F10H_PFT_EMULATE		\
 									FE_SSE2_PFT_NORMAL			\

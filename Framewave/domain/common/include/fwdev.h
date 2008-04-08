@@ -147,7 +147,7 @@ namespace OPT_LEVEL
         FW_16U, FW_16S,  FW_16SC,
         FW_32U, FW_32S,  FW_32SC,
         FW_32F, FW_32FC,
-        FW_64S, FW_64F,  FW_64FC, FW_64SC
+        FW_64U,FW_64S, FW_64F,  FW_64FC, FW_64SC
     };
 
 //! return the size (in bytes) corresponding to the specified FWType (enumerated) value.
@@ -166,6 +166,7 @@ namespace OPT_LEVEL
             case FW_32F:  return sizeof ( Fw32f  );
             case FW_32FC: return sizeof ( Fw32fc );
             case FW_64S:  return sizeof ( Fw64s  );
+            case FW_64U:  return sizeof ( Fw64u  );
             case FW_64F:  return sizeof ( Fw64f  );
             case FW_64FC: return sizeof ( Fw64fc );
             case FW_64SC: return sizeof ( Fw64sc );
@@ -187,6 +188,7 @@ namespace OPT_LEVEL
     template<       > struct GetType<Fw32f > { static FWType Index() { return FW_32F;  } };
     template<       > struct GetType<Fw32fc> { static FWType Index() { return FW_32FC; } };
     template<       > struct GetType<Fw64s > { static FWType Index() { return FW_64S;  } };
+    template<       > struct GetType<Fw64u > { static FWType Index() { return FW_64U;  } };
     template<       > struct GetType<Fw64f > { static FWType Index() { return FW_64F;  } };
     template<       > struct GetType<Fw64fc> { static FWType Index() { return FW_64FC; } };
     template<       > struct GetType<Fw64sc> { static FWType Index() { return FW_64SC; } };

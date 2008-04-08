@@ -1071,6 +1071,8 @@ FwStatus STDCALL fwsMax_16s               ( const Fw16s *pSrc, int len, Fw16s *p
 FwStatus STDCALL fwsMax_32s               ( const Fw32s *pSrc, int len, Fw32s *pMax );
 FwStatus STDCALL fwsMax_32f               ( const Fw32f *pSrc, int len, Fw32f *pMax );
 FwStatus STDCALL fwsMax_64f               ( const Fw64f *pSrc, int len, Fw64f *pMax );
+FwStatus STDCALL fwsMax_8s                ( const Fw8s  *pSrc, int len, Fw8s  *pMax );
+FwStatus STDCALL fwsMax_64u               ( const Fw64u *pSrc, int len, Fw64u *pMax );
 
 /*#FunctionBlock - MaxIndx
 TODO:publish
@@ -1118,6 +1120,8 @@ FwStatus STDCALL fwsMin_16s               ( const Fw16s *pSrc, int len, Fw16s *p
 FwStatus STDCALL fwsMin_32s               ( const Fw32s *pSrc, int len, Fw32s *pMin );
 FwStatus STDCALL fwsMin_32f               ( const Fw32f *pSrc, int len, Fw32f *pMin );
 FwStatus STDCALL fwsMin_64f               ( const Fw64f *pSrc, int len, Fw64f *pMin );
+FwStatus STDCALL fwsMin_8s                ( const Fw8s  *pSrc, int len, Fw8s  *pMin );
+FwStatus STDCALL fwsMin_64u               ( const Fw64u *pSrc, int len, Fw64u *pMin );
 
 /*#FunctionBlock - MinIndx
 TODO:publish

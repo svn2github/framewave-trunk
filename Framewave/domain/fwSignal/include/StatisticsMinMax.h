@@ -17,7 +17,7 @@ struct StatMaxGen: public fe1St<TS1,cs1>
 {
     mutable TS1 max;
     mutable XMM128 mMax;
-    FEX_SSE2_REF
+
     StatMaxGen(){
         max = CBL_LIBRARY::Limits<TS1>::MinValue();
     }
@@ -62,7 +62,7 @@ struct StatMinGen: public fe1St<TS1,cs1>
 {
     mutable TS1 min;
     mutable XMM128 mMin;
-    FEX_SSE2_REF
+    
     StatMinGen(){
         min = CBL_LIBRARY::Limits<TS1>::MaxValue();
     }
@@ -103,12 +103,50 @@ struct StatMinGen: public fe1St<TS1,cs1>
     }
 };
 
+
+
+struct StatMin_64u: public StatMinGen<Fw64u,C1>
+{
+    FEX_REF
+};
+
+struct StatMax_64u: public StatMaxGen<Fw64u,C1>
+{
+    FEX_REF
+};
+struct StatMin_8s: public StatMinGen<Fw8s,C1>
+{
+
+    const static U32 nPIX_SSE = 16 * 2; // Load two registers
+    class SRC1: public RegDesc< Fw8s, C1, nPIX_SSE > {};
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        __m128i sign1 = mm_min_epi8(r.src1[0].i,r.src1[1].i);
+        mMin.i = mm_min_epi8(mMin.i,sign1);
+    }
+};
+
+struct StatMax_8s: public StatMaxGen<Fw8s,C1>
+{
+
+    const static U32 nPIX_SSE = 16 * 2; // Load two registers
+    class SRC1: public RegDesc< Fw8s, C1, nPIX_SSE > {};
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        __m128i sign1 = mm_max_epi8(r.src1[0].i,r.src1[1].i);
+        mMax.i = mm_max_epi8(mMax.i,sign1);
+    }
+};
+
+
 struct StatMax_16s: public StatMaxGen<Fw16s,C1>
 {
 
     const static U32 nPIX_SSE = 8 * 2; // Load two registers
     class SRC1: public RegDesc< Fw16s, C1, nPIX_SSE > {};
-
+    FEX_SSE2_REF
     IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
     {
         __m128i sign1 = _mm_max_epi16(r.src1[0].i,r.src1[1].i);
@@ -121,7 +159,7 @@ struct StatMax_32s: public StatMaxGen<Fw32s,C1>
 
     const static U32 nPIX_SSE = 4 * 3; // Load three registers
     class SRC1: public RegDesc< Fw32s, C1, nPIX_SSE > {};
-
+    FEX_SSE2_REF
     IV SSE2_Init()
     {
         max = CBL_LIBRARY::Limits<Fw32s>::MinValue();
@@ -152,7 +190,7 @@ struct StatMax_32f: public StatMaxGen<Fw32f,C1>
 {
     const static U32 nPIX_SSE = 4 * 3; // Load three registers
     class SRC1: public RegDesc< Fw32f, C1, nPIX_SSE > {};
-
+    FEX_SSE2_REF
     IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
     {
         __m128 max1 = _mm_max_ps(r.src1[0].f,r.src1[1].f);
@@ -166,7 +204,7 @@ struct StatMax_64f: public StatMaxGen<Fw64f,C1>
 {
     const static U32 nPIX_SSE = 2 * 2; // Load two registers
     class SRC1: public RegDesc< Fw64f, C1, nPIX_SSE > {};
-
+    FEX_SSE2_REF
     IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
     {
         __m128d max1 = _mm_max_pd(r.src1[0].d,r.src1[1].d);
@@ -181,7 +219,7 @@ struct StatMin_16s: public StatMinGen<Fw16s,C1>
 
     const static U32 nPIX_SSE = 8 * 2; // Load two registers
     class SRC1: public RegDesc< Fw16s, C1, nPIX_SSE > {};
-
+    FEX_SSE2_REF
     IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
     {
         __m128i min1 = _mm_min_epi16(r.src1[0].i,r.src1[1].i);
@@ -192,7 +230,7 @@ struct StatMin_16s: public StatMinGen<Fw16s,C1>
 
 struct StatMin_32s: public StatMinGen<Fw32s,C1>
 {
-
+    FEX_SSE2_REF
 
     IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
     {
@@ -208,7 +246,7 @@ struct StatMin_32f: public StatMinGen<Fw32f,C1>
 {
     const static U32 nPIX_SSE = 4 * 3; // Load three registers
     class SRC1: public RegDesc< Fw32f, C1, nPIX_SSE > {};
-
+    FEX_SSE2_REF
     IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
     {
         __m128 min1 = _mm_min_ps(r.src1[0].f,r.src1[1].f);
@@ -221,7 +259,7 @@ struct StatMin_64f: public StatMinGen<Fw64f,C1>
 {
     const static U32 nPIX_SSE = 2 * 2; // Load two registers
     class SRC1: public RegDesc< Fw64f, C1, nPIX_SSE > {};
-
+    FEX_SSE2_REF
     IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
     {
         __m128d min1 = _mm_min_pd(r.src1[0].d,r.src1[1].d);

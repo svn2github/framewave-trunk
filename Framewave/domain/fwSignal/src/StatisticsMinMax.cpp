@@ -8,6 +8,16 @@ This software is subject to the Apache v2.0 License.
 
 using namespace OPT_LEVEL;
 
+FwStatus PREFIX_OPT(OPT_PREFIX, fwsMax_8s)(const Fw8s* pSrc, int len, Fw8s* pMax)
+{
+	if (len == 1) { *pMax = pSrc[0]; return fwStsNoErr;}
+	FwStatus retStatus;
+	StatMax_8s data;
+	retStatus = OPT_LEVEL::fex<StatMax_8s>(data,pSrc,len); 
+	*pMax = data.max;
+	return retStatus;
+}
+
 FwStatus PREFIX_OPT(OPT_PREFIX, fwsMax_16s)(const Fw16s* pSrc, int len, Fw16s* pMax)
 {
 	if (len == 1) { *pMax = pSrc[0]; return fwStsNoErr;}
@@ -27,6 +37,17 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMax_32s)(const Fw32s* pSrc, int len, Fw32s* p
 	*pMax = data.max;
 	return retStatus;
 }
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwsMax_64u)(const Fw64u* pSrc, int len, Fw64u* pMax)
+{
+	if (len == 1) { *pMax = pSrc[0]; return fwStsNoErr;}
+	FwStatus retStatus;	
+	StatMax_64u data;
+	retStatus = OPT_LEVEL::fex<StatMax_64u>(data,pSrc,len); 
+	*pMax = data.max;
+	return retStatus;
+}
+
 FwStatus PREFIX_OPT(OPT_PREFIX, fwsMax_32f)(const Fw32f* pSrc, int len, Fw32f* pMax)
 {
 	if (len == 1) { *pMax = pSrc[0]; return fwStsNoErr;}
@@ -43,6 +64,16 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMax_64f)(const Fw64f* pSrc, int len, Fw64f* p
 	StatMax_64f data;
 	retStatus = OPT_LEVEL::fex<StatMax_64f>(data,pSrc,len); 
 	*pMax = data.max;
+	return retStatus;
+}
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwsMin_8s)(const Fw8s* pSrc, int len, Fw8s* pMin)
+{
+	if (len == 1) { *pMin = pSrc[0]; return fwStsNoErr;}
+	FwStatus retStatus;
+	StatMin_8s data;
+	retStatus = OPT_LEVEL::fex<StatMin_8s>(data,pSrc,len); 
+	*pMin = data.min;
 	return retStatus;
 }
 
@@ -64,6 +95,17 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwsMin_32s)(const Fw32s* pSrc, int len, Fw32s* p
 	*pMin = data.min;
 	return retStatus;
 }
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwsMin_64u)(const Fw64u* pSrc, int len, Fw64u* pMin)
+{
+	if (len == 1) { *pMin = pSrc[0]; return fwStsNoErr;}
+	FwStatus retStatus;	
+	StatMin_64u data;
+	retStatus = OPT_LEVEL::fex<StatMin_64u>(data,pSrc,len); 
+	*pMin = data.min;
+	return retStatus;
+}
+
 FwStatus PREFIX_OPT(OPT_PREFIX, fwsMin_32f)(const Fw32f* pSrc, int len, Fw32f* pMin)
 {
 	if (len == 1) { *pMin = pSrc[0]; return fwStsNoErr;}

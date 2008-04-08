@@ -8,6 +8,7 @@ fwsGetLibVersion
 fwsAdd_8u16u
 fwsAdd_32u
 fwsAdd_32f
+fwsAdd_64s
 fwsAdd_64f
 fwsAdd_32fc
 fwsAdd_64fc
@@ -52,6 +53,7 @@ fwsAddC_32sc_ISfs
 fwsSub_16s
 fwsSub_32f
 fwsSub_64f
+fwsSub_64s
 fwsSub_32fc
 fwsSub_64fc
 fwsSub_16s32f
@@ -485,6 +487,8 @@ fwsMax_16s
 fwsMax_32s
 fwsMax_32f
 fwsMax_64f
+fwsMax_8s
+fwsMax_64u
 
 fwsMaxIndx_16s
 fwsMaxIndx_32s
@@ -501,6 +505,8 @@ fwsMin_16s
 fwsMin_32s
 fwsMin_32f
 fwsMin_64f
+fwsMin_8s
+fwsMin_64u
 
 fwsMinIndx_16s
 fwsMinIndx_32s

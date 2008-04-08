@@ -759,5 +759,9 @@ OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsFindC_8u)(const Fw8u* pSrc, int
 OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsFindC_16u)(const Fw16u* pSrc, int len, Fw16u valFind, int* pIndex);
 OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsFindRevC_8u)(const Fw8u* pSrc, int len, Fw8u valFind, int* pIndex);
 OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsFindRevC_16u)(const Fw16u* pSrc, int len, Fw16u valFind, int* pIndex);
+OREFR OSSE2     FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsMin_8s)( const Fw8s  *pSrc, int len, Fw8s  *pMin );
+OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsMin_64u)( const Fw64u *pSrc, int len, Fw64u *pMin );
+OREFR OSSE2     FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsMax_8s)( const Fw8s  *pSrc, int len, Fw8s  *pMax );
+OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsMax_64u)( const Fw64u *pSrc, int len, Fw64u *pMax );
 
 #endif // __FWSIGNAL_OPT_H__

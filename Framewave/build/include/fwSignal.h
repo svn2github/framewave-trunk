@@ -27,6 +27,7 @@ const FwLibraryVersion* STDCALL fwsGetLibVersion ();
 FwStatus STDCALL fwsAdd_8u16u             ( const Fw8u   *pSrc1, const Fw8u   *pSrc2  , Fw16u  *pDst, int len );
 FwStatus STDCALL fwsAdd_32u               ( const Fw32u  *pSrc1, const Fw32u  *pSrc2  , Fw32u  *pDst, int len );
 FwStatus STDCALL fwsAdd_32f               ( const Fw32f  *pSrc1, const Fw32f  *pSrc2  , Fw32f  *pDst, int len );
+FwStatus STDCALL fwsAdd_64s		         (const Fw64s* pSrc1, const Fw64s* pSrc2, Fw64s* pDst, int len);
 FwStatus STDCALL fwsAdd_64f               ( const Fw64f  *pSrc1, const Fw64f  *pSrc2  , Fw64f  *pDst, int len );
 FwStatus STDCALL fwsAdd_32fc              ( const Fw32fc *pSrc1, const Fw32fc *pSrc2  , Fw32fc *pDst, int len );
 FwStatus STDCALL fwsAdd_64fc              ( const Fw64fc *pSrc1, const Fw64fc *pSrc2  , Fw64fc *pDst, int len );
@@ -85,6 +86,7 @@ FwStatus STDCALL fwsAddC_32sc_ISfs        (                      Fw32sc val, Fw3
 FwStatus STDCALL fwsSub_16s               ( const Fw16s  *pSrc1, const Fw16s  *pSrc2  , Fw16s  *pDst, int len );
 FwStatus STDCALL fwsSub_32f               ( const Fw32f  *pSrc1, const Fw32f  *pSrc2  , Fw32f  *pDst, int len );
 FwStatus STDCALL fwsSub_64f               ( const Fw64f  *pSrc1, const Fw64f  *pSrc2  , Fw64f  *pDst, int len );
+FwStatus STDCALL fwsSub_64s               ( const Fw64s  *pSrc1, const Fw64s  *pSrc2  , Fw64s  *pDst, int len );
 FwStatus STDCALL fwsSub_32fc              ( const Fw32fc *pSrc1, const Fw32fc *pSrc2  , Fw32fc *pDst, int len );
 FwStatus STDCALL fwsSub_64fc              ( const Fw64fc *pSrc1, const Fw64fc *pSrc2  , Fw64fc *pDst, int len );
 FwStatus STDCALL fwsSub_16s32f            ( const Fw16s  *pSrc1, const Fw16s  *pSrc2  , Fw32f  *pDst, int len );
@@ -724,6 +726,8 @@ FwStatus STDCALL fwsMax_16s               ( const Fw16s *pSrc, int len, Fw16s *p
 FwStatus STDCALL fwsMax_32s               ( const Fw32s *pSrc, int len, Fw32s *pMax );
 FwStatus STDCALL fwsMax_32f               ( const Fw32f *pSrc, int len, Fw32f *pMax );
 FwStatus STDCALL fwsMax_64f               ( const Fw64f *pSrc, int len, Fw64f *pMax );
+FwStatus STDCALL fwsMax_8s                ( const Fw8s  *pSrc, int len, Fw8s  *pMax );
+FwStatus STDCALL fwsMax_64u               ( const Fw64u *pSrc, int len, Fw64u *pMax );
 
 ////////////////////////////////////////////////////////////////
 //                        MaxIndx
@@ -756,6 +760,8 @@ FwStatus STDCALL fwsMin_16s               ( const Fw16s *pSrc, int len, Fw16s *p
 FwStatus STDCALL fwsMin_32s               ( const Fw32s *pSrc, int len, Fw32s *pMin );
 FwStatus STDCALL fwsMin_32f               ( const Fw32f *pSrc, int len, Fw32f *pMin );
 FwStatus STDCALL fwsMin_64f               ( const Fw64f *pSrc, int len, Fw64f *pMin );
+FwStatus STDCALL fwsMin_8s                ( const Fw8s  *pSrc, int len, Fw8s  *pMin );
+FwStatus STDCALL fwsMin_64u               ( const Fw64u *pSrc, int len, Fw64u *pMin );
 
 ////////////////////////////////////////////////////////////////
 //                        MinIndx

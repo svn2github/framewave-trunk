@@ -87,6 +87,21 @@ SYS_INLINE STATIC __m128 _mm_mul_ps32fc(const __m128 &s1,const __m128 &s2)
         return _mm_shuffle_ps(src1,src1,_MM_SHUFFLE(3, 1, 2, 0));
 }
 
+SYS_INLINE STATIC __m128i mm_max_epi8(const __m128i &val1, const __m128i &val2)
+{
+    __m128i mask  = _mm_cmpgt_epi8(val1, val2);
+    __m128i res1  = _mm_andnot_si128(mask,val2);
+    __m128i res2  = _mm_and_si128(mask,val1);
+    return  _mm_or_si128(res1, res2);
+}
+
+SYS_INLINE STATIC __m128i mm_min_epi8(const __m128i &val1, const __m128i &val2)
+{
+    __m128i mask  = _mm_cmplt_epi8(val1, val2);
+    __m128i res1  = _mm_andnot_si128(mask,val2);
+    __m128i res2  = _mm_and_si128(mask,val1);
+    return  _mm_or_si128(res1, res2);
+}
 
 
 SYS_INLINE STATIC __m128i _mm_cmpgt_epu32(const __m128i &val1, const __m128i &val2)
