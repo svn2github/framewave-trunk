@@ -123,19 +123,52 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiQuantInvTableInit_JPEG_8u16u)(const Fw8u *pQu
 //	s[vu] = (sq[vu]*Q[vu])
 //Some saturate for the data might be required due to the rounding.
 //-----------------------------------------------------------------------
+namespace OPT_LEVEL
+{
+SYS_INLINE FwStatus quantInv8x8_JPEG_16s_C1I(Fw16s *pSrcDst, const Fw16u*
+									   pQuantInvTable) 
+{
+	switch(Dispatch::Type<DT_SSE2>())
+	{
+	    case DT_SSE3:
+	    case DT_SSE2:
+            {
+                for(int i =0; i< 8; i++)
+                {   
+                     __m128i srcDst = _mm_loadu_si128((reinterpret_cast<__m128i*>(pSrcDst)) + i);
+                        const __m128i quant = _mm_loadu_si128((reinterpret_cast<const __m128i*>(pQuantInvTable)) + i);
+
+                     __m128i low = _mm_mullo_epi16(srcDst, quant);
+				    __m128i high = _mm_mulhi_epi16(srcDst, quant);
+				        
+                    srcDst = _mm_unpacklo_epi16(low, high);
+				    low = _mm_unpackhi_epi16(low, high);
+				    FW_SSE2::pack32STo16S(srcDst, low);
+
+                    _mm_storeu_si128((reinterpret_cast<__m128i*>(pSrcDst)) + i, srcDst);
+
+                }
+            }
+            break;
+        case DT_REFR:
+	    default:
+	    for (int i=0;i<64;i++) {
+		    pSrcDst[i]= FW_REF::Limits<S16>::Sat(pSrcDst[i]*pQuantInvTable[i]);
+	    }
+    }
+    return fwStsNoErr;
+}
+};
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiQuantInv8x8_JPEG_16s_C1I)(Fw16s *pSrcDst, const Fw16u*
 									   pQuantInvTable) 
 {
 	if (pSrcDst==0 || pQuantInvTable==0) return fwStsNullPtrErr;
-	
-	for (int i=0;i<64;i++) {
-		pSrcDst[i]= FW_REF::Limits<S16>::Sat(pSrcDst[i]*pQuantInvTable[i]);
-	}
+    return quantInv8x8_JPEG_16s_C1I(pSrcDst, pQuantInvTable);
 
-	return fwStsNoErr;
+	
 }
 
 #endif //BUILD_NUM_AT_LEAST
 
 // Please do NOT remove the above line for CPP files that need to be multipass compiled
-// OREFR 
+// OREFR OSSE2 
