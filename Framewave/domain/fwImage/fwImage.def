@@ -1103,6 +1103,7 @@ fwiBGRToYCbCr420_8u_AC4P3R
 fwiYCbCr420ToRGB_8u_P3C3R
 
 fwiYCbCr422ToYCbCr420_8u_P3R
+fwiYCbCr422ToYCbCr420_8u_C2P3R
 
 fwiYCbCr420ToRGB565_8u16u_P3C3R
 fwiYCbCr420ToRGB555_8u16u_P3C3R
@@ -1219,6 +1220,24 @@ fwiHSVToRGB_8u_C3R
 fwiHSVToRGB_8u_AC4R
 fwiHSVToRGB_16u_C3R
 fwiHSVToRGB_16u_AC4R
+
+fwiColorToGray_8u_C3C1R
+fwiColorToGray_16u_C3C1R
+fwiColorToGray_16s_C3C1R
+fwiColorToGray_32f_C3C1R
+fwiColorToGray_8u_AC4C1R
+fwiColorToGray_16u_AC4C1R
+fwiColorToGray_16s_AC4C1R
+fwiColorToGray_32f_AC4C1R
+
+fwiRGBToGray_8u_C3C1R
+fwiRGBToGray_16u_C3C1R
+fwiRGBToGray_16s_C3C1R
+fwiRGBToGray_32f_C3C1R
+fwiRGBToGray_8u_AC4C1R
+fwiRGBToGray_16u_AC4C1R
+fwiRGBToGray_16s_AC4C1R
+fwiRGBToGray_32f_AC4C1R
 
 fwiYCbCr422_8u_C2P3R
 fwiYCbCr422_8u_P3C2R
