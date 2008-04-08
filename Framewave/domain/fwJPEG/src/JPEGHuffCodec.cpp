@@ -258,13 +258,13 @@ FwStatus MyFW_HuffmanSpecInit(const Fw8u *pListBits, const Fw8u *pListVals,
 	si=huffsize[0];
 
 	//huffsize[k]==0 means the last k to exit the loop
-	for (i=0; i<k;) {
+	/*for (i=0; i<k;) {
 		while (huffsize[i]==si) {
 			huffcode[i++]=code++;
 		}
 		code <<=1;
 		si++;
-	}
+	}*/
 
 	//Figure C.3 from CCITT Rec. T.81(1992 E) page 53
 	//ordering procedure for encoding procedure code tables
@@ -272,6 +272,15 @@ FwStatus MyFW_HuffmanSpecInit(const Fw8u *pListBits, const Fw8u *pListVals,
 	memset(ehufco, 0, 512);
 
 	for (i=0; i<k; i++) {
+
+        if (huffsize[i]==si) {
+			huffcode[i]=code++;
+		}
+        else
+        {
+		    code <<=1;
+		    si++;
+        }
 		j = pListVals[i];
 		ehufco[j] = huffcode[i];
 		ehufsi[j] = huffsize[i];
