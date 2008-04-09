@@ -3162,14 +3162,14 @@ todo:publish
 <Text>The AC4C1 version of the function steps through an ROI in a source buffer, converts a 4-channel color image to a gray scale image and writes the converted data to a destination buffer.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsSizeErr
 */
-FwStatus fwiColorToGray_8u_C3C1R(const Fw8u* pSrc, int srcStep, Fw8u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
-FwStatus fwiColorToGray_16u_C3C1R(const Fw16u* pSrc, int srcStep, Fw16u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
-FwStatus fwiColorToGray_16s_C3C1R(const Fw16s* pSrc, int srcStep, Fw16s* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
-FwStatus fwiColorToGray_32f_C3C1R(const Fw32f* pSrc, int srcStep, Fw32f* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
-FwStatus fwiColorToGray_8u_AC4C1R(const Fw8u* pSrc, int srcStep, Fw8u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
-FwStatus fwiColorToGray_16u_AC4C1R(const Fw16u* pSrc, int srcStep, Fw16u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
-FwStatus fwiColorToGray_16s_AC4C1R(const Fw16s* pSrc, int srcStep, Fw16s* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
-FwStatus fwiColorToGray_32f_AC4C1R(const Fw32f* pSrc, int srcStep, Fw32f* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_8u_C3C1R(const Fw8u* pSrc, int srcStep, Fw8u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_16u_C3C1R(const Fw16u* pSrc, int srcStep, Fw16u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_16s_C3C1R(const Fw16s* pSrc, int srcStep, Fw16s* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_32f_C3C1R(const Fw32f* pSrc, int srcStep, Fw32f* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_8u_AC4C1R(const Fw8u* pSrc, int srcStep, Fw8u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_16u_AC4C1R(const Fw16u* pSrc, int srcStep, Fw16u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_16s_AC4C1R(const Fw16s* pSrc, int srcStep, Fw16s* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_32f_AC4C1R(const Fw32f* pSrc, int srcStep, Fw32f* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
 
 
 /*#FunctionBlock - RGBToGray
@@ -3180,14 +3180,14 @@ todo:publish
 <Text>The AC4C1 version of the function steps through an ROI in a source buffer, converts a 4-channel color image to a gray scale image and writes the converted data to a destination buffer.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsSizeErr
 */
-FwStatus fwiRGBToGray_8u_C3C1R(const Fw8u* pSrc, int srcStep,Fw8u* pDst, int dstStep, FwiSize roiSize);
-FwStatus fwiRGBToGray_16u_C3C1R(const Fw16u* pSrc, int srcStep,Fw16u* pDst, int dstStep, FwiSize roiSize);
-FwStatus fwiRGBToGray_16s_C3C1R(const Fw16s* pSrc, int srcStep,Fw16s* pDst, int dstStep, FwiSize roiSize);
-FwStatus fwiRGBToGray_32f_C3C1R(const Fw32f* pSrc, int srcStep,Fw32f* pDst, int dstStep, FwiSize roiSize);
-FwStatus fwiRGBToGray_8u_AC4C1R(const Fw8u* pSrc, int srcStep,Fw8u* pDst, int dstStep, FwiSize roiSize);
-FwStatus fwiRGBToGray_16u_AC4C1R(const Fw16u* pSrc, int srcStep,Fw16u* pDst, int dstStep, FwiSize roiSize);
-FwStatus fwiRGBToGray_16s_AC4C1R(const Fw16s* pSrc, int srcStep,Fw16s* pDst, int dstStep, FwiSize roiSize);
-FwStatus fwiRGBToGray_32f_AC4C1R(const Fw32f* pSrc, int srcStep,Fw32f* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_8u_C3C1R(const Fw8u* pSrc, int srcStep,Fw8u* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_16u_C3C1R(const Fw16u* pSrc, int srcStep,Fw16u* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_16s_C3C1R(const Fw16s* pSrc, int srcStep,Fw16s* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_32f_C3C1R(const Fw32f* pSrc, int srcStep,Fw32f* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_8u_AC4C1R(const Fw8u* pSrc, int srcStep,Fw8u* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_16u_AC4C1R(const Fw16u* pSrc, int srcStep,Fw16u* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_16s_AC4C1R(const Fw16s* pSrc, int srcStep,Fw16s* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_32f_AC4C1R(const Fw32f* pSrc, int srcStep,Fw32f* pDst, int dstStep, FwiSize roiSize);
 
 
 
