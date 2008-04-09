@@ -17,7 +17,7 @@ set PASS=TRUE
 
 if "%PLATFORM%" NEQ "x64" GOTO CONFIG
 set BITNESS=64
-call "%VS80COMNTOOLS%..\..\VC\vcvarsall.bat" amd64
+call "%VS80COMNTOOLS%..\..\VC\vcvarsall.bat" x86_amd64
 
 :CONFIG
 if "%CONFIG%" == "debug_static" set LIBTYPE=static
