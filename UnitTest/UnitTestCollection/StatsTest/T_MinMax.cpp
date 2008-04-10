@@ -10,6 +10,7 @@ This software is subject to the Apache v2.0 License.
 #include "StatsObject.h"
 #include "fwSignal.h"
 
+
 class TestMax_16s: public SrcDstLen< S16, S16 >
 {
 public:
@@ -29,6 +30,21 @@ class TestMax_32s: public SrcDstLen< S32, S32 >
 public:
     TestMax_32s( UnitTestCatalogBase & parent ) : 
 	  SrcDstLen< S32, S32 >( parent, "fwsMax_32s", fwsMax_32s )
+    {}
+
+    virtual void RunAll()
+    {
+        int len = 7;
+        RunTest( "0 1 22 63 64 16 254","254",len);
+    }
+};
+
+
+class TestMax_64u: public SrcDstLen< U64, U64 >
+{
+public:
+    TestMax_64u( UnitTestCatalogBase & parent ) : 
+	  SrcDstLen< U64, U64 >( parent, "fwsMax_64u", fwsMax_64u )
     {}
 
     virtual void RunAll()
@@ -87,6 +103,20 @@ class TestMin_32s: public SrcDstLen< S32, S32 >
 public:
     TestMin_32s( UnitTestCatalogBase & parent ) : 
 	  SrcDstLen< S32, S32 >( parent, "fwsMin_32s", fwsMin_32s )
+    {}
+
+    virtual void RunAll()
+    {
+        int len = 7;
+        RunTest( "0 1 22 63 64 16 254","0",len);
+    }
+};
+
+class TestMin_64u: public SrcDstLen< U64, U64 >
+{
+public:
+    TestMin_64u( UnitTestCatalogBase & parent ) : 
+	  SrcDstLen< U64, U64 >( parent, "fwsMin_64u", fwsMin_64u )
     {}
 
     virtual void RunAll()
@@ -188,11 +218,13 @@ DEFINE_TEST_TABLE( MinMaxTestCatalog )
 
 TEST_ENTRY( TestMax_16s )
 TEST_ENTRY( TestMax_32s )
+TEST_ENTRY( TestMax_64u )
 TEST_ENTRY( TestMax_32f )
 TEST_ENTRY( TestMax_64f )
 TEST_ENTRY( TestMin_16s )
 TEST_ENTRY( TestMin_32s )
 TEST_ENTRY( TestMin_32f )
+TEST_ENTRY( TestMin_64u )
 TEST_ENTRY( TestMin_64f )
 TEST_ENTRY( TestMaxAbs_16s )
 TEST_ENTRY( TestMaxAbs_32s )
