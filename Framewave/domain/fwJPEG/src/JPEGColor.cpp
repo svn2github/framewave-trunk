@@ -921,29 +921,146 @@ namespace OPT_LEVEL
 		//We use 77, 150, 29 as the modified coeff, and then shift the result
 		//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
 		//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
+    switch( Dispatch::Type<DT_SSE2>() )
+	    {
+	    case DT_SSE3:
+	    case DT_SSE2:
+		    //SSE Code goes here
+             {      
+                    
+                XMM128 rVal = {0} , gVal = {0}, bVal = {0};
+                XMM128 xmm1, xmm2, xmm3, accumulator;
+		        for (y=0;y<8; y++) {
+			        srcPos = y*srcStep + srcOffset;
+			        dstCPos = y*8 + dstCOffset;
+			        for (x=0;x<8;x++) {
+				        rVal.u16[x] = pSrcRGB[srcPos++];
+				        gVal.u16[x] = pSrcRGB[srcPos++];
+				        bVal.u16[x] = pSrcRGB[srcPos++];
+                    }
 
-		for (y=0;y<8; y++) {
-			srcPos = y*srcStep + srcOffset;
-			dstCPos = y*8 + dstCOffset;
-			for (x=0;x<8;x++) {
-				RVal = pSrcRGB[srcPos++];
-				GVal = pSrcRGB[srcPos++];
-				BVal = pSrcRGB[srcPos++];
-				result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-				pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
+                    xmm1.i = _mm_set1_epi16(77);
+                    xmm2.i = _mm_set1_epi16(150);
+                    xmm3.i = _mm_set1_epi16(29);
 
-				if (!(x&1)){
-					elementCb = -43 * RVal - 85 * GVal + 128 * BVal;
-					elementCr = 128 * RVal - 107 * GVal - 21 * BVal;
-				} else {
-					result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb + 256;
-					pDstMCU [1][dstCPos] = (Fw16s)(result>>9);
-					result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr + 256;
-					pDstMCU [2][dstCPos++] = (Fw16s)(result>>9);
-				}	
-			}
-		}
+                    xmm1.i = _mm_mullo_epi16(xmm1.i, rVal.i);
+                    xmm2.i = _mm_mullo_epi16(xmm2.i, gVal.i);
 
+                    xmm3.i = _mm_mullo_epi16(xmm3.i, bVal.i);
+                    xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);
+                    xmm3.i = _mm_set1_epi16(128);
+                    xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);//adding 128
+                    xmm1.i = _mm_srli_epi16(xmm1.i, 4);
+                    xmm2.i = _mm_srli_epi16(xmm2.i, 4);
+
+                    xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
+                    xmm1.i = _mm_srli_epi16(xmm1.i, 4);
+
+                    xmm1.i = _mm_sub_epi16(xmm1.i, xmm3.i);
+
+                    _mm_storeu_si128  ((__m128i *)(&pDstMCU[0][dstYPos]),xmm1.i);	
+
+
+			        //result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+			        //pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
+
+                    accumulator.i = _mm_srli_epi32(rVal.i, 16);
+                    rVal.i = _mm_slli_epi32(rVal.i, 16);
+                    rVal.i = _mm_srli_epi32(rVal.i, 16);
+                    rVal.i = _mm_add_epi16(accumulator.i, rVal.i);
+
+
+                    accumulator.i = _mm_srli_epi32(gVal.i, 16);
+                    gVal.i = _mm_slli_epi32(gVal.i, 16);
+                    gVal.i = _mm_srli_epi32(gVal.i, 16);
+                    gVal.i = _mm_add_epi16(accumulator.i, gVal.i);
+
+                    accumulator.i = _mm_srli_epi32(bVal.i, 16);
+                    bVal.i = _mm_slli_epi32(bVal.i, 16);
+                    bVal.i = _mm_srli_epi32(bVal.i, 16);
+                    bVal.i = _mm_add_epi16(accumulator.i, bVal.i);
+
+
+                    rVal.i = _mm_packs_epi32( rVal.i, rVal.i);
+                    gVal.i = _mm_packs_epi32( gVal.i, gVal.i);
+                    bVal.i = _mm_packs_epi32( bVal.i, bVal.i);
+
+                    xmm1.i = _mm_set1_epi16(-43);
+                    xmm2.i = _mm_set1_epi16(-85);
+                    xmm3.i = _mm_set1_epi16(128);
+
+                    xmm1.i = _mm_mullo_epi16(xmm1.i, rVal.i);
+                    xmm2.i = _mm_mullo_epi16(xmm2.i, gVal.i);
+                    xmm3.i = _mm_mullo_epi16(xmm3.i, bVal.i);
+                    
+                    xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
+                    xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);
+
+                    xmm2.i = _mm_set1_epi16(256);
+                    xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
+                    xmm1.i = _mm_srai_epi16(xmm1.i, 9);
+
+                    *((Fw64f *)(&pDstMCU[1][dstCPos])) = xmm1.f64[0];
+                    //_mm_storeu_si128  ((__m128i *)(&pDstMCU[1][dstCPos]),xmm1.i);	
+
+                    
+                    xmm1.i = _mm_set1_epi16(128);
+                    xmm2.i = _mm_set1_epi16(-107);
+                    xmm3.i = _mm_set1_epi16(-21);
+
+                    xmm1.i = _mm_mullo_epi16(xmm1.i, rVal.i);
+                    xmm2.i = _mm_mullo_epi16(xmm2.i, gVal.i);
+                    xmm3.i = _mm_mullo_epi16(xmm3.i, bVal.i);
+                    
+                    xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
+                    xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);
+
+                    xmm2.i = _mm_set1_epi16(256);
+                    xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
+                    xmm1.i = _mm_srai_epi16(xmm1.i, 9);
+
+                    *((Fw64f *)(&pDstMCU[2][dstCPos])) = xmm1.f64[0];
+
+                    dstYPos += 8;
+                    dstCPos += 4;
+
+			       /* if (!(x&1)){
+				        elementCb = -43 * RVal - 85 * GVal + 128 * BVal;
+				        elementCr = 128 * RVal - 107 * GVal - 21 * BVal;
+			        } else {
+				        result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb + 256;
+				        pDstMCU [1][dstCPos] = (Fw16s)(result>>9);
+				        result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr + 256;
+				        pDstMCU [2][dstCPos++] = (Fw16s)(result>>9);
+			        }*/	
+			        
+		        }
+            }
+            break;
+            
+	    default:
+		    for (y=0;y<8; y++) {
+			    srcPos = y*srcStep + srcOffset;
+			    dstCPos = y*8 + dstCOffset;
+			    for (x=0;x<8;x++) {
+				    RVal = pSrcRGB[srcPos++];
+				    GVal = pSrcRGB[srcPos++];
+				    BVal = pSrcRGB[srcPos++];
+				    result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+				    pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
+
+				    if (!(x&1)){
+					    elementCb = -43 * RVal - 85 * GVal + 128 * BVal;
+					    elementCr = 128 * RVal - 107 * GVal - 21 * BVal;
+				    } else {
+					    result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb + 256;
+					    pDstMCU [1][dstCPos] = (Fw16s)(result>>9);
+					    result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr + 256;
+					    pDstMCU [2][dstCPos++] = (Fw16s)(result>>9);
+				    }	
+			    }
+		    }
+        }
 		return;
 	}
 
@@ -1075,22 +1192,92 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr444LS_MCU_8u16s_C3P3R)(const Fw8u *
 	unsigned short RVal, GVal, BVal;
 	int x, y, srcPos, result;
 
-	for (y=0;y<8; y++) {//8*8 image
-		srcPos = y*srcStep;
-		for (x=0;x<8;x++) {
-			RVal=pSrcRGB[srcPos++]; 
-			GVal=pSrcRGB[srcPos++];
-			BVal=pSrcRGB[srcPos++];
-			//add 0.5 for nearest neighbor rounding
-			result =  77 * RVal + 150 * GVal + 29 * BVal + 128;
-			pDstMCU [0][x+y*8] = (Fw16s)((result>>8)-128);
-			result = -43 * RVal - 85 * GVal	+ 128 * BVal + 128;
-			pDstMCU [1][x+y*8] = (Fw16s)(result>>8);
-			result = 128 * RVal - 107 * GVal - 21 * BVal + 128;
-			pDstMCU [2][x+y*8] = (Fw16s)(result>>8);
-		}
-	}
+    switch( Dispatch::Type<DT_SSE2>() )
+	{
+	case DT_SSE3:
+	case DT_SSE2:
+		//SSE Code goes here
+        {
+            XMM128 rVal = {0} , gVal = {0}, bVal = {0};
+                XMM128 xmm1, xmm2, xmm3, xmm128;
+                xmm128.i = _mm_set1_epi16(128);
+		        for (y=0;y<8; y++) {
+			        srcPos = y*srcStep;
+			        for (x=0;x<8;x++) {
+				        rVal.u16[x] = pSrcRGB[srcPos++];
+				        gVal.u16[x] = pSrcRGB[srcPos++];
+				        bVal.u16[x] = pSrcRGB[srcPos++];
+                    }
+			        //add 0.5 for nearest neighbor rounding
+                    xmm1.i = _mm_set1_epi16(77);
+                    xmm2.i = _mm_set1_epi16(150);
+                    xmm3.i = _mm_set1_epi16(29);
+                    
+                    xmm1.i = _mm_mullo_epi16(xmm1.i, rVal.i);
+                    xmm2.i = _mm_mullo_epi16(xmm2.i, gVal.i);
 
+                    xmm3.i = _mm_mullo_epi16(xmm3.i, bVal.i);
+                    xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);
+                    xmm1.i = _mm_add_epi16(xmm1.i, xmm128.i);//adding 128
+                    xmm1.i = _mm_srli_epi16(xmm1.i, 4);
+                    xmm2.i = _mm_srli_epi16(xmm2.i, 4);
+
+                    xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
+                    xmm1.i = _mm_srli_epi16(xmm1.i, 4);
+
+                    xmm1.i = _mm_sub_epi16(xmm1.i, xmm128.i);
+
+                    _mm_storeu_si128  ((__m128i *)(&pDstMCU[0][y*8]),xmm1.i);	
+
+                    xmm1.i = _mm_set1_epi16(-43);
+                    xmm2.i = _mm_set1_epi16(-85);
+
+                    xmm1.i = _mm_mullo_epi16(xmm1.i, rVal.i);
+                    xmm2.i = _mm_mullo_epi16(xmm2.i, gVal.i);
+
+                    xmm3.i = _mm_mullo_epi16(xmm128.i, bVal.i);
+                    xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);            
+                    xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);
+                    xmm1.i = _mm_add_epi16(xmm1.i, xmm128.i);//adding 128
+                    xmm1.i = _mm_srai_epi16(xmm1.i, 8);
+
+                    _mm_storeu_si128  ((__m128i *)(&pDstMCU[1][y*8]),xmm1.i);	
+
+                    xmm2.i = _mm_set1_epi16(-107);
+                    xmm3.i = _mm_set1_epi16(-21);
+
+                    rVal.i = _mm_mullo_epi16(rVal.i, xmm128.i);
+                    xmm2.i = _mm_mullo_epi16(xmm2.i, gVal.i);
+
+                    xmm3.i = _mm_mullo_epi16(xmm3.i, bVal.i);
+                    rVal.i = _mm_add_epi16(rVal.i, xmm2.i);            
+                    rVal.i = _mm_add_epi16(rVal.i, xmm3.i);
+                    rVal.i = _mm_add_epi16(rVal.i, xmm128.i);//adding 128
+                    rVal.i = _mm_srai_epi16(rVal.i, 8);
+
+                    _mm_storeu_si128  ((__m128i *)(&pDstMCU[2][y*8]),rVal.i);	
+	        }
+            return fwStsNoErr;
+        }
+        //break;
+	default:
+
+	    for (y=0;y<8; y++) {//8*8 image
+		    srcPos = y*srcStep;
+		    for (x=0;x<8;x++) {
+			    RVal=pSrcRGB[srcPos++]; 
+			    GVal=pSrcRGB[srcPos++];
+			    BVal=pSrcRGB[srcPos++];
+			    //add 0.5 for nearest neighbor rounding
+			    result =  77 * RVal + 150 * GVal + 29 * BVal + 128;
+			    pDstMCU [0][x+y*8] = (Fw16s)((result>>8)-128);
+			    result = -43 * RVal - 85 * GVal	+ 128 * BVal + 128;
+			    pDstMCU [1][x+y*8] = (Fw16s)(result>>8);
+			    result = 128 * RVal - 107 * GVal - 21 * BVal + 128;
+			    pDstMCU [2][x+y*8] = (Fw16s)(result>>8);
+		    }
+	    }
+    }
 	return fwStsNoErr;
 }
 
