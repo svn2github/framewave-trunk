@@ -11,6 +11,7 @@ This software is subject to the Apache v2.0 License.
 
 #include "fwdev.h"
 #include "fwJPEG.h"
+#include "fe.h"
 #include "FwSharedCode_SSE2.h"
 
 using namespace OPT_LEVEL;
@@ -23,6 +24,39 @@ using namespace OPT_LEVEL;
 #define ROISIZECHECK(X) if (X.height <=0 || X.width <=0) return fwStsSizeErr
 #endif
 
+
+namespace OPT_LEVEL
+{
+
+template<typename TS,CH CSrc,typename TD, CH CDst>
+struct Add128_JPEG : public fe2<TS,CSrc,TD,CDst>
+{
+	
+	XMM128 mV128;
+	Fw16s v128;
+	Add128_JPEG(const Fw16s val)
+	{
+		v128 = val;
+	}
+    FE_SSE2_REF
+    IV SSE2_Init()
+	{
+		mV128.i = _mm_set1_epi16(v128);
+	}
+    IV SSE2( RegFile & r ) const
+    {
+        __m128i res = _mm_add_epi16( r.src1[0].i, mV128.i);
+		r.dst[0].i = _mm_packus_epi16(res,res);
+    }
+    IV REFR( const TS *s, TD *d ) const
+    {
+        *d = CBL_LIBRARY::Limits<U8>::Sat(*s + 128);
+    }
+};
+
+}
+
+using namespace OPT_LEVEL;
 //-----------------------------------------------------------------------
 //Convert data from unsigned char range to the signed 16 bit integer range
 //-----------------------------------------------------------------------
@@ -62,12 +96,67 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiAdd128_JPEG_16s8u_C1R)(const Fw16s *pSrc, int
 	const Fw16s *ptSrc;
 	Fw8u *ptDst;
 
-	for (y=0;y<roiSize.height;y++) {
-		ptSrc=pSrc+y*srcStep/2; //16 bits
-		ptDst=pDst+y*dstStep; 
-		for (x=0;x<roiSize.width;x++) {
-			*(ptDst++)=FW_REF::Limits<U8>::Sat(*(ptSrc++)+128);
-		}
+	if(0 != roiSize.width%16)
+	{
+
+		Add128_JPEG<Fw16s,C1,Fw8u,C1> data((Fw16s)128);
+		return OPT_LEVEL::fe< Add128_JPEG<Fw16s,C1,Fw8u,C1> >(data, pSrc, srcStep, pDst, dstStep, roiSize);
+	}
+
+	switch( Dispatch::Type<DT_SSE2>() ) 
+	{
+		case DT_SSE3:
+		case DT_SSE2:
+			{
+			if(roiSize.width%16 == 0)
+			{
+				__m128i mV128 = _mm_set1_epi16(128);
+				for(y=0;y<roiSize.height;y++)
+				{
+						ptSrc=pSrc+y*srcStep/2; //16 bits
+						ptDst=pDst+y*dstStep; 
+						for (x=0;x<roiSize.width;x+=16) 
+						{
+							__m128i s1= _mm_loadu_si128( (__m128i*) ptSrc ); 
+							__m128i s2= _mm_loadu_si128( (__m128i*) (ptSrc+8) ); 
+							__m128i res1 = _mm_add_epi16( s1, mV128);
+							__m128i res2 = _mm_add_epi16( s2, mV128);
+							_mm_storeu_si128( (__m128i*) ptDst, _mm_packus_epi16(res1,res2)); 
+							ptDst+=16;
+							ptSrc+=16;
+						}
+				}
+			}
+			else
+			{
+				__m128i mV128 = _mm_set1_epi16(128);
+				for(y=0;y<roiSize.height;y++)
+				{
+						ptSrc=pSrc+y*srcStep/2; //16 bits
+						ptDst=pDst+y*dstStep; 
+						for (x=0;x<roiSize.width;x+=8) 
+						{
+							__m128i s1= _mm_loadu_si128( (__m128i*) ptSrc ); 
+							__m128i res1 = _mm_add_epi16( s1, mV128);
+							XMM128 res;
+							res.i = _mm_packus_epi16(res1,res1);
+							_mm_storel_pd( (double*) ptDst, res.d); 
+							ptDst+=8;
+							ptSrc+=8;
+						}
+				}
+			}
+
+			}
+			break;
+		default:
+			for (y=0;y<roiSize.height;y++) {
+				ptSrc=pSrc+y*srcStep/2; //16 bits
+				ptDst=pDst+y*dstStep; 
+				for (x=0;x<roiSize.width;x++) {
+					*(ptDst++)=FW_REF::Limits<U8>::Sat(*(ptSrc++)+128);
+				}
+			}
 	}
 
 	return fwStsNoErr;
@@ -76,4 +165,4 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiAdd128_JPEG_16s8u_C1R)(const Fw16s *pSrc, int
 #endif //BUILD_NUM_AT_LEAST
 
 // Please do NOT remove the above line for CPP files that need to be multipass compiled
-// OREFR 
+// OREFR OSSE2

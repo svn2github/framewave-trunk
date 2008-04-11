@@ -169,7 +169,7 @@ OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCTQuantInv8x8LS_JPEG_16s
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiSub128_JPEG_8u16s_C1R)(const Fw8u* pSrc, int srcStep, 
 							Fw16s* pDst, int dstStep, FwiSize roiSize);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiAdd128_JPEG_16s8u_C1R)(const Fw16s* pSrc, int srcStep,
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiAdd128_JPEG_16s8u_C1R)(const Fw16s* pSrc, int srcStep,
 							Fw8u* pDst, int dstStep, FwiSize roiSize);
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSampleDownH2V1_JPEG_8u_C1R)(const Fw8u* pSrc, int srcStep,
