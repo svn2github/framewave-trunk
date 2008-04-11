@@ -1663,7 +1663,7 @@ namespace OPT_LEVEL
 
 		return fwStsNoErr;
 	}
-
+#if 0
 	//Internal function for resize 8u data with Cubic interpolation
 	FwStatus My_FW_Resize_8u_C1R_CU(const Fw8u *pSrc, int srcStep, FwiRect srcRoi, 
 		Fw8u *pDst, int dstStep, FwiSize dstRoiSize,
@@ -3377,7 +3377,7 @@ namespace OPT_LEVEL
 		fwFree(pRow3);
 
 	}
-
+#endif
 	//Internal function for resize 8u data with Lanczos interpolation
 	FwStatus My_FW_Resize_8u_C1R_LZ(const Fw8u *pSrc, int srcStep, FwiRect srcRoi, 
 		Fw8u *pDst, int dstStep, FwiSize dstRoiSize,
@@ -3656,13 +3656,13 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiResize_8u_C1R)(
 		else if (interpolation == FWI_INTER_NN) 
 			return My_FW_Reisze_8u_NN(pSrc, srcStep, srcRoi, pDst, dstStep,
 			dstRoiSize, xFactor, yFactor, 1);
-		else if (interpolation == FWI_INTER_CUBIC) 
+		/*else if (interpolation == FWI_INTER_CUBIC) 
 			return My_FW_Resize_8u_C1R_CU(pSrc, srcStep, srcRoi, pDst, dstStep,
-			dstRoiSize, xFactor, yFactor);
+			dstRoiSize, xFactor, yFactor);*/
 		else if (interpolation == FWI_INTER_LANCZOS) 
 			return My_FW_Resize_8u_C1R_LZ(pSrc, srcStep, srcRoi, pDst, dstStep,
 			dstRoiSize, xFactor, yFactor);
-		else //if (interpolation == FWI_INTER_SUPER) 
+		else if (interpolation == FWI_INTER_SUPER) 
 			return My_FW_Resize_8u_C1R_SU(pSrc, srcStep, srcRoi, pDst, dstStep,
 			dstRoiSize, xFactor, yFactor);
 	default:
