@@ -27,9 +27,11 @@ Export('lstSysPath', 'oRoot')
 oRoot.oEnv.Append( CPPPATH = [abspath('domain'),                            \
                               abspath('sdk'),                               \
                               abspath('domain'+sep+'fwBase'+sep+'include')] )
+                              
 
 setupIncludePaths(oRoot.oEnv, join('domain', 'common', 'include'))
-setupIncludePaths(oRoot.oEnv, abspath('sdk'))
+setupIncludePaths(oRoot.oEnv, 'sdk')
+
 
 chkCommandLine = None
 if (str(COMMAND_LINE_TARGETS)=='') or \

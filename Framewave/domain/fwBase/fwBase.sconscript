@@ -32,7 +32,8 @@ lstExtraBaseCPPs = [     pthConstCPP ,
 
 # Project script essentially starts here
 fwBase      = fwProject(oRoot, 'fwBase')
-setupIncludePaths(fwBase.oEnv, join(oRoot.dctFwVars['pthProjectRoot'], '..', 'sdk', 'boost_1_34_0'), dontRecurse=1)
+
+setupIncludePaths(fwBase.oEnv, join('sdk', 'boost_1_34_0'), dontRecurse=1)
 oLib_fwBase = fwBase.initBuildObjects(lstExtraCPPs=lstExtraBaseCPPs)
 
 Return("oLib_fwBase")
