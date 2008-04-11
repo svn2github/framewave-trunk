@@ -66,10 +66,10 @@ OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiYCCKToCMYK_JPEG_8u_P4R)(
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiYCCKToCMYK_JPEG_8u_P4C4R)(const Fw8u* pSrcYCCK[4], int srcStep, 
 							Fw8u* pDstCMYK, int dstStep, FwiSize roiSize);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiRGBToYCbCr444LS_MCU_8u16s_C3P3R)(const Fw8u* pSrcRGB, int srcStep, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiRGBToYCbCr444LS_MCU_8u16s_C3P3R)(const Fw8u* pSrcRGB, int srcStep, 
 							Fw16s* pDstMCU[3]);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiRGBToYCbCr422LS_MCU_8u16s_C3P3R)(const Fw8u* pSrcRGB, int srcStep, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiRGBToYCbCr422LS_MCU_8u16s_C3P3R)(const Fw8u* pSrcRGB, int srcStep, 
 							Fw16s* pDstMCU[3]);
 
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiRGBToYCbCr411LS_MCU_8u16s_C3P3R)(const Fw8u* pSrcRGB, int srcStep, 
