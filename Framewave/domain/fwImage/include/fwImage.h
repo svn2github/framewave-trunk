@@ -5661,7 +5661,7 @@ FwStatus STDCALL fwiResizeSqrPixelGetBufSize  (FwiSize dstSize, int nChannel,int
 
 /*#FunctionBlock - ResizeSqrPixel
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Resize and shift an image
 #Long - <Text>These functions step through an ROI in a source buffer, scale the source data using x-y scaling factors and a specified method of interpolation, then shift the data to a destination ROI.</Text>
 <Text>Unlike the <FunctionName>ResizeShift</FunctionName> function, the <FunctionName>ResizeSqrPixel</FunctionName> functions map the source ROI to a specified destination ROI and use noninverted x-y scaling factors.</Text>
@@ -5891,7 +5891,7 @@ FwStatus STDCALL fwiRemap_32f_P4R         ( const Fw32f* const pSrc[4], FwiSize 
 
 /*#FunctionBlock - Rotate
 todo:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short -  Rotate an image
 #Long - <Text>These functions step through an ROI in a source buffer, rotate the source data around (0,0) by a specified angle, shift the x-y coordinates according to the x and y shift values, and map the data into a destination ROI using a specified method of interpolation.</Text>
 <Text>The FWI_SMOOTH_EDGE option is available when the destination ROI contains the transformed image.</Text>
