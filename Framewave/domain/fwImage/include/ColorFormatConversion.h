@@ -92,20 +92,22 @@ FwStatus ConvertYcbcr422toYcbcr420_8uC2P3(const Fw8u* pSrc, int srcStep, Fw8u* p
     int i,j;
     const Fw8u *pS, *pSRowBegin;   
     Fw8u *pY,*pCb,*pCr,*pYRowBegin,*pCbRowBegin,*pCrRowBegin;
+    int height = roiSize.height/2;
+    int width  = roiSize.width/2;
 
     pYRowBegin  = pDst[0];
     pCbRowBegin = pDst[1];
     pCrRowBegin = pDst[2];
     pSRowBegin = pSrc;
 
-    for(i=0;i<roiSize.height;i+=2)
+    for(i=0;i<height;i++)
         {        
         pS  = pSRowBegin;
         pY  = pYRowBegin;
         pCb = pCbRowBegin;
         pCr = pCrRowBegin;
 
-        for(j=0;j<roiSize.width;j+=2)
+        for(j=0;j<width;j++)
             {
             *pY++  = *pS++;
             *pCb++ = *pS++;
@@ -118,7 +120,7 @@ FwStatus ConvertYcbcr422toYcbcr420_8uC2P3(const Fw8u* pSrc, int srcStep, Fw8u* p
         pS  = pSRowBegin;
         pY  = pYRowBegin;
 
-        for(j=0;j<roiSize.width*2;j+=2)
+        for(j=0;j<width*4;j+=2)
             *pY++  = pS[j];
 
         pSRowBegin += srcStep;
