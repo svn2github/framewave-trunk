@@ -607,6 +607,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\H264-Deblock.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\H264-InterPredict.cpp"
 				>
 			</File>
@@ -654,6 +658,10 @@
 			</File>
 			<File
 				RelativePath=".\include\fwVideo_opt.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\H264-Deblock.h"
 				>
 			</File>
 			<File

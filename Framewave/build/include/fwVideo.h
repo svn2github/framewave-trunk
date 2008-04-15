@@ -120,6 +120,43 @@ FwStatus STDCALL fwiDecodeCAVLCChromaDcCoeffs_H264_1u16s        (       Fw32u **
 FwStatus STDCALL fwiDecodeExpGolombOne_H264_1u16s               ( Fw32u **ppBitStream, Fw32s *pBitOffset, Fw16s *pDst, Fw8u isSigned );
 
 // ------------------------------------------------
+//  H.264 Deblocking Filtering
+// ------------------------------------------------
+
+
+////////////////////////////////////////////////////////////////
+//                        FilterDeblockingLuma_VerEdge_H264
+////////////////////////////////////////////////////////////////
+
+FwStatus STDCALL fwiFilterDeblockingLuma_VerEdge_H264_8u_C1IR   ( Fw8u *pSrcDst    , Fw32s srcDstStep,
+                                                                    Fw8u *pAlpha     , Fw8u *pBeta     ,
+                                                                    Fw8u *pThresholds, Fw8u *pBS );
+
+////////////////////////////////////////////////////////////////
+//                        FilterDeblockingLuma_HorEdge_H264
+////////////////////////////////////////////////////////////////
+
+FwStatus STDCALL fwiFilterDeblockingLuma_HorEdge_H264_8u_C1IR   ( Fw8u *pSrcDst    , Fw32s srcDstStep,
+                                                                    Fw8u *pAlpha     , Fw8u *pBeta     ,
+                                                                    Fw8u *pThresholds, Fw8u *pBS );
+
+////////////////////////////////////////////////////////////////
+//                        FilterDeblockingChroma_HorEdge_H264
+////////////////////////////////////////////////////////////////
+
+FwStatus STDCALL fwiFilterDeblockingChroma_HorEdge_H264_8u_C1IR ( Fw8u *pSrcDst    , Fw32s srcDstStep,
+                                                                    Fw8u *pAlpha     , Fw8u *pBeta     ,
+                                                                    Fw8u *pThresholds, Fw8u *pBS );
+
+////////////////////////////////////////////////////////////////
+//                        FilterDeblockingChroma_VerEdge_H264
+////////////////////////////////////////////////////////////////
+
+FwStatus STDCALL fwiFilterDeblockingChroma_VerEdge_H264_8u_C1IR ( Fw8u *pSrcDst    , Fw32s srcDstStep,
+                                                                    Fw8u *pAlpha     , Fw8u *pBeta     ,
+                                                                    Fw8u *pThresholds, Fw8u *pBS );
+
+// ------------------------------------------------
 //  H.264 Inter-predict
 // ------------------------------------------------
 

@@ -16,6 +16,11 @@ OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDecodeCAVLCChromaDc
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDecodeExpGolombOne_H264_1u16s)(Fw32u **ppBitStream, Fw32s *pBitOffset, Fw16s *pDst, Fw8u isSigned);
 
 
+OREFR             FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterDeblockingLuma_VerEdge_H264_8u_C1IR)( Fw8u *pSrcDst, Fw32s  srcDstStep, Fw8u *pAlpha, Fw8u *pBeta, Fw8u *pThresholds, Fw8u *pBS);
+OREFR             FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterDeblockingLuma_HorEdge_H264_8u_C1IR)( Fw8u* pSrcDst, Fw32s srcDstStep, Fw8u* pAlpha, Fw8u* pBeta, Fw8u* pThresholds, Fw8u* pBS);
+OREFR             FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterDeblockingChroma_HorEdge_H264_8u_C1IR)( Fw8u* pSrcDst, Fw32s srcDstStep, Fw8u* pAlpha, Fw8u* pBeta, Fw8u* pThresholds, Fw8u* pBS);
+OREFR             FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterDeblockingChroma_VerEdge_H264_8u_C1IR)( Fw8u* pSrcDst, Fw32s srcDstStep, Fw8u* pAlpha, Fw8u* pBeta, Fw8u* pThresholds, Fw8u* pBS);
+
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiExpandPlane_H264_8u_C1R)(	Fw8u *StartPtr, 
 	Fw32u uFrameWidth,	Fw32u uFrameHeight, Fw32u uPitch, 
 	Fw32u uPels, FwvcFrameFieldFlag uFrameFieldFlag);
