@@ -9,14 +9,14 @@ This software is subject to the Apache v2.0 License.
 #define __BUILDNUM_H__
 
 #define FW_MAJOR   1
-#define FW_MINOR   0
+#define FW_MINOR   1
 #define FW_VERSION 0
-#define FW_VERSTR "FW 1.0" // First release in sourceforge
+#define FW_VERSTR "FW 1.1" // First release in sourceforge
 
 
-//-----------------------------------
-//    FW Version Numbers
-//-----------------------------------
+//---------------------------------------
+//    FW Version Numbers and build number
+//---------------------------------------
 // 100  - Public Release 1.0
 // 101  - Public Release 1.1
 //        Erode3x3
