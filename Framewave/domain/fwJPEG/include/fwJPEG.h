@@ -292,7 +292,7 @@ FwStatus STDCALL  fwiYCCKToCMYK_JPEG_8u_P4C4R         ( const Fw8u *pSrcYCCK[4],
 
 /*#FunctionBlock - RGBToYCbCr444LS_MCU
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Convert RGB data block to 444 YCbCr MCU
 #Long - <Text>This function steps through an 8X8 data block in a source buffer, converts the source data from the RGB color model to the YCbCr color space, level-shifts the unsigned values to signed values, creates a 444 sampled minimum coded unit, and writes the data to a destination buffer.</Text>
 <Text>The following formulas are used to convert red, green, and blue values to luminance and chrominance values.</Text>
@@ -308,7 +308,7 @@ FwStatus STDCALL  fwiRGBToYCbCr444LS_MCU_8u16s_C3P3R  ( const Fw8u  *pSrcRGB, in
 
 /*#FunctionBlock - RGBToYCbCr422LS_MCU
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Convert RGB data block to 4:2:2 YCbCr MCU
 #Long - <Text>This function steps through a 16X8 data block in a source buffer, converts the source data from the RGB color model to the YCbCr color space with 4:2:2 chroma sub-sampling, level-shifts the unsigned values to signed values, creates a minimum coded unit, and writes the data to a destination buffer.</Text>
 <Text>The following formulas are used to convert red, green, and blue values to luminance and chrominance values.</Text>
@@ -324,7 +324,7 @@ FwStatus STDCALL  fwiRGBToYCbCr422LS_MCU_8u16s_C3P3R  ( const Fw8u  *pSrcRGB, in
 
 /*#FunctionBlock - RGBToYCbCr411LS_MCU
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Convert RGB data block to 4:1:1 YCbCr MCU
 #Long - <Text>This function steps through a 16X16 data block in a source buffer, converts the source data from the RGB color model to the YCbCr color space with 4:1:1 chroma sub-sampling, level-shifts the unsigned values to signed values, creates a minimum coded unit, and writes the data to a destination buffer.</Text>
 <Text>The following formulas are used to convert red, green, and blue values to luminance and chrominance values.</Text>
@@ -613,7 +613,7 @@ FwStatus STDCALL fwiQuantInvTableInit_JPEG_8u16u          ( const Fw8u *pQuantRa
 
 /*#FunctionBlock - QuantInv8X8_JPEG
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Dequantize data block
 #Long - <Text>This function reads a block of uncompressed image data, dequantizes the values, and writes an 8X8 data block of DCT coefficients to the same location.</Text>
 <Text>Dequantization is performed using the following formula.</Text>
