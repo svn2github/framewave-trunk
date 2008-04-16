@@ -47,13 +47,6 @@ FwStatus SYS_INLINE quantInvIntra_MPEG2(Fw16s *pSrcDst, int &QP, Fw16s *pQPMatri
 				row = (bSrcDstIsAligned)? _mm_load_si128(reinterpret_cast<__m128i*>(pSrcDst) + I) : _mm_loadu_si128(reinterpret_cast<__m128i*>(pSrcDst) + I);
 				qpRow = (bQPMatrixIsAligned)? _mm_load_si128(reinterpret_cast<__m128i*>(pQPMatrix) + I) : _mm_loadu_si128(reinterpret_cast<__m128i*>(pQPMatrix) + I);
 
-                mask_negative = _mm_cmplt_epi16(row, zero);
-
-                __m128i negative_nums = _mm_and_si128(mask_negative, row);
-                negative_nums = _mm_subs_epi16(zero, negative_nums);
-                row = _mm_andnot_si128(mask_negative, row);
-                row = _mm_or_si128(row, negative_nums);
-
 				__m128i low = _mm_mullo_epi16(row, qpRow);
 				__m128i high = _mm_mulhi_epi16(row, qpRow);
 				row = _mm_unpacklo_epi16(low, high);
@@ -65,6 +58,12 @@ FwStatus SYS_INLINE quantInvIntra_MPEG2(Fw16s *pSrcDst, int &QP, Fw16s *pQPMatri
 				row = _mm_unpacklo_epi16(low, high);
 				tmpHigh = _mm_unpackhi_epi16(low, high);
                 FW_SSE2::pack32STo16S(row, tmpHigh);
+
+                mask_negative = _mm_cmplt_epi16(row, zero);
+                __m128i negative_nums = _mm_and_si128(mask_negative, row);
+                negative_nums = _mm_subs_epi16(zero, negative_nums);
+                row = _mm_andnot_si128(mask_negative, row);
+                row = _mm_or_si128(row, negative_nums);
 
                 row = _mm_srli_epi16(row, 4); 
                 negative_nums = _mm_and_si128(mask_negative, row);
@@ -99,14 +98,18 @@ FwStatus SYS_INLINE quantInvIntra_MPEG2(Fw16s *pSrcDst, int &QP, Fw16s *pQPMatri
 		for(unsigned int I = 1; I < NUM_ELEMS; I++)
 		{
             int AcCoefficient;
+            float fl_AcCoefficient;
 
-            if(pSrcDst[I]<0)
+            fl_AcCoefficient = (float)pSrcDst[I] * QP * (float)pQPMatrix[I];
+            (fl_AcCoefficient < -CBL_LIBRARY::Limits<S16>::MaxValue()) ? AcCoefficient = -CBL_LIBRARY::Limits<S16>::MaxValue() : (fl_AcCoefficient > CBL_LIBRARY::Limits<S16>::MaxValue()) ? AcCoefficient = CBL_LIBRARY::Limits<S16>::MaxValue() : AcCoefficient = (int)fl_AcCoefficient;
+
+            if(AcCoefficient < 0)
                 {
-                AcCoefficient = CBL_LIBRARY::Limits<Fw16s>::Sat((-pSrcDst[I] * QP * pQPMatrix[I])>>4);
+                AcCoefficient = (-AcCoefficient) >> 4;
                 AcCoefficient = -AcCoefficient;
                 }
             else
-                AcCoefficient = CBL_LIBRARY::Limits<Fw16s>::Sat((pSrcDst[I] * QP * pQPMatrix[I])>>4);
+                AcCoefficient = AcCoefficient >> 4;
 
             mismatch^= AcCoefficient;
             pSrcDst[I] = (Fw16s)AcCoefficient;
@@ -144,12 +147,6 @@ FwStatus SYS_INLINE quantInv_MPEG2(Fw16s *pSrcDst, int &QP, Fw16s *pQPMatrix)
 				qpRow = (bQPMatrixIsAligned)? _mm_load_si128(reinterpret_cast<__m128i*>(pQPMatrix) + I) : _mm_loadu_si128(reinterpret_cast<__m128i*>(pQPMatrix) + I);
 				
                 mask_zero = _mm_cmpeq_epi16(row, zero);
-                mask_negative = _mm_cmplt_epi16(row, zero);
-
-                __m128i negative_nums = _mm_and_si128(mask_negative, row);
-                negative_nums = _mm_subs_epi16(zero, negative_nums);
-                row = _mm_andnot_si128(mask_negative, row);
-                row = _mm_or_si128(row, negative_nums);
 
 				row = _mm_adds_epi16(row,row);
 				row = _mm_adds_epi16(row,one);
@@ -165,6 +162,12 @@ FwStatus SYS_INLINE quantInv_MPEG2(Fw16s *pSrcDst, int &QP, Fw16s *pQPMatrix)
 				row = _mm_unpacklo_epi16(low, high);
 				tmpHigh = _mm_unpackhi_epi16(low, high);
                 FW_SSE2::pack32STo16S(row, tmpHigh);
+
+                mask_negative = _mm_cmplt_epi16(row, zero);
+                __m128i negative_nums = _mm_and_si128(mask_negative, row);
+                negative_nums = _mm_subs_epi16(zero, negative_nums);
+                row = _mm_andnot_si128(mask_negative, row);
+                row = _mm_or_si128(row, negative_nums);
 
                 row = _mm_srli_epi16(row, 5); 
                 negative_nums = _mm_and_si128(mask_negative, row);
@@ -199,16 +202,22 @@ FwStatus SYS_INLINE quantInv_MPEG2(Fw16s *pSrcDst, int &QP, Fw16s *pQPMatrix)
         for(unsigned int I = 0; I < NUM_ELEMS; I++)
 		{
             int coefficient;
+            float fl_coefficient;
             
             if(pSrcDst[I]==0)
                 coefficient = 0;
-            else if(pSrcDst[I]<0)
-                {
-                coefficient = CBL_LIBRARY::Limits<Fw16s>::Sat((( 2*(-pSrcDst[I]) + 1) * QP * pQPMatrix[I])>>5);
-                coefficient = -coefficient;
-                }
             else
-                coefficient = CBL_LIBRARY::Limits<Fw16s>::Sat(((2 * pSrcDst[I] + 1) * QP * pQPMatrix[I])>>5);
+                {
+                fl_coefficient = (2 * (float)pSrcDst[I] + 1) * QP * (float)pQPMatrix[I];
+                (fl_coefficient < -CBL_LIBRARY::Limits<S16>::MaxValue()) ? coefficient = -CBL_LIBRARY::Limits<S16>::MaxValue() : (fl_coefficient > CBL_LIBRARY::Limits<S16>::MaxValue()) ? coefficient = CBL_LIBRARY::Limits<S16>::MaxValue() : coefficient = (int)fl_coefficient;
+                if(coefficient < 0)
+                    {
+                    coefficient = (-coefficient)>>5;
+                    coefficient = -coefficient;
+                    }
+                else
+                    coefficient = coefficient >> 5;
+                }
 
             mismatch^= coefficient;
             pSrcDst[I] = (Fw16s)coefficient;
