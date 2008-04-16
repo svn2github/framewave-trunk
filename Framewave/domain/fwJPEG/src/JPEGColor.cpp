@@ -645,9 +645,9 @@ namespace OPT_LEVEL
 			} else {
 				dstCPos = (y>>1)*8 + dstCOffset;
 				for (x=0;x<8;x++) {
-					RVal = pSrcBGR[srcPos++];
-					GVal = pSrcBGR[srcPos++];
 					BVal = pSrcBGR[srcPos++];
+					GVal = pSrcBGR[srcPos++];
+					RVal = pSrcBGR[srcPos++];
 					result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
 					pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
 
@@ -669,6 +669,264 @@ namespace OPT_LEVEL
 
 		return;
 	}
+
+    SYS_INLINE STATIC void MulBGR_Coef(__m128i &s1lo,__m128i &s2lo,__m128i &s3lo,const XMM128 mCoef[3])
+    {
+        __m128i s1hi,s2hi,s3hi;
+
+        CBL_SSE2::Unpack8UTo16U(s1lo,s1hi);
+        CBL_SSE2::Unpack8UTo16U(s2lo,s2hi);
+        CBL_SSE2::Unpack8UTo16U(s3lo,s3hi);
+
+        s1lo = _mm_mullo_epi16(s1lo,mCoef[0].i);
+        s1hi = _mm_mullo_epi16(s1hi,mCoef[0].i);
+        s2lo = _mm_mullo_epi16(s2lo,mCoef[1].i);
+        s2hi = _mm_mullo_epi16(s2hi,mCoef[1].i);
+        s3lo = _mm_mullo_epi16(s3lo,mCoef[2].i);
+        s3hi = _mm_mullo_epi16(s3hi,mCoef[2].i);
+
+        s1lo = _mm_srli_epi16(s1lo,8);
+        s2lo = _mm_srli_epi16(s2lo,8);
+        s3lo = _mm_srli_epi16(s3lo,8);
+
+        s1lo = _mm_add_epi16(s1lo,s2lo);
+        s1lo = _mm_add_epi16(s1lo,s3lo);
+        
+        s1hi = _mm_srli_epi16(s1hi,8);
+        s2hi = _mm_srli_epi16(s2hi,8);
+        s3hi = _mm_srli_epi16(s3hi,8);
+        s1hi = _mm_add_epi16(s1hi,s2hi);
+        s2lo = _mm_add_epi16(s1hi,s3hi);
+    }
+
+    SYS_INLINE STATIC void  Mul_16s(__m128i const &s1,__m128i const &s2,__m128i &d1,__m128i &d2)
+    {
+        __m128i temp1,temp2;
+        temp1 = _mm_mullo_epi16(s1,s2);
+        temp2 = _mm_mulhi_epi16(s1,s2);
+        d1    = _mm_unpacklo_epi16(temp1,temp2); 
+        d2    = _mm_unpackhi_epi16(temp1,temp2); 
+
+        
+    }
+
+    SYS_INLINE STATIC void MulCbCr_Coef(__m128i &s1lo,__m128i &s2lo,__m128i &s3lo,const XMM128 mCoef[3])
+    {
+        __m128i a1,a2,b1,b2,c1,c2;
+
+
+        Mul_16s(s1lo,mCoef[0].i,a1,a2);
+        Mul_16s(s2lo,mCoef[1].i,b1,b2);
+        Mul_16s(s3lo,mCoef[2].i,c1,c2);
+        
+        a1 = _mm_add_epi32(a1,b1);
+        a1 = _mm_add_epi32(a1,c1);
+
+        a2 = _mm_add_epi32(a2,b2);
+        a2 = _mm_add_epi32(a2,c2);
+
+        a1 = _mm_srai_epi32(a1,10);
+        a2 = _mm_srai_epi32(a2,10);
+
+        s1lo = _mm_packs_epi32(a1,a2);
+
+    }
+
+    SYS_INLINE STATIC void Add8u_to_16s(__m128i &src1,__m128i &src2,__m128i &src3,__m128i &src4,__m128i &src5,__m128i &src6)
+    {
+        __m128i s1lo = src1,s2lo=src2,s3lo=src3,s4lo=src4,s5lo=src5,s6lo=src6;
+        __m128i s1hi,s2hi,s3hi,s4hi,s5hi,s6hi;
+        CBL_SSE2::Unpack8UTo16U(s1lo,s1hi);
+        CBL_SSE2::Unpack8UTo16U(s2lo,s2hi);
+        CBL_SSE2::Unpack8UTo16U(s3lo,s3hi);
+
+        CBL_SSE2::Unpack8UTo16U(s4lo,s4hi);
+        CBL_SSE2::Unpack8UTo16U(s5lo,s5hi);
+        CBL_SSE2::Unpack8UTo16U(s6lo,s6hi);
+
+       s1lo =  _mm_add_epi16(s1lo,s4lo); // b
+       s2lo =  _mm_add_epi16(s2lo,s5lo); // g
+       s3lo =  _mm_add_epi16(s3lo,s6lo); // r
+       s1hi =  _mm_add_epi16(s1hi,s4hi); // b 
+       s2hi =  _mm_add_epi16(s2hi,s5hi); // g
+       s3hi =  _mm_add_epi16(s3hi,s6hi); // r
+
+
+        __m128i t1 = _mm_srli_epi32(s1lo,16);
+        t1 = _mm_add_epi16(t1,s1lo);
+        t1 = _mm_shufflelo_epi16(t1,_MM_SHUFFLE(3, 2, 2, 0));
+        t1 = _mm_shufflehi_epi16(t1,_MM_SHUFFLE(3, 2, 2, 0));
+        __m128i t2 = _mm_srli_si128(t1,8);
+        
+        s1lo = _mm_unpacklo_epi32(t1,t2);
+
+        t1 = _mm_srli_epi32(s1hi,16);
+        t1 = _mm_add_epi16(t1,s1hi);
+        t1 = _mm_shufflelo_epi16(t1,_MM_SHUFFLE(3, 2, 2, 0));
+        t1 = _mm_shufflehi_epi16(t1,_MM_SHUFFLE(3, 2, 2, 0));
+        t2 = _mm_srli_si128(t1,8);
+        
+        s1hi = _mm_unpacklo_epi32(t1,t2);
+
+        src1 = _mm_unpacklo_epi64(s1lo,s1hi);
+//
+        t1 = _mm_srli_epi32(s2lo,16);
+        t1 = _mm_add_epi16(t1,s2lo);
+        t1 = _mm_shufflelo_epi16(t1,_MM_SHUFFLE(3, 2, 2, 0));
+        t1 = _mm_shufflehi_epi16(t1,_MM_SHUFFLE(3, 2, 2, 0));
+        t2 = _mm_srli_si128(t1,8);
+        
+        s2lo = _mm_unpacklo_epi32(t1,t2);
+
+        t1 = _mm_srli_epi32(s2hi,16);
+        t1 = _mm_add_epi16(t1,s2hi);
+        t1 = _mm_shufflelo_epi16(t1,_MM_SHUFFLE(3, 2, 2, 0));
+        t1 = _mm_shufflehi_epi16(t1,_MM_SHUFFLE(3, 2, 2, 0));
+        t2 = _mm_srli_si128(t1,8);
+        
+        s2hi = _mm_unpacklo_epi32(t1,t2);
+
+        src2 = _mm_unpacklo_epi64(s2lo,s2hi);
+//
+        t1 = _mm_srli_epi32(s3lo,16);
+        t1 = _mm_add_epi16(t1,s3lo);
+        t1 = _mm_shufflelo_epi16(t1,_MM_SHUFFLE(3, 2, 2, 0));
+        t1 = _mm_shufflehi_epi16(t1,_MM_SHUFFLE(3, 2, 2, 0));
+        t2 = _mm_srli_si128(t1,8);
+        
+        s3lo = _mm_unpacklo_epi32(t1,t2);
+
+        t1 = _mm_srli_epi32(s3hi,16);
+        t1 = _mm_add_epi16(t1,s3hi);
+        t1 = _mm_shufflelo_epi16(t1,_MM_SHUFFLE(3, 2, 2, 0));
+        t1 = _mm_shufflehi_epi16(t1,_MM_SHUFFLE(3, 2, 2, 0));
+        t2 = _mm_srli_si128(t1,8);
+        
+        s3hi = _mm_unpacklo_epi32(t1,t2);
+
+        src3 = _mm_unpacklo_epi64(s3lo,s3hi);
+    }
+
+
+
+    SYS_INLINE STATIC void fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R_SSE (const Fw8u *pSrcBGR,int srcStep,Fw16s *pDstMCU[3])
+    {
+        XMM128 coeffY[3],coeffCb[3],coeffCr[3];
+        coeffY[0].i = _mm_set1_epi16(29);
+        coeffY[1].i = _mm_set1_epi16(150);
+        coeffY[2].i = _mm_set1_epi16(77);
+
+        //elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
+        coeffCb[0].i = _mm_set1_epi16(128);
+        coeffCb[1].i = _mm_set1_epi16(-85);
+        coeffCb[2].i = _mm_set1_epi16(-43);
+        //elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
+        coeffCr[0].i = _mm_set1_epi16(-21);
+        coeffCr[1].i = _mm_set1_epi16(-107);
+        coeffCr[2].i = _mm_set1_epi16(128);
+
+        const __m128i val127 = _mm_set1_epi16(127);
+        int dstYPos = 0;
+        int cbcrpos = 0;
+
+        for(int height = 0;height < 8; height+=2)
+        {
+                __m128i regB = _mm_loadu_si128((__m128i*) pSrcBGR);
+                pSrcBGR+=16;
+                __m128i regG = _mm_loadu_si128((__m128i*) pSrcBGR);
+                pSrcBGR+=16;
+                __m128i regR = _mm_loadu_si128((__m128i*) pSrcBGR);
+                pSrcBGR+= srcStep-32; 
+
+                __m128i regB1 = _mm_loadu_si128((__m128i*) pSrcBGR);
+                pSrcBGR+=16;
+                __m128i regG1 = _mm_loadu_si128((__m128i*) pSrcBGR);
+                pSrcBGR+=16;
+                __m128i regR1 = _mm_loadu_si128((__m128i*) pSrcBGR);
+                pSrcBGR+= srcStep-32;
+
+               CBL_SSE2::Convert_3C_to_3P_8bit(regB,regG,regR);
+               CBL_SSE2::Convert_3C_to_3P_8bit(regB1,regG1,regR1);
+
+                __m128i s1 = regB,s2=regG,s3=regR,s4=regB1,s5=regG1,s6=regR1;
+               Add8u_to_16s(s1,s2,s3,s4,s5,s6);
+               s4 = s1,s5 = s2,s6 = s3;
+               MulCbCr_Coef(s1,s2,s3,coeffCb);                
+               MulCbCr_Coef(s4,s5,s6,coeffCr);
+               
+               _mm_storeu_si128((__m128i*) (pDstMCU[1] + cbcrpos),s1);
+               _mm_storeu_si128((__m128i*) (pDstMCU[2] + cbcrpos),s4);
+
+                cbcrpos+=8;
+                //Y = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+                MulBGR_Coef(regB,regG,regR,coeffY);
+                MulBGR_Coef(regB1,regG1,regR1,coeffY);
+
+                regB = _mm_sub_epi16(regB,val127);
+                regG = _mm_sub_epi16(regG,val127);
+
+                regB1 = _mm_sub_epi16(regB1,val127);
+                regG1 = _mm_sub_epi16(regG1,val127);
+
+               _mm_storeu_si128((__m128i*) (pDstMCU[0] + dstYPos),regB);
+               _mm_storeu_si128((__m128i*) (pDstMCU[0] + dstYPos + 64),regG);
+                dstYPos+=8;
+               _mm_storeu_si128((__m128i*) (pDstMCU[0] + dstYPos),regB1);
+               _mm_storeu_si128((__m128i*) (pDstMCU[0] + dstYPos + 64),regG1);
+                dstYPos+=8;
+        }
+
+       dstYPos = 128;
+        for(int height = 0;height < 8; height+=2)
+        {
+                __m128i regB = _mm_loadu_si128((__m128i*) pSrcBGR);
+                pSrcBGR+=16;
+                __m128i regG = _mm_loadu_si128((__m128i*) pSrcBGR);
+                pSrcBGR+=16;
+                __m128i regR = _mm_loadu_si128((__m128i*) pSrcBGR);
+                pSrcBGR+= srcStep-32; 
+
+                __m128i regB1 = _mm_loadu_si128((__m128i*) pSrcBGR);
+                pSrcBGR+=16;
+                __m128i regG1 = _mm_loadu_si128((__m128i*) pSrcBGR);
+                pSrcBGR+=16;
+                __m128i regR1 = _mm_loadu_si128((__m128i*) pSrcBGR);
+                pSrcBGR+= srcStep-32;
+
+               CBL_SSE2::Convert_3C_to_3P_8bit(regB,regG,regR);
+               CBL_SSE2::Convert_3C_to_3P_8bit(regB1,regG1,regR1);
+
+                __m128i s1 = regB,s2=regG,s3=regR,s4=regB1,s5=regG1,s6=regR1;
+               Add8u_to_16s(s1,s2,s3,s4,s5,s6);
+               s4 = s1,s5 = s2,s6 = s3;
+               MulCbCr_Coef(s1,s2,s3,coeffCb);                
+               MulCbCr_Coef(s4,s5,s6,coeffCr);
+               
+               _mm_storeu_si128((__m128i*) (pDstMCU[1] + cbcrpos),s1);
+               _mm_storeu_si128((__m128i*) (pDstMCU[2] + cbcrpos),s4);
+
+                cbcrpos+=8;
+                //Y = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+                MulBGR_Coef(regB,regG,regR,coeffY);
+                MulBGR_Coef(regB1,regG1,regR1,coeffY);
+
+                regB = _mm_sub_epi16(regB,val127);
+                regG = _mm_sub_epi16(regG,val127);
+
+                regB1 = _mm_sub_epi16(regB1,val127);
+                regG1 = _mm_sub_epi16(regG1,val127);
+
+               _mm_storeu_si128((__m128i*) (pDstMCU[0] + dstYPos),regB);
+               _mm_storeu_si128((__m128i*) (pDstMCU[0] + dstYPos + 64),regG);
+                dstYPos+=8;
+               _mm_storeu_si128((__m128i*) (pDstMCU[0] + dstYPos),regB1);
+               _mm_storeu_si128((__m128i*) (pDstMCU[0] + dstYPos + 64),regG1);
+                dstYPos+=8;
+      }
+       
+}
+
+
 
 	static void fwiBGR565ToYCbCr411LS_MCU_16u16s_C3P3R_8x8Block(
 	const Fw16u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3], int blocknum)
@@ -1996,6 +2254,9 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGR555ToYCbCr422LS_MCU_16u16s_C3P3R)(const Fw
 	return fwStsNoErr;
 }
 
+
+
+
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R)(const Fw8u *pSrcBGR, int srcStep, Fw16s *pDstMCU[3])
 {
 
@@ -2013,10 +2274,21 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R)(const Fw8u *
 	//					  ----------
 	// Proces each block independently
 
-	fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 0);
-	fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 1);
-	fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 2);
-	fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 3);
+	switch( Dispatch::Type<DT_SSE2>() )
+	{
+	case DT_SSE3:
+	case DT_SSE2:
+		fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R_SSE(pSrcBGR, srcStep, pDstMCU);
+            break;
+	default:
+        fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 0);
+        fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 1);
+        fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 2);
+        fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R_8x8Block (pSrcBGR, srcStep, pDstMCU, 3);
+	}
+
+
+
 
 	return fwStsNoErr;
 }
