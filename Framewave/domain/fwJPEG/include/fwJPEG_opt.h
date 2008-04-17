@@ -82,7 +82,7 @@ OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiBGR565ToYCbCr444LS_MCU_1
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiBGR555ToYCbCr444LS_MCU_16u16s_C3P3R)(const Fw16u* pSrcBGR, int srcStep, 
 							Fw16s* pDstMCU[3]);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiBGRToYCbCr422LS_MCU_8u16s_C3P3R)(const Fw8u* pSrcBGR, int srcStep, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiBGRToYCbCr422LS_MCU_8u16s_C3P3R)(const Fw8u* pSrcBGR, int srcStep, 
 							Fw16s* pDstMCU[3]);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiBGR565ToYCbCr422LS_MCU_16u16s_C3P3R)(const Fw16u* pSrcBGR, int srcStep, 
 							Fw16s* pDstMCU[3]);

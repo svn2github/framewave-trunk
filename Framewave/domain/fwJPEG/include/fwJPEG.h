@@ -340,7 +340,7 @@ FwStatus STDCALL  fwiRGBToYCbCr411LS_MCU_8u16s_C3P3R  ( const Fw8u  *pSrcRGB, in
 
 /*#FunctionBlock - BGRToYCbCr444LS_MCU
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Convert BGR data block to 4:4:4 YCbCr MCU
 #Long - <Text>These functions step through an 8X8 data block in a source buffer, convert the source data from the BGR color model to the YCbCr color space with 4:4:4 chroma sub-sampling, level-shift the unsigned values to signed values, create a minimum coded unit, and write the data to a destination buffer.</Text>
 <Text>The following formulas are used to convert blue, green, and red values to luminance and chrominance values.</Text>
@@ -362,7 +362,7 @@ FwStatus STDCALL  fwiBGR555ToYCbCr444LS_MCU_16u16s_C3P3R  ( const Fw16u *pSrcBGR
 
 /*#FunctionBlock - BGRToYCbCr422LS_MCU
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Convert BGR data block to 4:2:2 YCbCr MCU
 #Long - <Text>These functions step through a 16X8 data block in a source buffer, convert the source data from the BGR color model to the YCbCr color space with 4:2:2 chroma sub-sampling, level-shift the unsigned values to signed values, create a minimum coded unit, and write the data to a destination buffer.</Text>
 <Text>The following formulas are used to convert blue, green, and red values to luminance and chrominance values.</Text>
@@ -385,7 +385,7 @@ FwStatus STDCALL  fwiBGR555ToYCbCr422LS_MCU_16u16s_C3P3R  ( const Fw16u *pSrcBGR
 
 /*#FunctionBlock - BGRToYCbCr411LS_MCU
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Convert BGR data block to 4:1:1 YCbCr MCU
 #Long - <Text>These functions step through a 16X16 data block in a source buffer, convert the source data from the BGR color model to the YCbCr color space with 4:1:1 chroma sub-sampling, level-shift the unsigned values to signed values, create a minimum coded unit, and write the data to a destination buffer.</Text>
 <Text>The following formulas are used to convert blue, green, and red values to luminance and chrominance values.</Text>
