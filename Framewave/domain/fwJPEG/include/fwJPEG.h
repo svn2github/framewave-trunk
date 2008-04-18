@@ -919,13 +919,13 @@ TODO:publish
 FwStatus STDCALL fwiEncodeHuffmanStateFree_JPEG_8u        ( FwiEncodeHuffmanState *pEncHuffState );
 
 /*#FunctionBlock - EncodeHuffman8X8
-TODO:publish
+TODO:edit
 #Technologies - REF
 #Short - Encode data block with bit accumulation
 #Long - <Text>This function performs Huffman baseline encoding of an 8X8 data block of quantized DCT coefficients using the DC and AC encoding tables.</Text>
 <Text>The encoding process follows CCITT Rec. T.81, Annex F.1.2. The function writes only full bytes to the output buffer.</Text>
 <Text>Incomplete bits from data blocks in a stream are accumulated in the Huffman encode state structure.</Text>
-<Text>To place all the accumulated bits in the buffer, set the <Bold>bFlashState</Bold> bit to 1 before processing the last 8X8 block in the stream, or restart the encoded interval.</Text>
+<Text>To place all the accumulated bits into the encoded bitstream, set the <Bold>pSrc</Bold> to NULL <Bold>bFlushState</Bold> to 1. This should be done after encoding all the 8X8 blocks in the image or at the end of each restart interval.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr
 */
 FwStatus STDCALL fwiEncodeHuffman8x8_JPEG_16s1u_C1        ( const Fw16s *pSrc, Fw8u *pDst,
