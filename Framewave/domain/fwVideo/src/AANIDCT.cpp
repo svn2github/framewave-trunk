@@ -451,7 +451,7 @@ FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s_C1R)(cons
                  _mm_store_si128((__m128i*)pDst, reg);
              else
                  _mm_storeu_si128((__m128i*)pDst, reg);
-            pDst = pDst + dstStep;
+            pDst = pDst + dstStep/2;
             pEightxEightDst = pEightxEightDst + 8;
             }
 
@@ -463,7 +463,7 @@ FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s_C1R)(cons
             {
             for(int j=0;j<8;j++)
                 pDst[j] = pEightxEightDst[j];
-            pDst = pDst + dstStep;
+            pDst = pDst + dstStep/2;
             pEightxEightDst = pEightxEightDst + 8;
             }
     }	
