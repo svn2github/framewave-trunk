@@ -228,56 +228,34 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeHuffmanSpecGetBufSize_JPEG_8u)(int* siz
 
 //-----------------------------------------------------------------------
 //This function creates Huffman table of codes and code length for Encoder.
-//It follows Annex C.2 from CCITT Rec. T.81(1992 E) page 50
+//It follows Annex C.1,C.2,C.3 from CCITT Rec. T.81(1992 E) page 50
 //-----------------------------------------------------------------------
-FwStatus MyFW_HuffmanSpecInit(const Fw8u *pListBits, const Fw8u *pListVals, 
+SYS_INLINE STATIC FwStatus MyFW_HuffmanSpecInit(const Fw8u *pListBits, const Fw8u *pListVals, 
 								Fw16u ehufco[256], Fw16u ehufsi[256])
 {
-	Fw16u huffsize[257], huffcode[257], si, code;
-	int i, j, k, bits;
-
-	//Figure C.1 from CCITT Rec. T.81(1992 E) page 51
-	//generation of table of Huffman code Sizes
-	k=0;
-	for (i=1; i<=16; i++) {
-		bits = pListBits[i-1];
-		//Protection for next for loop
-		if (bits+k > 256) return fwStsJPEGHuffTableErr;
-
-		for (j=1; j<=bits; j++) {
-			huffsize[k]=(Fw16u)i;
-			k++;
-		}
-	}
-
-	huffsize[k]=0;
-
-	//Figure C.2 from CCITT Rec. T.81(1992 E) page 52
-	//generation of table of Huffman codes
-	code=0;
-	si=huffsize[0];
-
-	//Figure C.3 from CCITT Rec. T.81(1992 E) page 53
-	//ordering procedure for encoding procedure code tables
-	memset(ehufsi, 0, 512);
+    int i, j, k, bits;
+    Fw16u code=0;
+    int val;
+    k=0;
+	
+    memset(ehufsi, 0, 512);
 	memset(ehufco, 0, 512);
 
-	for (i=0; i<k; i++) {
-
-cond: if (huffsize[i]==si) {
-			huffcode[i]=code++;
-		}
-        else
+    for(i=1;i<17;i++)
         {
-		    code <<=1;
-		    si++;
-            goto cond;
-        }
-		j = pListVals[i];
-		ehufco[j] = huffcode[i];
-		ehufsi[j] = huffsize[i];
-	}
+        bits = pListBits[i-1];
 
+        if (bits+k > 256) return fwStsJPEGHuffTableErr;
+
+        for(j=0;j<bits;j++)
+            {
+            val = pListVals[k];
+            ehufsi[val] = (Fw16u)i;
+            ehufco[val] = code++;
+            k++;
+            }
+        code<<=1;
+        }
     return fwStsNoErr;
 }
 
