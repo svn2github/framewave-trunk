@@ -1010,9 +1010,33 @@ namespace DIV_SSE2
 					Common::AC4::Init::For32(ac4mask);
 				}
 
-				ISV DivC_32fc_setup(Fw32fc valC[], XMM128 &val0, XMM128 &val1, XMM128 &ac4mask)
+				ISV DivC_32fc_setup(Fw32fc valC[], XMM128 &val0, XMM128 &val1, XMM128 &val0rev, XMM128 &val1rev, XMM128 &ac4mask)
 				{
-					Common::InitConst::AC4::To32fc::From32fc(valC, val0, val1);
+					//Common::InitConst::AC4::To32fc::From32fc(valC, val0, val1);
+
+                    Fw32fc	v[3];
+					memcpy((void*)v, valC, sizeof(Fw32fc) * 3);
+
+					Fw32f	D0			= (v[0].re * v[0].re) + (v[0].im * v[0].im);
+					v[0].re				= v[0].re / D0;
+					v[0].im				= v[0].im / D0;
+
+					Fw32f	D1			= (v[1].re * v[1].re) + (v[1].im * v[1].im);
+					v[1].re				= v[1].re / D1;
+					v[1].im				= v[1].im / D1;
+
+					Fw32f	D2			= (v[2].re * v[2].re) + (v[2].im * v[2].im);
+					v[2].re				= v[2].re / D2;
+					v[2].im				= v[2].im / D2;
+
+					val0.f	= _mm_set_ps(v[1].im, v[1].re, v[0].im, v[0].re);
+					val1.f	= _mm_set_ps(v[0].im, v[0].re, v[2].im, v[2].re);
+					//val2.f	= _mm_set_ps(v[2].im, v[2].re, v[1].im, v[1].re);
+
+					val0rev.f	= _mm_set_ps(v[1].re, -v[1].im, v[0].re, -v[0].im);
+					val1rev.f	= _mm_set_ps(0, 0, v[2].re, -v[2].im);
+					//val2rev.f	= _mm_set_ps(v[2].re, -v[2].im, v[1].re, -v[1].im);
+
 					Common::AC4::Init::For64(ac4mask);
 				}
 			}

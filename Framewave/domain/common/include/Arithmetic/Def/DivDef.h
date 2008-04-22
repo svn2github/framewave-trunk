@@ -987,19 +987,16 @@ namespace DEF_DIV
 				DivC_32fc(const Fw32fc valC[]) : OPT_LEVEL::DivCF_AC4<Fw32fc, Fw32fc>(valC) {}
 				
 				XMM128 val1, ac4mask;
+                XMM128 val0rev, val1rev;
 				FE_SSE2_REF 
 				IV SSE2_Init() 
 				{
-					DIV_SSE2::DIVC::Init::AC4::DivC_32fc_setup(valC, val, val1, ac4mask);
+					DIV_SSE2::DIVC::Init::AC4::DivC_32fc_setup(valC, val, val1, val0rev, val1rev, ac4mask);
 				}
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
 					XMM128 temp;
-					XMM128 val0rev, val1rev;
-
-					val0rev.f	= CBL_OPTLEVEL::Shuffle_b1b0a1a0_32f(val.f, val.f);
-					val1rev.f	= CBL_OPTLEVEL::Shuffle_b1b0a1a0_32f(val1.f, val1.f);
-
+				
 					r.dst[0].f	= CBL_SSE2::DivideC_32fc(r.src1[0].f, val.f,  val0rev.f);
 					temp.f	    = CBL_SSE2::DivideC_32fc(r.src1[1].f, val1.f, val1rev.f);
 
