@@ -499,7 +499,7 @@ FwStatus STDCALL fwiYCbCr411ToRGBLS_MCU_16s8u_P3C3R       ( const Fw16s *pSrcMCU
 
 /*#FunctionBlock - YCbCr4XXLS_MCUToBGR
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Convert YCbCr MCU to BGR
 #Long - <Text>These functions step through a minimum coded unit in a source buffer, convert the data from the YCbCr color space to the BGR color model, level-shift the signed values to unsigned values, and write the converted data to a destination buffer.</Text>
 <Text>There are functions to convert minimum coded units with 4:4:4, 4:2:2, and 4:1:1 chroma sampling to 8-bit BGR or to 16-bit BGR with 555 or 565 bit-per-channel encoding.</Text>
