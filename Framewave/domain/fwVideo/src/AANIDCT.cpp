@@ -506,7 +506,7 @@ FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s8u_C1R)(co
              pEightxEightDst = pEightxEightDst + 8;
              reg2.i = _mm_load_si128((__m128i*)pEightxEightDst);
              pEightxEightDst = pEightxEightDst + 8;
-             reg1.i = _mm_packs_epi16(reg1.i, reg2.i);
+             reg1.i = _mm_packus_epi16(reg1.i, reg2.i);
              *((Fw64s*)pDst) = reg1.s64[0];
              pDst = pDst + dstStep;
              *((Fw64s*)pDst) = reg1.s64[1];
@@ -658,7 +658,7 @@ FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s8u_P2C2R)(
              reg2 = _mm_load_si128((__m128i*)pEightxEightDstV);
              reg3 = _mm_unpacklo_epi16(reg1, reg2);
              reg1 = _mm_unpackhi_epi16(reg1, reg2);
-             reg3 = _mm_packs_epi16(reg3, reg1);
+             reg3 = _mm_packus_epi16(reg3, reg1);
 
              isAligned = FW_REF::IsAligned(pDstUV,16);
 
