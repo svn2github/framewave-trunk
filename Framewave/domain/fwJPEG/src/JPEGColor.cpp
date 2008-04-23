@@ -377,77 +377,94 @@ namespace OPT_LEVEL
 		return fwStsNoErr;
 	}
 
-	template <typename LoadClass, typename StoreClass>
-	static SYS_INLINE void fwiYCbCr444ToRGBLS_MCU_16s8u_P3C3R_SSE2_8x1 (Fw16s *ptrY, Fw16s *ptrCb, Fw16s *ptrCr, Fw8u *pDst)
-	{
-		__m128i y, c, r, g, b, constant;
+    SYS_INLINE STATIC void  Mul_16s(__m128i const &s1,__m128i const &s2,__m128i &d1,__m128i &d2)
+    {
+        __m128i temp1,temp2;
+        temp1 = _mm_mullo_epi16(s1,s2);
+        temp2 = _mm_mulhi_epi16(s1,s2);
+        d1    = _mm_unpacklo_epi16(temp1,temp2); 
+        d2    = _mm_unpackhi_epi16(temp1,temp2); 
 
-		constant = _mm_set1_epi16 ( (S16)(128.5*64)	);
-		LoadClass::Load	(y, (__m128i *)ptrY);
-		LoadClass::Load (c, (__m128i *)ptrCr);
-
-		// RED
-		r = _mm_set1_epi16		( (S16)90		);		// R = ( 1.402*2^6 )
-		r = _mm_mullo_epi16		( r, c			);		// R = ( 1.402*Cr )*(2^6)
-		r = _mm_adds_epi16		( r, constant	);		// R = ( 128.5 + 1.402*Cr )*(2^6)
-		r = _mm_srai_epi16		( r, 6			);		// R = ((128.5 + 1.402*Cr )*(2^6)) / (2^6)
-		r = _mm_adds_epi16		( r, y			);		// R = Y + 128.5 + 1.402*Cr
-
-		// GREEN
-		g = _mm_set1_epi16		( (S16)(-46)	);		// G = ( -.71414*2^6 )
-		g = _mm_mullo_epi16		( g, c			);		// G = ( -.71414*Cr )*(2^6)
-		LoadClass::Load			( c, (__m128i *)ptrCb);
-		g = _mm_adds_epi16		( g, constant	);		// G = ( -.71414*Cr + 128.5 )*(2^6)
-		b = _mm_set1_epi16		( (short)(-22)	);		// cr= ( -0.34414*(2^6) )
-		b = _mm_mullo_epi16		( b, c			);		// cr= ( -0.34414*Cb )*(2^6)
-		g = _mm_adds_epi16		( g, b			);		// G = ( -.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)
-		g = _mm_srai_epi16		( g, 6			);		// G = ((-.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)) / (2^6)
-		g = _mm_adds_epi16		( g, y			);		// G = Y - 0.34414*Cb - 0.71414*Cr + 128.5 
-
-		// BLUE
-		b = _mm_set1_epi16		( (S16)(113)	);		// B = ( 1.772*(2^6) )
-		b = _mm_mullo_epi16		( b, c			);		// B = ( 1.772*Cb )*(2^6)
-		b = _mm_adds_epi16		( b, constant	);		// B = ( 1.772*Cb + 128.5 )*(2^6)
-		b = _mm_srai_epi16		( b, 6			);		// B = ((1.772*Cb + 128.5 )*(2^6)) / (2^6)
-		b = _mm_adds_epi16		( b, y			);		// B = Y + 1.772*Cb + 128.5
-
-		CBL_SSE2::Convert_3P_to_3C_16bit( r, g, b);
-		// r = {g2,r2,b1,g1,r1,b0,g0,r0}
-		// g = {r5,b4,g4,r4,b3,g3,r3,b2}
-		// b = {b7,g7,r7,b6,g6,r6,b5,g5}
-
-		r = _mm_packus_epi16 (r, g);			// r = {r5,b4,g4,r4,b3,g3,r3,b2,g2,r2,b1,g1,r1,b0,g0,r0}
-#pragma warning( disable: 4328 )
-		StoreClass::Store ((__m128i*)pDst, r);
-		b = _mm_packus_epi16 (b, b);			// b = {b7,g7,r7,b6,g6,r6,b5,g5,b7,g7,r7,b6,g6,r6,b5,g5}
-		_mm_storel_epi64 ( ((__m128i*)pDst+1), b );
-#pragma warning( default: 4328 )
-	}
-
+        
+    }
 	static FwStatus iYCbCr444ToRGBLS_MCU_16s8u_P3C3R_SSE2(const Fw16s *pSrcMCU[3], Fw8u *pDstRGB, int dstStep)
 	{
 		Fw16s *pSrcY=(Fw16s*)pSrcMCU[0], *pSrcCb=(Fw16s*)pSrcMCU[1], *pSrcCr=(Fw16s*)pSrcMCU[2];
 		Fw8u *pDst;
 
-		if (IS_ALIGNED16_5(pSrcY, pSrcCb, pSrcCr, pDstRGB, dstStep)){
 			for (S32 j=0; j<8; ++j) {
 				pDst = j*dstStep + pDstRGB;
-				fwiYCbCr444ToRGBLS_MCU_16s8u_P3C3R_SSE2_8x1<CBL_LIBRARY::CBL_AlignedLoad, 
-				CBL_LIBRARY::CBL_StreamingStore>(pSrcY, pSrcCb, pSrcCr, pDst);
-				pSrcY += 8; 
-				pSrcCb += 8; 
-				pSrcCr += 8;	
+                    __m128i y, cb,cr, r, g, b;
+                    static const __m128i constant = CONST_SET1_32I((S16)(128*64.0));
+                    static const __m128i val90 = CONST_SET1_16I		( (S16)90		);		// R = ( 1.402*2^6 )
+                    static const __m128i val46 = CONST_SET1_16I		( (S16)(-46)	);		// G = ( -.71414*2^6 )
+                    static const __m128i val22 = CONST_SET1_16I		( (S16)(-22)	);		// cr= ( -0.34414*(2^6) )
+                    static const __m128i val113 = CONST_SET1_16I( (S16)(113)	);		// B = ( 1.772*(2^6) )
+
+
+                    y = _mm_loadu_si128((__m128i *)pSrcY);
+                    cr = _mm_loadu_si128((__m128i *)pSrcCr);
+                    cb = _mm_loadu_si128((__m128i *)pSrcCb);
+
+                    // RED
+                    __m128i r1,r2;
+                    Mul_16s( val90, cr,r1,r2);		// R = ( 1.402*Cr )*(2^6)
+                    r1 = _mm_add_epi32		( r1, constant	);		// R = ( 128.5 + 1.402*Cr )*(2^6)
+                    r2 = _mm_add_epi32		( r2, constant	);		// R = ( 128.5 + 1.402*Cr )*(2^6)
+
+                    r1 = _mm_srai_epi32		( r1, 6			);		// R = ((128.5 + 1.402*Cr )*(2^6)) / (2^6)
+                    r2 = _mm_srai_epi32		( r2, 6			);		// R = ((128.5 + 1.402*Cr )*(2^6)) / (2^6)
+                    r  = _mm_packs_epi32    (r1,r2);
+                    r  = _mm_adds_epi16		( r, y			);		// R = Y + 128.5 + 1.402*Cr
+
+                    // GREEN
+                    __m128i g1,g2,g3,g4;
+                    Mul_16s( val46, cr,g1,g2);		// G = ( -.71414*Cr )*(2^6)
+                    g1 = _mm_add_epi32		( g1, constant	);		// G = ( -.71414*Cr + 128.5 )*(2^6)
+                    g2 = _mm_add_epi32		( g2, constant	);		// G = ( -.71414*Cr + 128.5 )*(2^6)
+
+                    Mul_16s( val22, cb,g3,g4);		// cr= ( -0.34414*Cb )*(2^6)
+
+
+                    g1 = _mm_add_epi32		( g1, g3			);		// G = ( -.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)
+                    g2 = _mm_add_epi32		( g2, g4			);		// G = ( -.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)
+                    g1 = _mm_srai_epi32		( g1, 6			);		// G = ((-.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)) / (2^6)
+                    g2 = _mm_srai_epi32		( g2, 6			);		// G = ((-.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)) / (2^6)
+        
+                    __m128i y1=y,y2;
+
+                    CBL_SSE2::Unpack16STo32S(y1,y2);
+                    g1 = _mm_add_epi32		( g1, y1			);		// G = Y - 0.34414*Cb - 0.71414*Cr + 128.5 
+                    g2 = _mm_add_epi32		( g2, y2			);		// G = Y - 0.34414*Cb - 0.71414*Cr + 128.5 
+
+                    g = _mm_packs_epi32(g1,g2);
+
+                    // BLUE
+                    __m128i b1,b2;
+                    Mul_16s		( val113, cb,b1,b2			);		// B = ( 1.772*Cb )*(2^6)
+                    b1 = _mm_add_epi32		( b1, constant	);		// B = ( 1.772*Cb + 128.5 )*(2^6)
+                    b2 = _mm_add_epi32		( b2, constant	);		// B = ( 1.772*Cb + 128.5 )*(2^6)
+
+                    b1 = _mm_srai_epi16		( b1, 6			);		// B = ((1.772*Cb + 128.5 )*(2^6)) / (2^6)
+                    b2 = _mm_srai_epi16		( b2, 6			);		// B = ((1.772*Cb + 128.5 )*(2^6)) / (2^6)
+                    b = _mm_packs_epi32(b1,b2);
+                    b = _mm_adds_epi16		( b, y			);		// B = Y + 1.772*Cb + 128.5
+
+                    CBL_SSE2::Convert_3P_to_3C_16bit( r, g, b);
+                    // r = {g2,r2,b1,g1,r1,b0,g0,r0}
+                    // g = {r5,b4,g4,r4,b3,g3,r3,b2}
+                    // b = {b7,g7,r7,b6,g6,r6,b5,g5}
+
+                    r = _mm_packus_epi16 (r, g);			// r = {r5,b4,g4,r4,b3,g3,r3,b2,g2,r2,b1,g1,r1,b0,g0,r0}
+                    _mm_storeu_si128 ((__m128i*)pDst, r);
+                    b = _mm_packus_epi16 (b, b);			// b = {b7,g7,r7,b6,g6,r6,b5,g5,b7,g7,r7,b6,g6,r6,b5,g5}
+                    _mm_storel_epi64 ( ((__m128i*)pDst+1), b );
+
+
+                    pSrcY += 8; 
+                    pSrcCb += 8; 
+                    pSrcCr += 8;	
 			}
-		} else {
-			for (S32 j=0; j<8; ++j){
-				pDst = j*dstStep + pDstRGB;
-				fwiYCbCr444ToRGBLS_MCU_16s8u_P3C3R_SSE2_8x1<CBL_LIBRARY::CBL_UnalignedLoad,
-				CBL_LIBRARY::CBL_UnalignedStore> (pSrcY, pSrcCb, pSrcCr, pDst);
-				pSrcY += 8; 
-				pSrcCb += 8; 
-				pSrcCr += 8;
-			}
-		}
 		return fwStsNoErr;
 	}
 
@@ -719,16 +736,6 @@ namespace OPT_LEVEL
         s1lo = _mm_add_epi16(s1lo,s3lo);
     }
 
-    SYS_INLINE STATIC void  Mul_16s(__m128i const &s1,__m128i const &s2,__m128i &d1,__m128i &d2)
-    {
-        __m128i temp1,temp2;
-        temp1 = _mm_mullo_epi16(s1,s2);
-        temp2 = _mm_mulhi_epi16(s1,s2);
-        d1    = _mm_unpacklo_epi16(temp1,temp2); 
-        d2    = _mm_unpackhi_epi16(temp1,temp2); 
-
-        
-    }
 
     SYS_INLINE STATIC void MulCbCr_Coef(__m128i &s1lo,__m128i &s2lo,__m128i &s3lo,const XMM128 mCoef[3])
     {
