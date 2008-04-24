@@ -352,7 +352,163 @@ namespace OPT_LEVEL
 		
 	}
 
-	SYS_INLINE FwStatus iYCbCr411ToRGBLS_MCU_16s8u_P3C3R( const Fw16s *pSrcMCU[3], Fw8u *pDstRGB, int dstStep )
+	static SYS_INLINE void fwiYCbCr411ToBGRLS_MCU_16s8u_P3C3R_8x8Block (Fw16s *pSrcY, Fw16s *pSrcCb, Fw16s *pSrcCr, Fw8u *pDstRGB, int dstStep)
+	{
+		A32S y, x;
+		A32S dstPos, srcYPos=0, srcCPos;
+		A16S yVal, crVal, cbVal;
+
+        switch( Dispatch::Type<DT_SSE2>() )
+	    {
+	    case DT_SSE3:
+	    case DT_SSE2:
+            {    
+                XMM128 yVal, cbVal, crVal, yTemp, cbTemp, crTemp;
+                XMM128 xmm1, xmm2;
+                const __m128 xmm128 = _mm_set1_ps((float)128.5);
+                const __m128i zero = _mm_setzero_si128();
+                const __m128 xmmC1 = _mm_set1_ps((float)-0.34414);
+                const __m128 xmmC2 = _mm_set1_ps((float)-0.71414);
+                const __m128 xmmC3 = _mm_set1_ps((float)1.402);
+                const __m128 xmmC4 = _mm_set1_ps((float)1.772);
+		        for (y=0; y<8; ++y)
+		            {
+                        
+			            dstPos = y*dstStep;
+			            srcCPos = (y>>1)<<3; //(y>>1)*8;
+			                yVal.i = _mm_loadu_si128((__m128i*)(pSrcY+srcYPos));
+                            cbVal.s64[0] = *((Fw64s*)(pSrcCb+srcCPos));
+                            crVal.s64[0] = *((Fw64s*)(pSrcCr+srcCPos));
+                            
+                            cbVal.i = _mm_unpacklo_epi16(cbVal.i, cbVal.i);
+                            crVal.i = _mm_unpacklo_epi16(crVal.i, crVal.i);
+
+                            yTemp.i = _mm_unpacklo_epi16( yVal.i, zero);
+                            cbTemp.i = _mm_unpacklo_epi16( cbVal.i, zero);
+                            crTemp.i = _mm_unpacklo_epi16( crVal.i, zero);
+
+                            yTemp.i = _mm_slli_epi32(yTemp.i, 16);
+                            cbTemp.i = _mm_slli_epi32(cbTemp.i, 16);
+                            crTemp.i = _mm_slli_epi32(crTemp.i, 16);
+
+                            yTemp.i = _mm_srai_epi32(yTemp.i, 16);
+                            cbTemp.i = _mm_srai_epi32(cbTemp.i, 16);
+                            crTemp.i = _mm_srai_epi32(crTemp.i, 16);
+
+
+                            yTemp.f = _mm_cvtepi32_ps( yTemp.i);
+                            cbTemp.f = _mm_cvtepi32_ps( cbTemp.i);
+                            crTemp.f = _mm_cvtepi32_ps( crTemp.i);
+
+				            // Compute RGB
+
+                            xmm1.f = _mm_mul_ps(xmmC1, cbTemp.f);
+                            xmm2.f = _mm_mul_ps(xmmC2, crTemp.f);
+                            xmm2.f = _mm_add_ps(xmm2.f, xmm1.f);
+                            xmm2.f = _mm_add_ps(xmm2.f, yTemp.f);
+                            xmm2.f = _mm_add_ps(xmm2.f, xmm128);
+                            
+                            xmm1.f = _mm_mul_ps(xmmC3, crTemp.f);
+                            xmm1.f = _mm_add_ps(xmm1.f, yTemp.f);
+                            xmm1.f = _mm_add_ps(xmm1.f, xmm128);
+
+                            cbTemp.f = _mm_mul_ps(cbTemp.f, xmmC4);
+                            cbTemp.f = _mm_add_ps(cbTemp.f, yTemp.f);
+                            cbTemp.f = _mm_add_ps(cbTemp.f, xmm128);
+
+                            yTemp.i = _mm_cvtps_epi32( xmm1.f);
+                            crTemp.i = _mm_cvtps_epi32( cbTemp.f);
+                            cbTemp.i = _mm_cvtps_epi32( xmm2.f);
+                            
+
+                            //higher bytes
+
+                            yVal.i = _mm_unpackhi_epi16( yVal.i, zero);
+                            cbVal.i = _mm_unpackhi_epi16( cbVal.i, zero);
+                            crVal.i = _mm_unpackhi_epi16( crVal.i, zero);
+
+                            yVal.i = _mm_slli_epi32(yVal.i, 16);
+                            cbVal.i = _mm_slli_epi32(cbVal.i, 16);
+                            crVal.i = _mm_slli_epi32(crVal.i, 16);
+
+                            yVal.i = _mm_srai_epi32(yVal.i, 16);
+                            cbVal.i = _mm_srai_epi32(cbVal.i, 16);
+                            crVal.i = _mm_srai_epi32(crVal.i, 16);
+
+                            yVal.f = _mm_cvtepi32_ps( yVal.i);
+                            cbVal.f = _mm_cvtepi32_ps( cbVal.i);
+                            crVal.f = _mm_cvtepi32_ps( crVal.i);
+
+				            // Compute RGB
+
+                            xmm1.f = _mm_mul_ps(xmmC1, cbVal.f);
+                            xmm2.f = _mm_mul_ps(xmmC2, crVal.f);
+                            xmm2.f = _mm_add_ps(xmm2.f, xmm1.f);
+                            xmm2.f = _mm_add_ps(xmm2.f, yVal.f);
+                            xmm2.f = _mm_add_ps(xmm2.f, xmm128);
+                            
+                            xmm1.f = _mm_mul_ps(xmmC3, crVal.f);
+                            xmm1.f = _mm_add_ps(xmm1.f, yVal.f);
+                            xmm1.f = _mm_add_ps(xmm1.f, xmm128);
+                            
+                            cbVal.f = _mm_mul_ps(cbVal.f, xmmC4);
+                            cbVal.f = _mm_add_ps(cbVal.f, yVal.f);
+                            cbVal.f = _mm_add_ps(cbVal.f, xmm128);
+
+                            xmm1.i = _mm_cvtps_epi32( xmm1.f);
+                            xmm2.i = _mm_cvtps_epi32( xmm2.f);
+                            cbVal.i = _mm_cvtps_epi32( cbVal.f);
+
+                            yTemp.i = _mm_packs_epi32(yTemp.i , xmm1.i );
+                            cbTemp.i = _mm_packs_epi32(cbTemp.i, xmm2.i );
+                            crTemp.i = _mm_packs_epi32(crTemp.i, cbVal.i );
+
+                            //CBL_SSE2::Convert_3P_to_3C_16bit(yTemp.i, cbTemp.i, crTemp.i);
+
+                            CBL_SSE2::Convert_3P_to_3C_16bit(crTemp.i, cbTemp.i, yTemp.i);
+
+                            yTemp.i = _mm_packus_epi16 (crTemp.i, cbTemp.i);
+                            crTemp.i = _mm_packus_epi16 (yTemp.i, yTemp.i);
+
+
+                            _mm_storeu_si128((__m128i*) (pDstRGB + dstPos),crTemp.i);
+
+                            *((Fw64s*)(pDstRGB + dstPos + 16)) = yTemp.s64[0];
+
+                             srcYPos = srcYPos + 8;
+
+			            //}
+		            }
+            }
+            break;
+	    default:
+		        for (y=0; y<8; ++y)
+		        {
+			        dstPos = y*dstStep;
+			        srcCPos = (y>>1)<<3; //(y>>1)*8;
+			        for (x=0; x<8; x+=2)
+			        {
+				        yVal = pSrcY[srcYPos++];
+				        cbVal = pSrcCb[srcCPos];
+				        crVal = pSrcCr[srcCPos++];
+				        // Compute RGB
+				        pDstRGB[dstPos++] = FW_REF::Limits<A8U>::Sat( yVal + 1.772*cbVal + 128.5);
+				        pDstRGB[dstPos++] = FW_REF::Limits<A8U>::Sat( yVal - 0.34414*cbVal - 0.71414*crVal + 128.5);
+				        pDstRGB[dstPos++] = FW_REF::Limits<A8U>::Sat( yVal + 1.402*crVal + 128.5);
+
+				        yVal = pSrcY[srcYPos++];
+				        // Compute RGB
+				        pDstRGB[dstPos++] = FW_REF::Limits<A8U>::Sat( yVal + 1.772*cbVal + 128.5);
+				        pDstRGB[dstPos++] = FW_REF::Limits<A8U>::Sat( yVal - 0.34414*cbVal - 0.71414*crVal + 128.5);
+				        pDstRGB[dstPos++] = FW_REF::Limits<A8U>::Sat( yVal + 1.402*crVal + 128.5);
+			        }                       
+		        }
+	    }
+		
+	}
+
+	
+    SYS_INLINE FwStatus iYCbCr411ToRGBLS_MCU_16s8u_P3C3R( const Fw16s *pSrcMCU[3], Fw8u *pDstRGB, int dstStep )
 	{
 		Fw16s y, srcCOffset, *pSrcY, *pSrcCb, *pSrcCr;
 		Fw8u *pDstRGB_T;
@@ -394,7 +550,51 @@ namespace OPT_LEVEL
 		return fwStsNoErr;
 	}
 
-	//-----------------------------------------------------------------------
+	
+    SYS_INLINE FwStatus iYCbCr411ToBGRLS_MCU_16s8u_P3C3R( const Fw16s *pSrcMCU[3], Fw8u *pDstRGB, int dstStep )
+	{
+		Fw16s y, srcCOffset, *pSrcY, *pSrcCb, *pSrcCr;
+		Fw8u *pDstRGB_T;
+		
+		// Y:				Cb:					Cr:									RGB:
+		//		  ----8----		  ---4-----4---		  ---4-----4---		==>			  --8---8--
+		//		8 |   Ay   |		4 |A_cb | B_cb|		4 |A_cr | B_cr|		==>			8 | A | B |
+		//		8 |   By   |		  -------------		  -------------		==>			  ---------
+		//		8 |   Cy   |		4 |C_cb | D_cb|		4 |C_cr | D_cr|		==>			8 | C | D |
+		//		8 |   Dy   |		  -------------		  -------------		==>			  ---------
+		//		  ----------
+
+		// Proces each block independently
+		for (y=0; y<4; ++y)
+		{
+			// Arithmetic to point to the correct chroma block.  
+			// (y&0x1)*4 = (y&0x1)<<2   = skip the left 4 pixels
+			// (y&0x2)*2*8 = (y&0x2)<<4 = Skip the top 16x8 pixels
+			// if y is odd
+			//		Convert RIGHT hand side block
+			// else
+			//		Convert LEFT hand side block	
+			// if y >=2 (bit 1 of y is set)
+			//		Convert TOP half of block
+			// else
+			//		Convert BOTTOM half of block
+			srcCOffset = ((y&0x1)<<2) + ((y&0x2)<<4);
+
+			pSrcY = (Fw16s*)pSrcMCU[0] + (y<<6);//y*8*8;			// Pointer to the next block to be processed
+			pSrcCb = (Fw16s*)pSrcMCU[1] + srcCOffset;
+			pSrcCr = (Fw16s*)pSrcMCU[2] + srcCOffset;
+			pDstRGB_T = pDstRGB + (y&0x1)*8*3 + ((y>>1)*8*dstStep);
+			//pDstRGB_T = pDstRGB + (y&0x1)*8*3 + ((y>>1)*8*dstStep);
+
+			// Process each 8x8 block
+			fwiYCbCr411ToBGRLS_MCU_16s8u_P3C3R_8x8Block (pSrcY, pSrcCb, pSrcCr, pDstRGB_T, dstStep);
+		}
+
+		return fwStsNoErr;
+	}
+
+	
+    //-----------------------------------------------------------------------
 	//Creates a YCCK Image and then converts to CMYK format
 	//-----------------------------------------------------------------------
 	static SYS_INLINE void fwiYCCK4xxToCMYKLS_MCU_16s8u_P4C4R_8x8Block (
@@ -1964,8 +2164,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr411ToRGBLS_MCU_16s8u_P3C3R)( const Fw16s
 	//}
 }
 
-
-
 //-----------------------------------------------------------------------
 //Convert an 8*8 RGB image to the YCbCr color mode and create 444MCU
 //
@@ -3175,26 +3373,33 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr411ToBGRLS_MCU_16s8u_P3C3R)(const Fw16s 
 						Fw8u *pDstBGR, int dstStep)
 {
 
-	if (pDstBGR==0 || pSrcMCU==0) return fwStsNullPtrErr;
-	if (pSrcMCU[0]==0 ||pSrcMCU[1]==0 ||pSrcMCU[2]==0)
+	//if (pDstBGR==0 || pSrcMCU==0) return fwStsNullPtrErr;
+	//if (pSrcMCU[0]==0 ||pSrcMCU[1]==0 ||pSrcMCU[2]==0)
+	//	return fwStsNullPtrErr;
+	//STEPCHECK1(dstStep);
+	//	
+	//// Y:			    	CbCr:								RGB:
+	////		  ----8----		  ---4-----4---		  	==>			  --8---8--
+	////		8 |   Ay   |		4 |A_c | B_c|		==>			8 | A | B |
+	////		8 |   By   |		  -------------		==>			  ---------
+	////		8 |   Cy   |		4 |C_c | D_c|		==>			8 | C | D |
+	////		8 |   Dy   |		  -------------		==>			  ---------
+	////		  ----------
+	//// Proces each block independently
+	//fwiYCbCr4xxToBGRLS_MCU_16s8u_P3C3R_8x8Block(pSrcMCU, pDstBGR, dstStep, 0, 1, 1);
+	//fwiYCbCr4xxToBGRLS_MCU_16s8u_P3C3R_8x8Block(pSrcMCU, pDstBGR, dstStep, 1, 1, 1);
+	//fwiYCbCr4xxToBGRLS_MCU_16s8u_P3C3R_8x8Block(pSrcMCU, pDstBGR, dstStep, 2, 1, 1);
+	//fwiYCbCr4xxToBGRLS_MCU_16s8u_P3C3R_8x8Block(pSrcMCU, pDstBGR, dstStep, 3, 1, 1);
+
+
+	//return fwStsNoErr;
+
+    if (pDstBGR==0 || pSrcMCU==0) return fwStsNullPtrErr;
+	if (pSrcMCU[0]==0 || pSrcMCU[1]==0 || pSrcMCU[2]==0)
 		return fwStsNullPtrErr;
-	STEPCHECK1(dstStep);
-		
-	// Y:			    	CbCr:								RGB:
-	//		  ----8----		  ---4-----4---		  	==>			  --8---8--
-	//		8 |   Ay   |		4 |A_c | B_c|		==>			8 | A | B |
-	//		8 |   By   |		  -------------		==>			  ---------
-	//		8 |   Cy   |		4 |C_c | D_c|		==>			8 | C | D |
-	//		8 |   Dy   |		  -------------		==>			  ---------
-	//		  ----------
-	// Proces each block independently
-	fwiYCbCr4xxToBGRLS_MCU_16s8u_P3C3R_8x8Block(pSrcMCU, pDstBGR, dstStep, 0, 1, 1);
-	fwiYCbCr4xxToBGRLS_MCU_16s8u_P3C3R_8x8Block(pSrcMCU, pDstBGR, dstStep, 1, 1, 1);
-	fwiYCbCr4xxToBGRLS_MCU_16s8u_P3C3R_8x8Block(pSrcMCU, pDstBGR, dstStep, 2, 1, 1);
-	fwiYCbCr4xxToBGRLS_MCU_16s8u_P3C3R_8x8Block(pSrcMCU, pDstBGR, dstStep, 3, 1, 1);
-
-
-	return fwStsNoErr;
+	// will not allow dstStep overlap
+	if (dstStep < 48) return fwStsStepErr;
+	return iYCbCr411ToBGRLS_MCU_16s8u_P3C3R( pSrcMCU, pDstBGR, dstStep );	
 }
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr411ToBGR565LS_MCU_16s16u_P3C3R)(const Fw16s *pSrcMCU[3],
