@@ -354,7 +354,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeHuffmanStateFree_JPEG_8u)(FwiEncodeHuff
 //-----------------------------------------------------------------------
 //This internal function put the bits to destination buffer
 //size 0 will do nothing
-bool EncStuffbits (FwiEncodeHuffmanState * pEncHuffState, Fw16u code, int size, 
+bool SYS_INLINE EncStuffbits (FwiEncodeHuffmanState * pEncHuffState, Fw16u code, int size, 
 					Fw8u *pDst, int dstLenBytes, int *pDstCurrPos)
 
 {
@@ -449,7 +449,7 @@ bool EncStateFlush (FwiEncodeHuffmanState * pEncHuffState, Fw8u *pDst,
 
 //for JPEG use only
 //For greater than 2^16, the answer will be 17
-int LeadBit (int ssss) 
+int SYS_INLINE LeadBit (int ssss) 
 {
 	if (ssss==0) return 0;
 
@@ -1365,7 +1365,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDecodeHuffmanStateFree_JPEG_8u)(FwiDecodeHuff
 //-----------------------------------------------------------------------
 //Internal functions for helping decoders
 //-----------------------------------------------------------------------
-bool dec_receivebits (FwiDecodeHuffmanState * pDecHuffState, Fw32u accbuf, 
+bool SYS_INLINE dec_receivebits (FwiDecodeHuffmanState * pDecHuffState, Fw32u accbuf, 
 					  int accbitnum, int ssss)
 {
 	unsigned char  *pCurrSrc = pDecHuffState->pCurrSrc;
@@ -1457,7 +1457,7 @@ int dec_huff (FwiDecodeHuffmanState * pDecHuffState, Fw32u accbuf,
 	return pTable->pListVals[(code-pTable->mincode[nbits]+pTable->valptr[nbits])];
 }
 
-bool FW_HUFF_DECODE(int *result, FwiDecodeHuffmanState *pDecHuffState, 
+bool SYS_INLINE FW_HUFF_DECODE(int *result, FwiDecodeHuffmanState *pDecHuffState, 
 					 const FwiDecodeHuffmanSpec *pTable)
 {	
 	int nextbit, look; 
