@@ -197,7 +197,7 @@ FwStatus STDCALL fwiDecodeExpGolombOne_H264_1u16s               ( Fw32u **ppBitS
 // ------------------------------------------------
 /*#FunctionBlock - FilterDeblockingLuma_VerEdge_H264
 TODO:publish
-#Technologies - REF, SSE2
+#Technologies - REF
 #Short - Deblock luma macroblock vertical edges
 #Long - <Text>This function steps through a source 16X16 luma macroblock and filters artificial discontinuities at block boundaries caused by quantization and other encoding artifacts. It operates on internal or external vertical edges of the macroblock.
 Results are written back to the source location.</Text>
@@ -209,7 +209,7 @@ FwStatus STDCALL fwiFilterDeblockingLuma_VerEdge_H264_8u_C1IR   ( Fw8u *pSrcDst 
 
 /*#FunctionBlock - FilterDeblockingLuma_HorEdge_H264
 TODO:publish
-#Technologies - REF, SSE2
+#Technologies - REF
 #Short - Deblock luma macroblock horizontal edges
 #Long - <Text>This function steps through a source 16X16 luma macroblock and filters artificial discontinuities at block boundaries caused by quantization and other encoding artifacts. It operates on internal or external horizontal edges of the macroblock.
 Results are written back to the source location.</Text>
@@ -221,7 +221,7 @@ FwStatus STDCALL fwiFilterDeblockingLuma_HorEdge_H264_8u_C1IR   ( Fw8u *pSrcDst 
 
 /*#FunctionBlock - FilterDeblockingChroma_HorEdge_H264
 TODO:publish
-#Technologies - REF, SSE2
+#Technologies - REF
 #Short - Deblock chroma macroblock horizontal edges
 #Long - <Text>This function steps through a source 8X8 chroma macroblock and filters artificial discontinuities at block boundaries caused by quantization and other encoding artifacts. It operates on internal or external horizontal edges of the macroblock.
 Results are written back to the source location.</Text>
@@ -233,7 +233,7 @@ FwStatus STDCALL fwiFilterDeblockingChroma_HorEdge_H264_8u_C1IR ( Fw8u *pSrcDst 
 
 /*#FunctionBlock - FilterDeblockingChroma_VerEdge_H264
 TODO:publish
-#Technologies - REF, SSE2
+#Technologies - REF
 #Short - Deblock chroma macroblock vertical edges
 #Long - <Text>This function steps through a source 8X8 chroma macroblock and filters artificial discontinuities at block boundaries caused by quantization and other encoding artifacts. It operates on internal or external vertical edges of the macroblock.
 Results are written back to the source location.</Text>
@@ -324,7 +324,7 @@ FwStatus STDCALL fwiInterpolateChromaTop_H264_8u_C1R            ( const Fw8u *pS
 
 /*#FunctionBlock - InterpolateChromaBottom_H264
 TODO:publish
-#Technologies - REF, SSE2
+#Technologies - REF
 #Short - Interpolate chroma component at bottom frame boundary
 #Long - <Text>This function increases the accuracy of inter-frame motion prediction by performing eighth-pixel chroma-component interpolation near the bottom boundary of a defined region of a source reference frame.
 The interpolation method is convolution with a 6X6 kernel, in accordance with JVTG050 8.4.2.2.1. Results are written to a defined ROI in a destination buffer.</Text>
@@ -344,7 +344,7 @@ FwStatus STDCALL fwiInterpolateChromaBottom_H264_8u_C1R         ( const Fw8u *pS
 // ------------------------------------------------
 /*#FunctionBlock - PredictIntra_4x4_H264
 TODO:publish
-#Technologies - REF, SSE2
+#Technologies - REF
 #Short - Predict motion of luma block intra-frame
 #Long - <Text>This function performs intra-frame motion prediction by comparing a 4X4 luma block to previously-encoded neighboring 4X4 luma blocks within the same frame.
 Results are written back to the source location. Comparison is done in accordance with JVTG050 8.3.1.2., using one of the following prediction modes specified by parameter <ParameterName>predMode</ParameterName>.</Text>
@@ -510,7 +510,7 @@ FwStatus STDCALL fwiReconstructLumaIntraMB_H264_16s8u_C1R       (       Fw16s **
 // ------------------------------------------------
 /*#FunctionBlock - TransformDequantChromaDC_H264
 TODO:publish
-#Technologies - REF, SSE2
+#Technologies - REF
 #Short - Inverse transform chroma DC
 #Long - <Text>This function steps through a source buffer, performs integer inverse transformation and dequantization of 2X2 chroma DC coefficients in accordance with JVTG050 8.5.7., and writes the results back to the source buffer.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsOutOfRangeErr
@@ -518,7 +518,7 @@ TODO:publish
 FwStatus STDCALL fwiTransformDequantChromaDC_H264_16s_C1I       ( Fw16s *pSrcDst, Fw32s QP );
 
 /*#FunctionBlock - DequantTransformResidual_H264
-#Technologies - REF, SSE2
+#Technologies - REF
 #Short - Inverse transform residual
 #Long - <Text>This function steps through a source buffer, performs scaling, inverse transformation, and shift of a residual 4X4 block in accordance with JVTG050 8.5.7., and writes the result back to the source buffer.</Text>
 <Text>For chroma block transforms, call this function after <FunctionName>TransformDequantChromaDC_H264</FunctionName>.</Text>
@@ -532,7 +532,7 @@ FwStatus STDCALL fwiDequantTransformResidual_H264_16s_C1I       ( Fw16s *pSrcDst
 
 /*#FunctionBlock - HuffmanTableInitAlloc
 TODO:publish
-#Technologies - REF, SSE2, SSE3
+#Technologies - REF
 #Short - Allocate memory and initialize one-to-one Huffman decode table
 #Long - <Text>This function allocates memory and initializes the structure for a Huffman decode table.
 The table is used to decode bitstreams encoded with variable-length coding in which one code corresponds to one value.</Text>
@@ -543,7 +543,7 @@ FwStatus STDCALL fwiHuffmanTableInitAlloc_32s                   ( const Fw32s *p
 
 /*#FunctionBlock - HuffmanRunLevelTableInitAlloc
 TODO:publish
-#Technologies - REF, SSE2, SSE3
+#Technologies - REF
 #Short - Allocate memory and initialize one-to-two Huffman decode table
 #Long - <Text>This function allocates memory and initializes the structure for a Huffman decode table.
 The table is used to decode bitstreams encoded with variable-length coding in which one code corresponds to two values.</Text>
@@ -553,7 +553,7 @@ FwStatus STDCALL fwiHuffmanRunLevelTableInitAlloc_32s           ( const Fw32s *p
 
 /*#FunctionBlock - DecodeHuffmanOne
 TODO:publish
-#Technologies - REF, SSE2, SSE3
+#Technologies - REF
 #Short - Decode Huffman one-to-one
 #Long - <Text>This function decodes a single code from a source bitstream using a specified table, writes a single-value result to a destination buffer,
 and sets the bitstream pointers to new positions. The function uses the table initialized by the <FunctionName>HuffmanTableInitAlloc</FunctionName> function.</Text>
@@ -563,7 +563,7 @@ FwStatus STDCALL fwiDecodeHuffmanOne_1u32s                      ( Fw32u **ppBitS
 
 /*#FunctionBlock - DecodeHuffmanPair
 TODO:publish
-#Technologies - REF, SSE2, SSE3
+#Technologies - REF
 #Short - Decode Huffman one-to-two
 #Long - <Text>This function decodes a single code from a source bitstream using a specified table, writes the two resulting values result to separate destination buffers,
 and sets the bitstream pointers to new positions. The function uses the table initialized by the <FunctionName>HuffmanRunLevelInitAlloc</FunctionName> function.</Text>
@@ -573,7 +573,7 @@ FwStatus STDCALL fwiDecodeHuffmanPair_1u16s                     ( Fw32u **ppBitS
 
 /*#FunctionBlock - HuffmanTableFree
 TODO:publish
-#Technologies - REF, SSE2, SSE3
+#Technologies - REF
 #Short - Free memory allocated to Huffman decode table
 #Long - <Text>This function frees the memory at the location pointed to by <ParameterName>ppDecodeTable</ParameterName> allocated to a Huffman decode table.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr
@@ -1540,7 +1540,7 @@ FwStatus STDCALL fwiTransformDequantLumaDC_H264_16s_C1I           ( Fw16s *pSrcD
 
 /*#FunctionBlock - QuantInv_MPEG2
 TODO:publish
-#Technologies - REF, SSE2, SSE3
+#Technologies - REF, SSE2
 #Short - Inverse inter frame quantization (MPEG-2)
 #Long - <Text>This function performs inverse quantization of inter frames in accordance with the MPEG-2 standard.</Text> 
 <Text>The 8x8 matrix of DCT coefficients in <ParameterName>pSrcDst</ParameterName> are first multiplied by <ParameterName>Qp</ParameterName>, the quantizing scale factor, and then by 
@@ -1552,7 +1552,7 @@ FwStatus STDCALL fwiQuantInv_MPEG2_16s_C1I                        ( Fw16s *pSrcD
 
 /*#FunctionBlock - QuantInvIntra_MPEG2
 TODO:publish
-#Technologies - REF, SSE2, SSE3
+#Technologies - REF, SSE2
 #Short - Inverse intra frame quantization (MPEG-2)
 #Long - <Text>This function performs inverse quantization of intra frames in accordance with the MPEG-2 standard.</Text> 
 <Text>The 8x8 matrix of DCT coefficients in <ParameterName>pSrcDst</ParameterName> are first multiplied by <ParameterName>Qp</ParameterName>, the quantizing scale factor, and then by 
@@ -1607,7 +1607,7 @@ FwStatus STDCALL fwiReconstructDCTBlockIntra_MPEG1_32s            (      Fw32u *
 
 /*#FunctionBlock - ReconstructDCTBlock_MPEG2
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Reconstruct inter feame DCT block (MPEG-2)
 #Long - <Text>This function reconstructs an 8x8 DCT block for inter frames in accordance with the MPEG-2 standard.</Text> 
 <Text>The function first decodes 64 quantized DCT coefficients from the bitstream using the run-level tables of the MPEG-2 standard. 
@@ -1629,7 +1629,7 @@ FwStatus STDCALL fwiReconstructDCTBlock_MPEG2_32s                 (       Fw32u 
 
 /*#FunctionBlock - ReconstructDCTBlockIntra_MPEG2
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Reconstruct intra frame DCT block (MPEG-2)
 #Long - <Text>This function reconstructs an 8x8 DCT block for intra frames in accordance with the MPEG-2 standard.</Text> 
 <Text>The function first decodes 64 quantized DCT coefficients from the bitstream using the run-level tables of the MPEG-2 standard. 
@@ -1653,7 +1653,7 @@ FwStatus STDCALL fwiReconstructDCTBlockIntra_MPEG2_32s            (       Fw32u 
 
 /*#FunctionBlock - DCT8x8Inv_AANTransposed_Channel
 TODO:publish
-#Technologies - REF, SSE2, SSE3
+#Technologies - REF, SSE2
 #Short - Perform AAN IDCT on an 8X8 block
 #Long - <Text>These functions step through a transposed 8X8 block of DCT coefficients in a source buffer, perform an IDCT based on the AAN algorithm, and write the result to a destination buffer.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr
@@ -1663,7 +1663,7 @@ FwStatus STDCALL fwiDCT8x8Inv_AANTransposed_16s8u_C1R             ( const Fw16s 
 
 /*#FunctionBlock - DCT8x8Inv_AANTransposed_Plane
 TODO:publish
-#Technologies - REF, SSE2, SSE3
+#Technologies - REF, SSE2
 #Short - Perform AAN IDCT on 8X8 U and V blocks
 #Long - <Text>These functions step through transposed 8X8 U and V block of DCT coefficients in two source buffers, perform an IDCT based on the AAN algorithm, and write the result to a joined UV block in a sestination buffer.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr

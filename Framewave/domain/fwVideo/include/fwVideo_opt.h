@@ -38,7 +38,7 @@ OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiInterpolateChroma_H
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiInterpolateChromaTop_H264_8u_C1R)(const Fw8u* pSrc, 
 	Fw32s srcStep, Fw8u* pDst, Fw32s dstStep, Fw32s dx, Fw32s dy, 
 	Fw32s outPixels, FwiSize roiSize);
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiInterpolateChromaBottom_H264_8u_C1R)(const Fw8u* pSrc, Fw32s
+OREFR             FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiInterpolateChromaBottom_H264_8u_C1R)(const Fw8u* pSrc, Fw32s
 			srcStep, Fw8u* pDst, Fw32s dstStep, Fw32s dx, Fw32s dy, Fw32s outPixels, FwiSize roiSize);
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiInterpolateBlock_H264_8u_P2P1R)(Fw8u *pSrc1, 
 	 Fw8u *pSrc2, Fw8u *pDst,  Fw32u width, Fw32u height, Fw32u pitch);
@@ -47,7 +47,7 @@ OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWeightedAverage_H26
     Fw32s shift,Fw32s offset, FwiSize roiSize);
 
 
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiPredictIntra_4x4_H264_8u_C1IR)(Fw8u* pSrcDst, 
+OREFR             FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiPredictIntra_4x4_H264_8u_C1IR)(Fw8u* pSrcDst, 
 		Fw32s srcDstStep,	FwIntra4x4PredMode_H264 predMode, 	Fw32s availability);
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiPredictIntra_16x16_H264_8u_C1IR)(Fw8u* pSrcDst, 
 	  Fw32s srcDstStep, FwIntra16x16PredMode_H264 predMode, Fw32s availability);
@@ -76,8 +76,8 @@ OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiReconstructLumaIntr
 
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiTransformDequantLumaDC_H264_16s_C1I)(
 	Fw16s* pSrcDst, Fw32s QP);
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiTransformDequantChromaDC_H264_16s_C1I)(Fw16s* pSrcDst, Fw32s QP);
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDequantTransformResidual_H264_16s_C1I)(Fw16s* pSrcDst, 
+OREFR             FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiTransformDequantChromaDC_H264_16s_C1I)(Fw16s* pSrcDst, Fw32s QP);
+OREFR             FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDequantTransformResidual_H264_16s_C1I)(Fw16s* pSrcDst, 
 	Fw32s  step, Fw16s  *pDC, Fw32s  AC, Fw32s  QP);
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDequantTransformResidualAndAdd_H264_16s_C1I)(const  Fw8u  *pPred,
 	 Fw16s *pSrcDst, Fw16s *pDC, Fw8u  *pDst, Fw32s  PredStep, Fw32s  DstStep, Fw32s  QP,  Fw32s  AC);
@@ -87,12 +87,12 @@ OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDequantTransformRes
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiTransformDequantChromaDC_SISP_H264_16s_C1I)(Fw16s* pSrcDst,
 	Fw16s* pDCPredict, Fw32s qp, Fw32s qs, Fw32s Switch);
 
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiHuffmanTableInitAlloc_32s)(const Fw32s* pSrcTable, FwVCHuffmanSpec_32s** ppDstSpec);
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiHuffmanRunLevelTableInitAlloc_32s)(const Fw32s* pSrcTable, FwVCHuffmanSpec_32s** ppDstSpec);
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDecodeHuffmanOne_1u32s)(Fw32u** ppBitStream, Fw32s* pOffset, Fw32s* pDst, const FwVCHuffmanSpec_32s *pDecodeTable);
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDecodeHuffmanPair_1u16s)(Fw32u** ppBitStream, Fw32s* pOffset, const FwVCHuffmanSpec_32s *pDecodeTable, Fw8s *pFirst, Fw16s *pSecond);
+OREFR             FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiHuffmanTableInitAlloc_32s)(const Fw32s* pSrcTable, FwVCHuffmanSpec_32s** ppDstSpec);
+OREFR             FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiHuffmanRunLevelTableInitAlloc_32s)(const Fw32s* pSrcTable, FwVCHuffmanSpec_32s** ppDstSpec);
+OREFR             FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDecodeHuffmanOne_1u32s)(Fw32u** ppBitStream, Fw32s* pOffset, Fw32s* pDst, const FwVCHuffmanSpec_32s *pDecodeTable);
+OREFR             FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDecodeHuffmanPair_1u16s)(Fw32u** ppBitStream, Fw32s* pOffset, const FwVCHuffmanSpec_32s *pDecodeTable, Fw8s *pFirst, Fw16s *pSecond);
 
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiHuffmanTableFree_32s)(FwVCHuffmanSpec_32s** ppDecodeTable);
+OREFR             FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiHuffmanTableFree_32s)(FwVCHuffmanSpec_32s** ppDecodeTable);
 
 
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiMC16x16_8u_C1 )( const Fw8u *pSrcRef, Fw32s srcStep, const Fw16s
@@ -183,8 +183,8 @@ OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSAD16x16Blocks4x4_8
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSumsDiff16x16Blocks4x4_8u16s_C1)(Fw8u * pSrc,  Fw32s srcStep,Fw8u * pPred, Fw32s predStep, Fw16s* pSums, Fw16s* pDiff);
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSumsDiff8x8Blocks4x4_8u16s_C1)(Fw8u* pSrc, Fw32s srcStep,Fw8u* pPred, Fw32s predStep, Fw16s* pSums, Fw16s* pDiff);
 
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiReconstructDCTBlock_MPEG1_32s)(Fw32u **ppBitStream, int *pOffset, const Fw32s *pDCSizeTable, const Fw32s *pACTable, Fw32s *pScanMatrix, int QP, Fw16s *pQPMatrix, Fw16s *pDstBlock, Fw32s *pDstSize);
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiReconstructDCTBlockIntra_MPEG1_32s)(Fw32u **ppBitStream, int *pOffset, const Fw32s *pDCSizeTable, const Fw32s *pACTable, Fw32s *pScanMatrix, int QP, Fw16s *pQPMatrix, Fw16s *pDCPred, Fw16s *pDstBlock, Fw32s *pDstSize);
+OREFR             FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiReconstructDCTBlock_MPEG1_32s)(Fw32u **ppBitStream, int *pOffset, const Fw32s *pDCSizeTable, const Fw32s *pACTable, Fw32s *pScanMatrix, int QP, Fw16s *pQPMatrix, Fw16s *pDstBlock, Fw32s *pDstSize);
+OREFR             FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiReconstructDCTBlockIntra_MPEG1_32s)(Fw32u **ppBitStream, int *pOffset, const Fw32s *pDCSizeTable, const Fw32s *pACTable, Fw32s *pScanMatrix, int QP, Fw16s *pQPMatrix, Fw16s *pDCPred, Fw16s *pDstBlock, Fw32s *pDstSize);
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiReconstructDCTBlock_MPEG2_32s)(Fw32u **ppBitStream, int *pOffset, const FwVCHuffmanSpec_32s *pDCTable, const FwVCHuffmanSpec_32s *pACTable, Fw32s *pScanMatrix, int QP, Fw16s *pQPMatrix, Fw16s *pDstBlock, Fw32s *pDstSize);
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiReconstructDCTBlockIntra_MPEG2_32s)(Fw32u **ppBitStream, int *pOffset, const FwVCHuffmanSpec_32s *pDCSizeTable, const FwVCHuffmanSpec_32s *pACTable, Fw32s *pScanMatrix, int QP, Fw16s *pQPMatrix, Fw16s *pDCPred, Fw32s shiftDCVal, Fw16s *pDstBlock, Fw32s *pDstSize);
 

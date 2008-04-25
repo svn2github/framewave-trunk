@@ -680,7 +680,7 @@ FwStatus STDCALL  fwiSub128_JPEG_8u16s_C1R                ( const Fw8u  *pSrc, i
 
 /*#FunctionBlock - Add128_JPEG
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Level shift from signed 16s to unsigned 8u
 #Long - <Text>This function steps through a block of signed 16-bit data with values in the range [-128, 127] in a source buffer, converts the source data to 8-bit unsigned values in the range [0, 255], and writes the converted data to a destination buffer.</Text>
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsSizeErr, fwStsStepErr
