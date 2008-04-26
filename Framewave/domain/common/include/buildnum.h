@@ -11,7 +11,7 @@ This software is subject to the Apache v2.0 License.
 #define FW_MAJOR   1
 #define FW_MINOR   1
 #define FW_VERSION 0
-#define FW_VERSTR "FW 1.1" // First release in sourceforge
+#define FW_VERSTR "FW 1.1" // Framewave version 1.1 release
 
 
 //---------------------------------------
