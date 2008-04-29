@@ -725,10 +725,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\fwSignalIntroDoc.h"
-				>
-			</File>
-			<File
 				RelativePath=".\include\Power.h"
 				>
 			</File>
