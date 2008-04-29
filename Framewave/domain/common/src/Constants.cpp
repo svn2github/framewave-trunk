@@ -6,6 +6,19 @@ Portions based on work by llcc and visionany (Framewave\sdk\external\dec_cavlc.c
 */
 
 #include "Constants.h"
+#if defined( FW_SOL )
+#define extern
+#define const
+#pragma align 16(atanhi_ds, atanlo_ds, aT_ds, xmmDatad, atanhi_fs, atanlo_fs, aT_fs, xmmDataf)
+#pragma align 16(Atan2d_constants_d, Atan2d_constants_i, Atan2f_constants_f, Atan2f_constants_i)
+#pragma align 16(atanhi_d, atanlo_d, aT_d, atanhi_f, atanlo_f, aT_f, huge_f, one_f, huge_d)
+#pragma align 16(one_d, pi_f, pi_o_4_f, pi3_o_4_f, pi_hi_f, pi_lo_f, pi_d, pi_o_4_d, pi3_o_4_d)
+#pragma align 16(pi_hi_d, pi_lo_d, idct_weighting, fdct_weighting, dct_Scale, non_intra_quantizer_matrix)
+#pragma align 16(dequant_coef, dequant_coef16, QP_SCALE_CR, quant_coef, ClampTbl, coeff4_0, coeff4_1)
+#pragma align 16(coeff3_0, coeff2_0, coeff2_1, coeff2_2, coeff2_3, coeff2_4, coeff2_5, coeff2_6)
+#pragma align 16(coeff1_0, coeff1_1, coeff1_2, coeff1_3, coeff1_4, coeff1_5, coeff1_6, coeff0_0)
+#pragma align 16(coeff0_1, coeff0_2, coeff0_3, coeff0_4, coeff0_5, GetBitsMask32)
+#endif
 
 namespace Const
 {
@@ -1959,5 +1972,8 @@ extern const Fw8u run_before_table_2[] =
     (Fw8u)11, (Fw8u)11, (Fw8u)11, (Fw8u)11, (Fw8u)11, (Fw8u)11, (Fw8u)11, (Fw8u)11
 };
 
-
+#if defined( FW_SOL )
+#undef extern
+#undef const
+#endif
 
