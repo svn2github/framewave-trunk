@@ -96,13 +96,48 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiQuantFwd8x8_JPEG_16s_C1I)(Fw16s *pSrcDst, con
 	if (pSrcDst==0 || pQuantFwdTable==0) return fwStsNullPtrErr;
 
 	//Nearest integer mode for 2^14 = 16384
-	for (int i=0;i<64;i++) {
-		pSrcDst[i] = (pSrcDst[i] * pQuantFwdTable[i]+16384)>>15;
-	}
+    switch( Dispatch::Type<DT_SSE2>() )
+	    {
+	        case DT_SSE3:
+	        case DT_SSE2:
+                {   
+                    const __m128i cXMM = _mm_set1_epi32(16384);
+	                for(int i =0; i< 8; i++)
+                    {   
+                        __m128i srcDst = _mm_loadu_si128((reinterpret_cast<__m128i*>(pSrcDst)) + i);
+                        const __m128i quant = _mm_loadu_si128((reinterpret_cast<const __m128i*>(pQuantFwdTable)) + i);
+
+                        __m128i low = _mm_mullo_epi16(srcDst, quant);
+				        __m128i high = _mm_mulhi_epi16(srcDst, quant);
+                       
+                        srcDst = _mm_unpacklo_epi16(low, high);
+				        low = _mm_unpackhi_epi16(low, high);
+
+                        srcDst = _mm_add_epi32(srcDst, cXMM);
+                        low = _mm_add_epi32(low, cXMM);
+
+                        srcDst = _mm_srai_epi32(srcDst, 15);
+                        low = _mm_srai_epi32(low, 15);
+
+
+				        FW_SSE2::pack32STo16S(srcDst, low);
+
+                        _mm_storeu_si128((reinterpret_cast<__m128i*>(pSrcDst)) + i, srcDst);
+
+                    }
+                }
+                break;
+            default:
+                { 
+	                for (int i=0;i<64;i++) {
+		                pSrcDst[i] = (pSrcDst[i] * pQuantFwdTable[i]+16384)>>15;
+	                }
+                }
+        }
 
 	return fwStsNoErr;
 }
-
+          
 //-----------------------------------------------------------------------
 //This function reorder the zigzag order table to conventional order, and 
 //is used for fast decoding.

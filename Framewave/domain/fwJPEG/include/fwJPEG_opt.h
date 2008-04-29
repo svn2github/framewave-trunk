@@ -142,7 +142,7 @@ OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiQuantFwdRawTableInit_JPEG
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiQuantFwdTableInit_JPEG_8u16u)(const Fw8u* pQuantRawTable, 
 							Fw16u* pQuantFwdTable);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiQuantFwd8x8_JPEG_16s_C1I)(Fw16s* pSrcDst, const Fw16u* pQuantFwdTable);
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiQuantFwd8x8_JPEG_16s_C1I)(Fw16s* pSrcDst, const Fw16u* pQuantFwdTable);
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiQuantInvTableInit_JPEG_8u16u)(const Fw8u* pQuantRawTable, 
 							Fw16u* pQuantInvTable);
