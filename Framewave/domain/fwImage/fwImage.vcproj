@@ -21,7 +21,7 @@
 			Name="debug_shared|Win32"
 			OutputDirectory="..\..\build\bin\$(ConfigurationName)_32"
 			IntermediateDirectory="..\..\build\tmp\$(ProjectName)_$(ConfigurationName)_32"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			ExcludeBuckets="2;3;4;5;6;7;8;9;10;11;12;13;14;15;16"
 			>
 			<Tool
