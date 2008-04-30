@@ -6,7 +6,7 @@ Portions based on work by llcc and visionany (Framewave\sdk\external\dec_cavlc.c
 */
 
 #include "Constants.h"
-#if defined( FW_SOL )
+#if (defined( SOL64   ) || defined( _SOL64   ) || defined( SOL32   ) || defined( _SOL32   ) )
 #define extern
 #define const
 #pragma align 16(atanhi_ds, atanlo_ds, aT_ds, xmmDatad, atanhi_fs, atanlo_fs, aT_fs, xmmDataf)
