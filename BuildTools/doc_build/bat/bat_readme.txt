@@ -1,0 +1,1 @@
+fw_wf.bat and fw_nf.bat call do_two.bat to run xalan and process the source xml using the appropriate xsl to generate the frames and no-frames versions of the html. fw_gen.bat just calls fw_wf.bat and fw_nf.bat in sequence.

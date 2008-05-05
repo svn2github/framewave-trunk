@@ -1,0 +1,77 @@
+P,H1,H2,H3,H4,TABLE,UL,OL {margin-left: 10px; font-family: "Arial Unicode MT", sans-serif; font-size: 90%;}
+
+A:link	{text-decoration: none; color:	#FF6633;}
+A:visited {text-decoration: none; color: #FF6633;}
+A:active {text-decoration: none; color: #FF6633;}
+A:hover {text-decoration: none; color: #666666;}
+
+A.nav:link	{text-decoration: none; color:	#111111;}
+A.nav:visited {text-decoration: none; color: #111111;}
+A.nav:active {text-decoration: none; color: #111111;}
+A.nav:hover {text-decoration: none; color: #999999;}
+	
+H1.GenericHead1 {font-size: 200%; color: #FF3333; text-align: left;}
+H2.GenericHead2 {font-size: 160%; color: #FF6633;}
+H3.GenericHead3 {font-size: 140%;}
+H4.GenericHead4 {font-size: 120%;}
+
+H1.SectionHead {font-size: 200%; color: #FF3333; text-align: left;}
+H2.ChapterHead {font-size: 160%; color: #FF6633; text-align: left;}
+H3.FunctionHead {font-size: 140%; text-align: left; }
+H4.FunctionSubhead {font-size: 100%;}
+
+P.headfootlarge {margin-left: 20px; font-size: 120%; text-align: left; line-height: 16px;}
+
+P.figure {text-align: center;}
+P.caption {font-size: 14px; font-weight: bold; text-align: center;}
+	
+P.functionlist {}
+P.bodytext {margin-left: 20px;}
+P.bodyindent {padding-left: 30px;}
+
+P.changetext {font-size: 95%; margin-left: 2px; margin-top: 6px; margin-bottom: 6px; margin-right: 3px; line-height: 12px;}
+P.changeitem {font-size: 90%; margin-left: 12px; margin-top: 5px; margin-bottom: 5px; margin-right: 3px; line-height: 12px;}
+P.changesubitem {font-size: 90%; margin-left: 18px; margin-top: 3px; margin-bottom: 3px; margin-right: 3px; line-height: 12px;}
+
+P.toc3 {margin-left: 20px; margin-top: 3px; margin-bottom: 3px; margin-right: 3px; font-size: 90%;}
+P.toc2 {margin-left: 15px; margin-top: 3px; margin-bottom: 3px; margin-right: 3px; font-size: 90%; font-weight: bold;}
+P.toc1 {margin-left: 10px; margin-top: 3px; margin-bottom: 3px; margin-right: 3px; font-size: 100%; font-weight: bold;}
+
+UL.bodytext {margin-left: 50px; line-height: 16px;}
+OL.bodytext {margin-left: 50px; line-height: 16px;}
+
+.preElement {white-space:pre;}	
+PRE.desctext {margin-left: 20px; font-family: monospace;}
+
+TABLE.fwtable {margin-left: 20px; font-size: 80%;}
+TR.syntax_row {}
+TD.syntax_cell {}
+TR.val_row {}
+TD.val_cell {}
+
+TABLE.quick_ref {margin-left: 10px;}
+TD.qr_col_head {text-align: center; font-size: 100%; font-weight: bold; border-style: solid; border-width: thin;}
+TR.qr_row {font-size: 90%;}
+TD.qr_cell {text-align: center; font-size: 90%; border-style: solid; border-width: thin; }
+
+TABLE.title_page {width: 100%; margin-top: 20px; margin-bottom: 20px; font-size: 100%;}
+
+TABLE.fwchange {margin-left: 20px; font-size: 90%;}
+
+TABLE.head  {margin-left: 5px; font-weight: bold; font-size: 180%; text-align: left; margin-top: 10px;margin-bottom: 10px;}
+TABLE.foot  {margin-left: 5px; font-weight: bold; font-size: 90%; text-align: left; margin-top: 10px;margin-bottom: 10px;}
+
+.titlelarge {font-weight: bold; font-size: 120%; text-align: left; }
+.titletext {text-align: left; font-weight: bold; font-size: 80%; line-height: 12px;}
+
+.hr {
+	border-top-style: solid;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	border-top-color: #FF3333;
+}
+.redline {
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: #FF3333;					
