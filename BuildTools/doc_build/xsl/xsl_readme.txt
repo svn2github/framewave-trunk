@@ -4,4 +4,4 @@ fw_gen_htm_wf.xsl does the frames version of the html; fw_gen_htm_nf.xsl does th
 
 There is no DTD, and the tagset has evolved over time, so the node structure is flatter than it strictly should be. Some nodes that would logically have a parent/child relation are actually siblings. To make this less difficult to deal with, many node references are made explicitly. Approach any change to generated structures, such as the table of contents, with care -- make sure of the node relationships before making changes.
 
-fw_gen_pdf.xsl is a draft version of an xsl-fo to process xml directly into pdf using the Antenna House formatter. it isn't complete -- PDF processing is currently done with the Web Capture function of Acrobat 8 Pro.
+fw_gen_pdf.xsl is a draft version of an xsl-fo to process xml directly into pdf using an FO 1.1 compliant formatter. it isn't complete.
