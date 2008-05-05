@@ -201,11 +201,7 @@ typedef enum
     fwStsJPEG2KCodeBlockIsNotAttached  = -180 ,
     fwStsNotPosDefErr                  = -179 ,
 
-    fwStsEphemeralKeyErr               = -178 ,
     fwStsMessageErr                    = -177 ,
-    fwStsShareKeyErr                   = -176 ,
-    fwStsIvalidPublicKey               = -175 ,
-    fwStsIvalidPrivateKey              = -174 ,
     fwStsOutOfECErr                    = -173 ,
     fwStsECCInvalidFlagErr             = -172 ,
 
@@ -261,7 +257,6 @@ typedef enum
     fwStsPaddingErr                    = -123 ,
     fwStsCFBSizeErr                    = -122 ,
     fwStsPaddingSchemeErr              = -121 ,
-    fwStsInvalidCryptoKeyErr           = -120 ,
     fwStsLengthErr                     = -119 ,
     fwStsBadModulusErr                 = -118 ,
     fwStsLPCCalcErr                    = -117 ,
@@ -358,8 +353,6 @@ typedef enum
     fwStsThreshNegLevelErr             = -19  ,
     fwStsThresholdErr                  = -18  ,
     fwStsContextMatchErr               = -17  ,
-    fwStsFftFlagErr                    = -16  ,
-    fwStsFftOrderErr                   = -15  ,
     fwStsStepErr                       = -14  ,
     fwStsScaleRangeErr                 = -13  ,
     fwStsDataTypeErr                   = -12  ,
@@ -438,27 +431,6 @@ typedef enum
 } FwHintAlgorithm;
 
 
-// Crypto Rijndael encryption
-typedef enum 
-{
-    FwsRijndaelKey128  = 128, // 128-bit key
-    FwsRijndaelKey192  = 192, // 192-bit key
-    FwsRijndaelKey256  = 256  // 256-bit key
-} FwsRijndaelKeyLength;
-
-struct FwsRijndael128Spec;
-struct FwsRijndael256Spec;
-
-
-
-// fft division type
-enum 
-{
-    FW_FFT_DIV_FWD_BY_N = 1,
-    FW_FFT_DIV_INV_BY_N = 2,
-    FW_FFT_DIV_BY_SQRTN = 4,
-    FW_FFT_NODIV_BY_ANY = 8
-};
 
 // Round mode
 typedef enum 

@@ -65,8 +65,6 @@ fwStsMaskErr - The mask size is invalid.
 fwStsMaskSizeErr - The mask has an invalid value.
 fwStsMemAllocErr - The function failed to allocate memory.
 
-fwStsFftOrderErr - The specified order is out of bounds.
-fwStsFftFlagErr - The flag value is incorrect.
 fwStsContextMatchErr - The specification struture does not match the function or is invalid.
 
 fwStsCpuMismatch - The specified CPU type cannot be assigned.

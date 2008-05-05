@@ -5330,8 +5330,7 @@ FwStatus STDCALL fwiConvValid_32f_C3R     ( const Fw32f *pSrc1, int srcStep1, Fw
 
 <Chapter>
 <ChapterHeading>Linear Transformation Functions</ChapterHeading>
-<Paragraph>This<ChaptDesc> chapter describes functions for linear transform operations, including 
-Fast Fourier Transform (FFT), Discrete Fourier Transform (DFT), and Discrete Cosine Transform (DCT).</ChaptDesc></Paragraph>
+<Paragraph>This<ChaptDesc> chapter describes functions for Discrete Cosine Transform (DCT).</ChaptDesc></Paragraph>
 */
 
 /*#FunctionBlock - DCT8X8
