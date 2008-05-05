@@ -1,1 +1,1 @@
-Different css for the frames and no-frames versions of the html. The font definitions in the css and the definitions in Acrbat Pro must match in order for web capture to work correctly.
+Different css for the frames and no-frames versions of the html.
