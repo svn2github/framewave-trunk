@@ -96,13 +96,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiAdd128_JPEG_16s8u_C1R)(const Fw16s *pSrc, int
 	const Fw16s *ptSrc;
 	Fw8u *ptDst;
 
-	if(0 != roiSize.width%16)
-	{
-
-		Add128_JPEG<Fw16s,C1,Fw8u,C1> data((Fw16s)128);
-		return OPT_LEVEL::fe< Add128_JPEG<Fw16s,C1,Fw8u,C1> >(data, pSrc, srcStep, pDst, dstStep, roiSize);
-	}
-
 	switch( Dispatch::Type<DT_SSE2>() ) 
 	{
 		case DT_SSE3:
@@ -127,7 +120,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiAdd128_JPEG_16s8u_C1R)(const Fw16s *pSrc, int
 						}
 				}
 			}
-			else
+			else if(0 == roiSize.width%8)
 			{
 				__m128i mV128 = _mm_set1_epi16(128);
 				for(y=0;y<roiSize.height;y++)
@@ -146,6 +139,11 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiAdd128_JPEG_16s8u_C1R)(const Fw16s *pSrc, int
 						}
 				}
 			}
+            else
+            {
+		        Add128_JPEG<Fw16s,C1,Fw8u,C1> data((Fw16s)128);
+		        return OPT_LEVEL::fe< Add128_JPEG<Fw16s,C1,Fw8u,C1> >(data, pSrc, srcStep, pDst, dstStep, roiSize);
+            }
 
 			}
 			break;
