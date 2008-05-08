@@ -85,7 +85,7 @@ namespace OPT_LEVEL
 		Fw32f scale = pow((float)2.0,-scaleFactor);
 
 		Fw32f scale_vdiv = scale/(Fw32f)vdiv;
-		mVsub = _mm_set1_epi16(vsub);	
+		mVsub = _mm_set1_epi32(vsub);	
 		mVdiv = _mm_set1_ps(scale_vdiv);	
 	}
 
