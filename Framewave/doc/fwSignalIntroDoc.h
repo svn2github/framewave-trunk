@@ -43,6 +43,10 @@ valueLT - Specifies a value to set when a less-than comparison evaluates as true
 
 vdiv - Specifies the denominator.
 vsub - Specifies the subtrahend.
+lenFind - Length of the substring.
+pFind - Pointer to the substring.
+pIndex - Pointer to the index of the result.
+valFind - Value of the element to be found.
 
 */
 

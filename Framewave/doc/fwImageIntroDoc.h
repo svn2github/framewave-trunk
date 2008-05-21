@@ -48,6 +48,7 @@ bound[2][2] - Boundary rectangle vertex coordinates for a transformed source ROI
 coeffs[2][3] - Coefficients for Warp Affine transform.
 coeffs[2][4] - Coefficients for Warp Affine Bilinear transform.
 coeffs[3][3] - Coefficients for Warp Affine Perspective transform.  
+coeffs[3] - Transformation coefficient values.
 dstQuad[4][2] - Destination quadrangle vertex coordinates.
 srcQuad[4][2] - Source quadrangle vertex coordinates.
 quad[4][2] - Quadrangle vertex coordinates.
@@ -127,6 +128,7 @@ heightPixels - Height of an image (number of pixels in one column of image).
 widthPixels - Width of an image (number of pixels in one row of image).
 pStepBytes - Pointer to the step size, in bytes.
 ptr - Pointer to a buffer.
+pSum - Pointer to the sum of values.
 
 
 

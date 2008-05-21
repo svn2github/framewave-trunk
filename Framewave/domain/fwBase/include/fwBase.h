@@ -571,7 +571,7 @@ todo:publish
 void         STDCALL fwFree( void * ptr );
 
 /*#FunctionBlock - AlignPtr
-todo:approve
+todo:publish
 #Technologies - REF
 #Short - Align a buffer
 #Long - <Text>This function aligns the buffer pointed to by <ParameterName>ptr</ParameterName> to a specified alignment boundary.</Text> 
@@ -581,7 +581,7 @@ void *       STDCALL fwAlignPtr( void *ptr, int alignBytes);
 // Internal Functions
 
 /*#FunctionBlock - SetNumThreads_local
-todo:approve
+todo:publish
 #Technologies - REF
 #Short - SetNumThreads_local
 #Long - <Text>This function is reserved for FW internal use.</Text> 
@@ -590,7 +590,7 @@ todo:approve
 FwStatus    STDCALL fwSetNumThreads_local( unsigned int numThr );
 
 /*#FunctionBlock - Run
-todo:approve
+todo:publish
 #Technologies - REF
 #Short - Run
 #Long - <Text>This function is reserved for FW internal use.</Text> 
@@ -598,7 +598,7 @@ todo:approve
 void         STDCALL fwRun( WorkFn workFn, void* param );
 
 /*#FunctionBlock - Wait
-todo:approve
+todo:publish
 #Technologies - REF
 #Short - Wait
 #Long - <Text>This function is reserved for FW internal use.</Text> 

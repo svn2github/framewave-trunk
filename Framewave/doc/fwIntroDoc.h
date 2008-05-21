@@ -82,13 +82,14 @@ fwStsDivByZeroErr - The divisor is zero.
 fwStsH263VLCCodeErr - Illegal Huffman code encountered during VLC stream processing.
 fwStsOutOfRangeErr - An a rgument is out of range or a point is outside an image.
 fwStsResFloor - All result values are floored.
+fwStsLengthErr - Invalid string length.
 
 */
 
 /*#Documentation
 
-<VersionNumber>1.0.1</VersionNumber>
-<VersionDate>March, 2008</VersionDate>
+<VersionNumber>1.1.0</VersionNumber>
+<VersionDate>May, 2008</VersionDate>
 <FrameMaster></FrameMaster>
 <HeaderMaster></HeaderMaster>
 <NavBar></NavBar>
@@ -134,6 +135,153 @@ fwStsResFloor - All result values are floored.
 <ChangeDate>03/2008</ChangeDate>
 <ChangeVersion>1.0.1</ChangeVersion>
 <ChangeDescription>Removed Video Library.</ChangeDescription> 
+</ChangeEntry>
+<ChangeEntry>
+<ChangeDate>05/2008</ChangeDate>
+<ChangeVersion>1.1.0</ChangeVersion>
+<ChangeDescription>New functions:
+
+<ChangeItem>H.264 Deblock filter functions
+
+<ChangeSubItem>fwiFilterDeblockingChroma_HorEdge_H264_8u_C1IR</ChangeSubItem>
+<ChangeSubItem>fwiFilterDeblockingChroma_VerEdge_H264_8u_C1IR</ChangeSubItem>
+<ChangeSubItem>fwiFilterDeblockingLuma_HorEdge_H264_8u_C1IR</ChangeSubItem>
+<ChangeSubItem>fwiFilterDeblockingLuma_VerEdge_H264_8u_C1IR</ChangeSubItem>
+
+</ChangeItem>
+
+<ChangeItem>Color to gray scale conversion functions
+
+<ChangeSubItem>fwiColorToGray_8u_C3C1R</ChangeSubItem>   
+<ChangeSubItem>fwiColorToGray_16u_C3C1R</ChangeSubItem>  
+<ChangeSubItem>fwiColorToGray_16s_C3C1R</ChangeSubItem>  
+<ChangeSubItem>fwiColorToGray_32f_C3C1R</ChangeSubItem>  
+<ChangeSubItem>fwiColorToGray_8u_AC4C1R</ChangeSubItem>  
+<ChangeSubItem>fwiColorToGray_16u_AC4C1R</ChangeSubItem> 
+<ChangeSubItem>fwiColorToGray_16s_AC4C1R</ChangeSubItem> 
+<ChangeSubItem>fwiColorToGray_32f_AC4C1R</ChangeSubItem> 
+<ChangeSubItem>fwiRGBToGray_8u_C3C1R</ChangeSubItem>     
+<ChangeSubItem>fwiRGBToGray_16u_C3C1R</ChangeSubItem>    
+<ChangeSubItem>fwiRGBToGray_16s_C3C1R</ChangeSubItem>    
+<ChangeSubItem>fwiRGBToGray_32f_C3C1R</ChangeSubItem>    
+<ChangeSubItem>fwiRGBToGray_8u_AC4C1R</ChangeSubItem>    
+<ChangeSubItem>fwiRGBToGray_16u_AC4C1R</ChangeSubItem>   
+<ChangeSubItem>fwiRGBToGray_16s_AC4C1R</ChangeSubItem>   
+<ChangeSubItem>fwiRGBToGray_32f_AC4C1R</ChangeSubItem>  
+
+</ChangeItem>
+
+<ChangeItem>Color format conversion functions
+
+<ChangeSubItem>fwiYCbCr422ToYCbCr420_8u_C2P3R</ChangeSubItem>  
+<ChangeSubItem>fwiYCbCr422ToYCbCr420_8u_P3R</ChangeSubItem>  
+<ChangeSubItem>fwiYCbCr422_8u_P3C2R</ChangeSubItem>  
+
+</ChangeItem>
+
+<ChangeItem>64s support for Add and Sub functions
+
+<ChangeSubItem>fwsAdd_64s</ChangeSubItem>
+<ChangeSubItem>fwsSub_64s</ChangeSubItem> 
+
+</ChangeItem>
+
+<ChangeItem>Image statistics functions
+
+<ChangeSubItem>fwiSum_8u_C1R</ChangeSubItem>
+<ChangeSubItem>fwiSum_16s_C1R</ChangeSubItem>
+
+</ChangeItem>
+
+<ChangeItem>Min and Max functions
+
+<ChangeSubItem>fwsMin_8s</ChangeSubItem> 
+<ChangeSubItem>fwsMin_64u</ChangeSubItem>
+<ChangeSubItem>fwsMax_8s</ChangeSubItem> 
+<ChangeSubItem>fwsMax_64u</ChangeSubItem>
+
+</ChangeItem>
+	
+</ChangeDescription>
+
+<ChangeDescription>Optimized functions:
+
+<ChangeItem>JPEG color conversion functions
+
+<ChangeSubItem>fwiRGBToYCbCr422LS_MCU_8u16s_C3P3R</ChangeSubItem>
+<ChangeSubItem>fwiRGBToYCbCr444LS_MCU_8u16s_C3P3R</ChangeSubItem>
+<ChangeSubItem>fwiRGBToYCbCr411LS_MCU_8u16s_C3P3R</ChangeSubItem>
+<ChangeSubItem>fwiBGRToYCbCr411LS_MCU_8u16s_C3P3R</ChangeSubItem>	
+<ChangeSubItem>fwiBGRToYCbCr444LS_MCU_8u16s_C3P3R</ChangeSubItem>  
+
+</ChangeItem>
+
+<ChangeItem>Normal color conversion functions
+
+<ChangeSubItem>fwiRGBToHSV_8u_C3R</ChangeSubItem>  
+<ChangeSubItem>fwiYCbCr422_8u_P3C2R</ChangeSubItem>  
+<ChangeSubItem>fwiRGBToYCbCr420_8u_C3P3R</ChangeSubItem>
+
+</ChangeItem>
+
+<ChangeItem>JPEG inverse quantisation and level shift functions
+
+<ChangeSubItem>fwiQuantInv8x8_JPEG_16s_C1I</ChangeSubItem>
+<ChangeSubItem>fwiAdd128_JPEG_16s8u_C1R</ChangeSubItem>
+
+</ChangeItem>
+
+<ChangeItem>Resize functions
+
+<ChangeSubItem>fwiResizeSqrPixel_8u_C1R</ChangeSubItem>
+<ChangeSubItem>fwiResizeSqrPixel_8u_C3R</ChangeSubItem>
+<ChangeSubItem>fwiResizeSqrPixel_8u_C4R</ChangeSubItem>
+<ChangeSubItem>fwiResizeSqrPixel_8u_AC4R</ChangeSubItem> 
+
+</ChangeItem>
+
+<ChangeItem>Rotate functions
+
+<ChangeSubItem>fwiRotate_8u_C1R</ChangeSubItem>  
+<ChangeSubItem>fwiRotate_8u_C3R</ChangeSubItem>  
+<ChangeSubItem>fwiRotate_8u_C4R</ChangeSubItem>  
+<ChangeSubItem>fwiRotate_8u_AC4R</ChangeSubItem> 
+<ChangeSubItem>fwiRotate_16u_C1R</ChangeSubItem> 
+<ChangeSubItem>fwiRotate_16u_C3R</ChangeSubItem> 
+<ChangeSubItem>fwiRotate_16u_C4R</ChangeSubItem> 
+<ChangeSubItem>fwiRotate_16u_AC4R</ChangeSubItem>
+<ChangeSubItem>fwiRotate_32f_C1R</ChangeSubItem>
+<ChangeSubItem>fwiRotate_32f_C3R</ChangeSubItem>
+<ChangeSubItem>fwiRotate_32f_C4R</ChangeSubItem>
+<ChangeSubItem>fwiRotate_32f_AC4R</ChangeSubItem>
+
+</ChangeItem>
+
+</ChangeDescription>
+
+<ChangeDescription>Updated functions for bug fixes:
+
+<ChangeItem>fwiQuantInv_MPEG2_16s_C1I</ChangeItem>
+<ChangeItem>fwiQuantInvIntra_MPEG2_16s_C1I</ChangeItem>
+<ChangeItem>fwiRotate_8u_C4R</ChangeItem>
+<ChangeItem>fwiYCbCr411ToRGBLS_MCU_16s8u_P3C3R</ChangeItem>
+<ChangeItem>fwiFilterLowpass_8u_C1R</ChangeItem>
+<ChangeItem>fwiFilterGauss_8u_C1R</ChangeItem>
+<ChangeItem>fwiFilterLaplace_8u_C1R</ChangeItem>
+<ChangeItem>fwiFilterHipass_8u_C1R</ChangeItem>
+
+</ChangeDescription>
+
+<ChangeDescription>Other new features:
+
+<ChangeItem>Enabled threading support for Min, Max and MInMax statistical functions in fwSignal</ChangeItem>
+<ChangeItem>Implemented workaround for GCC 4.3 bug to improve performance for all arithmetic, logical, and statistic functions.
+<ChangeSubItem>Bug summary: Framewave uses integer load/store and GCC introduces additional memory moves if the actual data type is float or double.</ChangeSubItem>
+<ChangeSubItem>Older versions of GCC may perform more slowly due to the bug summarized above and GCC bug 34043, which is solved in GCC 4.3.</ChangeSubItem>
+</ChangeItem>
+
+</ChangeDescription>
+
 </ChangeEntry>
 
 </ChangeHistory>
@@ -294,6 +442,7 @@ file in the installation package for the most recent information.</Paragraph>
 <ParagraphIndent>H.264 Reconstruction</ParagraphIndent>
 <ParagraphIndent>H.264 Intra-predict</ParagraphIndent>
 <ParagraphIndent>H.264 Interpolation</ParagraphIndent>
+<ParagraphIndent>H.264 Deblock Filtering</ParagraphIndent>
 <ParagraphIndent>Motion Compensation</ParagraphIndent>
 <ParagraphIndent>Motion Estimation</ParagraphIndent>
 <ParagraphIndent>MPEG-1:Decoder, Inverse DCT, Inverse Quantization, Reconstruction of DCT block, Variable Length decoding</ParagraphIndent>

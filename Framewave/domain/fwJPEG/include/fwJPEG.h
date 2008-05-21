@@ -919,7 +919,7 @@ TODO:publish
 FwStatus STDCALL fwiEncodeHuffmanStateFree_JPEG_8u        ( FwiEncodeHuffmanState *pEncHuffState );
 
 /*#FunctionBlock - EncodeHuffman8X8
-TODO:edit
+TODO:publish
 #Technologies - REF
 #Short - Encode data block with bit accumulation
 #Long - <Text>This function performs Huffman baseline encoding of an 8X8 data block of quantized DCT coefficients using the DC and AC encoding tables.</Text>
