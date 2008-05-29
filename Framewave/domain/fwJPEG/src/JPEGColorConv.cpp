@@ -31,6 +31,7 @@ This software is subject to the Apache v2.0 License.
 #include "fwdev.h"
 #include "fwJPEG.h"
 #include "FwSharedCode_SSE2.h"
+#include "JPEGColorConv.h"
 
 using namespace OPT_LEVEL;
 
@@ -207,43 +208,40 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr_JPEG_8u_P3R)(const Fw8u *pSrcRGB[3
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr_JPEG_8u_C3P3R)(const Fw8u *pSrcRGB, int srcStep, 
 								 Fw8u *pDstYCbCr[3], int dstStep, FwiSize roiSize)
 {
-	if (pSrcRGB == 0 || pDstYCbCr == 0) return fwStsNullPtrErr;
-	if (pDstYCbCr[0] == 0 || pDstYCbCr[1] == 0 || pDstYCbCr[2] == 0 )
-		return fwStsNullPtrErr;
 
-	STEPCHECK(srcStep, dstStep);
-	ROISIZECHECK(roiSize);
+    RGBToYCBCR_C3P3  data;
+    if(roiSize.width>32)
+    {
+        return OPT_LEVEL::fec1S3D< RGBToYCBCR_C3P3 >( data, pSrcRGB, srcStep, pDstYCbCr[0], dstStep, pDstYCbCr[1], dstStep, pDstYCbCr[2], dstStep, roiSize ); 
+    }
+    else
+    {
+	    if (pSrcRGB == 0 || pDstYCbCr == 0) return fwStsNullPtrErr;
+	    if (pDstYCbCr[0] == 0 || pDstYCbCr[1] == 0 || pDstYCbCr[2] == 0 )
+		    return fwStsNullPtrErr;
 
-	//DEV code use shift 8 bit data for coeffcients
-	//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
-	//We use 77, 150, 29 as the modified coeff, and then shift the result
-	//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
-	//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
-	//The final answer is equal to nearest neighbor rounding
-	//SEE2 should use 16 bit data shift
-	unsigned short result, RVal, GVal, BVal;
-	int x, y;
-	int srcPos, dstPos;
+	    STEPCHECK(srcStep, dstStep);
+	    ROISIZECHECK(roiSize);
 
-	for (y=0;y<roiSize.height; y++) {
-		srcPos = y*srcStep;
-		dstPos = y*dstStep;
-		for (x=0;x<roiSize.width;x++) {
-			RVal=pSrcRGB[srcPos++]; 
-			GVal=pSrcRGB[srcPos++];
-			BVal=pSrcRGB[srcPos++];
-			
-			//add 0.5 for nearest neighbor rounding
-			result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-			pDstYCbCr [0][dstPos] = (Fw8u)(result>>8);
-			result = -43 * RVal - 85 * GVal	+ 128 * BVal + 128;
-			pDstYCbCr [1][dstPos] = (Fw8u)((result>>8)+128);
-			result = 128 * RVal - 107 * GVal - 21 * BVal + 128;
-			pDstYCbCr [2][dstPos++] = (Fw8u)((result>>8)+128);
-		}
-	}
 
-	return fwStsNoErr;
+        switch( Dispatch::Type<DT_SSE2>() )
+        {
+        case DT_SSE3:
+        case DT_SSE2:
+                if(roiSize.width ==32 && roiSize.height == 32)
+                {
+                    data.SSE_32(pSrcRGB,srcStep,pDstYCbCr[0],pDstYCbCr[1],pDstYCbCr[2], dstStep);
+                }
+                else
+                    data.REF_CODE(pSrcRGB,srcStep,pDstYCbCr,dstStep,roiSize);
+            break;
+        default:
+            {
+                    data.REF_CODE(pSrcRGB,srcStep,pDstYCbCr,dstStep,roiSize);
+            }
+        }
+	    return fwStsNoErr;
+    }
 }
 
 //-----------------------------------------------------------------------
@@ -999,4 +997,4 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCCKToCMYK_JPEG_8u_P4C4R)(const Fw8u *pSrcYCC
 #endif //BUILD_NUM_AT_LEAST
 
 // Please do NOT remove the above line for CPP files that need to be multipass compiled
-// OREFR 
+// OREFR OSSE2

@@ -90,7 +90,7 @@ FwStatus STDCALL fwiBGRToY_JPEG_8u_C3C1R              ( const Fw8u *pSrcBGR, int
 
 /*#FunctionBlock - RGBToYCbCr_JPEG
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2, MT 
 #Short - Convert RGB to YCbCr (JPEG)
 #Long - <Text>These functions step through an ROI in a source buffer, convert the source data from the RGB color model to the YCbCr color space, and write the converted data to a destination buffer.</Text>
 <Text>The following formulas are used to convert red, green, and blue values to luminance and chrominance values.</Text>
