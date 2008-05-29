@@ -300,7 +300,7 @@ SYS_INLINE STATIC void Threshold_Val_lt(TD * d,const TD *level, const TD *value)
 template< class TS, class TD > 
 SYS_INLINE STATIC void Threshold_Val_gt(const TS * s,TD * d,const TS *level, const TS *value)
 {
-	d[0] = (s[0] > level[0]) ? value[1] : s[0]; 
+	d[0] = (s[0] > level[0]) ? value[0] : s[0]; 
 	d[1] = (s[1] > level[1]) ? value[1] : s[1]; 
 	d[2] = (s[2] > level[2]) ? value[2] : s[2]; 
 }

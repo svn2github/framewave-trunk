@@ -74,7 +74,7 @@ public:
         threshold = 50; fwCmpOp = fwCmpGreater;
         RunTest( "1 6 11 16 21 234 230 235", "1 6 11 16 4 49 34 35", threshold, fwCmpOp );
         threshold = 127; fwCmpOp = fwCmpLess;
-        RunTest( "0 26 89 50 100 10 127 100", "0 127 111 62 126 13 127 100", threshold, fwCmpOp  );
+        RunTest( "0 26 89 50 100 10 127 100", "0 127 111 63 127 13 127 100", threshold, fwCmpOp  );
     }
 };
 
@@ -178,7 +178,7 @@ public:
         threshold = 50; fwCmpOp = fwCmpGreater;
         RunTest( "1 6 11 16 21 234 230 235", "1 6 11 16 4 49 34 35", threshold, fwCmpOp );
         threshold = 127; fwCmpOp = fwCmpLess;
-        RunTest( "0 26 89 50 100 10 127 100", "0 127 111 62 126 13 127 100", threshold, fwCmpOp  );
+        RunTest( "0 26 89 50 100 10 127 100", "0 127 111 63 127 13 127 100", threshold, fwCmpOp  );
     }
 };
 
