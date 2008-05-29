@@ -8,6 +8,8 @@ This software is subject to the Apache v2.0 License.
 
 #include "fwBase.h"
 
+typedef struct LUTSpec FwiLUTSpec;
+
 //
 // Enumerations
 //
@@ -6991,6 +6993,26 @@ TODO:publish
 */
 FwStatus STDCALL fwiGetBilinearTransform  ( FwiRect srcRoi, const double quad[4][2],double coeffs[2][4]);
 
+/*#Documentation
+
+</Chapter>
+
+/*#Documentation
+<Chapter>
+<ChapterHeading>3D Look-up functions</ChapterHeading>
+<Paragraph>This<ChaptDesc> chapter describes functions for 3D look-up with trilinear interpolation.</ChaptDesc></Paragraph>
+*/
+
+/*#FunctionBlock - LUT
+todo:edit
+#Technologies - REF, SSE2
+#Short - 
+#Long - 
+#ReturnValues
+*/
+FwStatus STDCALL fwiLookUp3DSpecInitAlloc(const Fw16u cubeDimensions[3], const Fw16u cubeMax[3], FwiLUTSpec** ppLUTSpec);
+FwStatus STDCALL fwiLookUp3D_16u_C3R(const Fw16u *pSrc, int srcStep, Fw16u *pDst, int dstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec);
+FwStatus STDCALL fwiLookUp3D_16u_C3IR(Fw16u *pSrcDst, int srcDstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec);
 /*#Documentation
 
 </Chapter>
