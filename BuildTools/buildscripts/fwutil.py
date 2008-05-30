@@ -95,11 +95,11 @@ def turnOnZi( oEnv ):
 
 def fixLinuxSharedLib( target = None, source = None, env = None ):
     if target:
-        for t in target: os.rename(t.path, t.path+'.1.1.0')
+        for t in target: os.rename(t.path, t.path+'.1.2.0')
 
 def fixMacSharedLib( target = None, source = None, env = None ):
     if target:
-        for t in target: os.rename(t.path, replace(t.path,'.dylib','-1.1.dylib'))
+        for t in target: os.rename(t.path, replace(t.path,'.dylib','-1.2.dylib'))
 
 def AddObjsFromLibs( oEnv, LIBS, LIBPATH ):
     # If no libs exist, nothing needs ot be added
