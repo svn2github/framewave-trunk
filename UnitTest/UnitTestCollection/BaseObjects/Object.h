@@ -881,6 +881,7 @@ protected:
 
     U32 alignment; // user requested alignment (in bytes)
 	size_t count; // the size of the buffer in number of elements, as requested by the user
+	size_t bufflen;
 	size_t bytes; // the size of the buffer in bytes, as requested by the user
 	char *ptr0; // this is the address we obtain from malloc call
 	char *ptr1; // this is the 16 bytes aligned address
@@ -924,6 +925,11 @@ private:
         {
             input = ToStringList( init ); 
 		    count = count_ ? count_ : input.size();
+			if(0 != input.size())
+				bufflen = input.size();
+			else
+				bufflen = count;
+
         }
         EXPECT( count > 0, "The buffer cannot be zero size!" );
 		
@@ -1002,6 +1008,11 @@ public:
 	size_t Count() const 
     { 
         return count;
+    }
+
+	size_t BuffLen() const 
+    { 
+        return bufflen;
     }
 
 	T & operator[]( int i ) 
@@ -1652,7 +1663,7 @@ protected:
 	    const TD *pDst = dst.Ptr();
 	    const TD *pDstExp = expected.Ptr();
 
-		for( i=0; i < dst.Count(); ++i )
+		for( i=0; i < expected.BuffLen(); ++i )
 		{
             if( !MemOps<TD>::Compare( dst[i], pDstExp[i], errorMargin ) )
 			{
