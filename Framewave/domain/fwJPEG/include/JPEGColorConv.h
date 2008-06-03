@@ -219,6 +219,92 @@ public:
 
 };
 
+
+class RGBToY_JPEG_8u_C3C1 : public fe2<Fw8u,C3,Fw8u,C1>
+{
+public:
+    FE_SSE2_REF
+    S16 coey[3];
+    XMM128 mCoeffy[3];
+    RGBToY_JPEG_8u_C3C1()
+    {
+       //Y = 77*R + 150*G + 29*B
+       coey[0] = 77, coey[1] = 150, coey[2] = 29;
+    }
+    IV SSE2_Init()
+    {
+        mCoeffy[0].i = _mm_set1_epi16(coey[0]);
+        mCoeffy[1].i = _mm_set1_epi16(coey[1]);
+        mCoeffy[2].i = _mm_set1_epi16(coey[2]);
+    }
+
+    IV SSE2( RegFile & r ) const									// SSE2 Pixel function
+    {
+        XMM128  regG,regB;
+        r.dst[0].i = r.src1[0].i;
+		regG.i = r.src1[1].i;
+		regB.i = r.src1[2].i;
+        CBL_SSE2::Convert_3C_to_3P_8bit(r.dst[0].i,regG.i,regB.i);
+        MulY_RGB(r.dst[0].i,regG.i,regB.i,mCoeffy);
+
+    }  
+
+    IV REFR( const Fw8u *s, Fw8u *d1) const
+    {
+        d1[0] = FW_REF::Limits<Fw8u>::Sat((s[0] * coey[0] + s[1] * coey[1] + s[2] * coey[2]+ 128)>>8);
+    }
+
+   IV SSE_32(const Fw8u *src,int srcstep,Fw8u *pDstY,int dststep)
+    {
+        RegFile r;
+        SSE2_Init();
+
+		for(int h=0;h<32;h++)
+        {
+            r.src1[0].i= _mm_loadu_si128((__m128i*)src);
+            r.src1[1].i= _mm_loadu_si128((__m128i*)(src+16));
+            r.src1[2].i= _mm_loadu_si128((__m128i*)(src+32));
+            SSE2(r);
+            _mm_storeu_si128((__m128i*)pDstY,r.dst[0].i);
+
+            r.src1[0].i= _mm_loadu_si128((__m128i*)(src+48));
+            r.src1[1].i= _mm_loadu_si128((__m128i*)(src+64));
+            r.src1[2].i= _mm_loadu_si128((__m128i*)(src+80));
+            SSE2(r);
+            _mm_storeu_si128((__m128i*)(pDstY+16),r.dst[0].i);
+            
+            src+=srcstep;
+            pDstY +=dststep;
+        }
+
+    }
+
+   IV REF_CODE(const Fw8u *pSrcRGB,int srcStep,Fw8u *pDstY, int dstStep, FwiSize roiSize)
+   {
+				//DEV code use shift 8 bit data for coeffcients
+				//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
+				//We use 77, 150, 29 as the modified coeff, and then shift the result
+				//The final answer is equal to nearest neighbor rounding
+				//SEE2 should use 16 bit data shift
+				unsigned short result;
+				int x, y;
+				int srcPos, dstPos;
+
+				for (y=0;y<roiSize.height; y++) {
+					srcPos = y*srcStep;
+					dstPos = y*dstStep;
+					for (x=0;x<roiSize.width;x++) {
+						//add 0.5 for nearest neighbor rounding
+						result = 77 * pSrcRGB[srcPos] + 150 * pSrcRGB[srcPos+1]
+							+ 29 * pSrcRGB[srcPos+2] + 128;
+						srcPos += 3;
+						pDstY [dstPos++] = (Fw8u)(result>>8);
+					}
+				}
+   }
+
+};
+
 }
 
 #endif // __JPEGCOLORCONV_H__

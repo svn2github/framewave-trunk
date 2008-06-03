@@ -644,6 +644,10 @@
 				RelativePath=".\include\fwJPEG_opt.h"
 				>
 			</File>
+			<File
+				RelativePath=".\include\JPEGColorConv.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
