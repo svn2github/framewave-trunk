@@ -22,7 +22,7 @@ public:
     {
         RunTest( "1 2 5 6 MAX 0", "3 7 148 MAX MAX 1", 0 );
 		//incorrect rounding, should use round-to-even
-		RunTest( "1 2 5 6 MAX 0", "1 4  74 202 MAX 0", 1 );
+		RunTest( "1 2 5 6 MAX 0", "1 4  74 202 MAX 1", 1 );
     }
 };
 
@@ -37,7 +37,7 @@ public:
     {
         RunTest( "1 2 5 6 MAX 0", "3 7 148 MAX MAX 1", 0 );
 		//incorrect rounding, should use round-to-even
-		RunTest( "1 2 5 6 MAX 0", "1 4  74 202 MAX 0", 1 );
+		RunTest( "1 2 5 6 MAX 0", "1 4  74 202 MAX 1", 1 );
     }
 };
 
@@ -53,7 +53,7 @@ public:
         RunTest( "1 2 10 11 MAX 0", "3 7 22026   MAX MAX 1", 0 );
 		RunTest( "-1 -2 -3 -4 -5 MIN", "24 9 3 1 0 0", -6 );
 		//incorrect rounding, should use round-to-even
-		RunTest( "1 2 10 11 MAX 0", "1 4 11013 29937 MAX 0", 1 );
+		RunTest( "1 2 10 11 MAX 0", "1 4 11013 29937 MAX 1", 1 );
     }
 };
 
@@ -69,7 +69,7 @@ public:
         RunTest( "1 2 10 11 MAX 0", "3 7 22026   MAX MAX 1", 0 );
 		RunTest( "-1 -2 -3 -4 -5 MIN", "24 9 3 1 0 0", -6 );
 		//incorrect rounding, should use round-to-even
-		RunTest( "1 2 10 11 MAX 0", "1 4 11013 29937 MAX 0", 1 );
+		RunTest( "1 2 10 11 MAX 0", "1 4 11013 29937 MAX 1", 1 );
     }
 };
 
@@ -116,7 +116,7 @@ public:
     {
         RunTest( "1 2 5 6 MAX 0", "3 7 148 MAX MAX 1", 0 );
 		//incorrect rounding, should use round-to-even
-		RunTest( "1 2 5 6 MAX 0", "1 4  74 202 MAX 0", 1 );
+		RunTest( "1 2 5 6 MAX 0", "1 4  74 202 MAX 1", 1 );
     }
 };
 
@@ -131,7 +131,7 @@ public:
     {
         RunTest( "1 2 5 6 MAX 0", "3 7 148 MAX MAX 1", 0 );
 		//incorrect rounding, should use round-to-even
-		RunTest( "1 2 5 6 MAX 0", "1 4  74 202 MAX 0", 1 );
+		RunTest( "1 2 5 6 MAX 0", "1 4  74 202 MAX 1", 1 );
     }
 };
 
@@ -147,7 +147,7 @@ public:
         RunTest( "1 2 10 11 MAX 0", "3 7 22026   MAX MAX 1", 0 );
 		RunTest( "-1 -2 -3 -4 -5 MIN", "24 9 3 1 0 0", -6 );
 		//incorrect rounding, should use round-to-even
-		RunTest( "1 2 10 11 MAX 0", "1 4 11013 29937 MAX 0", 1 );
+		RunTest( "1 2 10 11 MAX 0", "1 4 11013 29937 MAX 1", 1 );
     }
 };
 
@@ -163,7 +163,7 @@ public:
         RunTest( "1 2 10 11 MAX 0", "3 7 22026   MAX MAX 1", 0 );
 		RunTest( "-1 -2 -3 -4 -5 MIN", "24 9 3 1 0 0", -6 );
 		//incorrect rounding, should use round-to-even
-		RunTest( "1 2 10 11 MAX 0", "1 4 11013 29937 MAX 0", 1 );
+		RunTest( "1 2 10 11 MAX 0", "1 4 11013 29937 MAX 1", 1 );
     }
 };
 

@@ -20,7 +20,7 @@ public:
 
     virtual void RunAll()
     {
-        RunTest( "2 3", "7 128 3 MAX", "0 2 0 2" );
+        RunTest( "2 3 2 3", "7 128 3 MAX", "0 1 0 3" );
      }
 };
 
@@ -33,7 +33,7 @@ public:
 
     virtual void RunAll()
     {
-        RunTest( "1 3 MAX 2 3 MAX", "5 128 23 MAX 0 MAX", "0 2 23 2 0 MAX " );
+        RunTest( "1 3 MAX 2 3 MAX", "5 128 23 MAX 0 MAX", "0 1 23 2 0 MAX " );
     }
 };
 
@@ -46,7 +46,7 @@ public:
 
     virtual void RunAll()
     {
-        RunTest( "1 3 MAX 111 2 3 MAX 111", "5 128 MAX 222 MAX 128 1 222", "0 2 MAX 0 2 1 1 0 ");
+        RunTest( "1 3 MAX 111 2 3 MAX 111", "5 128 MAX 222 MAX 128 1 222", "0 1 MAX 0 2 1 1 0 ");
     }
 };
 
@@ -59,7 +59,7 @@ public:
 
     virtual void RunAll()
     {
-        RunTest( "1 3 MAX 11 2 3 MAX 11", "5 128 MAX 22 MAX 128 1 22", "0 2 MAX 0 2 2 1 0" );
+        RunTest( "1 3 MAX 11 2 3 MAX 11", "5 128 MAX 22 MAX 128 1 22", "0 1 MAX 0 2 1 1 0" );
         
     }
 };
@@ -73,7 +73,7 @@ public:
 
     virtual void RunAll()
     {
-        RunTest( "2 3", "MAX 54900 MAX MAX MAX MIN", "2 3 2 3 2 0" );
+        RunTest( "2 3", "MAX 54900 MAX MAX MAX MIN", "2 2 2 3 2 0" );
        
     }
 };
@@ -87,7 +87,7 @@ public:
 
     virtual void RunAll()
     {
-        RunTest( "1 3 MAX MAX 3 5", "5 54900 2 MAX MIN 1", "0 3 2 65535 0 0" );
+        RunTest( "1 3 MAX MAX 3 5", "5 54900 2 MAX MIN 1", "0 2 2 65535 0 0" );
 
     }
 };
@@ -101,7 +101,7 @@ public:
 
     virtual void RunAll()
     {  
-        RunTest( "1 3 MAX 11 2 MAX 5 22", "5 54900 2 11 4 MIN 1 22", "0 3 2 0 0 MIN 0 0" );
+        RunTest( "1 3 MAX 11 2 MAX 5 22", "5 54900 2 11 4 MIN 1 22", "0 2 2 0 0 MIN 0 0" );
     }
 };
 
@@ -114,7 +114,7 @@ public:
 
     virtual void RunAll()
     {   
-        RunTest( "1 3 MAX 111 2 MIN 5 222", "5 54900 MAX 111 4 MAX 1 MAX", "0 3 65535 0 0 0 0 222 " );
+        RunTest( "1 3 MAX 111 2 MIN 5 222", "5 54900 MAX 111 4 MAX 1 MAX", "0 2 65535 0 0 0 0 222 " );
     }
 };
 
@@ -129,7 +129,7 @@ public:
 
     virtual void RunAll()
     {
-        RunTest( "2 3", "7 128 3 MAX", "0 2 0 3" );
+        RunTest( "2 3", "7 128 3 MAX", "0 1 0 3" );
     }
 };
 
@@ -142,7 +142,7 @@ public:
 
     virtual void RunAll()
     {
-        RunTest( "1 3 MAX 2 3 MAX", "5 128 MAX MAX 0 1", "0 2 MAX 2 0 1" );
+        RunTest( "1 3 MAX 2 3 MAX", "5 128 MAX MAX 0 1", "0 1 MAX 2 0 1" );
              
     }
 };
@@ -157,7 +157,7 @@ public:
 
     virtual void RunAll()
     {
-        RunTest( "1 3 MAX 111 2 3 MAX 111", "5 128 MAX 222 MAX 0 1 222", "0 2 MAX 222 2 0 1 222 ");
+        RunTest( "1 3 MAX 111 2 3 MAX 111", "5 128 MAX 222 MAX 0 1 222", "0 1 MAX 222 2 0 1 222 ");
     }
 };
 
@@ -170,7 +170,7 @@ public:
 
     virtual void RunAll()
     {
-        RunTest( "1 3 MAX 111 2 3 MAX 111", "5 128 MAX 222 MAX 0 1 222", "0 2 MAX 96 2 0 1 96");
+        RunTest( "1 3 MAX 111 2 3 MAX 111", "5 128 MAX 222 MAX 0 1 222", "0 1 MAX 96 2 0 1 96");
         
     }
 };
@@ -184,7 +184,7 @@ public:
 
     virtual void RunAll()
     {
-        RunTest( "2 3 MAX", "7 54900 3 MAX MIN MAX", "0 3 3 2 0 65535 " );
+        RunTest( "2 3 MAX", "7 54900 3 MAX MIN MAX", "0 2 3 2 0 65535 " );
     }
 };
 
@@ -197,7 +197,7 @@ public:
 
     virtual void RunAll()
     {
-        RunTest( "1 54900 MAX 1 3 5", "5 3 MAX MAX 0 1", "0 3 65535 1 0 0" );
+        RunTest( "1 54900 MAX 1 3 5", "5 3 MAX MAX 0 1", "0 2 65535 1 0 0" );
     }
 };
 
@@ -211,7 +211,7 @@ public:
 
     virtual void RunAll()
     {
-        RunTest( "1 54900 MAX 111 2 3 MIN 111", "5 3 MAX 222 MAX 0 1 222", "0 3 65535 222 2 0 0 222 ");
+        RunTest( "1 54900 MAX 111 2 3 MIN 111", "5 3 MAX 222 MAX 0 1 222", "0 2 65535 222 2 0 0 222 ");
     }
 };
 
@@ -224,7 +224,7 @@ public:
 
     virtual void RunAll()
     {
-        RunTest( "1 54900 MAX 111 2 3 MIN 111", "5 3 MAX 222 MAX 0 1 222", "0 3 65535 0 2 0 0 0");
+        RunTest( "1 54900 MAX 111 2 3 MIN 111", "5 3 MAX 222 MAX 0 1 222", "0 2 65535 0 2 0 0 0");
     }
 };
 
