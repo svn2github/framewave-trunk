@@ -299,26 +299,36 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCrToRGB_JPEG_8u_P3C3R)(const Fw8u *pSrcYCb
 	STEPCHECK(srcStep, dstStep);
 	ROISIZECHECK(roiSize);
 
-	//Reference code only.
-	//SSE2 code need to shift 16 bit 
-	int x, y;
-	int srcPos, dstPos;
+   YCbCrToRGB_JPEG_8u_P3C3R  data;
+    if(roiSize.width>32)
+    {
+        return OPT_LEVEL::fe< YCbCrToRGB_JPEG_8u_P3C3R >( data, pSrcYCbCr[0], srcStep, pSrcYCbCr[1], srcStep, pSrcYCbCr[2], srcStep, pDstRGB, dstStep, roiSize ); 
+    }
+    else
+    {
+        switch( Dispatch::Type<DT_SSE2>() )
+        {
+        case DT_SSE3:
+        case DT_SSE2:
+                if(roiSize.width ==32 && roiSize.height == 32)
+                {
+                    data.SSE_32(pSrcYCbCr[0],pSrcYCbCr[1],pSrcYCbCr[2],srcStep,pDstRGB,dstStep);
+                }
+                else if(roiSize.width ==16 && roiSize.height == 16)
+                {
+                    data.SSE_16(pSrcYCbCr[0],pSrcYCbCr[1],pSrcYCbCr[2],srcStep,pDstRGB,dstStep);
+                }
+                else
+                    data.REF_CODE_OPT(pSrcYCbCr,srcStep,pDstRGB,dstStep,roiSize);
+            break;
+        default:
+            {
+                    data.REF_CODE_OPT(pSrcYCbCr,srcStep,pDstRGB,dstStep,roiSize);
+            }
+        }
+	    return fwStsNoErr;
+    }
 
-	for (y=0;y<roiSize.height; y++) {
-		srcPos = y*srcStep;
-		dstPos = y*dstStep;
-		for (x=0;x<roiSize.width;x++) {
-			//add 0.5 for nearest neighbor rounding
-			pDstRGB[dstPos++] = FW_REF::Limits<U8>::Sat(pSrcYCbCr[0][srcPos] + 
-				1.402*pSrcYCbCr[2][srcPos] - 178.956);
-			pDstRGB[dstPos++] = FW_REF::Limits<U8>::Sat(pSrcYCbCr[0][srcPos] - 
-				0.34414*pSrcYCbCr[1][srcPos] - 0.71414*pSrcYCbCr[2][srcPos]+ 135.95984);
-			pDstRGB[dstPos++] = FW_REF::Limits<U8>::Sat(pSrcYCbCr[0][srcPos] + 
-				1.772*pSrcYCbCr[1][srcPos++] - 226.316);
-		}
-	}
-
-	return fwStsNoErr;
 }
 
 //-----------------------------------------------------------------------
