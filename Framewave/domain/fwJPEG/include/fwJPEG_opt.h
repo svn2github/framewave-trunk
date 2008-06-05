@@ -178,7 +178,7 @@ OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSampleDownH2V1_JPEG_8u_C1
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSampleDownH2V2_JPEG_8u_C1R)(const Fw8u* pSrc, int srcStep,
 							FwiSize srcSize, Fw8u* pDst, int dstStep, FwiSize dstSize);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSampleDownRowH2V1_Box_JPEG_8u_C1)(const Fw8u* pSrc,int srcWidth, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSampleDownRowH2V1_Box_JPEG_8u_C1)(const Fw8u* pSrc,int srcWidth, 
 							Fw8u* pDst);
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSampleDownRowH2V2_Box_JPEG_8u_C1)(const Fw8u* pSrc1, const Fw8u* pSrc2,
@@ -190,10 +190,10 @@ OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSampleUpH2V1_JPEG_8u_C1R)
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSampleUpH2V2_JPEG_8u_C1R)(const Fw8u* pSrc, int srcStep,
 							FwiSize srcSize, Fw8u* pDst, int dstStep, FwiSize dstSize);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSampleUpRowH2V1_Triangle_JPEG_8u_C1)(const Fw8u* pSrc, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSampleUpRowH2V1_Triangle_JPEG_8u_C1)(const Fw8u* pSrc, 
 							int srcWidth, Fw8u* pDst);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSampleUpRowH2V2_Triangle_JPEG_8u_C1)(const Fw8u* pSrc1, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSampleUpRowH2V2_Triangle_JPEG_8u_C1)(const Fw8u* pSrc1, 
 							const Fw8u* pSrc2, int srcWidth, Fw8u* pDst);
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiSampleDown444LS_MCU_8u16s_C3P3R)(const Fw8u* pSrc, 

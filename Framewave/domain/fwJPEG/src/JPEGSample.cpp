@@ -34,6 +34,40 @@ using namespace OPT_LEVEL;
 #define ROISIZECHECK(X) if (X.height <=0 || X.width <=0) return fwStsSizeErr
 #endif
 
+namespace OPT_LEVEL
+{
+    //-----------------------------------------------------------------------
+    // This function creates interleaved pixel-order image from 4XX MCU. 
+    // Data was converted from Fw16s to Fw8u by level shift.
+    //-----------------------------------------------------------------------
+    void fwiSampleUp4xxLS_MCU_16s8u_P3C3R_8x8Block (
+	    const Fw16s *pSrcMCU[3], Fw8u *pDst, int dstStep, int blocknum,
+	    int xshift, int yshift)
+    {
+	    //Reference code only.
+	    //SSE2 code need to shift 16 bit 
+	    int x, y;
+	    int ysrcPos, csrcPos, coffset, cPos, doffset, dstPos;
+
+	    ysrcPos = blocknum<<6;//*64
+	    coffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
+	    doffset = ((blocknum&0x1)<<3) * 3 + ((blocknum&0x2)<<2)* dstStep;
+
+	    for (y=0; y<8; y++) {
+		    csrcPos = (y>>yshift)*8 + coffset;
+		    dstPos = y*dstStep + doffset;
+		    for (x=0;x<8;x++) {
+			    //add 128 for each element of YCCK
+			    cPos = csrcPos + (x>>xshift);
+			    pDst[dstPos++] = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos++] + 128);
+			    pDst[dstPos++] = FW_REF::Limits<U8>::Sat(pSrcMCU[1][cPos] + 128);
+			    pDst[dstPos++] = FW_REF::Limits<U8>::Sat(pSrcMCU[2][cPos] + 128);
+		    }
+	    }
+
+	    return;
+    }
+};//end of namespace
 //-----------------------------------------------------------------------
 // This function handles the common case of downsampling pixel valiues of a 
 // a single component for 2:1 horizontal and 1:1 vertical without smoothing.
@@ -390,13 +424,13 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiSampleUpRowH2V1_Triangle_JPEG_8u_C1)(const Fw
 	//3/4 *nearer pixel, 1/4 *further pixel
 	*pDstPtr++ = (Fw8u)((result*3+ *pSrcPtr +2)>>2);
 
-	for (x=0;x<srcWidth-2;x++) {
-		result = (*pSrcPtr++)*3;
-		//first rounding is 1
-		*(pDstPtr++) = (Fw8u)((result+pSrcPtr[-2]+1)>>2);
-		//second rounding is 2
-		*(pDstPtr++) = (Fw8u)((result+*pSrcPtr+2)>>2);
-	}
+        for (x=0;x<srcWidth-2;x++) {
+        result = (*pSrcPtr++)*3;
+        //first rounding is 1
+        *(pDstPtr++) = (Fw8u)((result+pSrcPtr[-2]+1)>>2);
+        //second rounding is 2
+        *(pDstPtr++) = (Fw8u)((result+*pSrcPtr+2)>>2);
+    }
 
 	//Special case for last element
 	result = *pSrcPtr;
@@ -539,37 +573,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiSampleDown411LS_MCU_8u16s_C3P3R)(const Fw8u *
 
 	return fwStsNoErr;
 }
-//-----------------------------------------------------------------------
-// This function creates interleaved pixel-order image from 4XX MCU. 
-// Data was converted from Fw16s to Fw8u by level shift.
-//-----------------------------------------------------------------------
-void fwiSampleUp4xxLS_MCU_16s8u_P3C3R_8x8Block (
-	const Fw16s *pSrcMCU[3], Fw8u *pDst, int dstStep, int blocknum,
-	int xshift, int yshift)
-{
-	//Reference code only.
-	//SSE2 code need to shift 16 bit 
-	int x, y;
-	int ysrcPos, csrcPos, coffset, cPos, doffset, dstPos;
 
-	ysrcPos = blocknum<<6;//*64
-	coffset = ((blocknum&0x1)<<2) + ((blocknum&0x2)<<4);
-	doffset = ((blocknum&0x1)<<3) * 3 + ((blocknum&0x2)<<2)* dstStep;
-
-	for (y=0; y<8; y++) {
-		csrcPos = (y>>yshift)*8 + coffset;
-		dstPos = y*dstStep + doffset;
-		for (x=0;x<8;x++) {
-			//add 128 for each element of YCCK
-			cPos = csrcPos + (x>>xshift);
-			pDst[dstPos++] = FW_REF::Limits<U8>::Sat(pSrcMCU[0][ysrcPos++] + 128);
-			pDst[dstPos++] = FW_REF::Limits<U8>::Sat(pSrcMCU[1][cPos] + 128);
-			pDst[dstPos++] = FW_REF::Limits<U8>::Sat(pSrcMCU[2][cPos] + 128);
-		}
-	}
-
-	return;
-}
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiSampleUp444LS_MCU_16s8u_P3C3R)(const Fw16s *pSrcMCU[3],
 							Fw8u *pDst, int dstStep)
@@ -635,4 +639,4 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiSampleUp411LS_MCU_16s8u_P3C3R)(const Fw16s *p
 #endif //BUILD_NUM_AT_LEAST
 
 // Please do NOT remove the above line for CPP files that need to be multipass compiled
-// OREFR 
+// OREFR OSSE2 
