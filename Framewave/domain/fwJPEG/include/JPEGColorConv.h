@@ -310,8 +310,8 @@ SYS_INLINE static __m128i Compute_R(const __m128i &Y,const __m128i &Cr)//,const 
     
 		// R = Y + 1.402*Cr - 179.456
         __m128i d1;//,d2;
-        static const __m128i val180 = CONST_SET1_16I(180);
-        static const __m128i mCoeff = CONST_SET1_16I(90);
+        const __m128i val180 = CONST_SET1_16I(180);
+        const __m128i mCoeff = CONST_SET1_16I(90);
         //Mul_16s(Cr,mCoeff,d1,d2);
 		d1 = _mm_mullo_epi16(Cr,mCoeff);
 
@@ -328,9 +328,9 @@ SYS_INLINE static __m128i Compute_G(__m128i &Y,__m128i &Cb,__m128i &Cr)//,const 
 {
            // G = Y - (0.34414*Cb + 0.71414*Cr) + 135.45984
         __m128i d1,d2;
-        static const __m128i val135 = CONST_SET1_16I(135);
-        static const __m128i mCoeffCb = CONST_SET1_16I(22);
-        static const __m128i mCoeffCr = CONST_SET1_16I(46);
+        const __m128i val135 = CONST_SET1_16I(135);
+        const __m128i mCoeffCb = CONST_SET1_16I(22);
+        const __m128i mCoeffCr = CONST_SET1_16I(46);
 		d1 = _mm_mullo_epi16(Cb,mCoeffCb);
 		d2 = _mm_mullo_epi16(Cr,mCoeffCr);
         
@@ -347,8 +347,8 @@ SYS_INLINE static __m128i Compute_B(__m128i &Y,__m128i &Cb)//,const __m128i &mCo
 {
                  // B = Y + 1.772*Cb - 226.816
         __m128i d1;
-        static const __m128i val227 = CONST_SET1_16I(227);
-        static const __m128i mCoeffCb = CONST_SET1_16I(113);
+        const __m128i val227 = CONST_SET1_16I(227);
+        const __m128i mCoeffCb = CONST_SET1_16I(113);
 		d1 = _mm_mullo_epi16(Cb,mCoeffCb);
         
         d1 = _mm_srli_epi16(d1,6);
@@ -531,6 +531,207 @@ public:
 
 };
 
+
+/////////
+
+class YCCKToCMYK_JPEG_8u_P4C4R : public fe4S1D<Fw8u,C1,Fw8u,C1,Fw8u,C1,Fw8u,C1,Fw8u,C4>
+{
+public:
+    FE_SSE2_REF
+    S16 coe[4];
+	XMM128 mMask;
+ //   XMM128 mCoeff[4];
+    YCCKToCMYK_JPEG_8u_P4C4R()
+    {
+       // R = Y + 1.402*Cr - 179.456
+       // G = Y - 0.34414*Cb - 0.71414*Cr + 135.45984
+       // B = Y + 1.772*Cb - 226.816
+		//90  Coeffs * 2^6
+		//22
+		//46
+		//113
+
+       coe[0] = 90, coe[1] = 22, coe[2] = 46,coe[3]=113;
+    }
+
+    IV SSE2_Init()
+    {
+		mMask.i = _mm_set1_epi32(0xFFFFFFFF);
+    }
+
+    IV SSE2( RegFile & r ) const									// SSE2 Pixel function
+    {
+        XMM128 Y,Cb,Cr,Y1,Cb1,Cr1;
+
+        Y.i = r.src1[0].i;
+        Cb.i = r.src2[0].i;
+        Cr.i = r.src3[0].i;
+
+        CBL_SSE2::Unpack8UTo16U(Y.i,Y1.i);
+        CBL_SSE2::Unpack8UTo16U(Cb.i,Cb1.i);
+        CBL_SSE2::Unpack8UTo16U(Cr.i,Cr1.i);
+
+
+       // R = Y + 1.402*Cr - 179.456
+        __m128i rV = Compute_R(Y.i,Cr.i);
+        __m128i rV1 = Compute_R(Y1.i,Cr1.i);
+        r.dst[0].i = _mm_packus_epi16(rV,rV1);  
+
+       // G = Y - 0.34414*Cb - 0.71414*Cr + 135.45984
+        __m128i gV = Compute_G(Y.i,Cb.i,Cr.i);
+        __m128i gV1 = Compute_G(Y1.i,Cb1.i,Cr1.i);
+        r.dst[1].i = _mm_packus_epi16(gV,gV1);  
+       
+        // B = Y + 1.772*Cb - 226.816
+        __m128i bV = Compute_B(Y.i,Cb.i);
+        __m128i bV1= Compute_B(Y1.i,Cb1.i);
+        r.dst[2].i = _mm_packus_epi16(bV,bV1);  
+		
+		r.dst[0].i = _mm_andnot_si128(r.dst[0].i,mMask.i);
+		r.dst[1].i = _mm_andnot_si128(r.dst[1].i,mMask.i);
+		r.dst[2].i = _mm_andnot_si128(r.dst[2].i,mMask.i);
+		r.dst[3].i = r.src4[0].i;
+
+        CBL_SSE2::Convert_4P_to_4C_8bit(r.dst[0].i,r.dst[1].i,r.dst[2].i,r.dst[3].i);
+
+
+    }  
+
+   IV SSE_32(const Fw8u *Y,const Fw8u *Cb,const Fw8u *Cr,const Fw8u *Al,int srcstep,Fw8u *pDst,int dststep)
+    {
+        RegFile r;
+		SSE2_Init();
+		for(int h=0;h<32;h++)
+        {
+            r.src1[0].i= _mm_loadu_si128((__m128i*)Y);
+            r.src2[0].i= _mm_loadu_si128((__m128i*)Cb);
+            r.src3[0].i= _mm_loadu_si128((__m128i*)Cr);
+            r.src4[0].i= _mm_loadu_si128((__m128i*)Al);
+            SSE2(r);
+            _mm_storeu_si128((__m128i*)pDst,r.dst[0].i);
+            _mm_storeu_si128((__m128i*)(pDst + 16),r.dst[1].i);
+            _mm_storeu_si128((__m128i*)(pDst + 32),r.dst[2].i);
+            _mm_storeu_si128((__m128i*)(pDst + 48),r.dst[3].i);
+
+            r.src1[0].i= _mm_loadu_si128((__m128i*)(Y+16));
+            r.src2[0].i= _mm_loadu_si128((__m128i*)(Cb+16));
+            r.src3[0].i= _mm_loadu_si128((__m128i*)(Cr+16));
+            r.src4[0].i= _mm_loadu_si128((__m128i*) (Al+16));
+            SSE2(r);
+            _mm_storeu_si128((__m128i*)(pDst + 64 ),r.dst[0].i);
+            _mm_storeu_si128((__m128i*)(pDst + 80),r.dst[1].i);
+            _mm_storeu_si128((__m128i*)(pDst + 96),r.dst[2].i);
+            _mm_storeu_si128((__m128i*)(pDst + 112),r.dst[3].i);
+            
+            Y+=srcstep;
+            Cb+=srcstep;
+            Cr+=srcstep;
+			Al+=srcstep;
+            pDst +=dststep;
+        }
+
+    }
+
+   IV SSE_16(const Fw8u *Y,const Fw8u *Cb,const Fw8u *Cr,const Fw8u *Al,int srcstep,Fw8u *pDst,int dststep)
+    {
+        RegFile r;
+		SSE2_Init();
+		for(int h=0;h<16;h++)
+        {
+            r.src1[0].i= _mm_loadu_si128((__m128i*)Y);
+            r.src2[0].i= _mm_loadu_si128((__m128i*)Cb);
+            r.src3[0].i= _mm_loadu_si128((__m128i*)Cr);
+            r.src4[0].i= _mm_loadu_si128((__m128i*)Al);
+            SSE2(r);
+            _mm_storeu_si128((__m128i*)pDst,r.dst[0].i);
+            _mm_storeu_si128((__m128i*)(pDst + 16),r.dst[1].i);
+            _mm_storeu_si128((__m128i*)(pDst + 32),r.dst[2].i);
+            _mm_storeu_si128((__m128i*)(pDst + 48),r.dst[3].i);
+
+            Y+=srcstep;
+            Cb+=srcstep;
+            Cr+=srcstep;
+			Al+=srcstep;
+            pDst +=dststep;
+        }
+
+    }
+
+    IV REFR( const Fw8u *Y,const Fw8u *Cb,const Fw8u *Cr, const Fw8u *A,Fw8u *d) const
+    {
+
+        d[0] = ~(CBL_LIBRARY::Limits<Fw8u>::Sat(Y[0] + ((int)((int)coe[0] * Cr[0])>>6) - (int)180));
+        d[1] = ~(CBL_LIBRARY::Limits<Fw8u>::Sat(Y[0] - ((int)(((int)coe[1]* Cb[0]) + ((int)coe[2]* Cr[0]))>>6) + (int)135));
+        d[2] = ~(CBL_LIBRARY::Limits<Fw8u>::Sat(Y[0] + ((int)((int)coe[3] * Cb[0])>>6) - (int)227));
+		d[3] = *A;
+    }
+ 
+    IV REF_CODE(const Fw8u *pSrcYCCK[4], int srcStep,Fw8u *pDstCMYK, int dstStep, FwiSize roiSize)
+    {
+			//Reference code only.
+			//SSE2 code need to shift 16 bit 
+			int x, y;
+			unsigned char RVal, GVal, BVal;
+			int srcPos, dstPos;
+
+			for (y=0;y<roiSize.height; y++) {
+				srcPos = y*srcStep;
+				dstPos = y*dstStep;
+				for (x=0;x<roiSize.width;x++) {
+					//add 0.5 for nearest neighbor rounding
+					RVal = FW_REF::Limits<U8>::Sat(pSrcYCCK[0][srcPos] + 
+						1.402*pSrcYCCK[2][srcPos] - 178.956);
+					GVal = FW_REF::Limits<U8>::Sat(pSrcYCCK[0][srcPos] - 
+						0.34414*pSrcYCCK[1][srcPos] - 0.71414*pSrcYCCK[2][srcPos]+ 135.95984);
+					BVal = FW_REF::Limits<U8>::Sat(pSrcYCCK[0][srcPos] + 
+						1.772*pSrcYCCK[1][srcPos] - 226.316);
+					pDstCMYK[dstPos++] = ~RVal; //C=255-R
+					pDstCMYK[dstPos++] = ~GVal; //M=255-G
+					pDstCMYK[dstPos++] = ~BVal; //Y=255-B
+					pDstCMYK[dstPos++] = pSrcYCCK[3][srcPos++];
+				}
+			}
+
+    }
+
+    IV REF_CODE_OPT(const Fw8u *pSrcYCCK[4], int srcStep,Fw8u *pDstCMYK, int dstStep, FwiSize roiSize)
+    {
+       // R = Y + 1.402*Cr - 179.456
+       // G = Y - 0.34414*Cb - 0.71414*Cr + 135.45984
+       // B = Y + 1.772*Cb - 226.816
+
+       // 1.402	* 256	358.912	    359
+       // 0.34414 * 256	88.09984	88
+       // 0.71414 * 256	182.81984	183
+       // 1.772	*   256	453.632	    454
+
+
+        int x, y;
+        int srcPos, dstPos;
+
+        for (y=0;y<roiSize.height; y++) 
+        {
+            srcPos = y*srcStep;
+            dstPos = y*dstStep;
+            for (x=0;x<roiSize.width;x++) 
+                {
+                    //add 0.5 for nearest neighbor rounding
+                    pDstCMYK[dstPos++] = ~(FW_REF::Limits<U8>::Sat(pSrcYCCK[0][srcPos] + 
+                    ((int)((int)coe[0]*pSrcYCCK[2][srcPos])>>6) - (int)180));
+                    pDstCMYK[dstPos++] = ~(FW_REF::Limits<U8>::Sat(pSrcYCCK[0][srcPos] - 
+                    ((int)((int)coe[1]*pSrcYCCK[1][srcPos] + (int)coe[2]*pSrcYCCK[2][srcPos])>>6) + 135));
+                    pDstCMYK[dstPos++] = ~(FW_REF::Limits<U8>::Sat(pSrcYCCK[0][srcPos] + 
+                    ((int)((int)coe[3]*pSrcYCCK[1][srcPos])>>6) - 227));
+					pDstCMYK[dstPos++] = pSrcYCCK[3][srcPos++];
+                }
+        }
+
+    }
+
+
+};
+
+/////////
 }
 
 #endif // __JPEGCOLORCONV_H__
