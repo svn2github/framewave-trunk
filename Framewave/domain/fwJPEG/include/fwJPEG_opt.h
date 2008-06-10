@@ -58,7 +58,7 @@ OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiYCbCrToBGR555_JPEG_8u16u_
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiCMYKToYCCK_JPEG_8u_P4R)(const Fw8u* pSrcCMYK[4], int srcStep, 
 							Fw8u* pDstYCCK[4], int dstStep, FwiSize roiSize);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiCMYKToYCCK_JPEG_8u_C4P4R)(const Fw8u* pSrcCMYK, int srcStep, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiCMYKToYCCK_JPEG_8u_C4P4R)(const Fw8u* pSrcCMYK, int srcStep, 
 							Fw8u* pDstYCCK[4], int dstStep, FwiSize roiSize);
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiYCCKToCMYK_JPEG_8u_P4R)(const Fw8u* pSrcYCCK[4], int srcStep, 

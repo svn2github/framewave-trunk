@@ -875,47 +875,42 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK_JPEG_8u_P4R)(const Fw8u *pSrcCMYK[
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK_JPEG_8u_C4P4R)(const Fw8u *pSrcCMYK, int srcStep, 
 									 Fw8u *pDstYCCK[4], int dstStep, FwiSize roiSize)
 {
-	if (pSrcCMYK == 0 || pDstYCCK == 0) return fwStsNullPtrErr;
-	if (pDstYCCK[0] == 0 || pDstYCCK[1] == 0 || pDstYCCK[2] == 0 ||
-		pDstYCCK[3] == 0)
-		return fwStsNullPtrErr;
 
-	STEPCHECK(srcStep, dstStep);
-	ROISIZECHECK(roiSize);
+    CMYKToYCCK_JPEG_8u_C4P4R  data;
+    if(roiSize.width>32)
+    {
+        return OPT_LEVEL::fec1S4D< CMYKToYCCK_JPEG_8u_C4P4R >( data, pSrcCMYK, srcStep, pDstYCCK[0], dstStep, pDstYCCK[1], dstStep, pDstYCCK[2], dstStep, pDstYCCK[3], dstStep,roiSize ); 
+    }
+    else
+    {
+	  	if (pSrcCMYK == 0 || pDstYCCK == 0) return fwStsNullPtrErr;
+		if (pDstYCCK[0] == 0 || pDstYCCK[1] == 0 || pDstYCCK[2] == 0 ||
+			pDstYCCK[3] == 0)
+			return fwStsNullPtrErr;
 
-	//DEV code use shift 8 bit data for coeffcients
-	//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
-	//We use 77, 150, 29 as the modified coeff, and then shift the result
-	//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
-	//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
-	//The final answer is equal to nearest neighbor rounding
-	//SEE2 should use 16 bit data shift
-	//int result;
-	unsigned short result;
-	unsigned char RVal, GVal, BVal;
-	int x, y;
-	int srcPos, dstPos;
+		STEPCHECK(srcStep, dstStep);
+		ROISIZECHECK(roiSize);
 
-	for (y=0;y<roiSize.height; y++) {
-		srcPos = y*srcStep;
-		dstPos = y*dstStep;
-		for (x=0;x<roiSize.width;x++) {
-			RVal = ~(pSrcCMYK[srcPos++]);//R=255-C
-			GVal = ~(pSrcCMYK[srcPos++]);//G=255-M
-			BVal = ~(pSrcCMYK[srcPos++]);//B=255-Y
 
-			//add 0.5 for nearest neighbor rounding
-			result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-			pDstYCCK [0][dstPos] = (Fw8u)(result>>8);
-			result = -43 * RVal - 85 * GVal + 128 * BVal + 128;
-			pDstYCCK [1][dstPos] = (Fw8u)((result>>8)+128);
-			result = 128 * RVal - 107 * GVal - 21 * BVal + 128;
-			pDstYCCK [2][dstPos] = (Fw8u)((result>>8)+128);
-			pDstYCCK [3][dstPos++] = pSrcCMYK[srcPos++];
-		}
-	}
+        switch( Dispatch::Type<DT_SSE2>() )
+        {
+        case DT_SSE3:
+        case DT_SSE2:
+                if(roiSize.width ==32 && roiSize.height == 32)
+                {
+                    data.SSE_32(pSrcCMYK,srcStep,pDstYCCK[0],pDstYCCK[1],pDstYCCK[2],pDstYCCK[3], dstStep);
+                }
+                else
+                    data.REF_CODE(pSrcCMYK,srcStep,pDstYCCK,dstStep,roiSize);
+            break;
+        default:
+            {
+                    data.REF_CODE(pSrcCMYK,srcStep,pDstYCCK,dstStep,roiSize);
+            }
+        }
+	    return fwStsNoErr;
+    }
 
-	return fwStsNoErr;
 }
 
 //-----------------------------------------------------------------------
@@ -1004,41 +999,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCCKToCMYK_JPEG_8u_P4C4R)(const Fw8u *pSrcYCC
 	    return fwStsNoErr;
     }
 
-
-/*	if (pSrcYCCK == 0 || pDstCMYK == 0) return fwStsNullPtrErr;
-	if (pSrcYCCK[0] == 0 || pSrcYCCK[1] == 0 || pSrcYCCK[2] == 0 || 
-		pSrcYCCK[3] == 0)
-		return fwStsNullPtrErr;
-
-	STEPCHECK(srcStep, dstStep);
-	ROISIZECHECK(roiSize);
-
-	//Reference code only.
-	//SSE2 code need to shift 16 bit 
-	int x, y;
-	unsigned char RVal, GVal, BVal;
-	int srcPos, dstPos;
-
-	for (y=0;y<roiSize.height; y++) {
-		srcPos = y*srcStep;
-		dstPos = y*dstStep;
-		for (x=0;x<roiSize.width;x++) {
-			//add 0.5 for nearest neighbor rounding
-			RVal = FW_REF::Limits<U8>::Sat(pSrcYCCK[0][srcPos] + 
-				1.402*pSrcYCCK[2][srcPos] - 178.956);
-			GVal = FW_REF::Limits<U8>::Sat(pSrcYCCK[0][srcPos] - 
-				0.34414*pSrcYCCK[1][srcPos] - 0.71414*pSrcYCCK[2][srcPos]+ 135.95984);
-			BVal = FW_REF::Limits<U8>::Sat(pSrcYCCK[0][srcPos] + 
-				1.772*pSrcYCCK[1][srcPos] - 226.316);
-			pDstCMYK[dstPos++] = ~RVal; //C=255-R
-			pDstCMYK[dstPos++] = ~GVal; //M=255-G
-			pDstCMYK[dstPos++] = ~BVal; //Y=255-B
-			pDstCMYK[dstPos++] = pSrcYCCK[3][srcPos++];
-		}
-	}
-	*/
-
-	//return fwStsNoErr;
 }
 
 #endif //BUILD_NUM_AT_LEAST
