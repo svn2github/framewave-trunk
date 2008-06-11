@@ -432,7 +432,12 @@ FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s_C1R)(cons
 {
 	if(FW_REF::PtrNotOK(pSrc, pDst))return fwStsNullPtrErr;
 
-    SYS_FORCEALIGN_16 Fw16s eightxEightDst[64];
+// Solaris Alignment
+#if (defined( SOL64   ) || defined( _SOL64   ) || defined( SOL32   ) || defined( _SOL32   ) )
+	#pragma align 16(eightxEightDst)
+#endif
+    SYS_FORCEALIGN_16 static Fw16s eightxEightDst[64];
+
     Fw16s* pEightxEightDst = eightxEightDst;
     bool isAligned;
     __m128i reg;
@@ -491,7 +496,12 @@ FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s8u_C1R)(co
 {
 	if(FW_REF::PtrNotOK(pSrc, pDst))return fwStsNullPtrErr;
 
-    SYS_FORCEALIGN_16 Fw16s eightxEightDst[64];
+// Solaris Alignment
+#if (defined( SOL64   ) || defined( _SOL64   ) || defined( SOL32   ) || defined( _SOL32   ) )
+	#pragma align 16(eightxEightDst)
+#endif
+    SYS_FORCEALIGN_16 static Fw16s eightxEightDst[64];
+
     Fw16s* pEightxEightDst = eightxEightDst;
     XMM128 reg1, reg2;
 
@@ -554,8 +564,13 @@ FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s_P2C2R)(co
 {
 	if(FW_REF::PtrNotOK(pSrcU, pSrcV, pDstUV))return fwStsNullPtrErr;
 
-    SYS_FORCEALIGN_16 Fw16s eightxEightDstU[64];
-    SYS_FORCEALIGN_16 Fw16s eightxEightDstV[64];
+// Solaris Alignment
+#if (defined( SOL64   ) || defined( _SOL64   ) || defined( SOL32   ) || defined( _SOL32   ) )
+	#pragma align 16(eightxEightDstU, eightxEightDstV)
+#endif
+    SYS_FORCEALIGN_16 static Fw16s eightxEightDstU[64];
+    SYS_FORCEALIGN_16 static Fw16s eightxEightDstV[64];
+
     Fw16s* pEightxEightDstU = eightxEightDstU;
     Fw16s* pEightxEightDstV = eightxEightDstV;
     __m128i reg1, reg2, reg3;
@@ -638,8 +653,13 @@ FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_AANTransposed_16s8u_P2C2R)(
 {
 	if(FW_REF::PtrNotOK(pSrcU, pSrcV, pDstUV))return fwStsNullPtrErr;
 
-    SYS_FORCEALIGN_16 Fw16s eightxEightDstU[64];
-    SYS_FORCEALIGN_16 Fw16s eightxEightDstV[64];
+// Solaris Alignment
+#if (defined( SOL64   ) || defined( _SOL64   ) || defined( SOL32   ) || defined( _SOL32   ) )
+	#pragma align 16(eightxEightDstU, eightxEightDstV)
+#endif
+    SYS_FORCEALIGN_16 static Fw16s eightxEightDstU[64];
+    SYS_FORCEALIGN_16 static Fw16s eightxEightDstV[64];
+
     Fw16s* pEightxEightDstU = eightxEightDstU;
     Fw16s* pEightxEightDstV = eightxEightDstV;
     __m128i reg1, reg2, reg3;
