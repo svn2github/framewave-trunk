@@ -126,6 +126,7 @@ using namespace OPT_LEVEL;
 extern const Fw8u above_right_avail_4x4[16];
 
 extern SYS_FORCEALIGN_16  const Fw8u ClampTbl[CLIP_RANGE];
+extern SYS_FORCEALIGN_16 const Fw16s c_b0[8];
 
 #define         FWVC_CBP_1ST_CHROMA_DC_BITPOS 17
 #define         FWVC_CBP_1ST_CHROMA_AC_BITPOS 19
@@ -148,10 +149,16 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiReconstructChromaInterMB_H264_16s8u_P2R)(
 				const Fw32u cbp4x4, 
 				const Fw32s ChromaQP)
 {
-	SYS_FORCEALIGN_16  Fw16s ChromaDCU[4];
-	SYS_FORCEALIGN_16  Fw16s ChromaDCV[4];
-	SYS_FORCEALIGN_16  Fw16s ACUplane[16];
-	SYS_FORCEALIGN_16  Fw16s ACVplane[16];
+
+// Solaris Alignment
+#if (defined( SOL64   ) || defined( _SOL64   ) || defined( SOL32   ) || defined( _SOL32   ) )
+	#pragma align 16(ChromaDCU, ChromaDCV, ACUplane, ACVplane)
+#endif
+	SYS_FORCEALIGN_16  static Fw16s ChromaDCU[4];
+	SYS_FORCEALIGN_16  static Fw16s ChromaDCV[4];
+	SYS_FORCEALIGN_16  static Fw16s ACUplane[16];
+	SYS_FORCEALIGN_16  static Fw16s ACVplane[16];
+
 	int i;
 	Fw8u  *pSrcDstU = pSrcDstUPlane;
 	Fw8u  *pSrcDstV = pSrcDstVPlane;
@@ -971,9 +978,10 @@ FwStatus static PredictIntraChroma4x8_H264_8u_C1IR(Fw8u* pSrcDst,
 		tmp = a + c*(0-3) + 16;
 		if( Dispatch_Type==DT_SSE2)
 		{
-			SYS_FORCEALIGN_16 const Fw16s c_b[8] = {0, 1, 2, 3, 4, 5, 6, 7};
+			// For Solaris Alignment issue, this one is moved to Constants.cpp
+			// SYS_FORCEALIGN_16 const Fw16s c_b0[8] = {0, 1, 2, 3, 4, 5, 6, 7};
 			{
-				xmm6  = _mm_load_si128( (__m128i*)(c_b) );	//[0, 7]
+				xmm6  = _mm_load_si128( (__m128i*)(c_b0) );	//[0, 7]
 				xmm5  = _mm_set1_epi16((Fw16s)b);	// b
 				xmm4  = _mm_set1_epi16((Fw16s)c);	// c
 				xmm3  = _mm_set1_epi16((Fw16s)tmp);	// tmp
