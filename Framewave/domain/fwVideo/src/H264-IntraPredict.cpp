@@ -115,6 +115,8 @@ using namespace OPT_LEVEL;
 
 #if BUILD_NUM_AT_LEAST(101)
 
+extern SYS_FORCEALIGN_16 const Fw16s c_b[16];
+extern SYS_FORCEALIGN_16 const Fw16s c_b0[8];
 // Based on ITU-H.264 doc 8.3.1
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiPredictIntra_4x4_H264_8u_C1IR)(Fw8u* pSrcDst, 
 											Fw32s srcdstStep,
@@ -529,7 +531,8 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiPredictIntra_16x16_H264_8u_C1IR)(Fw8u* pSrcDs
 
 		if( Dispatch_Type==DT_SSE2)
 		{
-			SYS_FORCEALIGN_16 const Fw16s c_b[16] = {-7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8};
+			// For solaris alignment issue, it's been moved to constants.cpp
+			// SYS_FORCEALIGN_16 const Fw16s c_b[16] = {-7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8};
 			{
 				xmm6  = _mm_load_si128( (__m128i*)(c_b) );	//[-7, 0]
 				xmm7  = _mm_load_si128( (__m128i*)(c_b+8) );
@@ -722,9 +725,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiPredictIntraChroma8x8_H264_8u_C1IR)(Fw8u* pSr
 		tmp = a -3*b -3*c + 16;
 		if( Dispatch_Type==DT_SSE2)
 		{
-			SYS_FORCEALIGN_16 const Fw16s c_b[8] = {0, 1, 2, 3, 4, 5, 6, 7};
+			// For Solaris Alignment issue, this constant is been moved to Constants.cpp
+			// SYS_FORCEALIGN_16 const Fw16s c_b0[8] = {0, 1, 2, 3, 4, 5, 6, 7};
 			{
-				xmm6  = _mm_load_si128( (__m128i*)(c_b) );	//[0, 7]
+				xmm6  = _mm_load_si128( (__m128i*)(c_b0) );	//[0, 7]
 				xmm5  = _mm_set1_epi16((Fw16s)b);	// b
 				xmm4  = _mm_set1_epi16((Fw16s)c);	// c
 				xmm3  = _mm_set1_epi16((Fw16s)tmp);	// tmp
