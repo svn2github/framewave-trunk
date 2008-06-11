@@ -7,8 +7,11 @@ This software is subject to the Apache v2.0 License.
 #include "fwImage.h"
 #include "FwSharedCode_SSE2.h"
 
-#if BUILD_NUM_AT_LEAST( 100 )
 #include <vector>
+
+extern SYS_FORCEALIGN_16 const unsigned int alphaMasks_16[4][4];
+extern SYS_FORCEALIGN_16 const unsigned int alphaMasks_32[4][4];
+
 
 namespace OPT_LEVEL
 {
@@ -1051,8 +1054,8 @@ namespace SharpenFilter
                 // process the aligned data (in 16 bytes chunks)
                 /////////////////////////////////////////////////////////////////
     
-                static const unsigned int alphaMasks[] = { 0x000000FF, 0xFF000000, 0x00FF0000, 0x0000FF00 };
-                alphaMask.i = _mm_set1_epi32( alphaMasks[offset & 0x3] );
+                static const unsigned int AlphaMasks[] = { 0x000000FF, 0xFF000000, 0x00FF0000, 0x0000FF00 };
+                alphaMask.i = _mm_set1_epi32( AlphaMasks[offset & 0x3] );
                 for( ; pd<pEndMiddle; ps+=16, pd+=16 )				// Process 1 horizontal line (16 wide)
                 {	
                     XMM128 t0,t1, m0,m1, b0,b1;
@@ -2006,15 +2009,17 @@ namespace SharpenFilter
                     }
                 }
     
-                SYS_FORCEALIGN_16 static const unsigned int alphaMasks[4][4] = {
+// For Solaris Alignment Issue, it's Removed from here and put it into Constants.cpp
+/*
+				SYS_FORCEALIGN_16 static const unsigned int alphaMasks_16[4][4] = {
                     { 0x0000FFFF, 0x00000000, 0x0000FFFF, 0x00000000 },
                     { 0x00000000, 0xFFFF0000, 0x00000000, 0xFFFF0000 },
                     { 0x00000000, 0x0000FFFF, 0x00000000, 0x0000FFFF },
                     { 0xFFFF0000, 0x00000000, 0xFFFF0000, 0x00000000 },
                 };
-
+*/
                 XMM128 alphaMask;
-                alphaMask.i = _mm_load_si128( (__m128i*)(alphaMasks[offset & 0x3]) );
+                alphaMask.i = _mm_load_si128( (__m128i*)(alphaMasks_16[offset & 0x3]) );
 
                 for( ; pd<pEndMiddle; ps+=16, pd+=16 )				// Process 1 horizontal line (8 words wide)
                 {	
@@ -2914,15 +2919,17 @@ namespace SharpenFilter
                     }
                 }
     
-                SYS_FORCEALIGN_16 static const unsigned int alphaMasks[4][4] = {
+// For Solaris Alignment Issue, it's Removed from here and put it into Constants.cpp
+/*
+				SYS_FORCEALIGN_16 static const unsigned int alphaMasks_32[4][4] = {
                     { 0xFFFFFFFF, 0x00000000, 0x00000000, 0x00000000 },
                     { 0x00000000, 0x00000000, 0x00000000, 0xFFFFFFFF },
                     { 0x00000000, 0x00000000, 0xFFFFFFFF, 0x00000000 },
                     { 0x00000000, 0xFFFFFFFF, 0x00000000, 0x00000000 }
-                };
-    
+				};
+*/  
                 XMM128 alphaMask;
-                alphaMask.i = _mm_load_si128( (__m128i*)(alphaMasks[offset & 0x3]) );
+                alphaMask.i = _mm_load_si128( (__m128i*)(alphaMasks_32[offset & 0x3]) );
                 for( ; pd<pEndMiddle; ps+=16, pd+=16 )				// Process 1 horizontal line (8 words wide)
                 {	
                     //	0 1 2 3 4 5 6 7 8 9 A B C D E F | 0 1		//src
@@ -3172,8 +3179,6 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_32f_AC4R)( const Fw32f * pSrc, 
 {
     return SharpenFilter::iFilterSharpen<AC4,Fw32f,Fw32f>( pSrc, srcStep, pDst, dstStep, dstRoiSize );
 }
-
-#endif
 
 
 // Please do NOT remove the above line for CPP files that need to be multipass compiled
