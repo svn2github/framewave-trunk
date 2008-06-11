@@ -655,7 +655,13 @@ int IdctQuant_LS_SSE2(const Fw16s *pSrc, Fw8u *pDst, int dstStp, const Fw16u *pQ
 	__m128i rxmm0,  rxmm1,  rxmm2,  rxmm3,  rxmm4,  rxmm5,  rxmm6,  rxmm7;
 	__m128i rxmm8,  rxmm9,  rxmm10, rxmm11, rxmm12, rxmm13, rxmm14, rxmm15;
 	__m128i quantCoef;
-    SYS_FORCEALIGN_16 Fw16s pedx[64];
+    
+// Solaris Alignment
+#if (defined( SOL64   ) || defined( _SOL64   ) || defined( SOL32   ) || defined( _SOL32   ) )
+#pragma align 16(pedx)
+#endif
+	SYS_FORCEALIGN_16 static Fw16s pedx[64];
+
 	Fw16s *peax = (Fw16s*)pSrc;
 	Fw16s *pesi, *pecx;
 	Fw8u *pedi  = pDst;
