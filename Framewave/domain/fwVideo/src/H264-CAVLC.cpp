@@ -27,7 +27,14 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeCoeffsCAVLC_H264_16s)(
 {
 	int pos, coef, last_coeff;
 //	Fw16s* zzBlock = (Fw16s*) fwMalloc(16*sizeof(Fw16s));
-	SYS_FORCEALIGN_16 Fw16s zzBuffer[16];
+	
+// Solaris Alignment
+#if (defined( SOL64   ) || defined( _SOL64   ) || defined( SOL32   ) || defined( _SOL32   ) )
+	#pragma align 16(zzBuffer)
+#endif
+	
+	SYS_FORCEALIGN_16 static Fw16s zzBuffer[16];
+
 	Fw16s* zzBlock = (Fw16s*) &zzBuffer[0];
 	Fw16s* pS;
 	int i;
@@ -106,7 +113,13 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeChromaDcCoeffsCAVLC_H264_16s)(
 //	int pos, coef, last_coeff;
 	int last_coeff;
 //	Fw16s* zzBlock = (Fw16s*) fwMalloc(4*sizeof(Fw16s));
-	SYS_FORCEALIGN_16 Fw16s zzBuffer[4];
+
+// Solaris Alignment
+#if (defined( SOL64   ) || defined( _SOL64   ) || defined( SOL32   ) || defined( _SOL32   ) )
+	#pragma align 16(zzBuffer)
+#endif	
+	SYS_FORCEALIGN_16 static Fw16s zzBuffer[4];
+
 	Fw16s* zzBlock = (Fw16s*) &zzBuffer[0];
 //	Fw16s* pS;
 	int i;
@@ -1191,8 +1204,15 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDecodeCAVLCCoeffs_H264_1u16s)(
 
 Bitstream bs;
 Bitstream * const tbs = &bs;
-SYS_FORCEALIGN_16 Fw16s level[16];
-SYS_FORCEALIGN_16 Fw8u run[16];
+
+// Solaris Alignment
+#if (defined( SOL64   ) || defined( _SOL64   ) || defined( SOL32   ) || defined( _SOL32   ) )
+	#pragma align 16(level,run)
+#endif
+	
+SYS_FORCEALIGN_16 static Fw16s level[16];
+SYS_FORCEALIGN_16 static Fw8u run[16];
+
 Fw32s zero_left = 0;
 
 	int Dispatch_Type = Dispatch::Type<DT_SSE2>();
@@ -1421,8 +1441,14 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDecodeCAVLCChromaDcCoeffs_H264_1u16s)(
 Fw32u *pbs32 = (Fw32u *) *ppBitStream;
 Bitstream bs;
 Bitstream * const tbs = &bs;
-SYS_FORCEALIGN_16 Fw16s level[16];
-SYS_FORCEALIGN_16 Fw8u run[16];
+
+// Solaris Alignment
+#if (defined( SOL64   ) || defined( _SOL64   ) || defined( SOL32   ) || defined( _SOL32   ) )
+	#pragma align 16(level,run)
+#endif
+	
+SYS_FORCEALIGN_16 static Fw16s level[16];
+SYS_FORCEALIGN_16 static Fw8u run[16];
 Fw32s zero_left = 0;
 
 	int Dispatch_Type = Dispatch::Type<DT_SSE2>();
