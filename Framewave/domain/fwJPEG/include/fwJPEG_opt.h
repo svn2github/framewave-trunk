@@ -10,7 +10,7 @@ This software is subject to the Apache v2.0 License.
 #include "fwdev.h"
 #include "fwJPEG.h"
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRGBToY_JPEG_8u_P3C1R)(const Fw8u* pSrcRGB[3], int srcStep, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRGBToY_JPEG_8u_P3C1R)(const Fw8u* const pSrcRGB[3], int srcStep, 
 							Fw8u* pDstY, int dstStep, FwiSize roiSize);
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRGBToY_JPEG_8u_C3C1R)(const Fw8u* pSrcRGB, int srcStep,
 							Fw8u* pDstY, int dstStep, FwiSize roiSize);
@@ -19,14 +19,14 @@ OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRGBToY_JPEG_8u_C3C1R)(con
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiBGRToY_JPEG_8u_C3C1R)(const Fw8u* pSrcBGR, int srcStep,
 							Fw8u* pDstY, int dstStep, FwiSize roiSize);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr_JPEG_8u_P3R)(const Fw8u* pSrcRGB[3], int srcStep, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr_JPEG_8u_P3R)(const Fw8u* const pSrcRGB[3], int srcStep, 
 							Fw8u* pDstYCbCr[3], int dstStep, FwiSize roiSize);
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr_JPEG_8u_C3P3R)(const Fw8u* pSrcRGB, int srcStep, 
-							Fw8u* pDstYCbCr[3], int dstStep, FwiSize roiSize);
+							Fw8u* const pDstYCbCr[3], int dstStep, FwiSize roiSize);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiYCbCrToRGB_JPEG_8u_P3R)(const Fw8u* pSrcYCbCr[3], int srcStep, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiYCbCrToRGB_JPEG_8u_P3R)(const Fw8u* const pSrcYCbCr[3], int srcStep, 
 							Fw8u* pDstRGB[3], int dstStep, FwiSize roiSize);
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiYCbCrToRGB_JPEG_8u_P3C3R)(const Fw8u* pSrcYCbCr[3], int srcStep, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiYCbCrToRGB_JPEG_8u_P3C3R)(const Fw8u* const pSrcYCbCr[3], int srcStep, 
 							Fw8u* pDstRGB, int dstStep, FwiSize roiSize);
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRGB565ToYCbCr_JPEG_16u8u_C3P3R)(const Fw16u* pSrcRGB, int srcStep, 
@@ -41,9 +41,9 @@ OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiYCbCrToRGB555_JPEG_8u16u_
 
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiBGRToYCbCr_JPEG_8u_C3P3R)(const Fw8u* pSrcBGR, int srcStep, 
-							Fw8u* pDstYCbCr[3], int dstStep, FwiSize roiSize);
+							Fw8u* const pDstYCbCr[3], int dstStep, FwiSize roiSize);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiYCbCrToBGR_JPEG_8u_P3C3R)(const Fw8u* pSrcYCbCr[3], int srcStep, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiYCbCrToBGR_JPEG_8u_P3C3R)(const Fw8u* const pSrcYCbCr[3], int srcStep, 
 							Fw8u* pDstBGR, int dstStep, FwiSize roiSize);
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiBGR565ToYCbCr_JPEG_16u8u_C3P3R)(const Fw16u* pSrcBGR, int srcStep, 
@@ -56,14 +56,14 @@ OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiYCbCrToBGR565_JPEG_8u16u_
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiYCbCrToBGR555_JPEG_8u16u_P3C3R)(const Fw8u* pSrcYCbCr[3], int srcStep, 
 							Fw16u* pDstBGR, int dstStep, FwiSize roiSize);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiCMYKToYCCK_JPEG_8u_P4R)(const Fw8u* pSrcCMYK[4], int srcStep, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiCMYKToYCCK_JPEG_8u_P4R)(const Fw8u* const pSrcCMYK[4], int srcStep, 
 							Fw8u* pDstYCCK[4], int dstStep, FwiSize roiSize);
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiCMYKToYCCK_JPEG_8u_C4P4R)(const Fw8u* pSrcCMYK, int srcStep, 
-							Fw8u* pDstYCCK[4], int dstStep, FwiSize roiSize);
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiCMYKToYCCK_JPEG_8u_C4P4R)(const Fw8u* const pSrcCMYK, int srcStep, 
+							Fw8u* const pDstYCCK[4], int dstStep, FwiSize roiSize);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiYCCKToCMYK_JPEG_8u_P4R)(const Fw8u* pSrcYCCK[4], int srcStep, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiYCCKToCMYK_JPEG_8u_P4R)(const Fw8u* const pSrcYCCK[4], int srcStep, 
 							Fw8u* pDstCMYK[4], int dstStep, FwiSize roiSize);
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiYCCKToCMYK_JPEG_8u_P4C4R)(const Fw8u* pSrcYCCK[4], int srcStep, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiYCCKToCMYK_JPEG_8u_P4C4R)(const Fw8u* const pSrcYCCK[4], int srcStep, 
 							Fw8u* pDstCMYK, int dstStep, FwiSize roiSize);
 
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX,  fwiRGBToYCbCr444LS_MCU_8u16s_C3P3R)(const Fw8u* pSrcRGB, int srcStep, 

@@ -185,7 +185,7 @@ public:
 
     }
 
-   IV REF_CODE(const Fw8u *pSrcRGB,int srcStep,Fw8u *pDstYCbCr[3], int dstStep,const FwiSize &roiSize)
+   IV REF_CODE(const Fw8u *pSrcRGB,int srcStep,Fw8u * const pDstYCbCr[3], int dstStep,const FwiSize &roiSize)
    {
 	            //DEV code use shift 8 bit data for coeffcients
 	            //0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
@@ -331,7 +331,7 @@ public:
 
     }
 
-   IV REF_CODE(const Fw8u *pSrcCMYK,int srcStep,Fw8u *pDstYCCK[3], int dstStep,const FwiSize &roiSize)
+   IV REF_CODE(const Fw8u * const pSrcCMYK,int srcStep,Fw8u * const pDstYCCK[3], int dstStep,const FwiSize &roiSize)
    {
 	            //DEV code use shift 8 bit data for coeffcients
 	            //0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
@@ -644,7 +644,7 @@ public:
         }
     }
 
-    IV REF_CODE_OPT( const Fw8u *pSrcYCbCr[3], int srcStep,Fw8u *pDstRGB, int dstStep, FwiSize roiSize)
+    IV REF_CODE_OPT( const Fw8u * const pSrcYCbCr[3], int srcStep,Fw8u *pDstRGB, int dstStep, FwiSize roiSize)
     {
        // R = Y + 1.402*Cr - 179.456
        // G = Y - 0.34414*Cb - 0.71414*Cr + 135.45984
@@ -843,7 +843,7 @@ public:
 
     }
 
-    IV REF_CODE_OPT(const Fw8u *pSrcYCCK[4], int srcStep,Fw8u *pDstCMYK, int dstStep, FwiSize roiSize)
+    IV REF_CODE_OPT(const Fw8u * const pSrcYCCK[4], int srcStep,Fw8u *pDstCMYK, int dstStep, FwiSize roiSize)
     {
        // R = Y + 1.402*Cr - 179.456
        // G = Y - 0.34414*Cb - 0.71414*Cr + 135.45984

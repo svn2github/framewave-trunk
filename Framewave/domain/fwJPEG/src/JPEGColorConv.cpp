@@ -52,7 +52,7 @@ using namespace OPT_LEVEL;
 //RGB image to gray scale using the following formula:
 //	Y = 0.299*R + 0.587*G + 0.114*B
 //-----------------------------------------------------------------------
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToY_JPEG_8u_P3C1R)(const Fw8u *pSrcRGB[3], int srcStep, 
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToY_JPEG_8u_P3C1R)(const Fw8u * const pSrcRGB[3], int srcStep, 
 								   Fw8u *pDstY, int dstStep, FwiSize roiSize)
 {
 	if (pSrcRGB == 0 || pDstY == 0) return fwStsNullPtrErr;
@@ -165,7 +165,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGRToY_JPEG_8u_C3C1R)(const Fw8u *pSrcBGR, in
 //	Cb = -0.16874*R - 0.33126*G + 0.5*B + 128	
 //	Cr = 0.5*R - 0.41869*G - 0.08131*B + 128
 //-----------------------------------------------------------------------
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr_JPEG_8u_P3R)(const Fw8u *pSrcRGB[3], int srcStep, 
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr_JPEG_8u_P3R)(const Fw8u * const pSrcRGB[3], int srcStep, 
 								 Fw8u *pDstYCbCr[3], int dstStep, FwiSize roiSize)
 {
 	if (pSrcRGB == 0 || pDstYCbCr == 0) return fwStsNullPtrErr;
@@ -209,7 +209,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr_JPEG_8u_P3R)(const Fw8u *pSrcRGB[3
 }
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr_JPEG_8u_C3P3R)(const Fw8u *pSrcRGB, int srcStep, 
-								 Fw8u *pDstYCbCr[3], int dstStep, FwiSize roiSize)
+								 Fw8u * const pDstYCbCr[3], int dstStep, FwiSize roiSize)
 {
 
     RGBToYCBCR_C3P3  data;
@@ -256,7 +256,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr_JPEG_8u_C3P3R)(const Fw8u *pSrcRGB
 //	G = Y - 0.34414*Cb - 0.71414*Cr + 135.45984
 //	B = Y + 1.772*Cb - 226.816
 //-----------------------------------------------------------------------
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCrToRGB_JPEG_8u_P3R)(const Fw8u *pSrcYCbCr[3], int srcStep, 
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCrToRGB_JPEG_8u_P3R)(const Fw8u * const pSrcYCbCr[3], int srcStep, 
 									 Fw8u *pDstRGB[3], int dstStep, FwiSize roiSize)
 {
 	if (pSrcYCbCr == 0 || pDstRGB == 0) return fwStsNullPtrErr;
@@ -289,7 +289,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCrToRGB_JPEG_8u_P3R)(const Fw8u *pSrcYCbCr
 	return fwStsNoErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCrToRGB_JPEG_8u_P3C3R)(const Fw8u *pSrcYCbCr[3], int srcStep, 
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCrToRGB_JPEG_8u_P3C3R)(const Fw8u * const pSrcYCbCr[3], int srcStep, 
 									 Fw8u *pDstRGB, int dstStep, FwiSize roiSize)
 {
 	if (pSrcYCbCr == 0 || pDstRGB == 0) return fwStsNullPtrErr;
@@ -535,7 +535,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCrToRGB555_JPEG_8u16u_P3C3R)(const Fw8u *p
 //	Cr = 0.5*R - 0.41869*G - 0.08131*B + 128
 //-----------------------------------------------------------------------
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGRToYCbCr_JPEG_8u_C3P3R)(const Fw8u *pSrcBGR, int srcStep, 
-								 Fw8u *pDstYCbCr[3], int dstStep, FwiSize roiSize)
+								 Fw8u * const pDstYCbCr[3], int dstStep, FwiSize roiSize)
 {
 	if (pSrcBGR == 0 || pDstYCbCr == 0) return fwStsNullPtrErr;
 	if (pDstYCbCr[0] == 0 || pDstYCbCr[1] == 0 || pDstYCbCr[2] == 0 )
@@ -585,7 +585,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGRToYCbCr_JPEG_8u_C3P3R)(const Fw8u *pSrcBGR
 //	G = Y - 0.34414*Cb - 0.71414*Cr + 135.45984
 //	B = Y + 1.772*Cb - 226.816
 //-----------------------------------------------------------------------
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCrToBGR_JPEG_8u_P3C3R)(const Fw8u *pSrcYCbCr[3], int srcStep, 
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCrToBGR_JPEG_8u_P3C3R)(const Fw8u * const pSrcYCbCr[3], int srcStep, 
 									 Fw8u *pDstBGR, int dstStep, FwiSize roiSize)
 {
 	if (pSrcYCbCr == 0 || pDstBGR == 0) return fwStsNullPtrErr;
@@ -825,7 +825,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCrToBGR555_JPEG_8u16u_P3C3R)(const Fw8u *p
 //	Cr = 0.5*R - 0.41869*G - 0.08131*B + 128
 //The values of K channel are written without modification.
 //-----------------------------------------------------------------------
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK_JPEG_8u_P4R)(const Fw8u *pSrcCMYK[4], int srcStep, 
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK_JPEG_8u_P4R)(const Fw8u *const pSrcCMYK[4], int srcStep, 
 									 Fw8u *pDstYCCK[4], int dstStep, FwiSize roiSize)
 {
 	if (pSrcCMYK == 0 || pDstYCCK == 0) return fwStsNullPtrErr;
@@ -872,8 +872,8 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK_JPEG_8u_P4R)(const Fw8u *pSrcCMYK[
 	return fwStsNoErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK_JPEG_8u_C4P4R)(const Fw8u *pSrcCMYK, int srcStep, 
-									 Fw8u *pDstYCCK[4], int dstStep, FwiSize roiSize)
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK_JPEG_8u_C4P4R)(const Fw8u * const pSrcCMYK, int srcStep, 
+									 Fw8u *const pDstYCCK[4], int dstStep, FwiSize roiSize)
 {
 
     CMYKToYCCK_JPEG_8u_C4P4R  data;
@@ -925,7 +925,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK_JPEG_8u_C4P4R)(const Fw8u *pSrcCMY
 //	Y = 255 – B
 //The values of K channel are written without modification.
 //-----------------------------------------------------------------------
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCCKToCMYK_JPEG_8u_P4R)(const Fw8u *pSrcYCCK[4], int srcStep, 
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCCKToCMYK_JPEG_8u_P4R)(const Fw8u * const pSrcYCCK[4], int srcStep, 
 									 Fw8u *pDstCMYK[4], int dstStep, FwiSize roiSize)
 {
 	if (pSrcYCCK == 0 || pDstCMYK == 0) return fwStsNullPtrErr;
@@ -964,7 +964,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCCKToCMYK_JPEG_8u_P4R)(const Fw8u *pSrcYCCK[
 	return fwStsNoErr;
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCCKToCMYK_JPEG_8u_P4C4R)(const Fw8u *pSrcYCCK[4], int srcStep, 
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCCKToCMYK_JPEG_8u_P4C4R)(const Fw8u * const pSrcYCCK[4], int srcStep, 
 									 Fw8u *pDstCMYK, int dstStep, FwiSize roiSize)
 {
 
