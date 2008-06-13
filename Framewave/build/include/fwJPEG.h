@@ -30,7 +30,7 @@ const FwLibraryVersion* STDCALL fwjGetLibVersion ();
 //                        RGBToY_JPEG
 ////////////////////////////////////////////////////////////////
 
-FwStatus STDCALL fwiRGBToY_JPEG_8u_P3C1R              ( const Fw8u *pSrcRGB[3], int srcStep,
+FwStatus STDCALL fwiRGBToY_JPEG_8u_P3C1R              ( const Fw8u * const pSrcRGB[3], int srcStep,
                                                                 Fw8u *pDstY     , int dstStep, FwiSize roiSize );
 
 FwStatus STDCALL fwiRGBToY_JPEG_8u_C3C1R              ( const Fw8u *pSrcRGB   , int srcStep,
@@ -47,20 +47,20 @@ FwStatus STDCALL fwiBGRToY_JPEG_8u_C3C1R              ( const Fw8u *pSrcBGR, int
 //                        RGBToYCbCr_JPEG
 ////////////////////////////////////////////////////////////////
 
-FwStatus STDCALL fwiRGBToYCbCr_JPEG_8u_P3R            ( const Fw8u *pSrcRGB[3]  , int srcStep,
+FwStatus STDCALL fwiRGBToYCbCr_JPEG_8u_P3R            ( const Fw8u * const pSrcRGB[3]  , int srcStep,
                                                                 Fw8u *pDstYCbCr[3], int dstStep, FwiSize roiSize );
 
 FwStatus STDCALL fwiRGBToYCbCr_JPEG_8u_C3P3R          ( const Fw8u *pSrcRGB     , int srcStep,
-                                                                Fw8u *pDstYCbCr[3], int dstStep, FwiSize roiSize );
+                                                                Fw8u * const pDstYCbCr[3], int dstStep, FwiSize roiSize );
 
 ////////////////////////////////////////////////////////////////
 //                        YCbCrToRGB_JPEG
 ////////////////////////////////////////////////////////////////
 
-FwStatus STDCALL fwiYCbCrToRGB_JPEG_8u_P3R            ( const Fw8u *pSrcYCbCr[3], int srcStep,
+FwStatus STDCALL fwiYCbCrToRGB_JPEG_8u_P3R            ( const Fw8u * const pSrcYCbCr[3], int srcStep,
                                                                 Fw8u *pDstRGB[3]  , int dstStep, FwiSize roiSize );
 
-FwStatus STDCALL fwiYCbCrToRGB_JPEG_8u_P3C3R          ( const Fw8u *pSrcYCbCr[3], int srcStep,
+FwStatus STDCALL fwiYCbCrToRGB_JPEG_8u_P3C3R          ( const Fw8u * const pSrcYCbCr[3], int srcStep,
                                                                 Fw8u *pDstRGB     , int dstStep, FwiSize roiSize );
 
 ////////////////////////////////////////////////////////////////
@@ -88,13 +88,13 @@ FwStatus STDCALL fwiYCbCrToRGB555_JPEG_8u16u_P3C3R    ( const Fw8u  *pSrcYCbCr[3
 ////////////////////////////////////////////////////////////////
 
 FwStatus STDCALL fwiBGRToYCbCr_JPEG_8u_C3P3R          ( const Fw8u *pSrcBGR     , int srcStep,
-                                                                Fw8u *pDstYCbCr[3], int dstStep, FwiSize roiSize );
+                                                                Fw8u * const pDstYCbCr[3], int dstStep, FwiSize roiSize );
 
 ////////////////////////////////////////////////////////////////
 //                        YCbCrToBGR_JPEG
 ////////////////////////////////////////////////////////////////
 
-FwStatus STDCALL fwiYCbCrToBGR_JPEG_8u_P3C3R          ( const Fw8u *pSrcYCbCr[3], int srcStep,
+FwStatus STDCALL fwiYCbCrToBGR_JPEG_8u_P3C3R          ( const Fw8u * const pSrcYCbCr[3], int srcStep,
                                                                 Fw8u *pDstBGR     , int dstStep, FwiSize roiSize );
 
 ////////////////////////////////////////////////////////////////
@@ -121,20 +121,20 @@ FwStatus STDCALL fwiYCbCrToBGR555_JPEG_8u16u_P3C3R    ( const Fw8u  *pSrcYCbCr[3
 //                        CMYKToYCCK_JPEG
 ////////////////////////////////////////////////////////////////
 
-FwStatus STDCALL  fwiCMYKToYCCK_JPEG_8u_P4R           ( const Fw8u *pSrcCMYK[4], int srcStep,
+FwStatus STDCALL  fwiCMYKToYCCK_JPEG_8u_P4R           ( const Fw8u * const pSrcCMYK[4], int srcStep,
                                                                 Fw8u *pDstYCCK[4], int dstStep, FwiSize roiSize );
 
-FwStatus STDCALL  fwiCMYKToYCCK_JPEG_8u_C4P4R         ( const Fw8u *pSrcCMYK   , int srcStep,
-                                                                Fw8u *pDstYCCK[4], int dstStep, FwiSize roiSize );
+FwStatus STDCALL  fwiCMYKToYCCK_JPEG_8u_C4P4R         ( const Fw8u * const pSrcCMYK   , int srcStep,
+                                                                Fw8u * const pDstYCCK[4], int dstStep, FwiSize roiSize );
 
 ////////////////////////////////////////////////////////////////
 //                        YCCKToCMYK_JPEG
 ////////////////////////////////////////////////////////////////
 
-FwStatus STDCALL  fwiYCCKToCMYK_JPEG_8u_P4R           ( const Fw8u *pSrcYCCK[4], int srcStep,
+FwStatus STDCALL  fwiYCCKToCMYK_JPEG_8u_P4R           ( const Fw8u * const pSrcYCCK[4], int srcStep,
                                                                 Fw8u *pDstCMYK[4], int dstStep, FwiSize roiSize );
 
-FwStatus STDCALL  fwiYCCKToCMYK_JPEG_8u_P4C4R         ( const Fw8u *pSrcYCCK[4], int srcStep,
+FwStatus STDCALL  fwiYCCKToCMYK_JPEG_8u_P4C4R         ( const Fw8u * const pSrcYCCK[4], int srcStep,
                                                                 Fw8u *pDstCMYK   , int dstStep, FwiSize roiSize );
 
 ////////////////////////////////////////////////////////////////
