@@ -8,6 +8,8 @@ This software is subject to the Apache v2.0 License.
 
 #include "fwBase.h"
 
+typedef struct LUTSpec FwiLUTSpec;
+
 //
 // Enumerations
 //
@@ -1694,27 +1696,27 @@ FwStatus STDCALL fwiHSVToRGB_16u_AC4R     ( const Fw16u *pSrc, int srcStep, Fw16
 //                        ColorToGray
 ////////////////////////////////////////////////////////////////
 
-FwStatus fwiColorToGray_8u_C3C1R(const Fw8u* pSrc, int srcStep, Fw8u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
-FwStatus fwiColorToGray_16u_C3C1R(const Fw16u* pSrc, int srcStep, Fw16u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
-FwStatus fwiColorToGray_16s_C3C1R(const Fw16s* pSrc, int srcStep, Fw16s* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
-FwStatus fwiColorToGray_32f_C3C1R(const Fw32f* pSrc, int srcStep, Fw32f* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
-FwStatus fwiColorToGray_8u_AC4C1R(const Fw8u* pSrc, int srcStep, Fw8u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
-FwStatus fwiColorToGray_16u_AC4C1R(const Fw16u* pSrc, int srcStep, Fw16u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
-FwStatus fwiColorToGray_16s_AC4C1R(const Fw16s* pSrc, int srcStep, Fw16s* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
-FwStatus fwiColorToGray_32f_AC4C1R(const Fw32f* pSrc, int srcStep, Fw32f* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_8u_C3C1R(const Fw8u* pSrc, int srcStep, Fw8u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_16u_C3C1R(const Fw16u* pSrc, int srcStep, Fw16u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_16s_C3C1R(const Fw16s* pSrc, int srcStep, Fw16s* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_32f_C3C1R(const Fw32f* pSrc, int srcStep, Fw32f* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_8u_AC4C1R(const Fw8u* pSrc, int srcStep, Fw8u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_16u_AC4C1R(const Fw16u* pSrc, int srcStep, Fw16u* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_16s_AC4C1R(const Fw16s* pSrc, int srcStep, Fw16s* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
+FwStatus STDCALL fwiColorToGray_32f_AC4C1R(const Fw32f* pSrc, int srcStep, Fw32f* pDst, int dstStep, FwiSize roiSize, const Fw32f coeffs[3]);
 
 ////////////////////////////////////////////////////////////////
 //                        RGBToGray
 ////////////////////////////////////////////////////////////////
 
-FwStatus fwiRGBToGray_8u_C3C1R(const Fw8u* pSrc, int srcStep,Fw8u* pDst, int dstStep, FwiSize roiSize);
-FwStatus fwiRGBToGray_16u_C3C1R(const Fw16u* pSrc, int srcStep,Fw16u* pDst, int dstStep, FwiSize roiSize);
-FwStatus fwiRGBToGray_16s_C3C1R(const Fw16s* pSrc, int srcStep,Fw16s* pDst, int dstStep, FwiSize roiSize);
-FwStatus fwiRGBToGray_32f_C3C1R(const Fw32f* pSrc, int srcStep,Fw32f* pDst, int dstStep, FwiSize roiSize);
-FwStatus fwiRGBToGray_8u_AC4C1R(const Fw8u* pSrc, int srcStep,Fw8u* pDst, int dstStep, FwiSize roiSize);
-FwStatus fwiRGBToGray_16u_AC4C1R(const Fw16u* pSrc, int srcStep,Fw16u* pDst, int dstStep, FwiSize roiSize);
-FwStatus fwiRGBToGray_16s_AC4C1R(const Fw16s* pSrc, int srcStep,Fw16s* pDst, int dstStep, FwiSize roiSize);
-FwStatus fwiRGBToGray_32f_AC4C1R(const Fw32f* pSrc, int srcStep,Fw32f* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_8u_C3C1R(const Fw8u* pSrc, int srcStep,Fw8u* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_16u_C3C1R(const Fw16u* pSrc, int srcStep,Fw16u* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_16s_C3C1R(const Fw16s* pSrc, int srcStep,Fw16s* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_32f_C3C1R(const Fw32f* pSrc, int srcStep,Fw32f* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_8u_AC4C1R(const Fw8u* pSrc, int srcStep,Fw8u* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_16u_AC4C1R(const Fw16u* pSrc, int srcStep,Fw16u* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_16s_AC4C1R(const Fw16s* pSrc, int srcStep,Fw16s* pDst, int dstStep, FwiSize roiSize);
+FwStatus STDCALL fwiRGBToGray_32f_AC4C1R(const Fw32f* pSrc, int srcStep,Fw32f* pDst, int dstStep, FwiSize roiSize);
 
 ////////////////////////////////////////////////////////////////
 //                        YCbCr422
@@ -3217,6 +3219,14 @@ FwStatus STDCALL fwiGetBilinearBound      ( FwiRect srcRoi, double bound[2][2], 
 ////////////////////////////////////////////////////////////////
 
 FwStatus STDCALL fwiGetBilinearTransform  ( FwiRect srcRoi, const double quad[4][2],double coeffs[2][4]);
+
+////////////////////////////////////////////////////////////////
+//                        LUT
+////////////////////////////////////////////////////////////////
+
+FwStatus STDCALL fwiLookUp3DSpecInitAlloc(const Fw16u cubeDimensions[3], const Fw16u cubeMax[3], FwiLUTSpec** ppLUTSpec);
+FwStatus STDCALL fwiLookUp3D_16u_C3R(const Fw16u *pSrc, int srcStep, Fw16u *pDst, int dstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec);
+FwStatus STDCALL fwiLookUp3D_16u_C3IR(Fw16u *pSrcDst, int srcDstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec);
 
 #ifdef __cplusplus
 }
