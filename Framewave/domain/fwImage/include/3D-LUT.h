@@ -73,7 +73,6 @@ IS FwStatus LookUp3DSpecInitAlloc(const Fw16u cubeDimensions[3], const Fw16u cub
         pLUTSpec->cubeMax_fx.f = _mm_cvtepi32_ps(pLUTSpec->cubeMax_ix.i);
         pLUTSpec->cubeMax_fy.f = _mm_cvtepi32_ps(pLUTSpec->cubeMax_iy.i);
         pLUTSpec->cubeMax_fz.f = _mm_cvtepi32_ps(pLUTSpec->cubeMax_iz.i);
-        break;
 
     case DT_REFR:
     default:
@@ -138,7 +137,7 @@ ISV LookUp3D_fourPixel(XMM128 &x, XMM128 &y,XMM128 &z,const int *pCube, FwiLUTSp
         {
         z.i = _mm_andnot_si128(temp.i, z.i);
         temp.i = _mm_and_si128(temp.i, pLUTSpec->cubeMax_iz.i);
-        z.i = _mm_or_si128(y.i, temp.i);
+        z.i = _mm_or_si128(z.i, temp.i);
         }
     // map the input pixel value onto the cube
     //fx = ((float)x/pLUTSpec->cubeMax[0]) * pLUTSpec->maxIndex[0];
@@ -156,11 +155,11 @@ ISV LookUp3D_fourPixel(XMM128 &x, XMM128 &y,XMM128 &z,const int *pCube, FwiLUTSp
 
     // get the indices as integers
     //ix0 = (int)fx;
-    ix0.i = _mm_cvtps_epi32(fx.f);
+    ix0.i = _mm_cvttps_epi32(fx.f);
     //iy0 = (int)fy;
-    iy0.i = _mm_cvtps_epi32(fy.f);
+    iy0.i = _mm_cvttps_epi32(fy.f);
     //iz0 = (int)fz;
-    iz0.i = _mm_cvtps_epi32(fz.f);
+    iz0.i = _mm_cvttps_epi32(fz.f);
 
     //ix1 = (ix0 == pLUTSpec->maxIndex[0]) ? ix0 : ix0+1;
     ix1.i = _mm_setzero_si128();
@@ -245,12 +244,12 @@ ISV LookUp3D_fourPixel(XMM128 &x, XMM128 &y,XMM128 &z,const int *pCube, FwiLUTSp
     //index4  = index3 + (temp2 - temp1) * temp3; == index3+index2-index1
     index4.f = _mm_add_ps(index4.f, index3.f); 
 
-    index1.i = _mm_cvtps_epi32(index1.f);
-    index2.i = _mm_cvtps_epi32(index2.f);
-    index3.i = _mm_cvtps_epi32(index3.f);
-    index4.i = _mm_cvtps_epi32(index4.f);
+    index1.i = _mm_cvttps_epi32(index1.f);
+    index2.i = _mm_cvttps_epi32(index2.f);
+    index3.i = _mm_cvttps_epi32(index3.f);
+    index4.i = _mm_cvttps_epi32(index4.f);
     ///index5  = index1 + temp4;
-    temp4.i = _mm_cvtps_epi32(temp4.f);
+    temp4.i = _mm_cvttps_epi32(temp4.f);
     index5.i = _mm_add_epi32(index1.i, temp4.i);
     //index6  = index2 + temp4;
     index6.i = _mm_add_epi32(index2.i, temp4.i);
@@ -379,7 +378,7 @@ ISV LookUp3D_fourPixel(XMM128 &x, XMM128 &y,XMM128 &z,const int *pCube, FwiLUTSp
     z7.f = _mm_add_ps(z7.f, z5.f);
 
     //x  = (x7>pLUTSpec->cubeMax[0]) ? pLUTSpec->cubeMax[0] : (Fw16u)x7;
-    x.i = _mm_cvtps_epi32(x7.f);
+    x.i = _mm_cvttps_epi32(x7.f);
     temp.f = _mm_cmpgt_ps(x7.f, pLUTSpec->cubeMax_fx.f);
     mask = _mm_movemask_epi8(temp.i);
     if(mask)
@@ -389,7 +388,7 @@ ISV LookUp3D_fourPixel(XMM128 &x, XMM128 &y,XMM128 &z,const int *pCube, FwiLUTSp
         x.i = _mm_or_si128(x.i, temp.i);
         }
     //y  = (y7>pLUTSpec->cubeMax[1]) ? pLUTSpec->cubeMax[1] : (Fw16u)y7;
-    y.i = _mm_cvtps_epi32(y7.f);
+    y.i = _mm_cvttps_epi32(y7.f);
     temp.f = _mm_cmpgt_ps(y7.f, pLUTSpec->cubeMax_fy.f);
     mask = _mm_movemask_epi8(temp.i);
     if(mask)
@@ -399,7 +398,7 @@ ISV LookUp3D_fourPixel(XMM128 &x, XMM128 &y,XMM128 &z,const int *pCube, FwiLUTSp
         y.i = _mm_or_si128(y.i, temp.i);
         }
     //z  = (z7>pLUTSpec->cubeMax[2]) ? pLUTSpec->cubeMax[2] : (Fw16u)z7;
-    z.i = _mm_cvtps_epi32(z7.f);
+    z.i = _mm_cvttps_epi32(z7.f);
     temp.f = _mm_cmpgt_ps(z7.f, pLUTSpec->cubeMax_fz.f);
     mask = _mm_movemask_epi8(temp.i);
     if(mask)
@@ -537,9 +536,10 @@ IS FwStatus LookUp3D_16u_C3R(const Fw16u *pSrc, int &srcStep, Fw16u *pDst, int &
 
                  LookUp3D_fourPixel(x,y,z,pCube,pLUTSpec);
 
-                 x.i = _mm_set_epi16((Fw16u)y.u32[2],(Fw16u)x.u32[2],(Fw16u)z.u32[1],(Fw16u)y.u32[1],(Fw16u)x.u32[1],(Fw16u)z.u32[0],(Fw16u)y.u32[0],(Fw16u)x.u32[0]);
+                 XMM128 temp;
+                 temp.i = _mm_set_epi16((Fw16u)y.u32[2],(Fw16u)x.u32[2],(Fw16u)z.u32[1],(Fw16u)y.u32[1],(Fw16u)x.u32[1],(Fw16u)z.u32[0],(Fw16u)y.u32[0],(Fw16u)x.u32[0]);
                  y.i = _mm_set_epi16(0,0,0,0,(Fw16u)z.u32[3],(Fw16u)y.u32[3],(Fw16u)x.u32[3],(Fw16u)z.u32[2]);
-                 _mm_storeu_si128((__m128i*)tempDst, x.i);
+                 _mm_storeu_si128((__m128i*)tempDst, temp.i);
                  tempDst += 8;
                  _mm_storel_epi64((__m128i*)tempDst, y.i);
                  tempDst += 4;
@@ -641,9 +641,10 @@ IS FwStatus LookUp3D_16u_C3IR(Fw16u *pSrcDst, int &srcDstStep, FwiSize &roiSize,
 
                  LookUp3D_fourPixel(x,y,z,pCube,pLUTSpec);
 
-                 x.i = _mm_set_epi16((Fw16u)y.u32[2],(Fw16u)x.u32[2],(Fw16u)z.u32[1],(Fw16u)y.u32[1],(Fw16u)x.u32[1],(Fw16u)z.u32[0],(Fw16u)y.u32[0],(Fw16u)x.u32[0]);
+                 XMM128 temp;
+                 temp.i = _mm_set_epi16((Fw16u)y.u32[2],(Fw16u)x.u32[2],(Fw16u)z.u32[1],(Fw16u)y.u32[1],(Fw16u)x.u32[1],(Fw16u)z.u32[0],(Fw16u)y.u32[0],(Fw16u)x.u32[0]);
                  y.i = _mm_set_epi16(0,0,0,0,(Fw16u)z.u32[3],(Fw16u)y.u32[3],(Fw16u)x.u32[3],(Fw16u)z.u32[2]);
-                 _mm_storeu_si128((__m128i*)tempSrcDst, x.i);
+                 _mm_storeu_si128((__m128i*)tempSrcDst, temp.i);
                  tempSrcDst += 8;
                  _mm_storel_epi64((__m128i*)tempSrcDst, y.i);
                  tempSrcDst += 4;
