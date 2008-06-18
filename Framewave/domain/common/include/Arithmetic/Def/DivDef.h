@@ -670,11 +670,11 @@ namespace DEF_DIV
 				FE_SSE2_REF 
 				IV SSE2_Init() 
 				{
-					DIV_SSE2::DIVC::Init::C1::DivC_32f_setup(valC, val);
+					FW_SSE2::Load1(val, (float)valC);
 				}
 				IV SSE2( RegFile & r ) const									// SSE2 Pixel function
 				{
-					r.dst[0].f = _mm_div_ps( r.src1[0].f, val.f );
+					r.dst[0].f = _mm_div_ps( val.f, r.src1[0].f );
 				}      
 			};
 
