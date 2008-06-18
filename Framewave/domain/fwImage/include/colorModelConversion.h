@@ -9,11 +9,17 @@ This software is subject to the Apache v2.0 License.
 #include "colorModelConvConst.h"
 #include "Constants.h"
 
-#define HLSRGBMac(a,h,m1,m2) if (h < 0) h += 360;                                       \
+#define HLSRGMac(a,h,m1,m2)  if (h < 60) { a = m1 + (m2 - m1)*h / 60; }                 \
+                             else if (h < 180) { a = m2;                              } \
+                             else if (h < 240) { a = m1 + (m2 - m1) * (240 - h) / 60; } \
+                             else { a = m1; }
+
+#define HLSBMac(a,h,m1,m2)   if (h < 0) h += 360;                                       \
                              if (h < 60) { a = m1 + (m2 - m1)*h / 60; }                 \
                              else if (h < 180) { a = m2;                              } \
                              else if (h < 240) { a = m1 + (m2 - m1) * (240 - h) / 60; } \
                              else { a = m1; }
+
 
 extern const CMCDat CMCConstants[CF_MAXConv];
 
@@ -1257,11 +1263,11 @@ namespace OPT_LEVEL
                     {
                         h -= 360;
                     }
-                    HLSRGBMac (R, h, m1, m2);
+                    HLSRGMac (R, h, m1, m2);
                     h = rgb[0];
-                    HLSRGBMac (G, h, m1, m2);
+                    HLSRGMac (G, h, m1, m2);
                     h = rgb[0] - 120;
-                    HLSRGBMac (B, h, m1, m2);
+                    HLSBMac (B, h, m1, m2);
                 }
                 d[2] = FW_REF::Normalize<TS,TD>::Unscale( B ); // B
         case C2:  
