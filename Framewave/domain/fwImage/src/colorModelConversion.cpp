@@ -3,6 +3,7 @@ Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
 This software is subject to the Apache v2.0 License.
 */
 
+
 #include "colorModelConversion.h"
 #include "colorModelConvSpecial.h"
 #include "colorModelConvSpecialDef.h"
@@ -741,17 +742,15 @@ FwStatus PREFIX_OPT( OPT_PREFIX, fwiHLSToBGR_8u_P3C3R )( const Fw8u *const pSrc[
 FwStatus PREFIX_OPT( OPT_PREFIX, fwiRGBToHSV_8u_C3R )( const Fw8u *pSrc, int srcStep, 
                                                          Fw8u *pDst,       int dstStep, FwiSize roiSize )        
 { 
-    typedef NoChromaSampling::ChannelToChannel_REF<CMC::CH_C3, Fw8u, C3, Fw8u, C3, RGBToHSV_8u8u> FeType;
-    FeType data;
-    return fe< FeType >( data, pSrc, srcStep, pDst, dstStep, roiSize );
+    iRGBToHSV_8u_C3R<Fw8u,C3,Fw8u,C3> data;
+    return fe< iRGBToHSV_8u_C3R<Fw8u,C3,Fw8u,C3> >( data, pSrc, srcStep, pDst, dstStep, roiSize );
 }
 
 FwStatus PREFIX_OPT( OPT_PREFIX, fwiRGBToHSV_8u_AC4R )( const Fw8u *pSrc, int srcStep, 
                                                           Fw8u *pDst,       int dstStep, FwiSize roiSize )    
 {
-    typedef NoChromaSampling::ChannelToChannel_REF<CMC::CH_AC4, Fw8u, AC4, Fw8u, AC4, RGBToHSV_8u8u> FeType;
-    FeType data;
-    return fe< FeType >( data, pSrc, srcStep, pDst, dstStep, roiSize );
+    iRGBToHSV_8u_C3R<Fw8u,AC4,Fw8u,AC4> data;
+    return fe< iRGBToHSV_8u_C3R<Fw8u,AC4,Fw8u,AC4> >( data, pSrc, srcStep, pDst, dstStep, roiSize );
 }
 
 FwStatus PREFIX_OPT( OPT_PREFIX, fwiRGBToHSV_16u_C3R )( const Fw16u *pSrc, int srcStep, 

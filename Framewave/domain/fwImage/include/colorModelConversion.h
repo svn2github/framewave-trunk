@@ -8,6 +8,7 @@ This software is subject to the Apache v2.0 License.
 
 #include "colorModelConvConst.h"
 #include "Constants.h"
+#include "fe.h"
 
 #define HLSRGMac(a,h,m1,m2)  if (h < 60) { a = m1 + (m2 - m1)*h / 60; }                 \
                              else if (h < 180) { a = m2;                              } \
@@ -1372,6 +1373,46 @@ namespace OPT_LEVEL
         case C1:  d[0] = FW_REF::Normalize<TS,TD>::Scale( H, 360.0 ); // H
         }
     }
+
+
+        
+        template<typename TS,CH ChSrc,typename TD,CH ChDst>
+        class iRGBToHSV_8u_C3R :  public fe2<TS,ChSrc,TD,ChDst>
+        {
+        public:
+            FE_REF
+            IV REFR( const Fw8u *s, Fw8u *d ) const
+            {
+                double rgb[3];
+                rgb[0] = FW_REF::Normalize<TS,TS>::Scale( (double)s[0] );
+                rgb[1] = FW_REF::Normalize<TS,TS>::Scale( (double)s[1] );
+                rgb[2] = FW_REF::Normalize<TS,TS>::Scale( (double)s[2] );
+                double V = MAX( MAX( rgb[0], rgb[1] ), rgb[2]);
+                double temp = MIN( MIN( rgb[0],rgb[1] ), rgb[2]);
+                double H = 0, S = 0, delta=0, Cr=0, Cg=0, Cb=0;
+
+                if (V == 0.0){ S = 0; }
+                else { S = (V - temp) / V; }
+
+                // Hue
+                delta = V - temp;
+                Cr = (V - rgb[0]) / delta;
+                Cg = (V - rgb[1]) / delta;
+                Cb = (V - rgb[2]) / delta;
+
+                if (V == rgb[0]){ H = Cb - Cg;} // R
+                if (V == rgb[1]){H = 2 + Cr - Cb;} // G
+                if (V== rgb[2]) {H = 4 + Cg - Cr;}// B
+                H = H*60;
+                if (H < 0){H += 360.0;}
+
+                d[2] = FW_REF::Normalize<TS,TD>::Unscale( V ); // V
+                d[1] = FW_REF::Normalize<TS,TD>::Unscale( S ); // S
+                d[0] = FW_REF::Normalize<TS,TD>::Scale( H, 360.0 ); // H
+            }
+
+        };
+
 
     SYS_INLINE void RGBToHSV_8u8u( const Fw8u *s, CH cs, Fw8u *d, CH cd )
     {
