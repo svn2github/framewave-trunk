@@ -344,6 +344,10 @@
 				RelativePath=".\T_ColorConv.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\T_JPEGColor.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
