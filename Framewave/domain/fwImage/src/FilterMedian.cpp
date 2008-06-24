@@ -77,7 +77,7 @@ namespace FiltersMedian
             return maskSize.width * maskSize.height * chCount * sizeof( CalcType );
         }
 
-        static inline void Calculate(  const SrcType * pSrc, int srcStep,
+        static inline void Calculate(  const SrcType * pSrc, int srcstep,
                                              DstType * pDst, int /*dstStep*/,
                                        const FwiSize & maskSize, 
                                        const FwiPoint & /*anchor*/,
@@ -87,7 +87,7 @@ namespace FiltersMedian
             const int nSortedListLength = maskSize.width * maskSize.height;
             const int middleIndex = maskSize.height * maskSize.width / 2;
 
-            SrcType * pEnd = (SrcType*)(((Fw8u*)(pSrc)) + maskSize.height * srcStep);
+            SrcType * pEnd = (SrcType*)(((Fw8u*)(pSrc)) + maskSize.height * srcstep);
             int nListLength[chCount] = {0};
             while( pSrc < pEnd )
             {
@@ -102,7 +102,7 @@ namespace FiltersMedian
                     pElement++;
                     channel = ( channel + 1 ) % chCount;
                 }
-                pSrc = (SrcType*)(((Fw8u*)(pSrc)) + srcStep);
+                pSrc = (SrcType*)(((Fw8u*)(pSrc)) + srcstep);
             }
 
             for( int ch = 0; ch < chCount; ch++ )
@@ -111,7 +111,7 @@ namespace FiltersMedian
             }
         }
 
-        static inline void CalculateRight(  const SrcType * pSrc, int srcStep,
+        static inline void CalculateRight(  const SrcType * pSrc, int srcstep,
                                                   DstType * pDst, int /*dstStep*/,
                                             const FwiSize & maskSize, 
                                             const FwiPoint & /*anchor*/,
@@ -121,7 +121,7 @@ namespace FiltersMedian
             const int nSortedListLength = maskSize.width * maskSize.height;
             const int middleIndex = maskSize.height * maskSize.width / 2;
 
-            SrcType * pEnd = (SrcType*)(((Fw8u*)(pSrc)) + maskSize.height * srcStep);
+            SrcType * pEnd = (SrcType*)(((Fw8u*)(pSrc)) + maskSize.height * srcstep);
             while( pSrc < pEnd )
             {
                 const SrcType *pOldElement = pSrc;
@@ -138,7 +138,7 @@ namespace FiltersMedian
                     pOldElement++;
                     pNewElement++;
                 }
-                pSrc = (SrcType*)(((Fw8u*)pSrc) + srcStep);
+                pSrc = (SrcType*)(((Fw8u*)pSrc) + srcstep);
             } // while
 
             for( int channel = 0; channel < chCount; channel++ )
@@ -148,7 +148,7 @@ namespace FiltersMedian
             }
         }
 
-        static inline void CalculateLeft(  const SrcType * pSrc, int srcStep,
+        static inline void CalculateLeft(  const SrcType * pSrc, int srcstep,
                                                  DstType * pDst, int /*dstStep*/,
                                            const FwiSize & maskSize, 
                                            const FwiPoint & /*anchor*/,
@@ -158,7 +158,7 @@ namespace FiltersMedian
             const int nSortedListLength = maskSize.width * maskSize.height;
             const int middleIndex = maskSize.height * maskSize.width / 2;
 
-            SrcType * pEnd = (SrcType*)(((Fw8u*)(pSrc)) + maskSize.height * srcStep);
+            SrcType * pEnd = (SrcType*)(((Fw8u*)(pSrc)) + maskSize.height * srcstep);
             while( pSrc < pEnd )
             {
                 const SrcType *pOldElement = pSrc + (maskSize.width - 1) * chCount;
@@ -175,7 +175,7 @@ namespace FiltersMedian
                     pOldElement++;
                     pNewElement++;
                 }
-                pSrc = (SrcType*)(((Fw8u*)pSrc) + srcStep);
+                pSrc = (SrcType*)(((Fw8u*)pSrc) + srcstep);
             } // while
 
             for( int channel = 0; channel < chCount; channel++ )
@@ -185,7 +185,7 @@ namespace FiltersMedian
             }
         }
 
-        static inline void CalculateDown(  const SrcType * pSrc, int srcStep,
+        static inline void CalculateDown(  const SrcType * pSrc, int srcstep,
                                                  DstType * pDst, int /*dstStep*/,
                                            const FwiSize & maskSize, 
                                            const FwiPoint & /*anchor*/,
@@ -196,7 +196,7 @@ namespace FiltersMedian
             const int middleIndex = maskSize.height * maskSize.width / 2;
 
             const SrcType *pOldElement = pSrc;
-            const SrcType *pNewElement = (const SrcType *)(((Fw8u*)pSrc) + maskSize.height * srcStep);
+            const SrcType *pNewElement = (const SrcType *)(((Fw8u*)pSrc) + maskSize.height * srcstep);
             const SrcType *LastElement = pOldElement + maskSize.width * chCount;
             int channel = 0;
             while( pOldElement < LastElement )
@@ -217,7 +217,7 @@ namespace FiltersMedian
             }
         }
 
-        static inline void CalculateUp(  const SrcType * pSrc, int srcStep,
+        static inline void CalculateUp(  const SrcType * pSrc, int srcstep,
                                                DstType * pDst, int /*dstStep*/,
                                          const FwiSize & maskSize, 
                                          const FwiPoint & /*anchor*/,
@@ -227,8 +227,8 @@ namespace FiltersMedian
             const int nSortedListLength = maskSize.width * maskSize.height;
             const int middleIndex = maskSize.height * maskSize.width / 2;
 
-            const SrcType *pOldElement = (const SrcType *)(((Fw8u*)pSrc) + (maskSize.height-1) * srcStep);
-            const SrcType *pNewElement = (const SrcType *)(((Fw8u*)pSrc) - srcStep);
+            const SrcType *pOldElement = (const SrcType *)(((Fw8u*)pSrc) + (maskSize.height-1) * srcstep);
+            const SrcType *pNewElement = (const SrcType *)(((Fw8u*)pSrc) - srcstep);
             const SrcType *LastElement = pOldElement + maskSize.width * chCount;
             int channel = 0;
             while( pOldElement < LastElement )
@@ -259,7 +259,7 @@ namespace FiltersMedian
             return maskSize.width * maskSize.height * C4 * sizeof( CalcType );
         }
 
-        static inline void Calculate(  const SrcType * pSrc, int srcStep,
+        static inline void Calculate(  const SrcType * pSrc, int srcstep,
                                              DstType * pDst, int /*dstStep*/,
                                        const FwiSize & maskSize, 
                                        const FwiPoint & /*anchor*/,
@@ -269,7 +269,7 @@ namespace FiltersMedian
             const int nSortedListLength = maskSize.width * maskSize.height;
             const int middleIndex = maskSize.height * maskSize.width / 2;
 
-            SrcType * pEnd = (SrcType*)(((Fw8u*)(pSrc)) + maskSize.height * srcStep);
+            SrcType * pEnd = (SrcType*)(((Fw8u*)(pSrc)) + maskSize.height * srcstep);
             int nListLength = 0;
             while( pSrc < pEnd )
             {
@@ -286,7 +286,7 @@ namespace FiltersMedian
                     OnePassSort( pSortedList + nSortedListLength * 2, nListLength, nListLength - 1 );
                     pElement += C4;
                 }
-                pSrc = (SrcType*)(((Fw8u*)(pSrc)) + srcStep);
+                pSrc = (SrcType*)(((Fw8u*)(pSrc)) + srcstep);
             }
 
             pDst[0] = (DstType)*(pSortedList + nSortedListLength * 0 + middleIndex);
@@ -294,7 +294,7 @@ namespace FiltersMedian
             pDst[2] = (DstType)*(pSortedList + nSortedListLength * 2 + middleIndex);
         }
 
-        static inline void CalculateRight(  const SrcType * pSrc, int srcStep,
+        static inline void CalculateRight(  const SrcType * pSrc, int srcstep,
                                                   DstType * pDst, int /*dstStep*/,
                                             const FwiSize & maskSize, 
                                             const FwiPoint & /*anchor*/,
@@ -304,7 +304,7 @@ namespace FiltersMedian
             const int nSortedListLength = maskSize.width * maskSize.height;
             const int middleIndex = maskSize.height * maskSize.width / 2;
 
-            SrcType * pEnd = (SrcType*)(((Fw8u*)(pSrc)) + maskSize.height * srcStep);
+            SrcType * pEnd = (SrcType*)(((Fw8u*)(pSrc)) + maskSize.height * srcstep);
             const SrcType *pOldElement = pSrc;
             const SrcType *pNewElement = pSrc + maskSize.width * C4;
             while( pOldElement < pEnd )
@@ -326,8 +326,8 @@ namespace FiltersMedian
                 *(pSortedList + nSortedListLength * 2 + nOldIndex) = *(pNewElement+2);
                 OnePassSort( pSortedList + nSortedListLength * 2, nSortedListLength, nOldIndex );
 
-                pOldElement = (SrcType*)(((Fw8u*)pOldElement) + srcStep);
-                pNewElement = (SrcType*)(((Fw8u*)pNewElement) + srcStep);
+                pOldElement = (SrcType*)(((Fw8u*)pOldElement) + srcstep);
+                pNewElement = (SrcType*)(((Fw8u*)pNewElement) + srcstep);
             } // while
 
             *(pDst+0) = (DstType)*(pSortedList + nSortedListLength * 0 + middleIndex);
@@ -335,7 +335,7 @@ namespace FiltersMedian
             *(pDst+2) = (DstType)*(pSortedList + nSortedListLength * 2 + middleIndex);
         }
 
-        static inline void CalculateLeft(  const SrcType * pSrc, int srcStep,
+        static inline void CalculateLeft(  const SrcType * pSrc, int srcstep,
                                                  DstType * pDst, int /*dstStep*/,
                                            const FwiSize & maskSize, 
                                            const FwiPoint & /*anchor*/,
@@ -347,7 +347,7 @@ namespace FiltersMedian
             int nOldIndex;
 
             const SrcType *pOldElement = pSrc + (maskSize.width - 1) * C4;
-            const SrcType * pEnd = (const SrcType*)(((Fw8u*)(pOldElement)) + maskSize.height * srcStep);
+            const SrcType * pEnd = (const SrcType*)(((Fw8u*)(pOldElement)) + maskSize.height * srcstep);
             const SrcType *pNewElement = pSrc - C4;
             while( pOldElement < pEnd )
             {
@@ -366,8 +366,8 @@ namespace FiltersMedian
                 *(pSortedList + nSortedListLength * 2 + nOldIndex) = *(pNewElement+2);
                 OnePassSort( pSortedList + nSortedListLength * 2, nSortedListLength, nOldIndex );
 
-                pOldElement = (SrcType*)(((Fw8u*)pOldElement) + srcStep);
-                pNewElement = (SrcType*)(((Fw8u*)pNewElement) + srcStep);
+                pOldElement = (SrcType*)(((Fw8u*)pOldElement) + srcstep);
+                pNewElement = (SrcType*)(((Fw8u*)pNewElement) + srcstep);
             } // while
 
             *(pDst+0) = (DstType)*(pSortedList + nSortedListLength * 0 + middleIndex);
@@ -375,7 +375,7 @@ namespace FiltersMedian
             *(pDst+2) = (DstType)*(pSortedList + nSortedListLength * 2 + middleIndex);
         }
 
-        static inline void CalculateDown(  const SrcType * pSrc, int srcStep,
+        static inline void CalculateDown(  const SrcType * pSrc, int srcstep,
                                                  DstType * pDst, int /*dstStep*/,
                                            const FwiSize & maskSize, 
                                            const FwiPoint & /*anchor*/,
@@ -386,7 +386,7 @@ namespace FiltersMedian
             const int middleIndex = maskSize.height * maskSize.width / 2;
 
             const SrcType *pOldElement = pSrc;
-            const SrcType *pNewElement = (const SrcType *)(((Fw8u*)pSrc) + maskSize.height * srcStep);
+            const SrcType *pNewElement = (const SrcType *)(((Fw8u*)pSrc) + maskSize.height * srcstep);
             const SrcType *LastElement = pOldElement + maskSize.width * C4;
             int nOldIndex;
             while( pOldElement < LastElement )
@@ -412,7 +412,7 @@ namespace FiltersMedian
             *(pDst+2) = (DstType)*(pSortedList + nSortedListLength * 2 + middleIndex);
         }
 
-        static inline void CalculateUp(  const SrcType * pSrc, int srcStep,
+        static inline void CalculateUp(  const SrcType * pSrc, int srcstep,
                                                DstType * pDst, int /*dstStep*/,
                                          const FwiSize & maskSize, 
                                          const FwiPoint & /*anchor*/,
@@ -422,8 +422,8 @@ namespace FiltersMedian
             const int nSortedListLength = maskSize.width * maskSize.height;
             const int middleIndex = maskSize.height * maskSize.width / 2;
 
-            const SrcType *pOldElement = (const SrcType *)(((Fw8u*)pSrc) + (maskSize.height-1) * srcStep);
-            const SrcType *pNewElement = (const SrcType *)(((Fw8u*)pSrc) - srcStep);
+            const SrcType *pOldElement = (const SrcType *)(((Fw8u*)pSrc) + (maskSize.height-1) * srcstep);
+            const SrcType *pNewElement = (const SrcType *)(((Fw8u*)pSrc) - srcstep);
             const SrcType *LastElement = pOldElement + maskSize.width * C4;
             int nOldIndex;
             while( pOldElement < LastElement )
@@ -458,7 +458,7 @@ namespace FiltersMedian
             return ( maskSize.width + maskSize.height - 1 ) * chCount * sizeof( CalcType );
         }
 
-        static inline void CalculateAllChannels(  const SrcType * pSrc, int srcStep,
+        static inline void CalculateAllChannels(  const SrcType * pSrc, int srcstep,
                                                   DstType * pDst, int /*dstStep*/,
                                                   const FwiSize & maskSize, 
                                                   const FwiPoint & anchor,
@@ -468,8 +468,8 @@ namespace FiltersMedian
             const int nSortedListLength = maskSize.width + maskSize.height - 1;
             const int middleIndex = nSortedListLength / 2;
 
-            const SrcType * pElement = (SrcType*)(((Fw8u*)(pSrc)) - anchor.y * srcStep);
-            const SrcType * pEnd = (const SrcType*)(((Fw8u*)(pElement)) + maskSize.height * srcStep);
+            const SrcType * pElement = (SrcType*)(((Fw8u*)(pSrc)) - anchor.y * srcstep);
+            const SrcType * pEnd = (const SrcType*)(((Fw8u*)(pElement)) + maskSize.height * srcstep);
             int nListLength = 0;
             while( pElement < pEnd )
             {
@@ -479,7 +479,7 @@ namespace FiltersMedian
                     OnePassSort( pSortedList + nSortedListLength * channel, nListLength + 1, nListLength );
                 }
                 nListLength++;
-                pElement = (SrcType*)(((Fw8u*)(pElement)) + srcStep);
+                pElement = (SrcType*)(((Fw8u*)(pElement)) + srcstep);
             }
 
             pElement = pSrc - anchor.y * chCount;
@@ -522,7 +522,7 @@ namespace FiltersMedian
             return ( maskSize.width + maskSize.height - 1 ) * C3 * sizeof( CalcType );
         }
 
-        static inline void CalculateAllChannels(  const SrcType * pSrc, int srcStep,
+        static inline void CalculateAllChannels(  const SrcType * pSrc, int srcstep,
                                                   DstType * pDst, int /*dstStep*/,
                                                   const FwiSize & maskSize, 
                                                   const FwiPoint & anchor,
@@ -533,8 +533,8 @@ namespace FiltersMedian
             const int nSortedListLength = maskSize.width + maskSize.height - 1;
             const int middleIndex = nSortedListLength / 2;
 
-            const SrcType * pElement = (SrcType*)(((Fw8u*)(pSrc)) - anchor.y * srcStep);
-            const SrcType * pEnd = (const SrcType*)(((Fw8u*)(pElement)) + maskSize.height * srcStep);
+            const SrcType * pElement = (SrcType*)(((Fw8u*)(pSrc)) - anchor.y * srcstep);
+            const SrcType * pEnd = (const SrcType*)(((Fw8u*)(pElement)) + maskSize.height * srcstep);
             int nListLength = 0;
             while( pElement < pEnd )
             {
@@ -544,7 +544,7 @@ namespace FiltersMedian
                     OnePassSort( pSortedList + nSortedListLength * channel, nListLength + 1, nListLength );
                 }
                 nListLength++;
-                pElement = (SrcType*)(((Fw8u*)(pElement)) + srcStep);
+                pElement = (SrcType*)(((Fw8u*)(pElement)) + srcstep);
             }
 
             pElement = pSrc - anchor.y * chCount;
@@ -597,11 +597,11 @@ namespace FiltersMedian
             return dR + dG + dB;
         }
 
-        static inline const SrcType * FindMinimum3x3( const SrcType * pSrcPtr, int srcStep, CalcType & minDist )
+        static inline const SrcType * FindMinimum3x3( const SrcType * pSrcPtr, int srcstep, CalcType & minDist )
         {
             CalcType tempDist; 
-            const SrcType * pSrcAbove = (const SrcType *)(((Fw8u*)pSrcPtr) - srcStep);
-            const SrcType * pSrcBelow = (const SrcType *)(((Fw8u*)pSrcPtr) + srcStep);
+            const SrcType * pSrcAbove = (const SrcType *)(((Fw8u*)pSrcPtr) - srcstep);
+            const SrcType * pSrcBelow = (const SrcType *)(((Fw8u*)pSrcPtr) + srcstep);
             const SrcType * pMinPtr = pSrcPtr - chCount;
             minDist = Distance( pSrcPtr, pMinPtr );
 
@@ -650,13 +650,13 @@ namespace FiltersMedian
             return pMinPtr;
         }
 
-        static inline void CalculateAllChannels(   const SrcType * pSrcPtr, int srcStep,
+        static inline void CalculateAllChannels(   const SrcType * pSrcPtr, int srcstep,
                                                    DstType * pDst, int /*dstStep*/,
                                                    const FwiSize & /*maskSize*/, 
                                                    const FwiPoint & /*anchor*/ )
         {
             CalcType minDist;
-            const SrcType * pMinPtr = FindMinimum3x3( pSrcPtr, srcStep, minDist );
+            const SrcType * pMinPtr = FindMinimum3x3( pSrcPtr, srcstep, minDist );
             *(pDst+0) = *(pMinPtr+0);
             *(pDst+1) = *(pMinPtr+1);
             *(pDst+2) = *(pMinPtr+2);
@@ -666,15 +666,15 @@ namespace FiltersMedian
     template< CH chCount, typename SrcType, typename DstType, typename CalcType >
     struct FilterMedianColor5x5 : public FilterMedianColor3x3< chCount, SrcType, DstType, CalcType >
     {
-        static inline const SrcType * FindMinimum5x5( const SrcType * pSrcPtr, int srcStep, CalcType & minDist )
+        static inline const SrcType * FindMinimum5x5( const SrcType * pSrcPtr, int srcstep, CalcType & minDist )
         {
             CalcType tempDist; 
-            const SrcType * pSrcAbove2 = (const SrcType *)(((Fw8u*)pSrcPtr) - 2 * srcStep);
-            const SrcType * pSrcAbove = (const SrcType *)(((Fw8u*)pSrcPtr) - srcStep);
-            const SrcType * pSrcBelow = (const SrcType *)(((Fw8u*)pSrcPtr) + srcStep);
-            const SrcType * pSrcBelow2 = (const SrcType *)(((Fw8u*)pSrcPtr) + 2 * srcStep);
+            const SrcType * pSrcAbove2 = (const SrcType *)(((Fw8u*)pSrcPtr) - 2 * srcstep);
+            const SrcType * pSrcAbove = (const SrcType *)(((Fw8u*)pSrcPtr) - srcstep);
+            const SrcType * pSrcBelow = (const SrcType *)(((Fw8u*)pSrcPtr) + srcstep);
+            const SrcType * pSrcBelow2 = (const SrcType *)(((Fw8u*)pSrcPtr) + 2 * srcstep);
             
-            const SrcType * pMinPtr = FindMinimum3x3( pSrcPtr, srcStep, minDist );
+            const SrcType * pMinPtr = FindMinimum3x3( pSrcPtr, srcstep, minDist );
 
             tempDist = Distance( pSrcPtr, pSrcPtr - chCount * 2 );
             if( tempDist < minDist )
@@ -774,13 +774,13 @@ namespace FiltersMedian
             }
             return pMinPtr;
         }
-        static inline void CalculateAllChannels(   const SrcType * pSrcPtr, int srcStep,
+        static inline void CalculateAllChannels(   const SrcType * pSrcPtr, int srcstep,
                                                    DstType * pDst, int /*dstStep*/,
                                                    const FwiSize & /*maskSize*/, 
                                                    const FwiPoint & /*anchor*/ )
         {
             CalcType minDist;
-            const SrcType * pMinPtr = FindMinimum5x5( pSrcPtr, srcStep, minDist );
+            const SrcType * pMinPtr = FindMinimum5x5( pSrcPtr, srcstep, minDist );
             *(pDst+0) = *(pMinPtr+0);
             *(pDst+1) = *(pMinPtr+1);
             *(pDst+2) = *(pMinPtr+2);
@@ -795,7 +795,7 @@ namespace FiltersMedian
 using namespace OPT_LEVEL;
 
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_8u_C1R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_8u_C1R)( const Fw8u * pSrc, int srcstep,
                                Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiSize maskSize, FwiPoint anchor )
 {
@@ -806,10 +806,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_8u_C1R)( const Fw8u * pSrc, int 
         Fw8u, 
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, maskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, maskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_8u_C3R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_8u_C3R)( const Fw8u * pSrc, int srcstep,
                                Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiSize maskSize, FwiPoint anchor )
 {
@@ -820,10 +820,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_8u_C3R)( const Fw8u * pSrc, int 
         Fw8u, 
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, maskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, maskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_8u_C4R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_8u_C4R)( const Fw8u * pSrc, int srcstep,
                                Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiSize maskSize, FwiPoint anchor )
 {
@@ -834,10 +834,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_8u_C4R)( const Fw8u * pSrc, int 
         Fw8u, 
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, maskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, maskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_8u_AC4R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_8u_AC4R)( const Fw8u * pSrc, int srcstep,
                                Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiSize maskSize, FwiPoint anchor )
 {
@@ -848,10 +848,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_8u_AC4R)( const Fw8u * pSrc, int
         Fw8u, 
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, maskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, maskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_16s_C1R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_16s_C1R)( const Fw16s * pSrc, int srcstep,
                                Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiSize maskSize, FwiPoint anchor )
 {
@@ -862,10 +862,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_16s_C1R)( const Fw16s * pSrc, in
         Fw16s,
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, maskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, maskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_16s_C3R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_16s_C3R)( const Fw16s * pSrc, int srcstep,
                                Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiSize maskSize, FwiPoint anchor )
 {
@@ -876,10 +876,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_16s_C3R)( const Fw16s * pSrc, in
         Fw16s, 
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, maskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, maskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_16s_C4R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_16s_C4R)( const Fw16s * pSrc, int srcstep,
                                Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiSize maskSize, FwiPoint anchor )
 {
@@ -890,10 +890,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_16s_C4R)( const Fw16s * pSrc, in
         Fw16s, 
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, maskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, maskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_16s_AC4R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_16s_AC4R)( const Fw16s * pSrc, int srcstep,
                                Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiSize maskSize, FwiPoint anchor )
 {
@@ -904,10 +904,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedian_16s_AC4R)( const Fw16s * pSrc, i
         Fw16s, 
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, maskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, maskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_8u_C1R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_8u_C1R)( const Fw8u * pSrc, int srcstep,
                                Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -940,10 +940,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_8u_C1R)( const Fw8u * pSrc,
         Fw8u, 
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_8u_C3R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_8u_C3R)( const Fw8u * pSrc, int srcstep,
                                Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -976,10 +976,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_8u_C3R)( const Fw8u * pSrc,
         Fw8u, 
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_8u_C4R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_8u_C4R)( const Fw8u * pSrc, int srcstep,
                                Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -1012,10 +1012,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_8u_C4R)( const Fw8u * pSrc,
         Fw8u, 
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_8u_AC4R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_8u_AC4R)( const Fw8u * pSrc, int srcstep,
                                Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -1048,10 +1048,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_8u_AC4R)( const Fw8u * pSrc
         Fw8u, 
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_16s_C1R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_16s_C1R)( const Fw16s * pSrc, int srcstep,
                                Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -1084,10 +1084,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_16s_C1R)( const Fw16s * pSr
         Fw16s, 
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_16s_C3R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_16s_C3R)( const Fw16s * pSrc, int srcstep,
                                Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -1120,10 +1120,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_16s_C3R)( const Fw16s * pSr
         Fw16s, 
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_16s_C4R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_16s_C4R)( const Fw16s * pSrc, int srcstep,
                                Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -1156,10 +1156,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_16s_C4R)( const Fw16s * pSr
         Fw16s, 
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_16s_AC4R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_16s_AC4R)( const Fw16s * pSrc, int srcstep,
                                Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -1192,10 +1192,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianHoriz_16s_AC4R)( const Fw16s * pS
         Fw16s, 
         FilterCommon::TProcessor_ZigZagRDLD,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_8u_C1R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_8u_C1R)( const Fw8u * pSrc, int srcstep,
                                Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -1228,10 +1228,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_8u_C1R)( const Fw8u * pSrc, 
         Fw8u, 
         FilterCommon::TProcessor_ZigZagDRUR,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_8u_C3R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_8u_C3R)( const Fw8u * pSrc, int srcstep,
                                Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -1264,10 +1264,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_8u_C3R)( const Fw8u * pSrc, 
         Fw8u, 
         FilterCommon::TProcessor_ZigZagDRUR,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_8u_C4R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_8u_C4R)( const Fw8u * pSrc, int srcstep,
                                Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -1300,10 +1300,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_8u_C4R)( const Fw8u * pSrc, 
         Fw8u, 
         FilterCommon::TProcessor_ZigZagDRUR,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_8u_AC4R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_8u_AC4R)( const Fw8u * pSrc, int srcstep,
                                Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -1336,10 +1336,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_8u_AC4R)( const Fw8u * pSrc,
         Fw8u, 
         FilterCommon::TProcessor_ZigZagDRUR,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_16s_C1R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_16s_C1R)( const Fw16s * pSrc, int srcstep,
                                Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -1372,10 +1372,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_16s_C1R)( const Fw16s * pSrc
         Fw16s, 
         FilterCommon::TProcessor_ZigZagDRUR,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_16s_C3R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_16s_C3R)( const Fw16s * pSrc, int srcstep,
                                Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -1408,10 +1408,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_16s_C3R)( const Fw16s * pSrc
         Fw16s, 
         FilterCommon::TProcessor_ZigZagDRUR,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_16s_C4R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_16s_C4R)( const Fw16s * pSrc, int srcstep,
                                Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -1444,10 +1444,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_16s_C4R)( const Fw16s * pSrc
         Fw16s, 
         FilterCommon::TProcessor_ZigZagDRUR,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_16s_AC4R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_16s_AC4R)( const Fw16s * pSrc, int srcstep,
                                Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                FwiMaskSize maskSize )
 {
@@ -1480,10 +1480,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianVert_16s_AC4R)( const Fw16s * pSr
         Fw16s, 
         FilterCommon::TProcessor_ZigZagDRUR,
         FiltersMedian::FilterMedian, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_8u_C1R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_8u_C1R)( const Fw8u * pSrc, int srcstep,
                                         Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                         FwiMaskSize maskSize )
 {
@@ -1516,10 +1516,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_8u_C1R)( const Fw8u * pSrc,
         Fw8u, 
         FilterCommon::TProcessorAllChannelsWithBuffer_pSrc_sStep_pDst_dStep_roi_mask_anchor,
         FiltersMedian::FilterMedianCross, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_8u_C3R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_8u_C3R)( const Fw8u * pSrc, int srcstep,
                                         Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                         FwiMaskSize maskSize )
 {
@@ -1552,10 +1552,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_8u_C3R)( const Fw8u * pSrc,
         Fw8u, 
         FilterCommon::TProcessorAllChannelsWithBuffer_pSrc_sStep_pDst_dStep_roi_mask_anchor,
         FiltersMedian::FilterMedianCross, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_8u_AC4R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_8u_AC4R)( const Fw8u * pSrc, int srcstep,
                                         Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                         FwiMaskSize maskSize )
 {
@@ -1588,10 +1588,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_8u_AC4R)( const Fw8u * pSrc
         Fw8u, 
         FilterCommon::TProcessorAllChannelsWithBuffer_pSrc_sStep_pDst_dStep_roi_mask_anchor,
         FiltersMedian::FilterMedianCross, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_16s_C1R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_16s_C1R)( const Fw16s * pSrc, int srcstep,
                                         Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                         FwiMaskSize maskSize )
 {
@@ -1624,10 +1624,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_16s_C1R)( const Fw16s * pSr
         Fw16s, 
         FilterCommon::TProcessorAllChannelsWithBuffer_pSrc_sStep_pDst_dStep_roi_mask_anchor,
         FiltersMedian::FilterMedianCross, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_16s_C3R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_16s_C3R)( const Fw16s * pSrc, int srcstep,
                                         Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                         FwiMaskSize maskSize )
 {
@@ -1660,10 +1660,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_16s_C3R)( const Fw16s * pSr
         Fw16s, 
         FilterCommon::TProcessorAllChannelsWithBuffer_pSrc_sStep_pDst_dStep_roi_mask_anchor,
         FiltersMedian::FilterMedianCross, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_16s_AC4R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_16s_AC4R)( const Fw16s * pSrc, int srcstep,
                                         Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                         FwiMaskSize maskSize )
 {
@@ -1696,14 +1696,14 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianCross_16s_AC4R)( const Fw16s * pS
         Fw16s, 
         FilterCommon::TProcessorAllChannelsWithBuffer_pSrc_sStep_pDst_dStep_roi_mask_anchor,
         FiltersMedian::FilterMedianCross, FilterCommon::DataWithBuffer >
-    ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+    ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
 }
 
 #endif // BUILD_NUM_AT_LEAST
 
 #if BUILD_NUM_AT_LEAST( 100 )
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_8u_C3R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_8u_C3R)( const Fw8u * pSrc, int srcstep,
                                         Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                         FwiMaskSize maskSize )
 {
@@ -1718,7 +1718,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_8u_C3R)( const Fw8u * pSrc,
             Fw16s, 
             FilterCommon::TProcessorAllChannels_pSrc_sStep_pDst_dStep_roi_mask_anchor,
             FiltersMedian::FilterMedianColor3x3, FilterCommon::DataWithMask >
-        ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+        ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
     }
     else if( maskSize == fwMskSize5x5 )
     {
@@ -1731,7 +1731,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_8u_C3R)( const Fw8u * pSrc,
             Fw16s, 
             FilterCommon::TProcessorAllChannels_pSrc_sStep_pDst_dStep_roi_mask_anchor,
             FiltersMedian::FilterMedianColor5x5, FilterCommon::DataWithMask >
-        ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+        ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
     }
     else
     {
@@ -1739,7 +1739,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_8u_C3R)( const Fw8u * pSrc,
     }
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_8u_AC4R)( const Fw8u * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_8u_AC4R)( const Fw8u * pSrc, int srcstep,
                                         Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                         FwiMaskSize maskSize )
 {
@@ -1754,7 +1754,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_8u_AC4R)( const Fw8u * pSrc
             Fw16s, 
             FilterCommon::TProcessorAllChannels_pSrc_sStep_pDst_dStep_roi_mask_anchor,
             FiltersMedian::FilterMedianColor3x3, FilterCommon::DataWithMask >
-        ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+        ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
     }
     else if( maskSize == fwMskSize5x5 )
     {
@@ -1767,7 +1767,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_8u_AC4R)( const Fw8u * pSrc
             Fw16s, 
             FilterCommon::TProcessorAllChannels_pSrc_sStep_pDst_dStep_roi_mask_anchor,
             FiltersMedian::FilterMedianColor5x5, FilterCommon::DataWithMask >
-        ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+        ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
     }
     else
     {
@@ -1775,7 +1775,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_8u_AC4R)( const Fw8u * pSrc
     }
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_16s_C3R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_16s_C3R)( const Fw16s * pSrc, int srcstep,
                                         Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                         FwiMaskSize maskSize )
 {
@@ -1790,7 +1790,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_16s_C3R)( const Fw16s * pSr
             Fw32s, 
             FilterCommon::TProcessorAllChannels_pSrc_sStep_pDst_dStep_roi_mask_anchor,
             FiltersMedian::FilterMedianColor3x3, FilterCommon::DataWithMask >
-        ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+        ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
     }
     else if( maskSize == fwMskSize5x5 )
     {
@@ -1803,7 +1803,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_16s_C3R)( const Fw16s * pSr
             Fw32s, 
             FilterCommon::TProcessorAllChannels_pSrc_sStep_pDst_dStep_roi_mask_anchor,
             FiltersMedian::FilterMedianColor5x5, FilterCommon::DataWithMask >
-        ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+        ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
     }
     else
     {
@@ -1811,7 +1811,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_16s_C3R)( const Fw16s * pSr
     }
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_16s_AC4R)( const Fw16s * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_16s_AC4R)( const Fw16s * pSrc, int srcstep,
                                         Fw16s * pDst, int dstStep, FwiSize dstRoiSize,
                                         FwiMaskSize maskSize )
 {
@@ -1826,7 +1826,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_16s_AC4R)( const Fw16s * pS
             Fw32s, 
             FilterCommon::TProcessorAllChannels_pSrc_sStep_pDst_dStep_roi_mask_anchor,
             FiltersMedian::FilterMedianColor3x3, FilterCommon::DataWithMask >
-        ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+        ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
     }
     else if( maskSize == fwMskSize5x5 )
     {
@@ -1839,7 +1839,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_16s_AC4R)( const Fw16s * pS
             Fw32s, 
             FilterCommon::TProcessorAllChannels_pSrc_sStep_pDst_dStep_roi_mask_anchor,
             FiltersMedian::FilterMedianColor5x5, FilterCommon::DataWithMask >
-        ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+        ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
     }
     else
     {
@@ -1847,7 +1847,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_16s_AC4R)( const Fw16s * pS
     }
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_32f_C3R)( const Fw32f * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_32f_C3R)( const Fw32f * pSrc, int srcstep,
                                         Fw32f * pDst, int dstStep, FwiSize dstRoiSize,
                                         FwiMaskSize maskSize )
 {
@@ -1862,7 +1862,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_32f_C3R)( const Fw32f * pSr
             Fw32f, 
             FilterCommon::TProcessorAllChannels_pSrc_sStep_pDst_dStep_roi_mask_anchor,
             FiltersMedian::FilterMedianColor3x3, FilterCommon::DataWithMask >
-        ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+        ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
     }
     else if( maskSize == fwMskSize5x5 )
     {
@@ -1875,7 +1875,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_32f_C3R)( const Fw32f * pSr
             Fw32f, 
             FilterCommon::TProcessorAllChannels_pSrc_sStep_pDst_dStep_roi_mask_anchor,
             FiltersMedian::FilterMedianColor5x5, FilterCommon::DataWithMask >
-        ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+        ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
     }
     else
     {
@@ -1883,7 +1883,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_32f_C3R)( const Fw32f * pSr
     }
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_32f_AC4R)( const Fw32f * pSrc, int srcStep,
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_32f_AC4R)( const Fw32f * pSrc, int srcstep,
                                         Fw32f * pDst, int dstStep, FwiSize dstRoiSize,
                                         FwiMaskSize maskSize )
 {
@@ -1898,7 +1898,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_32f_AC4R)( const Fw32f * pS
             Fw32f, 
             FilterCommon::TProcessorAllChannels_pSrc_sStep_pDst_dStep_roi_mask_anchor,
             FiltersMedian::FilterMedianColor3x3, FilterCommon::DataWithMask >
-        ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+        ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
     }
     else if( maskSize == fwMskSize5x5 )
     {
@@ -1911,7 +1911,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterMedianColor_32f_AC4R)( const Fw32f * pS
             Fw32f, 
             FilterCommon::TProcessorAllChannels_pSrc_sStep_pDst_dStep_roi_mask_anchor,
             FiltersMedian::FilterMedianColor5x5, FilterCommon::DataWithMask >
-        ::Run( pSrc, srcStep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
+        ::Run( pSrc, srcstep, pDst, dstStep, dstRoiSize, realMaskSize, anchor );
     }
     else
     {

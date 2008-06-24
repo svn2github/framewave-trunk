@@ -24,7 +24,7 @@ namespace SharpenFilter
     struct Data
     {
         const DataType * pSrc;
-        int srcStep;
+        int srcstep;
         DataType * pDst;
         int dstStep;
         FwiSize dstRoiSize;
@@ -35,19 +35,19 @@ namespace SharpenFilter
     template< typename SrcDstType, typename CalcType, CH chCount >
     struct REF_FN
     {
-        static inline void el_fn( const SrcDstType *pSource, const int srcStep, SrcDstType *pDst )
+        static inline void el_fn( const SrcDstType *pSource, const int srcstep, SrcDstType *pDst )
         {
             const Fw8u *pSrc = (const Fw8u*)pSource;
             CalcType t1, t2, t3, m1, m2, m3, b1, b2, b3, tmp;
-            t1 = (CalcType)*(const SrcDstType*)&pSrc[ -srcStep-chCount*sizeof(SrcDstType) ];
-            t2 = (CalcType)*(const SrcDstType*)&pSrc[ -srcStep ];
-            t3 = (CalcType)*(const SrcDstType*)&pSrc[ -srcStep+chCount*sizeof(SrcDstType) ];
+            t1 = (CalcType)*(const SrcDstType*)&pSrc[ -srcstep-chCount*sizeof(SrcDstType) ];
+            t2 = (CalcType)*(const SrcDstType*)&pSrc[ -srcstep ];
+            t3 = (CalcType)*(const SrcDstType*)&pSrc[ -srcstep+chCount*sizeof(SrcDstType) ];
             m1 = (CalcType)*(const SrcDstType*)&pSrc[     0  -chCount*sizeof(SrcDstType) ];
             m2 = (CalcType)*(const SrcDstType*)&pSrc[     0     ];
             m3 = (CalcType)*(const SrcDstType*)&pSrc[        +chCount*sizeof(SrcDstType) ];
-            b1 = (CalcType)*(const SrcDstType*)&pSrc[ +srcStep-chCount*sizeof(SrcDstType) ];
-            b2 = (CalcType)*(const SrcDstType*)&pSrc[ +srcStep ];
-            b3 = (CalcType)*(const SrcDstType*)&pSrc[ +srcStep+chCount*sizeof(SrcDstType) ];
+            b1 = (CalcType)*(const SrcDstType*)&pSrc[ +srcstep-chCount*sizeof(SrcDstType) ];
+            b2 = (CalcType)*(const SrcDstType*)&pSrc[ +srcstep ];
+            b3 = (CalcType)*(const SrcDstType*)&pSrc[ +srcstep+chCount*sizeof(SrcDstType) ];
 
             t1 = t1 + m1 + b1;
             t2 = t2 + m2 + b2;
@@ -75,18 +75,18 @@ namespace SharpenFilter
     template< CH chCount, typename DataType, typename CalcType >
     struct RefrImpl
     {
-        static FwStatus REFR( const DataType * pSrc, const int srcStep, DataType * pDst, const int dstStep, FwiSize dstRoiSize )
+        static FwStatus REFR( const DataType * pSrc, const int srcstep, DataType * pDst, const int dstStep, FwiSize dstRoiSize )
         {
             DataType * pDataEnd = (DataType*)(((Fw8u*)pDst) + dstRoiSize.height * dstStep);
             
-            for( ; pDst<pDataEnd; pDst = (DataType*)(((Fw8u*)pDst)+dstStep), pSrc = (DataType*)(((Fw8u*)pSrc)+srcStep) )            // For each horizontal line
+            for( ; pDst<pDataEnd; pDst = (DataType*)(((Fw8u*)pDst)+dstStep), pSrc = (DataType*)(((Fw8u*)pSrc)+srcstep) )            // For each horizontal line
             {
                 const DataType *ps  = pSrc;
                 DataType *pd  = pDst;
                 const DataType *pEnd = pd + dstRoiSize.width * chCount;
         
                 for( ; pd<pEnd; ++ps, ++pd )                            // For each entry in the line
-                REF_FN<DataType, CalcType, chCount>::el_fn( ps, srcStep, pd );
+                REF_FN<DataType, CalcType, chCount>::el_fn( ps, srcstep, pd );
             }
             return fwStsNoErr;
         }
@@ -96,11 +96,11 @@ namespace SharpenFilter
     template< typename DataType, typename CalcType >
     struct RefrImpl< AC4, DataType, CalcType >
     {
-        static FwStatus REFR( const DataType * pSrc, const int srcStep, DataType * pDst, const int dstStep, FwiSize dstRoiSize )
+        static FwStatus REFR( const DataType * pSrc, const int srcstep, DataType * pDst, const int dstStep, FwiSize dstRoiSize )
         {
             DataType * pDataEnd = (DataType*)(((Fw8u*)pDst) + dstRoiSize.height * dstStep);
             
-            for( ; pDst<pDataEnd; pDst = (DataType*)(((Fw8u*)pDst)+dstStep), pSrc = (DataType*)(((Fw8u*)pSrc)+srcStep) )            // For each horizontal line
+            for( ; pDst<pDataEnd; pDst = (DataType*)(((Fw8u*)pDst)+dstStep), pSrc = (DataType*)(((Fw8u*)pSrc)+srcstep) )            // For each horizontal line
             {
                 const DataType *ps  = pSrc;
                 DataType *pd  = pDst;
@@ -108,13 +108,13 @@ namespace SharpenFilter
         
                 for( ; pd<end; )                            // For each entry in the line
                 {
-                REF_FN< DataType, CalcType, C4 >::el_fn( ps, srcStep, pd );
+                REF_FN< DataType, CalcType, C4 >::el_fn( ps, srcstep, pd );
                 ++ps;
                 ++pd;
-                REF_FN< DataType, CalcType, C4 >::el_fn( ps, srcStep, pd );
+                REF_FN< DataType, CalcType, C4 >::el_fn( ps, srcstep, pd );
                 ++ps;
                 ++pd;
-                REF_FN< DataType, CalcType, C4 >::el_fn( ps, srcStep, pd );
+                REF_FN< DataType, CalcType, C4 >::el_fn( ps, srcstep, pd );
                 ps += 2;
                 pd += 2;
                 }
@@ -127,7 +127,7 @@ namespace SharpenFilter
     // this function will validate the parameters and call the reference or SSE2 optimized code path as appropriate.
     // for SSE2 code it will also start worker threads on multi-core hardware
     template< CH chCount, typename DataType, typename CalcType >
-    static FwStatus iFilterSharpen( const DataType * pSrc, int srcStep, DataType * pDst, int dstStep, FwiSize dstRoiSize )
+    static FwStatus iFilterSharpen( const DataType * pSrc, int srcstep, DataType * pDst, int dstStep, FwiSize dstRoiSize )
     {
         if( pSrc == NULL || pDst == NULL )
             return fwStsNullPtrErr;
@@ -135,7 +135,7 @@ namespace SharpenFilter
         if (dstRoiSize.height <= 0 || dstRoiSize.width <= 0 )	
             return fwStsSizeErr;
 
-        if (srcStep <= 0 || dstStep <= 0)	
+        if (srcstep <= 0 || dstStep <= 0)	
             return fwStsStepErr;
 
         switch( Dispatch::Type<DT_SSE2>() )
@@ -159,7 +159,7 @@ namespace SharpenFilter
                 {				
                     data[i].pSrc				= ps;
                     data[i].pDst				= pd;	
-                    data[i].srcStep				= srcStep;				
+                    data[i].srcstep				= srcstep;				
                     data[i].dstStep				= dstStep;
                     data[i].dstRoiSize.width	= dstRoiSize.width;
                     if( i == 0 )
@@ -167,7 +167,7 @@ namespace SharpenFilter
                     else
                         data[i].dstRoiSize.height = height;
 
-                    if( ( ((size_t)ps) & (sizeof(DataType)-1) ) || ( srcStep & 0x0F ) ) // is src data aligned or the src row step size 16 bytes aligned?
+                    if( ( ((size_t)ps) & (sizeof(DataType)-1) ) || ( srcstep & 0x0F ) ) // is src data aligned or the src row step size 16 bytes aligned?
                     {
                         // call the unaligned code path
                         ThreadPool::Run( PERF_FN< DataType, chCount >::SSE2_Unaligned, &data[i] );
@@ -178,7 +178,7 @@ namespace SharpenFilter
                         ThreadPool::Run( PERF_FN< DataType, chCount >::SSE2, &data[i] );
                     }
 
-                    ps = FW_REF::Offset( ps, data[i].dstRoiSize.height * srcStep );
+                    ps = FW_REF::Offset( ps, data[i].dstRoiSize.height * srcstep );
                     pd = FW_REF::Offset( pd, data[i].dstRoiSize.height * dstStep );
                 }
 
@@ -189,7 +189,7 @@ namespace SharpenFilter
     
         case DT_REFR:
             // call the reference implementation
-            return RefrImpl<chCount, DataType, CalcType >::REFR( pSrc, srcStep, pDst, dstStep, dstRoiSize ); 
+            return RefrImpl<chCount, DataType, CalcType >::REFR( pSrc, srcstep, pDst, dstStep, dstRoiSize ); 
         }	
     }
 
@@ -205,7 +205,7 @@ namespace SharpenFilter
         {	
             Data< Fw8u > & data = *(Data< Fw8u >*)pData;
             const Fw8u * pSrc  = (const Fw8u *)data.pSrc;	
-            int      srcStep    = data.srcStep;	
+            int      srcstep    = data.srcstep;	
             Fw8u *  pDst	    = (Fw8u *)data.pDst;
             int      dstStep    = data.dstStep;	
             FwiSize dstRoiSize = data.dstRoiSize;
@@ -218,16 +218,16 @@ namespace SharpenFilter
             // I assume that the src is aligned at the border.
             //				 the dst is aligned at the data.
     
-            // I also assume that srcStep is a multiple of 16
+            // I also assume that srcstep is a multiple of 16
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + sizeof(Fw8u);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + sizeof(Fw8u);	// Now pSrc points at the first B in each line	
     
             Fw8u *pEnd = pDst + dstRoiSize.height * dstStep;
     
-            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -254,7 +254,7 @@ namespace SharpenFilter
                 // process the unaligned "prefix" data (up to 15 bytes)
                 /////////////////////////////////////////////////////////////////
                 for( ; pd<pEndStart; ++pd, ++ps ) // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw8u, Fw16s, C1>::el_fn( ps+srcStep+1, srcStep, pd );
+                    REF_FN<Fw8u, Fw16s, C1>::el_fn( ps+srcstep+1, srcstep, pd );
     
                 /////////////////////////////////////////////////////////////////
                 // process the aligned data (in 16 bytes chunks)
@@ -266,14 +266,14 @@ namespace SharpenFilter
                     //	  0 1 2 3 4 5 6 7 8 9 A B C D E   F			//dst
     
                     // Load the data
-                    t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
-                    m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
-                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel	
-                    mNxt       = (Fw16u)*(ps+1*srcStep+16);
+                    t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
+                    m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
+                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel	
+                    mNxt       = (Fw16u)*(ps+1*srcstep+16);
     
                     // Add vertical columns
-                    next0 = (Fw16u)*(ps+0*srcStep+16) + (Fw16u)*(ps+1*srcStep+16) + (Fw16u)*(ps+2*srcStep+16);
-                    next1 = (Fw16u)*(ps+0*srcStep+17) + (Fw16u)*(ps+1*srcStep+17) + (Fw16u)*(ps+2*srcStep+17);
+                    next0 = (Fw16u)*(ps+0*srcstep+16) + (Fw16u)*(ps+1*srcstep+16) + (Fw16u)*(ps+2*srcstep+16);
+                    next1 = (Fw16u)*(ps+0*srcstep+17) + (Fw16u)*(ps+1*srcstep+17) + (Fw16u)*(ps+2*srcstep+17);
                     t0.i = _mm_add_epi16( t0.i, _mm_add_epi16(m0.i,b0.i) );	 // t0 = t0 + m0 + b0;
                     t1.i = _mm_add_epi16( t1.i, _mm_add_epi16(m1.i,b1.i) );	 // t1 = t1 + m1 + b1;
                     //next[0][0] = next[0][0] + next[0][1] + next[0][2];
@@ -316,7 +316,7 @@ namespace SharpenFilter
                 /////////////////////////////////////////////////////////////////
     
                 for( ; pd<pEnd; ++pd, ++ps )					// Process the remainder.
-                    REF_FN<Fw8u, Fw16s, C1>::el_fn( ps+srcStep+1, srcStep, pd );
+                    REF_FN<Fw8u, Fw16s, C1>::el_fn( ps+srcstep+1, srcstep, pd );
             }
         }
 
@@ -325,7 +325,7 @@ namespace SharpenFilter
         {
             Data< Fw8u > & data = *(Data< Fw8u >*)pData;
             const Fw8u * pSrc  = data.pSrc;
-            int      srcStep    = data.srcStep;	
+            int      srcstep    = data.srcstep;	
             Fw8u *  pDst	    = data.pDst;	
             int      dstStep    = data.dstStep;	
             FwiSize dstRoiSize = data.dstRoiSize;				
@@ -338,11 +338,11 @@ namespace SharpenFilter
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc = (Fw8u*)(((Fw8u*)pSrc) - (srcStep + 1));	// Now pSrc points at the first B in each line	
+            pSrc = (Fw8u*)(((Fw8u*)pSrc) - (srcstep + 1));	// Now pSrc points at the first B in each line	
     
             Fw8u *pEnd = pDst + dstRoiSize.height * dstStep;
     
-            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -372,14 +372,14 @@ namespace SharpenFilter
                     //	  0 1 2 3 4 5 6 7 8 9 A B C D E   F			//dst
     
                     // Load the data
-                    t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
-                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
-                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel	
-                    mNxt       = (Fw16u)*(ps+1*srcStep+16);
+                    t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
+                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
+                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel	
+                    mNxt       = (Fw16u)*(ps+1*srcstep+16);
     
                     // Add vertical columns
-                    next0 = (Fw16u)*(ps+0*srcStep+16) + (Fw16u)*(ps+1*srcStep+16) + (Fw16u)*(ps+2*srcStep+16);
-                    next1 = (Fw16u)*(ps+0*srcStep+17) + (Fw16u)*(ps+1*srcStep+17) + (Fw16u)*(ps+2*srcStep+17);
+                    next0 = (Fw16u)*(ps+0*srcstep+16) + (Fw16u)*(ps+1*srcstep+16) + (Fw16u)*(ps+2*srcstep+16);
+                    next1 = (Fw16u)*(ps+0*srcstep+17) + (Fw16u)*(ps+1*srcstep+17) + (Fw16u)*(ps+2*srcstep+17);
                     t0.i = _mm_add_epi16( t0.i, _mm_add_epi16(m0.i,b0.i) );	 // t0 = t0 + m0 + b0;
                     t1.i = _mm_add_epi16( t1.i, _mm_add_epi16(m1.i,b1.i) );	 // t1 = t1 + m1 + b1;
                     //next[0][0] = next[0][0] + next[0][1] + next[0][2];
@@ -436,7 +436,7 @@ namespace SharpenFilter
                 /////////////////////////////////////////////////////////////////
     
                 for( ; pd<pEnd; ++pd, ++ps )					// Process the remainder.
-                    REF_FN<Fw8u, Fw16s, C1>::el_fn( ps+srcStep+1, srcStep, pd );
+                    REF_FN<Fw8u, Fw16s, C1>::el_fn( ps+srcstep+1, srcstep, pd );
             }
         }
     };
@@ -449,7 +449,7 @@ namespace SharpenFilter
         {	
             Data< Fw8u > & data = *(Data< Fw8u >*)pData;
             const Fw8u * pSrc  = data.pSrc;	
-            int      srcStep    = data.srcStep;	
+            int      srcstep    = data.srcstep;	
             Fw8u *  pDst	    = data.pDst;	
             int      dstStep    = data.dstStep;	
             FwiSize dstRoiSize = data.dstRoiSize;				
@@ -457,12 +457,12 @@ namespace SharpenFilter
             XMM128 c17;
             c17.i = _mm_set1_epi16( 0x0011 );
     
-            // I assume that srcStep is a multiple of 16
+            // I assume that srcstep is a multiple of 16
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= (srcStep + C3);	// Now pSrc points at the first B in each line	
+            pSrc -= (srcstep + C3);	// Now pSrc points at the first B in each line	
     
             Fw8u *pEnd = pDst + dstRoiSize.height * dstStep;
             XMM128 zero;
@@ -479,7 +479,7 @@ namespace SharpenFilter
                 midwidth = 0;
             }
                 
-            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -492,7 +492,7 @@ namespace SharpenFilter
                 // process the unaligned "prefix" data
                 /////////////////////////////////////////////////////////////////
                 for( ; pd<pEndStart; ++pd, ++ps ) // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw8u, Fw16s, C3>::el_fn( ps+srcStep+C3, srcStep, pd );
+                    REF_FN<Fw8u, Fw16s, C3>::el_fn( ps+srcstep+C3, srcstep, pd );
     
                 /////////////////////////////////////////////////////////////////
                 // process the aligned data (in 16 bytes chunks)
@@ -509,17 +509,17 @@ namespace SharpenFilter
                     //	  0 1 2 3 4 5 6 7 8 9 A B C D E   F			//dst
     
                     // Load the data
-                    next.d = _mm_load_sd( (double*)( ps+0*srcStep+14 ) );
+                    next.d = _mm_load_sd( (double*)( ps+0*srcstep+14 ) );
                     next.i = _mm_unpacklo_epi8( next.i, zero.i );
-                    mNxt.d = _mm_load_sd( (double*)( ps+1*srcStep+14 ) );
+                    mNxt.d = _mm_load_sd( (double*)( ps+1*srcstep+14 ) );
                     mNxt.i = _mm_unpacklo_epi8( mNxt.i, zero.i );
-                    b0.d = _mm_load_sd( (double*)( ps+2*srcStep+14 ) );
+                    b0.d = _mm_load_sd( (double*)( ps+2*srcstep+14 ) );
                     b0.i = _mm_unpacklo_epi8( b0.i, zero.i );
                     next.i = _mm_add_epi16( next.i, _mm_add_epi16(mNxt.i,b0.i) );	 // t0 = t0 + m0 + b0;
     
-                    t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
-                    m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
-                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel
+                    t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
+                    m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
+                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel
     
                     // Add vertical columns
                     t0.i = _mm_add_epi16( t0.i, _mm_add_epi16(m0.i,b0.i) );	 // t0 = t0 + m0 + b0;
@@ -586,7 +586,7 @@ namespace SharpenFilter
                 /////////////////////////////////////////////////////////////////
     
                 for( ; pd<pEnd; ++pd, ++ps )					// Process the remainder.
-                    REF_FN<Fw8u, Fw16s, C3>::el_fn( ps+srcStep+C3, srcStep, pd );
+                    REF_FN<Fw8u, Fw16s, C3>::el_fn( ps+srcstep+C3, srcstep, pd );
             }
         }
     
@@ -595,7 +595,7 @@ namespace SharpenFilter
         {	
             Data< Fw8u > & data = *(Data< Fw8u >*)pData;
             const Fw8u * pSrc  = data.pSrc;	
-            int      srcStep    = data.srcStep;	
+            int      srcstep    = data.srcstep;	
             Fw8u *  pDst	    = data.pDst;	
             int      dstStep    = data.dstStep;	
             FwiSize dstRoiSize = data.dstRoiSize;				
@@ -608,11 +608,11 @@ namespace SharpenFilter
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= (srcStep + C3);	// Now pSrc points at the first B in each line	
+            pSrc -= (srcstep + C3);	// Now pSrc points at the first B in each line	
     
             Fw8u *pEnd = pDst + dstRoiSize.height * dstStep;
     
-            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -642,20 +642,20 @@ namespace SharpenFilter
                     //	  0 1 2 3 4 5 6 7 8 9 A B C D E   F			//dst
     
                     // Load the data
-                    t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
-                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
-                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel	
-                    mNxt0 = (Fw16u)*(ps+1*srcStep+16);
-                    mNxt1 = (Fw16u)*(ps+1*srcStep+17);
-                    mNxt2 = (Fw16u)*(ps+1*srcStep+18);
+                    t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
+                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
+                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel	
+                    mNxt0 = (Fw16u)*(ps+1*srcstep+16);
+                    mNxt1 = (Fw16u)*(ps+1*srcstep+17);
+                    mNxt2 = (Fw16u)*(ps+1*srcstep+18);
     
                     // Add vertical columns
-                    next0 = (Fw16u)*(ps+0*srcStep+16) + (Fw16u)*(ps+1*srcStep+16) + (Fw16u)*(ps+2*srcStep+16);
-                    next1 = (Fw16u)*(ps+0*srcStep+17) + (Fw16u)*(ps+1*srcStep+17) + (Fw16u)*(ps+2*srcStep+17);
-                    next2 = (Fw16u)*(ps+0*srcStep+18) + (Fw16u)*(ps+1*srcStep+18) + (Fw16u)*(ps+2*srcStep+18);
-                    next3 = (Fw16u)*(ps+0*srcStep+19) + (Fw16u)*(ps+1*srcStep+19) + (Fw16u)*(ps+2*srcStep+19);
-                    next4 = (Fw16u)*(ps+0*srcStep+20) + (Fw16u)*(ps+1*srcStep+20) + (Fw16u)*(ps+2*srcStep+20);
-                    next5 = (Fw16u)*(ps+0*srcStep+21) + (Fw16u)*(ps+1*srcStep+21) + (Fw16u)*(ps+2*srcStep+21);
+                    next0 = (Fw16u)*(ps+0*srcstep+16) + (Fw16u)*(ps+1*srcstep+16) + (Fw16u)*(ps+2*srcstep+16);
+                    next1 = (Fw16u)*(ps+0*srcstep+17) + (Fw16u)*(ps+1*srcstep+17) + (Fw16u)*(ps+2*srcstep+17);
+                    next2 = (Fw16u)*(ps+0*srcstep+18) + (Fw16u)*(ps+1*srcstep+18) + (Fw16u)*(ps+2*srcstep+18);
+                    next3 = (Fw16u)*(ps+0*srcstep+19) + (Fw16u)*(ps+1*srcstep+19) + (Fw16u)*(ps+2*srcstep+19);
+                    next4 = (Fw16u)*(ps+0*srcstep+20) + (Fw16u)*(ps+1*srcstep+20) + (Fw16u)*(ps+2*srcstep+20);
+                    next5 = (Fw16u)*(ps+0*srcstep+21) + (Fw16u)*(ps+1*srcstep+21) + (Fw16u)*(ps+2*srcstep+21);
                     t0.i = _mm_add_epi16( t0.i, _mm_add_epi16(m0.i,b0.i) );	 // t0 = t0 + m0 + b0;
                     t1.i = _mm_add_epi16( t1.i, _mm_add_epi16(m1.i,b1.i) );	 // t1 = t1 + m1 + b1;
     
@@ -716,7 +716,7 @@ namespace SharpenFilter
                 /////////////////////////////////////////////////////////////////
     
                 for( ; pd<pEnd; ++pd, ++ps )					// Process the remainder.
-                    REF_FN<Fw8u, Fw16s, C3>::el_fn( ps+srcStep+C3, srcStep, pd );
+                    REF_FN<Fw8u, Fw16s, C3>::el_fn( ps+srcstep+C3, srcstep, pd );
             }
         }
     };
@@ -729,7 +729,7 @@ namespace SharpenFilter
         {	
             Data< Fw8u > & data = *(Data< Fw8u >*)pData;
             const Fw8u * pSrc  = data.pSrc;	
-            int      srcStep    = data.srcStep;	
+            int      srcstep    = data.srcstep;	
             Fw8u *  pDst	    = data.pDst;	
             int      dstStep    = data.dstStep;	
             FwiSize dstRoiSize = data.dstRoiSize;				
@@ -742,16 +742,16 @@ namespace SharpenFilter
             next_t.i = _mm_setzero_si128();
             next_m.i = _mm_setzero_si128();
             next_b.i = _mm_setzero_si128();
-            // I assume that srcStep is a multiple of 16
+            // I assume that srcstep is a multiple of 16
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= (srcStep + C4);	// Now pSrc points at the first B in each line	
+            pSrc -= (srcstep + C4);	// Now pSrc points at the first B in each line	
     
             Fw8u *pEnd = pDst + dstRoiSize.height * dstStep;
     
-            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -775,7 +775,7 @@ namespace SharpenFilter
                 // process the unaligned "prefix" data (up to 15 bytes)
                 /////////////////////////////////////////////////////////////////
                 for( ; pd<pEndStart; ++pd, ++ps ) // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw8u, Fw16s, C4>::el_fn( ps+srcStep+C4, srcStep, pd );
+                    REF_FN<Fw8u, Fw16s, C4>::el_fn( ps+srcstep+C4, srcstep, pd );
     
                 /////////////////////////////////////////////////////////////////
                 // process the aligned data (in 16 bytes chunks)
@@ -789,15 +789,15 @@ namespace SharpenFilter
                     //	  0 1 2 3 4 5 6 7 8 9 A B C D E   F			//dst
     
                     // Load the data
-                    t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
-                    m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
-                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel	
+                    t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
+                    m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
+                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel	
     
-                    next_t.d = _mm_loadl_pd( next_t.d, (double*)(ps + 0*srcStep + 16) );   
+                    next_t.d = _mm_loadl_pd( next_t.d, (double*)(ps + 0*srcstep + 16) );   
                     next_t.i = _mm_unpacklo_epi8( next_t.i, zero.i );
-                    next_m.d = _mm_loadl_pd( next_m.d, (double*)(ps + 1*srcStep + 16) );
+                    next_m.d = _mm_loadl_pd( next_m.d, (double*)(ps + 1*srcstep + 16) );
                     next_m.i = _mm_unpacklo_epi8( next_m.i, zero.i );
-                    next_b.d = _mm_loadl_pd( next_b.d, (double*)(ps + 2*srcStep + 16) );
+                    next_b.d = _mm_loadl_pd( next_b.d, (double*)(ps + 2*srcstep + 16) );
                     next_b.i = _mm_unpacklo_epi8( next_b.i, zero.i );
     
                     // Add vertical columns
@@ -855,7 +855,7 @@ namespace SharpenFilter
                 /////////////////////////////////////////////////////////////////
     
                 for( ; pd<pEnd; ++pd, ++ps )					// Process the remainder.
-                    REF_FN<Fw8u, Fw16s, C4>::el_fn( ps+srcStep+C4, srcStep, pd );
+                    REF_FN<Fw8u, Fw16s, C4>::el_fn( ps+srcstep+C4, srcstep, pd );
             }
         }
     
@@ -864,7 +864,7 @@ namespace SharpenFilter
         {	
             Data< Fw8u > & data = *(Data< Fw8u >*)pData;
             const Fw8u * pSrc  = data.pSrc;	
-            int      srcStep    = data.srcStep;	
+            int      srcstep    = data.srcstep;	
             Fw8u *  pDst	    = data.pDst;	
             int      dstStep    = data.dstStep;	
             FwiSize dstRoiSize = data.dstRoiSize;				
@@ -877,16 +877,16 @@ namespace SharpenFilter
             next_t.i = _mm_setzero_si128();
             next_m.i = _mm_setzero_si128();
             next_b.i = _mm_setzero_si128();
-            // I assume that srcStep is a multiple of 16
+            // I assume that srcstep is a multiple of 16
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= (srcStep + C4);	// Now pSrc points at the first B in each line	
+            pSrc -= (srcstep + C4);	// Now pSrc points at the first B in each line	
     
             Fw8u *pEnd = pDst + dstRoiSize.height * dstStep;
     
-            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -914,15 +914,15 @@ namespace SharpenFilter
                     //	  0 1 2 3 4 5 6 7 8 9 A B C D E   F			//dst
     
                     // Load the data
-                    t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
-                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
-                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel	
+                    t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
+                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
+                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel	
     
-                    next_t.d = _mm_loadl_pd( next_t.d, (double*)(ps + 0*srcStep + 16) );   
+                    next_t.d = _mm_loadl_pd( next_t.d, (double*)(ps + 0*srcstep + 16) );   
                     next_t.i = _mm_unpacklo_epi8( next_t.i, zero.i );
-                    next_m.d = _mm_loadl_pd( next_m.d, (double*)(ps + 1*srcStep + 16) );
+                    next_m.d = _mm_loadl_pd( next_m.d, (double*)(ps + 1*srcstep + 16) );
                     next_m.i = _mm_unpacklo_epi8( next_m.i, zero.i );
-                    next_b.d = _mm_loadl_pd( next_b.d, (double*)(ps + 2*srcStep + 16) );
+                    next_b.d = _mm_loadl_pd( next_b.d, (double*)(ps + 2*srcstep + 16) );
                     next_b.i = _mm_unpacklo_epi8( next_b.i, zero.i );
     
                     // Add vertical columns
@@ -980,7 +980,7 @@ namespace SharpenFilter
                 /////////////////////////////////////////////////////////////////
     
                 for( ; pd<pEnd; ++pd, ++ps )					// Process the remainder.
-                    REF_FN<Fw8u, Fw16s, C4>::el_fn( ps+srcStep+C4, srcStep, pd );
+                    REF_FN<Fw8u, Fw16s, C4>::el_fn( ps+srcstep+C4, srcstep, pd );
             }
         }
     };
@@ -993,7 +993,7 @@ namespace SharpenFilter
         {
             Data< Fw8u > & data = *(Data< Fw8u >*)pData;
             const Fw8u * pSrc  = data.pSrc;	
-            int      srcStep    = data.srcStep;	
+            int      srcstep    = data.srcstep;	
             Fw8u *  pDst	    = data.pDst;	
             int      dstStep    = data.dstStep;	
             FwiSize dstRoiSize = data.dstRoiSize;
@@ -1009,16 +1009,16 @@ namespace SharpenFilter
             next_t.i = _mm_setzero_si128();
             next_m.i = _mm_setzero_si128();
             next_b.i = _mm_setzero_si128();
-            // I assume that srcStep is a multiple of 16
+            // I assume that srcstep is a multiple of 16
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= (srcStep + C4);	// Now pSrc points at the first B in each line	
+            pSrc -= (srcstep + C4);	// Now pSrc points at the first B in each line	
     
             Fw8u *pEnd = pDst + dstRoiSize.height * dstStep;
     
-            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -1046,7 +1046,7 @@ namespace SharpenFilter
                 {
                     if( offset & 0x3 )
                     {
-                        REF_FN<Fw8u, Fw16s, C4>::el_fn( ps+srcStep+C4, srcStep, pd );
+                        REF_FN<Fw8u, Fw16s, C4>::el_fn( ps+srcstep+C4, srcstep, pd );
                     }
                 }
     
@@ -1064,14 +1064,14 @@ namespace SharpenFilter
                     //	  0 1 2 3 4 5 6 7 8 9 A B C D E   F			//dst
     
                     // Load the data
-                    t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
-                    m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
-                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel	
-                    next_t.d = _mm_loadl_pd( next_t.d, (double*)(ps + 0*srcStep + 16) );   
+                    t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
+                    m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
+                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel	
+                    next_t.d = _mm_loadl_pd( next_t.d, (double*)(ps + 0*srcstep + 16) );   
                     next_t.i = _mm_unpacklo_epi8( next_t.i, zero.i );
-                    next_m.d = _mm_loadl_pd( next_m.d, (double*)(ps + 1*srcStep + 16) );
+                    next_m.d = _mm_loadl_pd( next_m.d, (double*)(ps + 1*srcstep + 16) );
                     next_m.i = _mm_unpacklo_epi8( next_m.i, zero.i );
-                    next_b.d = _mm_loadl_pd( next_b.d, (double*)(ps + 2*srcStep + 16) );
+                    next_b.d = _mm_loadl_pd( next_b.d, (double*)(ps + 2*srcstep + 16) );
                     next_b.i = _mm_unpacklo_epi8( next_b.i, zero.i );
     
                     // Add vertical columns
@@ -1138,7 +1138,7 @@ namespace SharpenFilter
                 {
                     if( offset & 0x3 )
                     {
-                        REF_FN<Fw8u, Fw16s, C4>::el_fn( ps+srcStep+C4, srcStep, pd );
+                        REF_FN<Fw8u, Fw16s, C4>::el_fn( ps+srcstep+C4, srcstep, pd );
                     }
                 }
             }
@@ -1149,7 +1149,7 @@ namespace SharpenFilter
         {	
             Data< Fw8u > & data = *(Data< Fw8u >*)pData;
             const Fw8u * pSrc  = data.pSrc;	
-            int      srcStep    = data.srcStep;	
+            int      srcstep    = data.srcstep;	
             Fw8u *  pDst	    = data.pDst;	
             int      dstStep    = data.dstStep;	
             FwiSize dstRoiSize = data.dstRoiSize;
@@ -1165,16 +1165,16 @@ namespace SharpenFilter
             next_t.i = _mm_setzero_si128();
             next_m.i = _mm_setzero_si128();
             next_b.i = _mm_setzero_si128();
-            // I assume that srcStep is a multiple of 16
+            // I assume that srcstep is a multiple of 16
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= (srcStep + C4);	// Now pSrc points at the first B in each line	
+            pSrc -= (srcstep + C4);	// Now pSrc points at the first B in each line	
     
             Fw8u *pEnd = pDst + dstRoiSize.height * dstStep;
     
-            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst+=dstStep, pSrc+=srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -1203,14 +1203,14 @@ namespace SharpenFilter
                     //	  0 1 2 3 4 5 6 7 8 9 A B C D E   F			//dst
     
                     // Load the data
-                    t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
-                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
-                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel	
-                    next_t.d = _mm_loadl_pd( next_t.d, (double*)(ps + 0*srcStep + 16) );   
+                    t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack8UTo16U( t0.i, t1.i );	// Top    line of the kernel
+                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack8UTo16U( m0.i, m1.i );	// Middle line of the kernel
+                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack8UTo16U( b0.i, b1.i );	// Bottom line of the kernel	
+                    next_t.d = _mm_loadl_pd( next_t.d, (double*)(ps + 0*srcstep + 16) );   
                     next_t.i = _mm_unpacklo_epi8( next_t.i, zero.i );
-                    next_m.d = _mm_loadl_pd( next_m.d, (double*)(ps + 1*srcStep + 16) );
+                    next_m.d = _mm_loadl_pd( next_m.d, (double*)(ps + 1*srcstep + 16) );
                     next_m.i = _mm_unpacklo_epi8( next_m.i, zero.i );
-                    next_b.d = _mm_loadl_pd( next_b.d, (double*)(ps + 2*srcStep + 16) );
+                    next_b.d = _mm_loadl_pd( next_b.d, (double*)(ps + 2*srcstep + 16) );
                     next_b.i = _mm_unpacklo_epi8( next_b.i, zero.i );
     
                     // Add vertical columns
@@ -1282,7 +1282,7 @@ namespace SharpenFilter
                 {
                     if( offset & 0x3 )
                     {
-                        REF_FN<Fw8u, Fw16s, C4>::el_fn( ps+srcStep+C4, srcStep, pd );
+                        REF_FN<Fw8u, Fw16s, C4>::el_fn( ps+srcstep+C4, srcstep, pd );
                     }
                 }
             }
@@ -1297,7 +1297,7 @@ namespace SharpenFilter
         {	
             Data< Fw16s > & data = *(Data< Fw16s >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
@@ -1305,15 +1305,15 @@ namespace SharpenFilter
             // I assume that the src is aligned at the border.
             //				 the dst is aligned at the data.
     
-            // I also assume that srcStep is a multiple of 16 bytes
+            // I also assume that srcstep is a multiple of 16 bytes
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C1 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C1 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
     
             Fw8u * pEnd = pDst + dstRoiSize.height * dstStep;
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -1334,7 +1334,7 @@ namespace SharpenFilter
                 const Fw8u *pEnd       = pd + width;				// Enf of all the data.	
     
                 for( ; pd<pEndStart; pd += sizeof(Fw16s), ps += sizeof(Fw16s) )					// Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw16s, Fw32s, C1>::el_fn( (const Fw16s*)(ps+srcStep+sizeof(Fw16s)), srcStep, (Fw16s*)pd );
+                    REF_FN<Fw16s, Fw32s, C1>::el_fn( (const Fw16s*)(ps+srcstep+sizeof(Fw16s)), srcstep, (Fw16s*)pd );
     
                 for( ; pd<pEndMiddle; ps+=16, pd+=16 )				// Process 1 horizontal line (8 words wide)
                 {	
@@ -1348,14 +1348,14 @@ namespace SharpenFilter
                     // dst = ( 16 * src - sum( 9x9 matrix of pixels centered at src ) ) / 8
     
                     // Load the data
-                    t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
-                    m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
-                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
-                    mNxt = (Fw32s)*(Fw16s*)(ps+1*srcStep+8*sizeof(Fw16s));
+                    t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
+                    m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
+                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
+                    mNxt = (Fw32s)*(Fw16s*)(ps+1*srcstep+8*sizeof(Fw16s));
     
                     // Add vertical columns
-                    next[0].s32[0] = *(Fw16s*)(ps+0*srcStep+8*sizeof(Fw16s)) + *(Fw16s*)(ps+1*srcStep+8*sizeof(Fw16s)) + *(Fw16s*)(ps+2*srcStep+8*sizeof(Fw16s));
-                    next[0].s32[1] = *(Fw16s*)(ps+0*srcStep+9*sizeof(Fw16s)) + *(Fw16s*)(ps+1*srcStep+9*sizeof(Fw16s)) + *(Fw16s*)(ps+2*srcStep+9*sizeof(Fw16s));
+                    next[0].s32[0] = *(Fw16s*)(ps+0*srcstep+8*sizeof(Fw16s)) + *(Fw16s*)(ps+1*srcstep+8*sizeof(Fw16s)) + *(Fw16s*)(ps+2*srcstep+8*sizeof(Fw16s));
+                    next[0].s32[1] = *(Fw16s*)(ps+0*srcstep+9*sizeof(Fw16s)) + *(Fw16s*)(ps+1*srcstep+9*sizeof(Fw16s)) + *(Fw16s*)(ps+2*srcstep+9*sizeof(Fw16s));
                     t0.i = _mm_add_epi32( t0.i, _mm_add_epi32(m0.i,b0.i) );	 // t0 = t0 + m0 + b0;	
                     t1.i = _mm_add_epi32( t1.i, _mm_add_epi32(m1.i,b1.i) );	 // t1 = t1 + m1 + b1;	
     
@@ -1404,7 +1404,7 @@ namespace SharpenFilter
                 }				
     
                 for( ; pd<pEnd; pd += sizeof(Fw16s), ps += sizeof(Fw16s) )					// Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw16s, Fw32s, C1>::el_fn( (const Fw16s*)(ps+srcStep+sizeof(Fw16s)), srcStep, (Fw16s*)pd );				
+                    REF_FN<Fw16s, Fw32s, C1>::el_fn( (const Fw16s*)(ps+srcstep+sizeof(Fw16s)), srcstep, (Fw16s*)pd );				
             }
         }
     
@@ -1413,7 +1413,7 @@ namespace SharpenFilter
         {	
             Data< Fw16s > & data = *(Data< Fw16s >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
@@ -1421,10 +1421,10 @@ namespace SharpenFilter
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C1 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C1 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
     
             Fw8u * pEnd = pDst + dstRoiSize.height * dstStep;
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -1452,14 +1452,14 @@ namespace SharpenFilter
                     // dst = ( 16 * src - sum( 9x9 matrix of pixels centered at src ) ) / 8
     
                     // Load the data
-                    t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
-                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
-                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
-                    mNxt = (Fw32s)*(Fw16s*)(ps+1*srcStep+8*sizeof(Fw16s));
+                    t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
+                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
+                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
+                    mNxt = (Fw32s)*(Fw16s*)(ps+1*srcstep+8*sizeof(Fw16s));
     
                     // Add vertical columns
-                    next[0].s32[0] = *(Fw16s*)(ps+0*srcStep+8*sizeof(Fw16s)) + *(Fw16s*)(ps+1*srcStep+8*sizeof(Fw16s)) + *(Fw16s*)(ps+2*srcStep+8*sizeof(Fw16s));
-                    next[0].s32[1] = *(Fw16s*)(ps+0*srcStep+9*sizeof(Fw16s)) + *(Fw16s*)(ps+1*srcStep+9*sizeof(Fw16s)) + *(Fw16s*)(ps+2*srcStep+9*sizeof(Fw16s));
+                    next[0].s32[0] = *(Fw16s*)(ps+0*srcstep+8*sizeof(Fw16s)) + *(Fw16s*)(ps+1*srcstep+8*sizeof(Fw16s)) + *(Fw16s*)(ps+2*srcstep+8*sizeof(Fw16s));
+                    next[0].s32[1] = *(Fw16s*)(ps+0*srcstep+9*sizeof(Fw16s)) + *(Fw16s*)(ps+1*srcstep+9*sizeof(Fw16s)) + *(Fw16s*)(ps+2*srcstep+9*sizeof(Fw16s));
                     t0.i = _mm_add_epi32( t0.i, _mm_add_epi32(m0.i,b0.i) );	 // t0 = t0 + m0 + b0;	
                     t1.i = _mm_add_epi32( t1.i, _mm_add_epi32(m1.i,b1.i) );	 // t1 = t1 + m1 + b1;	
     
@@ -1508,7 +1508,7 @@ namespace SharpenFilter
                 }				
     
                 for( ; pd<pEnd; pd += sizeof(Fw16s), ps += sizeof(Fw16s) )					// Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw16s, Fw32s, C1>::el_fn( (const Fw16s*)(ps+srcStep+sizeof(Fw16s)), srcStep, (Fw16s*)pd );				
+                    REF_FN<Fw16s, Fw32s, C1>::el_fn( (const Fw16s*)(ps+srcstep+sizeof(Fw16s)), srcstep, (Fw16s*)pd );				
             }
         }
     };
@@ -1521,7 +1521,7 @@ namespace SharpenFilter
         {
             Data< Fw16s > & data = *(Data< Fw16s >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
@@ -1529,15 +1529,15 @@ namespace SharpenFilter
             // I assume that the src is aligned at the border.
             //				 the dst is aligned at the data.
     
-            // I also assume that srcStep is a multiple of 16 bytes
+            // I also assume that srcstep is a multiple of 16 bytes
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C3 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C3 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
     
             Fw8u * pEnd = pDst + dstRoiSize.height * dstStep;
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -1558,7 +1558,7 @@ namespace SharpenFilter
                 const Fw8u *pEnd       = pd + width;				// Enf of all the data.	
     
                 for( ; pd<pEndStart; pd += sizeof(Fw16s), ps += sizeof(Fw16s) )					// Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw16s, Fw32s, C3>::el_fn( (const Fw16s*)(ps+srcStep+C3*sizeof(Fw16s)), srcStep, (Fw16s*)pd );
+                    REF_FN<Fw16s, Fw32s, C3>::el_fn( (const Fw16s*)(ps+srcstep+C3*sizeof(Fw16s)), srcstep, (Fw16s*)pd );
     
                 for( ; pd<pEndMiddle; ps+=16, pd+=16 )				// Process 1 horizontal line (8 words wide)
                 {	
@@ -1571,23 +1571,23 @@ namespace SharpenFilter
                     // dst = ( 16 * src - sum( 9x9 matrix of pixels centered at src ) ) / 8
     
                     // Load the data
-                    t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
-                    m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
-                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
+                    t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
+                    m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
+                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
     
                     // Add vertical columns
                     next1.s32[0] = 0;
-                    next1.s32[1] = (Fw32s)*(Fw16s*)(ps+0*srcStep+8*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcStep+8*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcStep+8*sizeof(Fw16s));
-                    next1.s32[2] = (Fw32s)*(Fw16s*)(ps+0*srcStep+9*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcStep+9*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcStep+9*sizeof(Fw16s));
-                    next1.s32[3] = (Fw32s)*(Fw16s*)(ps+0*srcStep+10*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcStep+10*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcStep+10*sizeof(Fw16s));
+                    next1.s32[1] = (Fw32s)*(Fw16s*)(ps+0*srcstep+8*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcstep+8*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcstep+8*sizeof(Fw16s));
+                    next1.s32[2] = (Fw32s)*(Fw16s*)(ps+0*srcstep+9*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcstep+9*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcstep+9*sizeof(Fw16s));
+                    next1.s32[3] = (Fw32s)*(Fw16s*)(ps+0*srcstep+10*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcstep+10*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcstep+10*sizeof(Fw16s));
                     next2.s32[0] = 0;
-                    next2.s32[1] = (Fw32s)*(Fw16s*)(ps+0*srcStep+11*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcStep+11*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcStep+11*sizeof(Fw16s));
-                    next2.s32[2] = (Fw32s)*(Fw16s*)(ps+0*srcStep+12*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcStep+12*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcStep+12*sizeof(Fw16s));
-                    next2.s32[3] = (Fw32s)*(Fw16s*)(ps+0*srcStep+13*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcStep+13*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcStep+13*sizeof(Fw16s));
+                    next2.s32[1] = (Fw32s)*(Fw16s*)(ps+0*srcstep+11*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcstep+11*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcstep+11*sizeof(Fw16s));
+                    next2.s32[2] = (Fw32s)*(Fw16s*)(ps+0*srcstep+12*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcstep+12*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcstep+12*sizeof(Fw16s));
+                    next2.s32[3] = (Fw32s)*(Fw16s*)(ps+0*srcstep+13*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcstep+13*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcstep+13*sizeof(Fw16s));
                     t0.i = _mm_add_epi32( t0.i, _mm_add_epi32(m0.i,b0.i) );	 // t0 = t0 + m0 + b0;	
                     t1.i = _mm_add_epi32( t1.i, _mm_add_epi32(m1.i,b1.i) );	 // t1 = t1 + m1 + b1;	
     
-                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep + C3*sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
+                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep + C3*sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
     
                     // {b0, b1} = {m0, m1} * 17
                     b0.i = _mm_slli_epi32( m0.i, 4 );
@@ -1629,7 +1629,7 @@ namespace SharpenFilter
                 }				
     
                 for( ; pd<pEnd; pd += sizeof(Fw16s), ps += sizeof(Fw16s) )   // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw16s, Fw32s, C3>::el_fn( (const Fw16s *)(ps+srcStep+C3*sizeof(Fw16s)), srcStep, (Fw16s*)pd );
+                    REF_FN<Fw16s, Fw32s, C3>::el_fn( (const Fw16s *)(ps+srcstep+C3*sizeof(Fw16s)), srcstep, (Fw16s*)pd );
             }
         }
     
@@ -1638,7 +1638,7 @@ namespace SharpenFilter
         {
             Data< Fw16s > & data = *(Data< Fw16s >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
@@ -1646,15 +1646,15 @@ namespace SharpenFilter
             // I assume that the src is aligned at the border.
             //				 the dst is aligned at the data.
     
-            // I also assume that srcStep is a multiple of 16 bytes
+            // I also assume that srcstep is a multiple of 16 bytes
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C3 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C3 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
     
             Fw8u * pEnd = pDst + dstRoiSize.height * dstStep;
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -1681,23 +1681,23 @@ namespace SharpenFilter
                     // dst = ( 16 * src - sum( 9x9 matrix of pixels centered at src ) ) / 8
     
                     // Load the data
-                    t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
-                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
-                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
+                    t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
+                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
+                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
     
                     // Add vertical columns
                     next1.s32[0] = 0;
-                    next1.s32[1] = (Fw32s)*(Fw16s*)(ps+0*srcStep+8*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcStep+8*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcStep+8*sizeof(Fw16s));
-                    next1.s32[2] = (Fw32s)*(Fw16s*)(ps+0*srcStep+9*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcStep+9*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcStep+9*sizeof(Fw16s));
-                    next1.s32[3] = (Fw32s)*(Fw16s*)(ps+0*srcStep+10*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcStep+10*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcStep+10*sizeof(Fw16s));
+                    next1.s32[1] = (Fw32s)*(Fw16s*)(ps+0*srcstep+8*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcstep+8*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcstep+8*sizeof(Fw16s));
+                    next1.s32[2] = (Fw32s)*(Fw16s*)(ps+0*srcstep+9*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcstep+9*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcstep+9*sizeof(Fw16s));
+                    next1.s32[3] = (Fw32s)*(Fw16s*)(ps+0*srcstep+10*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcstep+10*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcstep+10*sizeof(Fw16s));
                     next2.s32[0] = 0;
-                    next2.s32[1] = (Fw32s)*(Fw16s*)(ps+0*srcStep+11*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcStep+11*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcStep+11*sizeof(Fw16s));
-                    next2.s32[2] = (Fw32s)*(Fw16s*)(ps+0*srcStep+12*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcStep+12*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcStep+12*sizeof(Fw16s));
-                    next2.s32[3] = (Fw32s)*(Fw16s*)(ps+0*srcStep+13*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcStep+13*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcStep+13*sizeof(Fw16s));
+                    next2.s32[1] = (Fw32s)*(Fw16s*)(ps+0*srcstep+11*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcstep+11*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcstep+11*sizeof(Fw16s));
+                    next2.s32[2] = (Fw32s)*(Fw16s*)(ps+0*srcstep+12*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcstep+12*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcstep+12*sizeof(Fw16s));
+                    next2.s32[3] = (Fw32s)*(Fw16s*)(ps+0*srcstep+13*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+1*srcstep+13*sizeof(Fw16s)) + (Fw32s)*(Fw16s*)(ps+2*srcstep+13*sizeof(Fw16s));
                     t0.i = _mm_add_epi32( t0.i, _mm_add_epi32(m0.i,b0.i) );	 // t0 = t0 + m0 + b0;	
                     t1.i = _mm_add_epi32( t1.i, _mm_add_epi32(m1.i,b1.i) );	 // t1 = t1 + m1 + b1;	
     
-                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep + C3*sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
+                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep + C3*sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
     
                     // {b0, b1} = {m0, m1} * 17
                     b0.i = _mm_slli_epi32( m0.i, 4 );
@@ -1739,7 +1739,7 @@ namespace SharpenFilter
                 }				
     
                 for( ; pd<pEnd; pd += sizeof(Fw16s), ps += sizeof(Fw16s) )   // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw16s, Fw32s, C3>::el_fn( (const Fw16s*)(ps+srcStep+C3*sizeof(Fw16s)), srcStep, (Fw16s*)pd );
+                    REF_FN<Fw16s, Fw32s, C3>::el_fn( (const Fw16s*)(ps+srcstep+C3*sizeof(Fw16s)), srcstep, (Fw16s*)pd );
             }
         }
     };
@@ -1752,20 +1752,20 @@ namespace SharpenFilter
         {
             Data< Fw16s > & data = *(Data< Fw16s >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
     
-            // I assume that srcStep is a multiple of 16 bytes
+            // I assume that srcstep is a multiple of 16 bytes
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C4 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C4 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
     
             Fw8u * pEnd = pDst + dstRoiSize.height * dstStep;
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -1786,31 +1786,31 @@ namespace SharpenFilter
                 const Fw8u *pEnd       = pd + width;				// Enf of all the data.	
     
                 for( ; pd<pEndStart; pd += sizeof(Fw16s), ps += sizeof(Fw16s) )   // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw16s, Fw32s, C4>::el_fn( (const Fw16s*)(ps+srcStep+C4*sizeof(Fw16s)), srcStep, (Fw16s*)pd );				
+                    REF_FN<Fw16s, Fw32s, C4>::el_fn( (const Fw16s*)(ps+srcstep+C4*sizeof(Fw16s)), srcstep, (Fw16s*)pd );				
     
                 XMM128 t0, t1, m0, m1, b0, b1, next0_t, next1_t;
     
                 // load top row
-                t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
+                t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
                 // load bottom row and add to top row
-                b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
+                b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
                 t0.i = _mm_add_epi32( t0.i, b0.i );
                 t1.i = _mm_add_epi32( t1.i, b1.i );
                 // load middle row and add to top row
-                m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
+                m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
                 t0.i = _mm_add_epi32( t0.i, m0.i );
                 t1.i = _mm_add_epi32( t1.i, m1.i );
     
                 for( ; pd<pEndMiddle; ps+=16, pd+=16 )				// Process 1 horizontal line (8 words wide)
                 {	
                     // load top row
-                    next0_t.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep + 8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( next0_t.i, next1_t.i );
+                    next0_t.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep + 8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( next0_t.i, next1_t.i );
                     // load bottom row and add to top row
-                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep + 8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
+                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep + 8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
                     next0_t.i = _mm_add_epi32( next0_t.i, b0.i );
                     next1_t.i = _mm_add_epi32( next1_t.i, b1.i );
                     // load middle row and add to top row
-                    b0.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep + 8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
+                    b0.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep + 8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
                     next0_t.i = _mm_add_epi32( next0_t.i, b0.i );
                     next1_t.i = _mm_add_epi32( next1_t.i, b1.i );
     
@@ -1849,7 +1849,7 @@ namespace SharpenFilter
                 }				
     
                 for( ; pd<pEnd; pd += sizeof(Fw16s), ps += sizeof(Fw16s) )   // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw16s, Fw32s, C4>::el_fn( (const Fw16s*)(ps+srcStep+C4*sizeof(Fw16s)), srcStep, (Fw16s*)pd );
+                    REF_FN<Fw16s, Fw32s, C4>::el_fn( (const Fw16s*)(ps+srcstep+C4*sizeof(Fw16s)), srcstep, (Fw16s*)pd );
             }
         }
     
@@ -1858,20 +1858,20 @@ namespace SharpenFilter
         {
             Data< Fw16s > & data = *(Data< Fw16s >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
     
-            // I assume that srcStep is a multiple of 16 bytes
+            // I assume that srcstep is a multiple of 16 bytes
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C4 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C4 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
     
             Fw8u * pEnd = pDst + dstRoiSize.height * dstStep;
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -1890,13 +1890,13 @@ namespace SharpenFilter
                 XMM128 t0, t1, m0, m1, b0, b1, next0_t, next1_t;
     
                 // load top row
-                t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
+                t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
                 // load bottom row and add to top row
-                b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
+                b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
                 t0.i = _mm_add_epi32( t0.i, b0.i );
                 t1.i = _mm_add_epi32( t1.i, b1.i );
                 // load middle row and add to top row
-                m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
+                m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
                 t0.i = _mm_add_epi32( t0.i, m0.i );
                 t1.i = _mm_add_epi32( t1.i, m1.i );
     
@@ -1909,13 +1909,13 @@ namespace SharpenFilter
                     // dst = ( 16 * src - sum( 9x9 matrix of pixels centered at src ) ) / 8
     
                     // load top row
-                    next0_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( next0_t.i, next1_t.i );
+                    next0_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( next0_t.i, next1_t.i );
                     // load bottom row and add to top row
-                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
+                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
                     next0_t.i = _mm_add_epi32( next0_t.i, b0.i );
                     next1_t.i = _mm_add_epi32( next1_t.i, b1.i );
                     // load middle row and add to top row
-                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
+                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
                     next0_t.i = _mm_add_epi32( next0_t.i, b0.i );
                     next1_t.i = _mm_add_epi32( next1_t.i, b1.i );
     
@@ -1954,7 +1954,7 @@ namespace SharpenFilter
                 }				
     
                 for( ; pd<pEnd; pd += sizeof(Fw16s), ps += sizeof(Fw16s) )   // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw16s, Fw32s, C4>::el_fn( (const Fw16s*)(ps+srcStep+C4*sizeof(Fw16s)), srcStep, (Fw16s*)pd );
+                    REF_FN<Fw16s, Fw32s, C4>::el_fn( (const Fw16s*)(ps+srcstep+C4*sizeof(Fw16s)), srcstep, (Fw16s*)pd );
             }
         }
     };
@@ -1967,20 +1967,20 @@ namespace SharpenFilter
         {
             Data< Fw16s > & data = *(Data< Fw16s >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
     
-            // I assume that srcStep is a multiple of 16 bytes
+            // I assume that srcstep is a multiple of 16 bytes
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C4 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C4 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
     
             Fw8u * pEnd = pDst + dstRoiSize.height * dstStep;
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -2005,7 +2005,7 @@ namespace SharpenFilter
                 {
                     if( offset & 0x3 )
                     {
-                        REF_FN<Fw16s, Fw32s, C4>::el_fn( (const Fw16s*)(ps+srcStep+C4*sizeof(Fw16s)), srcStep, (Fw16s*)pd );				
+                        REF_FN<Fw16s, Fw32s, C4>::el_fn( (const Fw16s*)(ps+srcstep+C4*sizeof(Fw16s)), srcstep, (Fw16s*)pd );				
                     }
                 }
     
@@ -2032,20 +2032,20 @@ namespace SharpenFilter
                     // dst = ( 16 * src - sum( 9x9 matrix of pixels centered at src ) ) / 8
     
                     // load top row
-                    t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
-                    next0_t.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( next0_t.i, next1_t.i );
+                    t0.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
+                    next0_t.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( next0_t.i, next1_t.i );
     
                     // load bottom row and add to top row
-                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
-                    m0.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Bottom line of the kernel
+                    b0.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
+                    m0.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Bottom line of the kernel
                     t0.i = _mm_add_epi32( t0.i, b0.i );
                     t1.i = _mm_add_epi32( t1.i, b1.i );
                     next0_t.i = _mm_add_epi32( next0_t.i, m0.i );
                     next1_t.i = _mm_add_epi32( next1_t.i, m1.i );
     
                     // load middle row and add to top row
-                    m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
-                    b0.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
+                    m0.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
+                    b0.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
                     t0.i = _mm_add_epi32( t0.i, m0.i );
                     t1.i = _mm_add_epi32( t1.i, m1.i );
                     next0_t.i = _mm_add_epi32( next0_t.i, b0.i );
@@ -2094,7 +2094,7 @@ namespace SharpenFilter
                 {
                     if( offset & 0x3 )
                     {
-                        REF_FN<Fw16s, Fw32s, C4>::el_fn( (const Fw16s*)(ps+srcStep+C4*sizeof(Fw16s)), srcStep, (Fw16s*)pd );
+                        REF_FN<Fw16s, Fw32s, C4>::el_fn( (const Fw16s*)(ps+srcstep+C4*sizeof(Fw16s)), srcstep, (Fw16s*)pd );
                     }
                 }
             }
@@ -2105,20 +2105,20 @@ namespace SharpenFilter
         {
             Data< Fw16s > & data = *(Data< Fw16s >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
     
-            // I assume that srcStep is a multiple of 16 bytes
+            // I assume that srcstep is a multiple of 16 bytes
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C4 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C4 * sizeof(Fw16s);	// Now pSrc points at the first B in each line	
     
             Fw8u * pEnd = pDst + dstRoiSize.height * dstStep;
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -2147,20 +2147,20 @@ namespace SharpenFilter
                     // dst = ( 16 * src - sum( 9x9 matrix of pixels centered at src ) ) / 8
     
                     // load top row
-                    t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
-                    next0_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( next0_t.i, next1_t.i );
+                    t0.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep) );   CBL_SSE2::Unpack16STo32S( t0.i, t1.i );	// Top    line of the kernel
+                    next0_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( next0_t.i, next1_t.i );
     
                     // load bottom row and add to top row
-                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
-                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Bottom line of the kernel
+                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
+                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Bottom line of the kernel
                     t0.i = _mm_add_epi32( t0.i, b0.i );
                     t1.i = _mm_add_epi32( t1.i, b1.i );
                     next0_t.i = _mm_add_epi32( next0_t.i, m0.i );
                     next1_t.i = _mm_add_epi32( next1_t.i, m1.i );
     
                     // load middle row and add to top row
-                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
-                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
+                    m0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep) );   CBL_SSE2::Unpack16STo32S( m0.i, m1.i );	// Middle line of the kernel
+                    b0.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep+8 * sizeof(Fw16s)) );   CBL_SSE2::Unpack16STo32S( b0.i, b1.i );	// Bottom line of the kernel
                     t0.i = _mm_add_epi32( t0.i, m0.i );
                     t1.i = _mm_add_epi32( t1.i, m1.i );
                     next0_t.i = _mm_add_epi32( next0_t.i, b0.i );
@@ -2210,7 +2210,7 @@ namespace SharpenFilter
                 {
                     if( offset & 0x3 )
                     {
-                        REF_FN<Fw16s, Fw32s, C4>::el_fn( (const Fw16s*)(ps+srcStep+C4*sizeof(Fw16s)), srcStep, (Fw16s*)pd );
+                        REF_FN<Fw16s, Fw32s, C4>::el_fn( (const Fw16s*)(ps+srcstep+C4*sizeof(Fw16s)), srcstep, (Fw16s*)pd );
                     }
                 }
             }
@@ -2225,7 +2225,7 @@ namespace SharpenFilter
         {	
             Data< Fw32f > & data = *(Data< Fw32f >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
@@ -2233,12 +2233,12 @@ namespace SharpenFilter
             // I assume that the src is aligned at the border.
             //				 the dst is aligned at the data.
     
-            // I also assume that srcStep is a multiple of 16 bytes
+            // I also assume that srcstep is a multiple of 16 bytes
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C1 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C1 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
     
             XMM128 c_17, c_8;
             c_17.f = _mm_set1_ps( 17.0 );
@@ -2252,7 +2252,7 @@ namespace SharpenFilter
             next_m.i = _mm_setzero_si128();
     
             Fw8u * pEnd = pDst + dstRoiSize.height * dstStep;
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -2273,7 +2273,7 @@ namespace SharpenFilter
                 const Fw8u *pEnd       = pd + width;				// Enf of all the data.	
     
                 for( ; pd<pEndStart; pd += sizeof(Fw32f), ps += sizeof(Fw32f) )   // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw32f, Fw32f, C1>::el_fn( (const Fw32f*)(ps+srcStep+C1*sizeof(Fw32f)), srcStep, (Fw32f*)pd );				
+                    REF_FN<Fw32f, Fw32f, C1>::el_fn( (const Fw32f*)(ps+srcstep+C1*sizeof(Fw32f)), srcstep, (Fw32f*)pd );				
     
                 for( ; pd<pEndMiddle; ps+=16, pd+=16 )				// Process 1 horizontal line (8 words wide)
                 {	
@@ -2286,12 +2286,12 @@ namespace SharpenFilter
                     // dst = ( 16 * src - sum( 9x9 matrix of pixels centered at src ) ) / 8
     
                     // Load the data
-                    top.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep) );    // Top    line of the kernel
-                    mid.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep) );    // Middle line of the kernel
-                    btm.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep) );    // Bottom line of the kernel
-                    next_t.d = _mm_loadl_pd( next_t.d, (double*)(ps + 0*srcStep + 4 * sizeof(Fw32s)) );
-                    next_m.d = _mm_loadl_pd( next_m.d, (double*)(ps + 1*srcStep + 4 * sizeof(Fw32s)) );
-                    next_b.d = _mm_loadl_pd( next_b.d, (double*)(ps + 2*srcStep + 4 * sizeof(Fw32s)) );
+                    top.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep) );    // Top    line of the kernel
+                    mid.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep) );    // Middle line of the kernel
+                    btm.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep) );    // Bottom line of the kernel
+                    next_t.d = _mm_loadl_pd( next_t.d, (double*)(ps + 0*srcstep + 4 * sizeof(Fw32s)) );
+                    next_m.d = _mm_loadl_pd( next_m.d, (double*)(ps + 1*srcstep + 4 * sizeof(Fw32s)) );
+                    next_b.d = _mm_loadl_pd( next_b.d, (double*)(ps + 2*srcstep + 4 * sizeof(Fw32s)) );
     
                     // Add vertical columns
                     next_t.f = _mm_add_ps( next_t.f, _mm_add_ps(next_m.f,next_b.f) );
@@ -2328,7 +2328,7 @@ namespace SharpenFilter
                 }				
     
                 for( ; pd<pEnd; pd += sizeof(Fw32f), ps += sizeof(Fw32f) )   // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw32f, Fw32f, C1>::el_fn( (const Fw32f*)(ps+srcStep+C1*sizeof(Fw32f)), srcStep, (Fw32f*)pd );
+                    REF_FN<Fw32f, Fw32f, C1>::el_fn( (const Fw32f*)(ps+srcstep+C1*sizeof(Fw32f)), srcstep, (Fw32f*)pd );
             }
         }
     
@@ -2337,7 +2337,7 @@ namespace SharpenFilter
         {	
             Data< Fw32f > & data = *(Data< Fw32f >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
@@ -2345,12 +2345,12 @@ namespace SharpenFilter
             // I assume that the src is aligned at the border.
             //				 the dst is aligned at the data.
     
-            // I also assume that srcStep is a multiple of 16 bytes
+            // I also assume that srcstep is a multiple of 16 bytes
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C1 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C1 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
     
             XMM128 c_17, c_8;
             c_17.f = _mm_set1_ps( 17.0 );
@@ -2364,7 +2364,7 @@ namespace SharpenFilter
             next_m.i = _mm_setzero_si128();
     
             Fw8u * pEnd = (pDst + dstRoiSize.height * dstStep);
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -2391,12 +2391,12 @@ namespace SharpenFilter
                     // dst = ( 16 * src - sum( 9x9 matrix of pixels centered at src ) ) / 8
     
                     // Load the data
-                    top.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep) );    // Top    line of the kernel
-                    mid.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep) );    // Middle line of the kernel
-                    btm.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep) );    // Bottom line of the kernel
-                    next_t.d = _mm_loadl_pd( next_t.d, (double*)(ps + 0*srcStep + 4 * sizeof(Fw32s)) );
-                    next_m.d = _mm_loadl_pd( next_m.d, (double*)(ps + 1*srcStep + 4 * sizeof(Fw32s)) );
-                    next_b.d = _mm_loadl_pd( next_b.d, (double*)(ps + 2*srcStep + 4 * sizeof(Fw32s)) );
+                    top.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep) );    // Top    line of the kernel
+                    mid.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep) );    // Middle line of the kernel
+                    btm.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep) );    // Bottom line of the kernel
+                    next_t.d = _mm_loadl_pd( next_t.d, (double*)(ps + 0*srcstep + 4 * sizeof(Fw32s)) );
+                    next_m.d = _mm_loadl_pd( next_m.d, (double*)(ps + 1*srcstep + 4 * sizeof(Fw32s)) );
+                    next_b.d = _mm_loadl_pd( next_b.d, (double*)(ps + 2*srcstep + 4 * sizeof(Fw32s)) );
     
                     // Add vertical columns
                     next_t.f = _mm_add_ps( next_t.f, _mm_add_ps(next_m.f,next_b.f) );
@@ -2433,7 +2433,7 @@ namespace SharpenFilter
                 }				
     
                 for( ; pd<pEnd; pd += sizeof(Fw32f), ps += sizeof(Fw32f) )   // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw32f, Fw32f, C1>::el_fn( (const Fw32f*)(ps+srcStep+C1*sizeof(Fw32f)), srcStep, (Fw32f*)pd );
+                    REF_FN<Fw32f, Fw32f, C1>::el_fn( (const Fw32f*)(ps+srcstep+C1*sizeof(Fw32f)), srcstep, (Fw32f*)pd );
             }
         }
     };
@@ -2446,7 +2446,7 @@ namespace SharpenFilter
         {
             Data< Fw32f > & data = *(Data< Fw32f >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
@@ -2454,19 +2454,19 @@ namespace SharpenFilter
             // I assume that the src is aligned at the border.
             //				 the dst is aligned at the data.
     
-            // I also assume that srcStep is a multiple of 16 bytes
+            // I also assume that srcstep is a multiple of 16 bytes
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C3 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C3 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
     
             XMM128 c_17, c_8;
             c_17.f = _mm_set1_ps( 17.0 );
             c_8.f = _mm_set1_ps( 8.0 );
     
             Fw8u * pEnd = pDst + dstRoiSize.height * dstStep;
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -2487,7 +2487,7 @@ namespace SharpenFilter
                 const Fw8u *pEnd       = pd + width;				// Enf of all the data.	
     
                 for( ; pd<pEndStart; pd += sizeof(Fw32f), ps += sizeof(Fw32f) )   // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw32f, Fw32f, C3>::el_fn( (const Fw32f*)(ps+srcStep+C3*sizeof(Fw32f)), srcStep, (Fw32f*)pd );
+                    REF_FN<Fw32f, Fw32f, C3>::el_fn( (const Fw32f*)(ps+srcstep+C3*sizeof(Fw32f)), srcstep, (Fw32f*)pd );
     
                 for( ; pd<pEndMiddle; ps+=16, pd+=16 )				// Process 1 horizontal line (8 words wide)
                 {	
@@ -2502,17 +2502,17 @@ namespace SharpenFilter
                     // dst = ( 16 * src - sum( 9x9 matrix of pixels centered at src ) ) / 8
     
                     // Load the data
-                    top.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep) );    // Top    line of the kernel
-                    next1_t.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep + 6 * sizeof(Fw32s)) );
+                    top.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep) );    // Top    line of the kernel
+                    next1_t.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep + 6 * sizeof(Fw32s)) );
     
-                    mid.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep) );    // Middle line of the kernel
-                    next1_m.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_m.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep + 6 * sizeof(Fw32s)) );
+                    mid.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep) );    // Middle line of the kernel
+                    next1_m.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_m.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep + 6 * sizeof(Fw32s)) );
     
-                    btm.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep) );    // Bottom line of the kernel
-                    next1_b.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_b.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep + 6 * sizeof(Fw32s)) );
+                    btm.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep) );    // Bottom line of the kernel
+                    next1_b.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_b.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep + 6 * sizeof(Fw32s)) );
     
                     // Add vertical columns
                     next1_t.f = _mm_add_ps( next1_t.f, _mm_add_ps(next1_m.f,next1_b.f) );
@@ -2550,7 +2550,7 @@ namespace SharpenFilter
                 }				
     
                 for( ; pd<pEnd; pd += sizeof(Fw32f), ps += sizeof(Fw32f) )   // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw32f, Fw32f, C3>::el_fn( (const Fw32f*)(ps+srcStep+C3*sizeof(Fw32f)), srcStep, (Fw32f*)pd );
+                    REF_FN<Fw32f, Fw32f, C3>::el_fn( (const Fw32f*)(ps+srcstep+C3*sizeof(Fw32f)), srcstep, (Fw32f*)pd );
             }
         }
     
@@ -2559,7 +2559,7 @@ namespace SharpenFilter
         {	
             Data< Fw32f > & data = *(Data< Fw32f >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
@@ -2567,19 +2567,19 @@ namespace SharpenFilter
             // I assume that the src is aligned at the border.
             //				 the dst is aligned at the data.
     
-            // I also assume that srcStep is a multiple of 16 bytes
+            // I also assume that srcstep is a multiple of 16 bytes
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C3 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C3 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
     
             XMM128 c_17, c_8;
             c_17.f = _mm_set1_ps( 17.0 );
             c_8.f = _mm_set1_ps( 8.0 );
     
             Fw8u * pEnd = pDst + dstRoiSize.height * dstStep;
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -2608,17 +2608,17 @@ namespace SharpenFilter
                     // dst = ( 16 * src - sum( 9x9 matrix of pixels centered at src ) ) / 8
     
                     // Load the data
-                    top.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep) );    // Top    line of the kernel
-                    next1_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep + 6 * sizeof(Fw32s)) );
+                    top.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep) );    // Top    line of the kernel
+                    next1_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep + 6 * sizeof(Fw32s)) );
     
-                    mid.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep) );    // Middle line of the kernel
-                    next1_m.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_m.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep + 6 * sizeof(Fw32s)) );
+                    mid.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep) );    // Middle line of the kernel
+                    next1_m.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_m.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep + 6 * sizeof(Fw32s)) );
     
-                    btm.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep) );    // Bottom line of the kernel
-                    next1_b.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_b.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep + 6 * sizeof(Fw32s)) );
+                    btm.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep) );    // Bottom line of the kernel
+                    next1_b.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_b.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep + 6 * sizeof(Fw32s)) );
     
                     // Add vertical columns
                     next1_t.f = _mm_add_ps( next1_t.f, _mm_add_ps(next1_m.f,next1_b.f) );
@@ -2656,7 +2656,7 @@ namespace SharpenFilter
                 }				
     
                 for( ; pd<pEnd; pd += sizeof(Fw32f), ps += sizeof(Fw32f) )   // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw32f, Fw32f, C3>::el_fn( (const Fw32f*)(ps+srcStep+C3*sizeof(Fw32f)), srcStep, (Fw32f*)pd );
+                    REF_FN<Fw32f, Fw32f, C3>::el_fn( (const Fw32f*)(ps+srcstep+C3*sizeof(Fw32f)), srcstep, (Fw32f*)pd );
             }
         }
     };
@@ -2669,7 +2669,7 @@ namespace SharpenFilter
         {	
             Data< Fw32f > & data = *(Data< Fw32f >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
@@ -2677,19 +2677,19 @@ namespace SharpenFilter
             // I assume that the src is aligned at the border.
             //				 the dst is aligned at the data.
     
-            // I also assume that srcStep is a multiple of 16 bytes
+            // I also assume that srcstep is a multiple of 16 bytes
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C4 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C4 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
     
             XMM128 c_17, c_8;
             c_17.f = _mm_set1_ps( 17.0 );
             c_8.f = _mm_set1_ps( 8.0 );
     
             Fw8u * pEnd = pDst + dstRoiSize.height * dstStep;
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -2710,7 +2710,7 @@ namespace SharpenFilter
                 const Fw8u *pEnd       = pd + width;				// Enf of all the data.	
     
                 for( ; pd<pEndStart; pd += sizeof(Fw32f), ps += sizeof(Fw32f) )   // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw32f, Fw32f, C4>::el_fn( (const Fw32f*)(ps+srcStep+C4*sizeof(Fw32f)), srcStep, (Fw32f*)pd );
+                    REF_FN<Fw32f, Fw32f, C4>::el_fn( (const Fw32f*)(ps+srcstep+C4*sizeof(Fw32f)), srcstep, (Fw32f*)pd );
     
                 for( ; pd<pEndMiddle; ps+=16, pd+=16 )				// Process 1 horizontal line (8 words wide)
                 {	
@@ -2725,17 +2725,17 @@ namespace SharpenFilter
                     // dst = ( 16 * src - sum( 9x9 matrix of pixels centered at src ) ) / 8
     
                     // Load the data
-                    top.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep) );    // Top    line of the kernel
-                    next1_t.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_t.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep + 8 * sizeof(Fw32s)) );
+                    top.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep) );    // Top    line of the kernel
+                    next1_t.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_t.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep + 8 * sizeof(Fw32s)) );
     
-                    mid.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep) );    // Middle line of the kernel
-                    next1_m.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_m.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep + 8 * sizeof(Fw32s)) );
+                    mid.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep) );    // Middle line of the kernel
+                    next1_m.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_m.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep + 8 * sizeof(Fw32s)) );
     
-                    btm.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep) );    // Bottom line of the kernel
-                    next1_b.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_b.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep + 8 * sizeof(Fw32s)) );
+                    btm.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep) );    // Bottom line of the kernel
+                    next1_b.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_b.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep + 8 * sizeof(Fw32s)) );
     
                     // Add vertical columns
                     next1_t.f = _mm_add_ps( next1_t.f, _mm_add_ps(next1_m.f,next1_b.f) );
@@ -2762,7 +2762,7 @@ namespace SharpenFilter
                 }				
     
                 for( ; pd<pEnd; pd += sizeof(Fw32f), ps += sizeof(Fw32f) )   // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw32f, Fw32f, C4>::el_fn( (const Fw32f*)(ps+srcStep+C4*sizeof(Fw32f)), srcStep, (Fw32f*)pd );
+                    REF_FN<Fw32f, Fw32f, C4>::el_fn( (const Fw32f*)(ps+srcstep+C4*sizeof(Fw32f)), srcstep, (Fw32f*)pd );
             }
         }
     
@@ -2771,7 +2771,7 @@ namespace SharpenFilter
         {	
             Data< Fw32f > & data = *(Data< Fw32f >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
@@ -2779,19 +2779,19 @@ namespace SharpenFilter
             // I assume that the src is aligned at the border.
             //				 the dst is aligned at the data.
     
-            // I also assume that srcStep is a multiple of 16 bytes
+            // I also assume that srcstep is a multiple of 16 bytes
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C4 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C4 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
     
             XMM128 c_17, c_8;
             c_17.f = _mm_set1_ps( 17.0 );
             c_8.f = _mm_set1_ps( 8.0 );
     
             Fw8u * pEnd = pDst + dstRoiSize.height * dstStep;
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -2820,17 +2820,17 @@ namespace SharpenFilter
                     // dst = ( 16 * src - sum( 9x9 matrix of pixels centered at src ) ) / 8
     
                     // Load the data
-                    top.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep) );    // Top    line of the kernel
-                    next1_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep + 8 * sizeof(Fw32s)) );
+                    top.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep) );    // Top    line of the kernel
+                    next1_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep + 8 * sizeof(Fw32s)) );
     
-                    mid.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep) );    // Middle line of the kernel
-                    next1_m.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_m.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep + 8 * sizeof(Fw32s)) );
+                    mid.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep) );    // Middle line of the kernel
+                    next1_m.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_m.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep + 8 * sizeof(Fw32s)) );
     
-                    btm.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep) );    // Bottom line of the kernel
-                    next1_b.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_b.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep + 8 * sizeof(Fw32s)) );
+                    btm.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep) );    // Bottom line of the kernel
+                    next1_b.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_b.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep + 8 * sizeof(Fw32s)) );
     
                     // Add vertical columns
                     next1_t.f = _mm_add_ps( next1_t.f, _mm_add_ps(next1_m.f,next1_b.f) );
@@ -2857,7 +2857,7 @@ namespace SharpenFilter
                 }				
     
                 for( ; pd<pEnd; pd += sizeof(Fw32f), ps += sizeof(Fw32f) )   // Process 1 at a time until we hit an alignment boundary
-                    REF_FN<Fw32f, Fw32f, C4>::el_fn( (const Fw32f*)(ps+srcStep+C4*sizeof(Fw32f)), srcStep, (Fw32f*)pd );
+                    REF_FN<Fw32f, Fw32f, C4>::el_fn( (const Fw32f*)(ps+srcstep+C4*sizeof(Fw32f)), srcstep, (Fw32f*)pd );
             }
         }
     };
@@ -2870,7 +2870,7 @@ namespace SharpenFilter
         {	
             Data< Fw32f > & data = *(Data< Fw32f >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
@@ -2878,19 +2878,19 @@ namespace SharpenFilter
             // I assume that the src is aligned at the border.
             //				 the dst is aligned at the data.
     
-            // I also assume that srcStep is a multiple of 16 bytes
+            // I also assume that srcstep is a multiple of 16 bytes
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C4 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C4 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
     
             XMM128 c_17, c_8;
             c_17.f = _mm_set1_ps( 17.0 );
             c_8.f = _mm_set1_ps( 8.0 );
     
             Fw8u * pEnd = pDst + dstRoiSize.height * dstStep;
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -2915,7 +2915,7 @@ namespace SharpenFilter
                 {
                     if( offset & 0x3 )
                     {
-                        REF_FN<Fw32f, Fw32f, C4>::el_fn( (const Fw32f*)(((const Fw8u*)ps)+srcStep+C4*sizeof(Fw32f)), srcStep, (Fw32f*)pd );
+                        REF_FN<Fw32f, Fw32f, C4>::el_fn( (const Fw32f*)(((const Fw8u*)ps)+srcstep+C4*sizeof(Fw32f)), srcstep, (Fw32f*)pd );
                     }
                 }
     
@@ -2943,17 +2943,17 @@ namespace SharpenFilter
                     // dst = ( 16 * src - sum( 9x9 matrix of pixels centered at src ) ) / 8
     
                     // Load the data
-                    top.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep) );    // Top    line of the kernel
-                    next1_t.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_t.i = _mm_load_si128( (__m128i*)(ps + 0*srcStep + 8 * sizeof(Fw32s)) );
+                    top.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep) );    // Top    line of the kernel
+                    next1_t.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_t.i = _mm_load_si128( (__m128i*)(ps + 0*srcstep + 8 * sizeof(Fw32s)) );
     
-                    mid.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep) );    // Middle line of the kernel
-                    next1_m.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_m.i = _mm_load_si128( (__m128i*)(ps + 1*srcStep + 8 * sizeof(Fw32s)) );
+                    mid.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep) );    // Middle line of the kernel
+                    next1_m.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_m.i = _mm_load_si128( (__m128i*)(ps + 1*srcstep + 8 * sizeof(Fw32s)) );
     
-                    btm.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep) );    // Bottom line of the kernel
-                    next1_b.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_b.i = _mm_load_si128( (__m128i*)(ps + 2*srcStep + 8 * sizeof(Fw32s)) );
+                    btm.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep) );    // Bottom line of the kernel
+                    next1_b.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_b.i = _mm_load_si128( (__m128i*)(ps + 2*srcstep + 8 * sizeof(Fw32s)) );
     
                     // Add vertical columns
                     next1_t.f = _mm_add_ps( next1_t.f, _mm_add_ps(next1_m.f,next1_b.f) );
@@ -2994,7 +2994,7 @@ namespace SharpenFilter
                 {
                     if( offset & 0x3 )
                     {
-                        REF_FN<Fw32f, Fw32f, C4>::el_fn( (const Fw32f*)(ps+srcStep+C4*sizeof(Fw32f)), srcStep, (Fw32f*)pd );
+                        REF_FN<Fw32f, Fw32f, C4>::el_fn( (const Fw32f*)(ps+srcstep+C4*sizeof(Fw32f)), srcstep, (Fw32f*)pd );
                     }
                 }
     
@@ -3006,7 +3006,7 @@ namespace SharpenFilter
         {
             Data< Fw32f > & data = *(Data< Fw32f >*)pData;
             const Fw8u * pSrc = (const Fw8u *)data.pSrc;
-            int      srcStep    = data.srcStep;
+            int      srcstep    = data.srcstep;
             Fw8u * pDst	    = (Fw8u *)data.pDst;	
             int      dstStep    = data.dstStep;
             FwiSize dstRoiSize = data.dstRoiSize;
@@ -3014,19 +3014,19 @@ namespace SharpenFilter
             // I assume that the src is aligned at the border.
             //				 the dst is aligned at the data.
     
-            // I also assume that srcStep is a multiple of 16 bytes
+            // I also assume that srcstep is a multiple of 16 bytes
     
             //	B B B 				//pSrc points at first S (src data)
             //  B S S    D D 		//pDst points at first D (dst data)
             //	B S S    D D 											
-            pSrc -= srcStep + C4 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
+            pSrc -= srcstep + C4 * sizeof(Fw32f);	// Now pSrc points at the first B in each line	
     
             XMM128 c_17, c_8;
             c_17.f = _mm_set1_ps( 17.0 );
             c_8.f = _mm_set1_ps( 8.0 );
     
             Fw8u * pEnd = pDst + dstRoiSize.height * dstStep;
-            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcStep )			// Process vertical lines
+            for( ; pDst<pEnd; pDst += dstStep, pSrc += srcstep )			// Process vertical lines
             {
                 const Fw8u *ps = pSrc;									
                     Fw8u *pd = pDst;	
@@ -3058,17 +3058,17 @@ namespace SharpenFilter
                     // dst = ( 16 * src - sum( 9x9 matrix of pixels centered at src ) ) / 8
     
                     // Load the data
-                    top.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep) );    // Top    line of the kernel
-                    next1_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcStep + 8 * sizeof(Fw32s)) );
+                    top.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep) );    // Top    line of the kernel
+                    next1_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_t.i = _mm_loadu_si128( (__m128i*)(ps + 0*srcstep + 8 * sizeof(Fw32s)) );
     
-                    mid.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep) );    // Middle line of the kernel
-                    next1_m.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_m.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcStep + 8 * sizeof(Fw32s)) );
+                    mid.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep) );    // Middle line of the kernel
+                    next1_m.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_m.i = _mm_loadu_si128( (__m128i*)(ps + 1*srcstep + 8 * sizeof(Fw32s)) );
     
-                    btm.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep) );    // Bottom line of the kernel
-                    next1_b.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep + 4 * sizeof(Fw32s)) );
-                    next2_b.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcStep + 8 * sizeof(Fw32s)) );
+                    btm.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep) );    // Bottom line of the kernel
+                    next1_b.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep + 4 * sizeof(Fw32s)) );
+                    next2_b.i = _mm_loadu_si128( (__m128i*)(ps + 2*srcstep + 8 * sizeof(Fw32s)) );
     
                     // Add vertical columns
                     next1_t.f = _mm_add_ps( next1_t.f, _mm_add_ps(next1_m.f,next1_b.f) );
@@ -3109,7 +3109,7 @@ namespace SharpenFilter
                 {
                     if( offset & 0x3 )
                     {
-                        REF_FN<Fw32f, Fw32f, C4>::el_fn((const Fw32f*)(ps+srcStep+C4*sizeof(Fw32f)), srcStep, (Fw32f*)pd );
+                        REF_FN<Fw32f, Fw32f, C4>::el_fn((const Fw32f*)(ps+srcstep+C4*sizeof(Fw32f)), srcstep, (Fw32f*)pd );
                     }
                 }
             }
@@ -3120,64 +3120,64 @@ namespace SharpenFilter
 
 using namespace OPT_LEVEL;
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_8u_C1R)( const Fw8u * pSrc, int srcStep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize )
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_8u_C1R)( const Fw8u * pSrc, int srcstep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize )
 {
-    return SharpenFilter::iFilterSharpen<C1,Fw8u,Fw16s>( pSrc, srcStep, pDst, dstStep, dstRoiSize );
+    return SharpenFilter::iFilterSharpen<C1,Fw8u,Fw16s>( pSrc, srcstep, pDst, dstStep, dstRoiSize );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_16s_C1R)( const Fw16s * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize )
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_16s_C1R)( const Fw16s * pSrc, int srcstep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize )
 {
-    return SharpenFilter::iFilterSharpen<C1,Fw16s,Fw32s>( pSrc, srcStep, pDst, dstStep, dstRoiSize );
+    return SharpenFilter::iFilterSharpen<C1,Fw16s,Fw32s>( pSrc, srcstep, pDst, dstStep, dstRoiSize );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_32f_C1R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize )
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_32f_C1R)( const Fw32f * pSrc, int srcstep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize )
 {
-    return SharpenFilter::iFilterSharpen<C1,Fw32f,Fw32f>( pSrc, srcStep, pDst, dstStep, dstRoiSize );
+    return SharpenFilter::iFilterSharpen<C1,Fw32f,Fw32f>( pSrc, srcstep, pDst, dstStep, dstRoiSize );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_8u_C3R)( const Fw8u * pSrc, int srcStep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize )
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_8u_C3R)( const Fw8u * pSrc, int srcstep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize )
 {
-  	return SharpenFilter::iFilterSharpen<C3,Fw8u,Fw16s>( pSrc, srcStep, pDst, dstStep, dstRoiSize );
+  	return SharpenFilter::iFilterSharpen<C3,Fw8u,Fw16s>( pSrc, srcstep, pDst, dstStep, dstRoiSize );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_16s_C3R)( const Fw16s * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize )
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_16s_C3R)( const Fw16s * pSrc, int srcstep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize )
 {
-    return SharpenFilter::iFilterSharpen<C3,Fw16s,Fw32s>( pSrc, srcStep, pDst, dstStep, dstRoiSize );
+    return SharpenFilter::iFilterSharpen<C3,Fw16s,Fw32s>( pSrc, srcstep, pDst, dstStep, dstRoiSize );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_32f_C3R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize )
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_32f_C3R)( const Fw32f * pSrc, int srcstep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize )
 {
-    return SharpenFilter::iFilterSharpen<C3,Fw32f,Fw32f>( pSrc, srcStep, pDst, dstStep, dstRoiSize );
+    return SharpenFilter::iFilterSharpen<C3,Fw32f,Fw32f>( pSrc, srcstep, pDst, dstStep, dstRoiSize );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_8u_C4R)( const Fw8u * pSrc, int srcStep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize )
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_8u_C4R)( const Fw8u * pSrc, int srcstep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize )
 {
-    return SharpenFilter::iFilterSharpen<C4,Fw8u,Fw16s>( pSrc, srcStep, pDst, dstStep, dstRoiSize );
+    return SharpenFilter::iFilterSharpen<C4,Fw8u,Fw16s>( pSrc, srcstep, pDst, dstStep, dstRoiSize );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_16s_C4R)( const Fw16s * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize )
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_16s_C4R)( const Fw16s * pSrc, int srcstep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize )
 {
-    return SharpenFilter::iFilterSharpen<C4,Fw16s,Fw32s>( pSrc, srcStep, pDst, dstStep, dstRoiSize );
+    return SharpenFilter::iFilterSharpen<C4,Fw16s,Fw32s>( pSrc, srcstep, pDst, dstStep, dstRoiSize );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_32f_C4R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize )
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_32f_C4R)( const Fw32f * pSrc, int srcstep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize )
 {
-    return SharpenFilter::iFilterSharpen<C4,Fw32f,Fw32f>( pSrc, srcStep, pDst, dstStep, dstRoiSize );
+    return SharpenFilter::iFilterSharpen<C4,Fw32f,Fw32f>( pSrc, srcstep, pDst, dstStep, dstRoiSize );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_8u_AC4R)( const Fw8u * pSrc, int srcStep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize )
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_8u_AC4R)( const Fw8u * pSrc, int srcstep, Fw8u * pDst, int dstStep, FwiSize dstRoiSize )
 {
-    return SharpenFilter::iFilterSharpen<AC4,Fw8u,Fw16s>( pSrc, srcStep, pDst, dstStep, dstRoiSize );
+    return SharpenFilter::iFilterSharpen<AC4,Fw8u,Fw16s>( pSrc, srcstep, pDst, dstStep, dstRoiSize );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_16s_AC4R)( const Fw16s * pSrc, int srcStep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize )
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_16s_AC4R)( const Fw16s * pSrc, int srcstep, Fw16s * pDst, int dstStep, FwiSize dstRoiSize )
 {
-    return SharpenFilter::iFilterSharpen<AC4,Fw16s,Fw32s>( pSrc, srcStep, pDst, dstStep, dstRoiSize );
+    return SharpenFilter::iFilterSharpen<AC4,Fw16s,Fw32s>( pSrc, srcstep, pDst, dstStep, dstRoiSize );
 }
 
-FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_32f_AC4R)( const Fw32f * pSrc, int srcStep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize )
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_32f_AC4R)( const Fw32f * pSrc, int srcstep, Fw32f * pDst, int dstStep, FwiSize dstRoiSize )
 {
-    return SharpenFilter::iFilterSharpen<AC4,Fw32f,Fw32f>( pSrc, srcStep, pDst, dstStep, dstRoiSize );
+    return SharpenFilter::iFilterSharpen<AC4,Fw32f,Fw32f>( pSrc, srcstep, pDst, dstStep, dstRoiSize );
 }
 
 
