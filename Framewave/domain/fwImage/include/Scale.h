@@ -30,10 +30,10 @@ ISV ScaleI_1(const TS * s, TD * d)
 	*d = FW_REF::To<TD>::From( f );
 }
 
-template<class TS, class TD, CH CS>
+template<class TS, class TD, CH cs>
 ISV ScaleI(const TS * s, TD * d)
 {
-	for(int i=0;i<CS;i++)
+	for(int i=0;i<cs;i++)
 		ScaleI_1(s+i, d+i);	
 }
 
@@ -52,10 +52,10 @@ ISV ScaleToF_1(const TS *s, TD *d, const A32F &dst_min, const A32F &dst_max)
 	*d = FW_REF::To<TD>::From( f );
 }
 
-template< class TS, class TD, CH CS>
+template< class TS, class TD, CH cs>
 ISV ScaleToF(const TS * s, TD * d, const A32F &dst_min, const A32F &dst_max)
 {
-	for(int i=0;i<CS;i++)
+	for(int i=0;i<cs;i++)
 		ScaleToF_1(s+i, d+i, dst_min, dst_max);		
 }
 
@@ -81,10 +81,10 @@ ISV ScaleFromF_1(const TS * s, TD * d, const A32F &src_min, const A32F &src_max)
 	*d = FW_REF::To<TD>::From( f );
 }
 
-template< class TS, class TD, CH CS>
+template< class TS, class TD, CH cs>
 ISV ScaleFromF(const TS * s, TD * d, const A32F &src_min, const A32F &src_max)
 {
-	for(int i=0;i<CS;i++)
+	for(int i=0;i<cs;i++)
 		ScaleFromF_1(s+i, d+i, src_min, src_max);
 }
 
@@ -95,10 +95,10 @@ ISV ScaleH_1(const TS *s, TD *d, const FwHintAlgorithm &hint)
 	return ScaleI_1(s, d);				
 }
 
-template< class TS, class TD, CH CS>
+template< class TS, class TD, CH cs>
 ISV ScaleH(const TS * s, TD * d, const FwHintAlgorithm &hint)
 {
-	for(int i=0;i<CS;i++)
+	for(int i=0;i<cs;i++)
 		ScaleH_1(s+i, d+i, hint);
 }
 

@@ -12,20 +12,20 @@ namespace OPT_LEVEL
 {
 
 // C1R, C3R, C4R //common to many data types
-template<class TS, CH CS, class TD, CH CD>
-struct Convert_CR : fe2<TS, CS, TD, CD>
+template<class TS, CH cs, class TD, CH CD>
+struct Convert_CR : fe2<TS, cs, TD, CD>
     {
     FE_REF
 
         IV REFR( const TS *s, TD *d ) const								
         {			
-        Convert<TS, TD, CS>(s, d);
+        Convert<TS, TD, cs>(s, d);
         }
     };
 
 // AC4R // common to many data types
-template<class TS, CH CS, class TD, CH CD>
-struct Convert_AC4R : fe2<TS, CS, TD, CD>
+template<class TS, CH cs, class TD, CH CD>
+struct Convert_AC4R : fe2<TS, cs, TD, CD>
     {
     FE_REF
 
@@ -36,8 +36,8 @@ struct Convert_AC4R : fe2<TS, CS, TD, CD>
     };
 
 // 8U16U, 8U16S C1R, C4R
-template<class TS, CH CS, class TD, CH CD>
-struct Convert_8u16_C14R : fe2<TS, CS, TD, CD>
+template<class TS, CH cs, class TD, CH CD>
+struct Convert_8u16_C14R : fe2<TS, cs, TD, CD>
     {
     FE_SSE2_REF
         XMM128 zero;
@@ -54,7 +54,7 @@ struct Convert_8u16_C14R : fe2<TS, CS, TD, CD>
 
     IV REFR( const TS *s, TD *d ) const								
         {			
-        Convert<TS, TD, CS>(s, d);
+        Convert<TS, TD, cs>(s, d);
         }
     };
 
@@ -82,8 +82,8 @@ struct Convert_8u16_C3R : fe2<TS, C3, TD, C3>
     };
 
 // 8U32S C1R, C4R
-//template<CH CS, CH CD>
-//struct Convert_8u32s_C14R : fe2<A8U, CS, A32S, CD>
+//template<CH cs, CH CD>
+//struct Convert_8u32s_C14R : fe2<A8U, cs, A32S, CD>
 //    {
 //    FE_SSE2_REF
 //        XMM128 zero;
@@ -100,7 +100,7 @@ struct Convert_8u16_C3R : fe2<TS, C3, TD, C3>
 //
 //    IV REFR( const A8U *s, A32S *d ) const								
 //        {			
-//        Convert<A8U, A32S, CS>(s, d);
+//        Convert<A8U, A32S, cs>(s, d);
 //        }
 //    };
 
@@ -126,8 +126,8 @@ struct Convert_8u16_C3R : fe2<TS, C3, TD, C3>
 //        }
 //    };
 
-template<CH CS, CH CD>
-struct Convert_8u32s_C14R_Custom : fe2<A8U, CS, A32S, CD>
+template<CH cs, CH CD>
+struct Convert_8u32s_C14R_Custom : fe2<A8U, cs, A32S, CD>
     {
     FE_CUSTOM_SSE2_REF
         XMM128 zero;
@@ -147,8 +147,8 @@ struct Convert_8u32s_C14R_Custom : fe2<A8U, CS, A32S, CD>
         }
     };
 
-template<CH CS, CH CD>
-struct Convert_8s32s_C14R_Custom : fe2<A8S, CS, A32S, CD>
+template<CH cs, CH CD>
+struct Convert_8s32s_C14R_Custom : fe2<A8S, cs, A32S, CD>
     {
     FE_CUSTOM_SSE2_REF
         XMM128 zero;
@@ -172,8 +172,8 @@ struct Convert_8s32s_C14R_Custom : fe2<A8S, CS, A32S, CD>
 
 
 
-template<CH CS, CH CD>
-struct Convert_8u32f_C14R_Custom : fe2<A8U, CS, A32F, CD>
+template<CH cs, CH CD>
+struct Convert_8u32f_C14R_Custom : fe2<A8U, cs, A32F, CD>
     {
     FE_CUSTOM_SSE2_REF
         XMM128 zero;
@@ -194,8 +194,8 @@ struct Convert_8u32f_C14R_Custom : fe2<A8U, CS, A32F, CD>
     };
 
 
-template<CH CS, CH CD>
-struct Convert_8s32f_C14R_Custom : fe2<A8S, CS, A32F, CD>
+template<CH cs, CH CD>
+struct Convert_8s32f_C14R_Custom : fe2<A8S, cs, A32F, CD>
     {
     FE_CUSTOM_SSE2_REF
         XMM128 zero;
@@ -218,8 +218,8 @@ struct Convert_8s32f_C14R_Custom : fe2<A8S, CS, A32F, CD>
 
 
 // 16U32S C1R, C4R
-template<CH CS, CH CD>
-struct Convert_16u32s_C14R : fe2<A16U, CS, A32S, CD>
+template<CH cs, CH CD>
+struct Convert_16u32s_C14R : fe2<A16U, cs, A32S, CD>
     {
     FE_SSE2_REF
         XMM128 zero;
@@ -236,7 +236,7 @@ struct Convert_16u32s_C14R : fe2<A16U, CS, A32S, CD>
 
     IV REFR( const A16U *s, A32S *d ) const								
         {			
-        Convert<A16U, A32S, CS>(s, d);
+        Convert<A16U, A32S, cs>(s, d);
         }
     };
 
@@ -263,8 +263,8 @@ struct Convert_16u32s_C3R : fe2<A16U, C3, A32S, C3>
     };
 
 // 16U32F C1R, C4R
-template<CH CS, CH CD>
-struct Convert_16u32f_C14R : fe2<A16U, CS, A32F, CD>
+template<CH cs, CH CD>
+struct Convert_16u32f_C14R : fe2<A16U, cs, A32F, CD>
     {
     FE_SSE2_REF
         XMM128 zero;
@@ -281,7 +281,7 @@ struct Convert_16u32f_C14R : fe2<A16U, CS, A32F, CD>
 
     IV REFR( const A16U *s, A32F *d ) const								
         {			
-        Convert<A16U, A32F, CS>(s, d);
+        Convert<A16U, A32F, cs>(s, d);
         }
     };
 
@@ -308,8 +308,8 @@ struct Convert_16u32f_C3R : fe2<A16U, C3, A32F, C3>
     };
 
 // 16S32F C1R, C4R
-template<CH CS, CH CD>
-struct Convert_16s32f_C14R : fe2<A16S, CS, A32F, CD>
+template<CH cs, CH CD>
+struct Convert_16s32f_C14R : fe2<A16S, cs, A32F, CD>
     {
     FE_SSE2_REF
         XMM128 zero;
@@ -326,7 +326,7 @@ struct Convert_16s32f_C14R : fe2<A16S, CS, A32F, CD>
 
     IV REFR( const A16S *s, A32F *d ) const								
         {			
-        Convert<A16S, A32F, CS>(s, d);
+        Convert<A16S, A32F, cs>(s, d);
         }
     };
 

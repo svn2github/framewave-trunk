@@ -12,20 +12,20 @@ namespace OPT_LEVEL
 {
 
 // C1R, C3R, C4R
-template<class TS, CH CS, class TD, CH CD>
-struct ScaleTo_Integer : fe2<TS, CS, TD, CD>
+template<class TS, CH cs, class TD, CH CD>
+struct ScaleTo_Integer : fe2<TS, cs, TD, CD>
 {
 	FE_REF
 
 	IV REFR( const TS *s, TD *d ) const								
 		{			
-			ScaleI<TS, TD, CS>(s, d);
+			ScaleI<TS, TD, cs>(s, d);
 		}
 };
 
 // AC4R
-template<class TS, CH CS, class TD, CH CD>
-struct ScaleTo_Integer_AC4 : fe2<TS, CS, TD, CD>
+template<class TS, CH cs, class TD, CH CD>
+struct ScaleTo_Integer_AC4 : fe2<TS, cs, TD, CD>
 {
 	FE_REF
 
@@ -36,8 +36,8 @@ struct ScaleTo_Integer_AC4 : fe2<TS, CS, TD, CD>
 };
 
 // C1R, C3R, C4R
-template<class TS, CH CS, class TD, CH CD>
-struct ScaleTo_Float : fe2<TS, CS, TD, CD>
+template<class TS, CH cs, class TD, CH CD>
+struct ScaleTo_Float : fe2<TS, cs, TD, CD>
 {
 	A32F vMin, vMax;
 
@@ -50,12 +50,12 @@ struct ScaleTo_Float : fe2<TS, CS, TD, CD>
 
 	IV REFR( const TS *s, TD *d ) const								
 		{			
-			ScaleToF<TS, TD, CS>(s, d, vMin, vMax);
+			ScaleToF<TS, TD, cs>(s, d, vMin, vMax);
 		}
 };
 
-template<class TS, CH CS, class TD, CH CD>
-struct ScaleTo_Float_AC4 : fe2<TS, CS, TD, CD>
+template<class TS, CH cs, class TD, CH CD>
+struct ScaleTo_Float_AC4 : fe2<TS, cs, TD, CD>
 {
 	A32F vMin, vMax;
 
@@ -73,8 +73,8 @@ struct ScaleTo_Float_AC4 : fe2<TS, CS, TD, CD>
 };
 
 // C1R, C3R, C4R
-template<class TS, CH CS, class TD, CH CD>
-struct ScaleFrom_Float : fe2<TS, CS, TD, CD>
+template<class TS, CH cs, class TD, CH CD>
+struct ScaleFrom_Float : fe2<TS, cs, TD, CD>
 {
 	A32F vMin, vMax;
 
@@ -87,13 +87,13 @@ struct ScaleFrom_Float : fe2<TS, CS, TD, CD>
 
 	IV REFR( const TS *s, TD *d ) const								
 		{			
-			ScaleFromF<TS, TD, CS>(s, d, vMin, vMax);
+			ScaleFromF<TS, TD, cs>(s, d, vMin, vMax);
 		}
 };
 
 // AC4
-template<class TS, CH CS, class TD, CH CD>
-struct ScaleFrom_Float_AC4 : fe2<TS, CS, TD, CD>
+template<class TS, CH cs, class TD, CH CD>
+struct ScaleFrom_Float_AC4 : fe2<TS, cs, TD, CD>
 {
 	A32F vMin, vMax;
 
@@ -111,8 +111,8 @@ struct ScaleFrom_Float_AC4 : fe2<TS, CS, TD, CD>
 };
 
 // C1R, C3R, C4R
-template<class TS, CH CS, class TD, CH CD>
-struct Scale_Hint : fe2<TS, CS, TD, CD>
+template<class TS, CH cs, class TD, CH CD>
+struct Scale_Hint : fe2<TS, cs, TD, CD>
 {
 	FwHintAlgorithm hint;
 
@@ -125,12 +125,12 @@ struct Scale_Hint : fe2<TS, CS, TD, CD>
 
 	IV REFR( const TS *s, TD *d ) const								
 		{			
-			ScaleH<TS, TD, CS>(s, d, hint);
+			ScaleH<TS, TD, cs>(s, d, hint);
 		}
 };
 
-template<class TS, CH CS, class TD, CH CD>
-struct Scale_Hint_AC4 : fe2<TS, CS, TD, CD>
+template<class TS, CH cs, class TD, CH CD>
+struct Scale_Hint_AC4 : fe2<TS, cs, TD, CD>
 {
 	FwHintAlgorithm hint;
 

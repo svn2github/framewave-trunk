@@ -13,17 +13,17 @@ namespace OPT_LEVEL
 
 /////////////////////////////////////// REF FUNCTIONS ////////////////////////////////////////////
 
-template<class TS, class TD, CH CS>
+template<class TS, class TD, CH cs>
 ISV Convert(const TS * s, TD * d)
     {
-    for(int i=0;i<CS;i++)
+    for(int i=0;i<cs;i++)
         d[i] = FW_REF::To< TD >::From( s[i] );;
     }
 
-template< class TS, class TD, CH CS >
+template< class TS, class TD, CH cs >
 ISV ConvertDown( const TS *s, TD *d )
     {
-    for(int i=0;i<CS;i++)
+    for(int i=0;i<cs;i++)
         d[i] = FW_REF::Limits<TD>::Sat( s[i] );
     }
 
@@ -343,14 +343,14 @@ IS __m128i convert16s_8u_Helper(__m128i *src1, __m128i *src2)
     return _mm_packus_epi16 (reg1.i,reg2.i);
     }
 
-template <class TS, class TD, CH CS, IsAlign ia>
+template <class TS, class TD, CH cs, IsAlign ia>
 ISV Convert_16s8u_Custom_SSE2_I(const TS *s, TD *d, U32 &pixCount)
     {
     __m128i *src	= (__m128i*)s;
     __m128i *dst	= (__m128i*)d;
     XMM128 temp,temp1;
 
-    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(CS));
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
 
     for( ; (src+3) < end; src+= 4, dst+=2)
         {		
@@ -369,21 +369,21 @@ ISV Convert_16s8u_Custom_SSE2_I(const TS *s, TD *d, U32 &pixCount)
 
     TD *ds = (TD*) dst;
     TS *sc = (TS*) src;
-    const TS *scEnd = s + pixCount * ChannelCount(CS);
+    const TS *scEnd = s + pixCount * ChannelCount(cs);
 
-    for( ; sc < scEnd; sc+=ChannelCount(CS), ds+=ChannelCount(CS))
+    for( ; sc < scEnd; sc+=ChannelCount(cs), ds+=ChannelCount(cs))
         {
-        ConvertDown<TS,TD,CS>(sc,ds);
+        ConvertDown<TS,TD,cs>(sc,ds);
         }	
     }
 
 // 16S8U C3R
-template <class TS, class TD, CH CS, IsAlign ia>
+template <class TS, class TD, CH cs, IsAlign ia>
 ISV Convert_16s8u_C3R_Custom_SSE2_I(const TS *s, TD *d, U32 &pixCount)
     {
     __m128i *src	= (__m128i*)s;
     __m128i *dst	= (__m128i*)d;
-    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(CS));
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
     XMM128 temp;    
 
     for(; (src+1) < end; src+=2, dst++)
@@ -394,7 +394,7 @@ ISV Convert_16s8u_C3R_Custom_SSE2_I(const TS *s, TD *d, U32 &pixCount)
 
     TD *ds = (TD*) dst;
     TS *sc = (TS*) src;
-    const TS *scEnd = s + pixCount * ChannelCount(CS);
+    const TS *scEnd = s + pixCount * ChannelCount(cs);
 
     for( ; sc < scEnd; sc++, ds++)     // processing for the last register as channel C1
         {
@@ -403,14 +403,14 @@ ISV Convert_16s8u_C3R_Custom_SSE2_I(const TS *s, TD *d, U32 &pixCount)
     }
 
 // 16S8U AC4R
-template <class TS, class TD, CH CS, IsAlign ia>
+template <class TS, class TD, CH cs, IsAlign ia>
 ISV Convert_16s8uAC4_Custom_SSE2_I(const TS *s, TD *d, U32 &pixCount, const __m128i &mask)
     {
     __m128i *src	= (__m128i*)s;
     __m128i *dst	= (__m128i*)d;
     XMM128 dstReg1,dstReg2;    
 
-    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(CS));
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
 
     for( ; (src+3) < end; src+= 4, dst+=2)
         {
@@ -431,9 +431,9 @@ ISV Convert_16s8uAC4_Custom_SSE2_I(const TS *s, TD *d, U32 &pixCount, const __m1
 
     TD *ds = (TD*) dst;
     TS *sc = (TS*) src;
-    const TS *scEnd = s + pixCount * ChannelCount(CS);
+    const TS *scEnd = s + pixCount * ChannelCount(cs);
 
-    for( ; sc < scEnd; sc+=ChannelCount(CS), ds+=ChannelCount(CS))
+    for( ; sc < scEnd; sc+=ChannelCount(cs), ds+=ChannelCount(cs))
         {
         ConvertDown<TS,TD,C3>(sc,ds);
         }	
@@ -479,12 +479,12 @@ ISV convert16u8u_Helper(__m128i *src1, __m128i *src2, __m128i &zeroTemp,__m128i 
     dst = _mm_or_si128(dst,mskTemp);
     }
 
-template <class TS, class TD, CH CS, IsAlign ia>
+template <class TS, class TD, CH cs, IsAlign ia>
 ISV Convert_16u8u_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount)
     {
     __m128i *src	= (__m128i*)s;
     __m128i *dst	= (__m128i*)d;
-    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(CS));
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
     __m128i zero = _mm_setzero_si128();
     XMM128 dstReg1, dstReg2;
     
@@ -506,21 +506,21 @@ ISV Convert_16u8u_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount)
 
     TD *ds = (TD*) dst;
     TS *sc = (TS*) src;
-    const TS *scEnd = s + pixCount * ChannelCount(CS);
+    const TS *scEnd = s + pixCount * ChannelCount(cs);
 
-    for( ; sc < scEnd; sc+=ChannelCount(CS), ds+=ChannelCount(CS))
+    for( ; sc < scEnd; sc+=ChannelCount(cs), ds+=ChannelCount(cs))
         {
-        ConvertDown<TS,TD,CS>(sc,ds);
+        ConvertDown<TS,TD,cs>(sc,ds);
         }	
     }
 
 // 16U8U C3R
-template <class TS, class TD, CH CS, IsAlign ia>
+template <class TS, class TD, CH cs, IsAlign ia>
 ISV Convert_16u8u_C3R_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount)
     {
     __m128i *src	= (__m128i*)s;
     __m128i *dst	= (__m128i*)d;
-    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(CS));
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
     __m128i zero = _mm_setzero_si128();
     XMM128 dstReg1;    
 
@@ -534,7 +534,7 @@ ISV Convert_16u8u_C3R_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount)
 
     TD *ds = (TD*) dst;
     TS *sc = (TS*) src;
-    const TS *scEnd = s + pixCount * ChannelCount(CS);
+    const TS *scEnd = s + pixCount * ChannelCount(cs);
 
     for( ; sc < scEnd; sc++, ds++)    // processing the third register as C1R
         {
@@ -543,12 +543,12 @@ ISV Convert_16u8u_C3R_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount)
     }
 
 // 16U8U AC4R
-template <class TS, class TD, CH CS, IsAlign ia>
+template <class TS, class TD, CH cs, IsAlign ia>
 SYS_INLINE STATIC void Convert_16u8uAC4_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount, const __m128i &mask)
     {
     __m128i *src	= (__m128i*)s;
     __m128i *dst	= (__m128i*)d;
-    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(CS));
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
     __m128i zero = _mm_setzero_si128();
     XMM128 dstReg1, dstReg2;
     
@@ -573,8 +573,8 @@ SYS_INLINE STATIC void Convert_16u8uAC4_Custom_SSE2_I (const TS *s, TD *d, U32 &
 
     TD *ds = (TD*) dst;
     TS *sc = (TS*) src;
-    const TS *scEnd = s + pixCount * ChannelCount(CS);
-    for( ; sc < scEnd; sc+=ChannelCount(CS), ds+=ChannelCount(CS))
+    const TS *scEnd = s + pixCount * ChannelCount(cs);
+    for( ; sc < scEnd; sc+=ChannelCount(cs), ds+=ChannelCount(cs))
         {
         ConvertDown<TS,TD,C3>(sc,ds);
         }
@@ -597,12 +597,12 @@ ISV convert_32s8u_Helper(__m128i *src1, __m128i *src2, __m128i *src3, __m128i *s
     dst = _mm_packus_epi16(temp, temp1);
     }
 
-template <class TS, class TD, CH CS, IsAlign ia>
+template <class TS, class TD, CH cs, IsAlign ia>
 ISV Convert_32s8u_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount)
     {
     __m128i *src	= (__m128i*)s;
     __m128i *dst	= (__m128i*)d;
-    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(CS));
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
     XMM128 dstReg;
     
     dstReg.i = _mm_setzero_si128();
@@ -614,11 +614,11 @@ ISV Convert_32s8u_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount)
 
     TD *ds = (TD*) dst;
     TS *sc = (TS*) src;
-    const TS *srcEnd = s + pixCount * ChannelCount(CS);
-#define TMP_INC (ChannelCount(CS) - 1)
-    for( ; (sc + TMP_INC) < srcEnd; sc+=ChannelCount(CS), ds+=ChannelCount(CS))
+    const TS *srcEnd = s + pixCount * ChannelCount(cs);
+#define TMP_INC (ChannelCount(cs) - 1)
+    for( ; (sc + TMP_INC) < srcEnd; sc+=ChannelCount(cs), ds+=ChannelCount(cs))
         {
-        ConvertDown<TS,TD,CS>(sc,ds);
+        ConvertDown<TS,TD,cs>(sc,ds);
         }
 #undef TMP_INC
     for(; sc < srcEnd; sc+=1, ds+=1)
@@ -628,12 +628,12 @@ ISV Convert_32s8u_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount)
     }
 
 // 32S8U AC4R
-template <class TS, class TD, CH CS, IsAlign ia>
+template <class TS, class TD, CH cs, IsAlign ia>
 ISV Convert_32s8uAC4_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount, const __m128i &mask)
     {
     __m128i *src	= (__m128i*)s;
     __m128i *dst	= (__m128i*)d;
-    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(CS));
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
     XMM128 dstReg;
     
     dstReg.i = _mm_setzero_si128();
@@ -647,9 +647,9 @@ ISV Convert_32s8uAC4_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount, const __m
 
     TD *ds = (TD*) dst;
     TS *sc = (TS*) src;
-    const TS *scEnd = s + pixCount * ChannelCount(CS);
+    const TS *scEnd = s + pixCount * ChannelCount(cs);
 
-    int nChannels = ChannelCount(CS);
+    int nChannels = ChannelCount(cs);
     int nCmp = nChannels-1;
 
     for( ; (sc + nCmp) < scEnd; sc+=nChannels, ds+=nChannels)
@@ -675,12 +675,12 @@ ISV convert_32s8s_Helper(__m128i *src1, __m128i *src2, __m128i *src3, __m128i *s
     dst =_mm_packs_epi16(temp, temp1);
     }
 
-template <class TS, class TD, CH CS, IsAlign ia>
+template <class TS, class TD, CH cs, IsAlign ia>
 ISV Convert_32s8s_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount)
     {
     __m128i *src	= (__m128i*)s;
     __m128i *dst	= (__m128i*)d;
-    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(CS));
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
     XMM128 dstReg;    
 
     dstReg.i = _mm_setzero_si128();
@@ -692,12 +692,12 @@ ISV Convert_32s8s_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount)
 
     TD *ds = (TD*) dst;
     TS *sc = (TS*) src;
-    const TS *srcEnd	= s + pixCount * ChannelCount(CS);
+    const TS *srcEnd	= s + pixCount * ChannelCount(cs);
 
-#define TMP_INC (ChannelCount(CS) - 1)
-    for( ; (sc + TMP_INC) < srcEnd; sc+=ChannelCount(CS), ds+=ChannelCount(CS))
+#define TMP_INC (ChannelCount(cs) - 1)
+    for( ; (sc + TMP_INC) < srcEnd; sc+=ChannelCount(cs), ds+=ChannelCount(cs))
         {
-        ConvertDown<TS,TD,CS>(sc,ds);
+        ConvertDown<TS,TD,cs>(sc,ds);
         }
 #undef TMP_INC
 
@@ -708,13 +708,13 @@ ISV Convert_32s8s_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount)
     }
 
 // 32S8S AC4R
-template <class TS, class TD, CH CS, IsAlign ia>
+template <class TS, class TD, CH cs, IsAlign ia>
 ISV Convert_32s8sAC4_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount, const __m128i &mask)
     {
     __m128i *src	= (__m128i*)s;
     __m128i *dst	= (__m128i*)d;
 
-    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(CS));
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
     XMM128 dstReg;
     
 
@@ -729,8 +729,8 @@ ISV Convert_32s8sAC4_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount, const __m
 
     TD *ds = (TD*) dst;
     TS *sc = (TS*) src;
-    const TS *scEnd = s + pixCount * ChannelCount(CS);
-    int nChannels = ChannelCount(CS);
+    const TS *scEnd = s + pixCount * ChannelCount(cs);
+    int nChannels = ChannelCount(cs);
     int nCmp = nChannels-1;
 
     for( ; (sc + nCmp) < scEnd; sc+=nChannels, ds+=nChannels)
