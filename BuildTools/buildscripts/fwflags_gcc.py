@@ -61,6 +61,7 @@ for ol in oOptimizationLevels[:maxImplementedOptimizationLevel]:
 dctLDFlags = {}
 
 dctLDFlags[r'-lpthread -Wl,-soname,lib${PROJECTNAME}.so.1'] = [shr, lin]
+dctLDFlags[r'-lrt -pthread -lm -Wl -hlib${PROJECTNAME}.so.1'] = [shr, sol]
 dctLDFlags[r'-m32']          = [b32]
 dctLDFlags[r'-m64']          = [b64]
 
