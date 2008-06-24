@@ -17,7 +17,7 @@ namespace OPT_LEVEL
          
          for ( int i = 0; i < dstLen; i++ ) {
             sum = 0;
-            for ( int j = 0; j < srcLen - 1; j++ ) {
+            for ( int j = 0; (j < srcLen - 1) && (j + i) < srcLen  ; j++ ) {
                sum += pSrc[j] * pSrc[j + i];
             }
             pDst[i] = sum;
@@ -32,7 +32,7 @@ namespace OPT_LEVEL
          
          for ( int i = 0; i < dstLen; i++ ) {
             sum = 0;
-            for ( int j = 0; j < srcLen - 1; j++ ) {
+            for ( int j = 0; (j < srcLen - 1) && (j + i) < srcLen ; j++ ) {
                sum += pSrc[j] * pSrc[j + i];
             }
             pDst[i] = sum/srcLen;                         // Biased
@@ -47,7 +47,7 @@ namespace OPT_LEVEL
          
          for ( int i = 0; i < dstLen; i++ ) {
             sum = 0;
-            for ( int j = 0; j < srcLen - 1; j++ ) {
+            for ( int j = 0; (j < srcLen - 1) && (j + i) < srcLen ; j++ ) {
                sum += pSrc[j] * pSrc[j + i];
             }
             pDst[i] = sum/(srcLen - i);                         // Un-Biased
