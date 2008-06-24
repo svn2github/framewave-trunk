@@ -1294,6 +1294,15 @@ FwStatus STDCALL fwsFindC_16u(const Fw16u* pSrc, int len, Fw16u valFind, int* pI
 FwStatus STDCALL fwsFindRevC_8u(const Fw8u* pSrc, int len, Fw8u valFind, int* pIndex);
 FwStatus STDCALL fwsFindRevC_16u(const Fw16u* pSrc, int len, Fw16u valFind, int* pIndex);
 
+////////////////////////////////////////////////////////////////
+//                        Auto
+////////////////////////////////////////////////////////////////
+
+
+FwStatus STDCALL fwsAutoCorr_32f(const  Fw32f*  pSrc,  int  srcLen,  Fw32f*  pDst,  int  dstLen);
+FwStatus STDCALL fwsAutoCorr_NormA_32f(const Fw32f* pSrc, int srcLen, Fw32f* pDst, int dstLen);
+FwStatus STDCALL fwsAutoCorr_NormB_32f(const Fw32f* pSrc, int srcLen, Fw32f* pDst, int dstLen);
+
 #ifdef __cplusplus
 }
 #endif

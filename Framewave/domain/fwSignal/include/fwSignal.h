@@ -1896,10 +1896,13 @@ FwStatus STDCALL fwsFindC_16u(const Fw16u* pSrc, int len, Fw16u valFind, int* pI
 FwStatus STDCALL fwsFindRevC_8u(const Fw8u* pSrc, int len, Fw8u valFind, int* pIndex);
 FwStatus STDCALL fwsFindRevC_16u(const Fw16u* pSrc, int len, Fw16u valFind, int* pIndex);
 
-/*#Documentation
-</Chapter>
+/*#FunctionBlock - Auto Correlation
+TODO:edit
+#Technologies - REF
+#Short - Finds normal, biased, and unbiased auto correlation
+#Long - <Text>This function finds normal auto correlation of the srcLen source buffer pSrc and stores the results in pDst buffer of length dstLen.</Text>
+#ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsLengthErr
 */
-// Auto-Correlation Functions Definition - SKiran
 
 FwStatus STDCALL fwsAutoCorr_32f(const  Fw32f*  pSrc,  int  srcLen,  Fw32f*  pDst,  int  dstLen);
 FwStatus STDCALL fwsAutoCorr_NormA_32f(const Fw32f* pSrc, int srcLen, Fw32f* pDst, int dstLen);
