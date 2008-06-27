@@ -3,7 +3,8 @@
 # Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
 # This software is subject to the Apache v2.0 License.
 #
-
+set FW_BIN_PATH=../../../Framewave/build/bin
+set FW_INC_PATH=../../../Framewave/build/include/
 set CONFIG="debug"
 set BITNESS=32
 set CLEAN=''

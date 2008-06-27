@@ -66,7 +66,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="UnitTestFramework.lib fwBase.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\bin\$(ConfigurationName)_32&quot;;&quot;$(FW_BIN_PATH)\$(ConfigurationName)_shared_32&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\bin\$(ConfigurationName)_32&quot;;&quot;..\..\..\Framewave\build\bin\$(ConfigurationName)_shared_32&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"

@@ -1551,7 +1551,7 @@ public:
     void RunTest( const char *srcInit, const char *dstExpected,int len,TD errorMargin = MemOps<TD>::Zero(), const FwStatus expectedReturn = fwStsNoErr )
     {
         m_srcInit = srcInit;
-        setBufflengh(len);
+        SDstLenBase<TD>::setBufflengh(len);
         ExecuteTest( NULL, dstExpected, errorMargin, expectedReturn );
     }
 
@@ -1564,7 +1564,7 @@ public:
         this->timer.Start();
         try
         {
-            stat = m_fn( src.Ptr(), dst.Ptr(),getBufflengh());
+            stat = m_fn( src.Ptr(), dst.Ptr(),SDstLenBase<TD>::getBufflengh());
         }
         catch( ... )
         {
@@ -1596,7 +1596,7 @@ public:
     void RunTest( const char *srcInit,TS const cVal, const char *dstExpected,int len,TD errorMargin = MemOps<TD>::Zero(), const FwStatus expectedReturn = fwStsNoErr )
     {
         m_srcInit = srcInit;
-        setBufflengh(len);
+        SDstLenBase<TD>::setBufflengh(len);
         ConstVal = cVal;
         ExecuteTest( NULL, dstExpected, errorMargin, expectedReturn );
     }
@@ -1610,7 +1610,7 @@ public:
         this->timer.Start();
         try
         {
-            stat = m_fn( src.Ptr(),ConstVal, dst.Ptr(),getBufflengh());
+            stat = m_fn( src.Ptr(),ConstVal, dst.Ptr(),SDstLenBase<TD>::getBufflengh());
         }
         catch( ... )
         {
@@ -1640,7 +1640,7 @@ public:
     void RunTest( const char *srcInit, const char *dstExpected,int len,FwHintAlgorithm ht= fwAlgHintNone,TD errorMargin = MemOps<TD>::Zero(), const FwStatus expectedReturn = fwStsNoErr )
     {
         m_srcInit = srcInit;
-        setBufflengh(len);
+        SDstLenBase<TD>::setBufflengh(len);
         hint = ht;
         ExecuteTest( NULL, dstExpected, errorMargin, expectedReturn );
     }
@@ -1654,7 +1654,7 @@ public:
         this->timer.Start();
         try
         {
-            stat = m_fn( src.Ptr(),dst.Ptr(),getBufflengh(),hint);
+            stat = m_fn( src.Ptr(),dst.Ptr(),SDstLenBase<TD>::getBufflengh(),hint);
         }
         catch( ... )
         {
@@ -1683,7 +1683,7 @@ public:
     {
         m_srcInit1 = srcInit1;
 		m_srcInit2 = srcInit2;
-        setBufflengh(len);
+        SDstLenBase<TD>::setBufflengh(len);
         ExecuteTest( NULL, dstExpected, errorMargin, expectedReturn );
     }
 
@@ -1699,7 +1699,7 @@ public:
         try
         {
            
-            stat = m_fn( src1.Ptr(),src2.Ptr(), dst.Ptr(),getBufflengh());
+            stat = m_fn( src1.Ptr(),src2.Ptr(), dst.Ptr(),SDstLenBase<TD>::getBufflengh());
         }
         catch( ... )
         {
@@ -1728,7 +1728,7 @@ public:
     void RunTest( const char *srcInit, const char *dstExpected,int len,int scale,TD errorMargin = MemOps<TD>::Zero(), const FwStatus expectedReturn = fwStsNoErr )
     {
         m_srcInit = srcInit;
-        setBufflengh(len);
+        SDstLenBase<TD>::setBufflengh(len);
         ScaleVal = scale;
         ExecuteTest( NULL, dstExpected, errorMargin, expectedReturn );
     }
@@ -1742,7 +1742,7 @@ public:
         this->timer.Start();
         try
         {
-            stat = m_fn( src.Ptr(), dst.Ptr(),getBufflengh(),ScaleVal);
+            stat = m_fn( src.Ptr(), dst.Ptr(),SDstLenBase<TD>::getBufflengh(),ScaleVal);
         }
         catch( ... )
         {
@@ -1772,7 +1772,7 @@ public:
     {
         m_srcInit1 = srcInit1;
 		m_srcInit2 = srcInit2;
-               setBufflengh(len);
+        SDstLenBase<TD>::setBufflengh(len);
         ScaleValue = scale;
         ExecuteTest( NULL, dstExpected, errorMargin, expectedReturn );
     }
@@ -1787,7 +1787,7 @@ public:
         this->timer.Start();
         try
         {
-            stat = m_fn( src1.Ptr(),src2.Ptr(),dst.Ptr(),getBufflengh(),ScaleValue);
+            stat = m_fn( src1.Ptr(),src2.Ptr(),dst.Ptr(),SDstLenBase<TD>::getBufflengh(),ScaleValue);
         }
         catch( ... )
         {
