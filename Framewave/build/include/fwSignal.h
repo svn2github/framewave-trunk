@@ -1295,13 +1295,25 @@ FwStatus STDCALL fwsFindRevC_8u(const Fw8u* pSrc, int len, Fw8u valFind, int* pI
 FwStatus STDCALL fwsFindRevC_16u(const Fw16u* pSrc, int len, Fw16u valFind, int* pIndex);
 
 ////////////////////////////////////////////////////////////////
-//                        Auto
+//                        Autocorrelation
 ////////////////////////////////////////////////////////////////
 
 
-FwStatus STDCALL fwsAutoCorr_32f(const  Fw32f*  pSrc,  int  srcLen,  Fw32f*  pDst,  int  dstLen);
+FwStatus STDCALL fwsAutoCorr_32f(const Fw32f* pSrc, int srcLen, Fw32f* pDst, int dstLen);
 FwStatus STDCALL fwsAutoCorr_NormA_32f(const Fw32f* pSrc, int srcLen, Fw32f* pDst, int dstLen);
 FwStatus STDCALL fwsAutoCorr_NormB_32f(const Fw32f* pSrc, int srcLen, Fw32f* pDst, int dstLen);
+
+FwStatus STDCALL fwsAutoCorr_32fc(const Fw32fc* pSrc, int srcLen, Fw32fc* pDst, int dstLen);
+FwStatus STDCALL fwsAutoCorr_NormA_32fc(const Fw32fc* pSrc, int srcLen, Fw32fc* pDst, int dstLen);
+FwStatus STDCALL fwsAutoCorr_NormB_32fc(const Fw32fc* pSrc, int srcLen, Fw32fc* pDst, int dstLen);
+
+FwStatus STDCALL fwsAutoCorr_64f(const Fw64f* pSrc, int srcLen, Fw64f* pDst, int dstLen);
+FwStatus STDCALL fwsAutoCorr_NormA_64f(const Fw64f* pSrc, int srcLen, Fw64f* pDst, int dstLen);
+FwStatus STDCALL fwsAutoCorr_NormB_64f(const Fw64f* pSrc, int srcLen, Fw64f* pDst, int dstLen);
+
+FwStatus STDCALL fwsAutoCorr_64fc(const Fw64fc* pSrc, int srcLen, Fw64fc* pDst, int dstLen);
+FwStatus STDCALL fwsAutoCorr_NormA_64fc(const Fw64fc* pSrc, int srcLen, Fw64fc* pDst, int dstLen);
+FwStatus STDCALL fwsAutoCorr_NormB_64fc(const Fw64fc* pSrc, int srcLen, Fw64fc* pDst, int dstLen);
 
 #ifdef __cplusplus
 }
