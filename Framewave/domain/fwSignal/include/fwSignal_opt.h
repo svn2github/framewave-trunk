@@ -764,8 +764,21 @@ OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsMin_64u)( const Fw64u *pSrc, in
 OREFR OSSE2     FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsMax_8s)( const Fw8s  *pSrc, int len, Fw8s  *pMax );
 OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsMax_64u)( const Fw64u *pSrc, int len, Fw64u *pMax );
 
-OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsAutoCorr_32f)(const  Fw32f*  pSrc,  int  srcLen,  Fw32f*  pDst,  int  dstLen);
-OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsAutoCorr_NormA_32f)(const  Fw32f*  pSrc,  int  srcLen,  Fw32f*  pDst,  int  dstLen);
-OREFR FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsAutoCorr_NormB_32f)(const  Fw32f*  pSrc,  int  srcLen,  Fw32f*  pDst,  int  dstLen);
+//AutoCorrelation Functions
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsAutoCorr_32f)(const  Fw32f*  pSrc,  int  srcLen,  Fw32f*  pDst,  int  dstLen);
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsAutoCorr_NormA_32f)(const  Fw32f*  pSrc,  int  srcLen,  Fw32f*  pDst,  int  dstLen);
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsAutoCorr_NormB_32f)(const  Fw32f*  pSrc,  int  srcLen,  Fw32f*  pDst,  int  dstLen);
+
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsAutoCorr_32fc)(const Fw32fc* pSrc, int srcLen, Fw32fc* pDst, int dstLen);
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsAutoCorr_NormA_32fc)(const  Fw32fc*  pSrc,  int  srcLen,  Fw32fc*  pDst,  int  dstLen);
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsAutoCorr_NormB_32fc)(const  Fw32fc*  pSrc,  int  srcLen,  Fw32fc*  pDst,  int  dstLen);
+
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsAutoCorr_64f)(const  Fw64f*  pSrc,  int  srcLen,  Fw64f*  pDst,  int  dstLen);
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsAutoCorr_NormA_64f)(const  Fw64f*  pSrc,  int  srcLen,  Fw64f*  pDst,  int  dstLen);
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsAutoCorr_NormB_64f)(const  Fw64f*  pSrc,  int  srcLen,  Fw64f*  pDst,  int  dstLen);
+
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsAutoCorr_64fc)(const  Fw64fc*  pSrc,  int  srcLen,  Fw64fc*  pDst,  int  dstLen);
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsAutoCorr_NormA_64fc)(const  Fw64fc*  pSrc,  int  srcLen,  Fw64fc*  pDst,  int  dstLen);
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsAutoCorr_NormB_64fc)(const  Fw64fc*  pSrc,  int  srcLen,  Fw64fc*  pDst,  int  dstLen);
 
 #endif // __FWSIGNAL_OPT_H__
