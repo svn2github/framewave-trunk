@@ -47,6 +47,28 @@ typedef    unsigned long long   Fw64u;
 typedef    float                Fw32f;
 typedef    double               Fw64f;
 
+//
+// MAX/MIN Data Types constants
+//
+#define FW_MAX_8U	  CBL_U8_MAX 	
+#define FW_MIN_8U   CBL_U8_MIN
+#define FW_MAX_16U  CBL_U16_MAX 
+#define FW_MIN_16U  CBL_U16_MIN
+#define FW_MAX_32U  CBL_U32_MAX 
+#define FW_MIN_32U  CBL_U32_MIN
+#define FW_MAX_64U  CBL_U64_MAX 
+#define FW_MIN_64U  CBL_U64_MIN	
+                    
+#define FW_MAX_8S   CBL_S8_MAX	
+#define FW_MIN_8S   CBL_S8_MIN
+#define FW_MAX_16S  CBL_S16_MAX	
+#define FW_MIN_16S  CBL_S16_MIN
+#define FW_MAX_32S  CBL_S32_MAX	
+#define FW_MIN_32S  CBL_S32_MIN
+#define FW_MAX_64S  CBL_S64_MAX	
+#define FW_MIN_64S  CBL_S64_MIN	
+
+
 typedef struct Fw16sc
 {
     Fw16s    re;
