@@ -86,7 +86,12 @@ void * x_baseDataPtr = 0;
         void *AlignedMalloc ( size_t length )
         {
             void *memptr;
-            posix_memalign ( &memptr, 32, length );
+            
+            int ret = posix_memalign ( &memptr, 32, length );
+            // BUG# 2007230 fix
+            if (ret != 0)
+               memptr = NULL;
+            
             return memptr;
         }
     #endif
