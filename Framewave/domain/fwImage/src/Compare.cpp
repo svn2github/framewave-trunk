@@ -12,9 +12,6 @@ using namespace OPT_LEVEL;
 namespace
 {
 
-
-const Fw8u FW_MAX_8U = FW_REF::Limits< U8 >::MaxValue();
-
 template< class TS, class TD >
 SYS_INLINE STATIC void CompareAssign_lt( const TS& s1, const TS& s2, TD& d ) {
     d = (d && s1 <  s2) ? FW_MAX_8U: 0;
