@@ -17,8 +17,11 @@ Portions based on work by llcc and visionany (Framewave\sdk\external\dec_cavlc.c
 #pragma align 16(dequant_coef, dequant_coef16, QP_SCALE_CR, quant_coef, ClampTbl, coeff4_0, coeff4_1)
 #pragma align 16(coeff3_0, coeff2_0, coeff2_1, coeff2_2, coeff2_3, coeff2_4, coeff2_5, coeff2_6)
 #pragma align 16(coeff1_0, coeff1_1, coeff1_2, coeff1_3, coeff1_4, coeff1_5, coeff1_6, coeff0_0)
-#pragma align 16(coeff0_1, coeff0_2, coeff0_3, coeff0_4, coeff0_5, GetBitsMask32, alphaMasks_16, alphaMasks_32, c_b, c_b0)
+#pragma align 16(coeff0_1, coeff0_2, coeff0_3, coeff0_4, coeff0_5, GetBitsMask32, alphaMasks_16, alphaMasks_32, c_b, c_b0, pedx)
 #endif
+
+// Scrach pad used by IDCT Helper Functions
+extern SYS_FORCEALIGN_16 Fw16s pedx[64];
 
 // Constants used by IntraPredict
 extern SYS_FORCEALIGN_16 const Fw16s c_b[16] = {-7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8};
