@@ -21,7 +21,7 @@ Portions based on work by llcc and visionany (Framewave\sdk\external\dec_cavlc.c
 #endif
 
 // Scrach pad used by IDCT Helper Functions
-extern SYS_FORCEALIGN_16 Fw16s pedx[64];
+SYS_FORCEALIGN_16 Fw16s pedx[64];
 
 // Constants used by IntraPredict
 extern SYS_FORCEALIGN_16 const Fw16s c_b[16] = {-7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8};
