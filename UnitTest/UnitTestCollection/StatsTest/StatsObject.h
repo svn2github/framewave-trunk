@@ -6,7 +6,7 @@ This software is subject to the Apache v2.0 License.
 #ifndef __STATSTESTS_OBJECT_H__
 #define __STATSTESTS_OBJECT_H__
 
-#include "../BaseObjects/Object.h"
+#include "Object.h"
 
 
 
