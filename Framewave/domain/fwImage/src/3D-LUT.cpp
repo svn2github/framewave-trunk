@@ -22,6 +22,11 @@ ASTAT PREFIX_OPT(OPT_PREFIX, fwiLookUp3D_16u_C3IR)(Fw16u *pSrcDst, int srcDstSte
     return LookUp3D_16u_C3IR(pSrcDst, srcDstStep, roiSize, pCube, pLUTSpec);
     }
 
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiLookUp3DSpecFree)(FwiLUTSpec* pLUTSpec)
+    {
+    return LookUp3DSpecFree(pLUTSpec);
+    }
+
 // Please do NOT remove the above line for CPP files that need to be multipass compiled
 // OREFR OSSE2 
 

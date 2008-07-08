@@ -2919,6 +2919,7 @@ OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToGray_32f_AC4C1R     
 OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiLookUp3DSpecInitAlloc          )(const Fw16u cubeDimensions[3], const Fw16u cubeMax[3], FwiLUTSpec** ppLUTSpec);
 OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiLookUp3D_16u_C3R               )(const Fw16u *pSrc, int srcStep, Fw16u *pDst, int dstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec);
 OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiLookUp3D_16u_C3IR              )(Fw16u *pSrcDst, int srcDstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec);
+OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiLookUp3DSpecFree               )(FwiLUTSpec* pLUTSpec);
 
 
 #endif	// __FWIMAGE_OPT_H__

@@ -707,5 +707,13 @@ IS FwStatus LookUp3D_16u_C3IR(Fw16u *pSrcDst, int &srcDstStep, FwiSize &roiSize,
     return fwStsNoErr;
     }
 
+IS FwStatus LookUp3DSpecFree(FwiLUTSpec* pLUTSpec)
+    {
+    if(FW_REF::PtrNotOK(pLUTSpec))
+        return fwStsNullPtrErr;
+    fwFree(pLUTSpec);
+    return fwStsNoErr;
+    }
+
 } // end namespace OPT_LEVEL
 #endif

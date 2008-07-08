@@ -7013,6 +7013,7 @@ todo:edit
 FwStatus STDCALL fwiLookUp3DSpecInitAlloc(const Fw16u cubeDimensions[3], const Fw16u cubeMax[3], FwiLUTSpec** ppLUTSpec);
 FwStatus STDCALL fwiLookUp3D_16u_C3R(const Fw16u *pSrc, int srcStep, Fw16u *pDst, int dstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec);
 FwStatus STDCALL fwiLookUp3D_16u_C3IR(Fw16u *pSrcDst, int srcDstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec);
+FwStatus STDCALL fwiLookUp3DSpecFree(FwiLUTSpec* pLUTSpec);
 /*#Documentation
 
 </Chapter>
