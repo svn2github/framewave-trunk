@@ -26,7 +26,7 @@ namespace OPT_LEVEL
                sum += pSrc[j] * pSrc[j + i];
             }
             
-			pDst[i] = FW_REF::Limits<F32>::Sat(sum);
+			pDst[i] = sum;
                
          }
          return fwStsNoErr;
@@ -45,7 +45,7 @@ namespace OPT_LEVEL
                sum += pSrc[j] * pSrc[j + i];
             }
             
-            pDst[i] = FW_REF::Limits<F32>::Sat(sum)/srcLen;
+            pDst[i] = sum/srcLen;
                
          }
          return fwStsNoErr;
@@ -63,7 +63,7 @@ namespace OPT_LEVEL
                sum += pSrc[j] * pSrc[j + i];
             }
             
-			pDst[i] = FW_REF::Limits<F32>::Sat(sum)/(srcLen - i);
+			pDst[i] = sum/(srcLen - i);
                
          }
          return fwStsNoErr;
@@ -74,14 +74,15 @@ namespace OPT_LEVEL
       {
          XMM128 sum;
          __m128 a, b, pr;
-         float zero = 0.0;
-   
-         for ( int i = 0; i < dstLen; i++ )
+         Fw32f zero = 0.0, fSum = 0.0;
+         int i, j;
+                  
+         int count = srcLen - (srcLen % 4);
+         for ( i = 0; i < dstLen; i++ )
          {
             sum.f = _mm_set_ss(zero);
       
-            int j = 0;
-            int count = srcLen - (srcLen % 4);
+            j = 0;
             for ( j = 0; j < count && (j+i) < srcLen; j += 4 )
             {  
                a = _mm_loadu_ps(&pSrc[j]);
@@ -91,7 +92,8 @@ namespace OPT_LEVEL
                sum.f = _mm_add_ps(sum.f, pr);         
             }
       
-            float fSum = sum.f32[0] + sum.f32[1] + sum.f32[2] + sum.f32[3];
+            //Horizontal ADD
+            fSum = sum.f32[0] + sum.f32[1] + sum.f32[2] + sum.f32[3];
       
             for( ; j < srcLen && (j+i) < srcLen; j++)
 	         {     
@@ -109,14 +111,15 @@ namespace OPT_LEVEL
       {
          XMM128 sum;
         __m128 a, b, pr;
-         float zero = 0.0;
+         Fw32f zero = 0.0, fSum;
+
+         int j = 0;
+         int count = srcLen - (srcLen % 4);
    
          for ( int i = 0; i < dstLen; i++ )
          {
             sum.f = _mm_set_ss(zero);
       
-            int j = 0;
-            int count = srcLen - (srcLen % 4);
             for ( j = 0; j < count && (j+i) < srcLen; j += 4 )
             {  
                a = _mm_loadu_ps(&pSrc[j]);
@@ -126,7 +129,7 @@ namespace OPT_LEVEL
                sum.f = _mm_add_ps(sum.f, pr);         
             }
       
-            float fSum = sum.f32[0] + sum.f32[1] + sum.f32[2] + sum.f32[3];
+            fSum = sum.f32[0] + sum.f32[1] + sum.f32[2] + sum.f32[3];
       
             for( ; j < srcLen && (j+i) < srcLen; j++)
 	         {     
@@ -145,14 +148,16 @@ namespace OPT_LEVEL
       {
          XMM128 sum;
          __m128 a, b, pr;
-         float zero = 0.0;
+         Fw32f zero = 0.0, fSum;
+
+         int j;
+         int count = srcLen - (srcLen % 4);
    
          for ( int i = 0; i < dstLen; i++ )
          {
             sum.f = _mm_set_ss(zero);
       
-            int j = 0;
-            int count = srcLen - (srcLen % 4);
+            
             for ( j = 0; j < count && (j+i) < srcLen; j += 4 )
             {  
                a = _mm_loadu_ps(&pSrc[j]);
@@ -162,7 +167,7 @@ namespace OPT_LEVEL
                sum.f = _mm_add_ps(sum.f, pr);         
             }
       
-            float fSum = sum.f32[0] + sum.f32[1] + sum.f32[2] + sum.f32[3];
+            fSum = sum.f32[0] + sum.f32[1] + sum.f32[2] + sum.f32[3];
       
             for( ; j < srcLen && (j+i) < srcLen; j++)
 	         {     
@@ -194,8 +199,8 @@ namespace OPT_LEVEL
                sum.im = sum.im - ( pSrc[j].re * pSrc[j+i].im + pSrc[j].im * pSrc[j+i].re);              
             }
             
-			pDst[i].re = FW_REF::Limits<F32>::Sat(sum.re);
-            pDst[i].im = FW_REF::Limits<F32>::Sat(sum.im);
+			pDst[i].re = sum.re;
+            pDst[i].im = sum.im;
             
          }
          
@@ -218,8 +223,8 @@ namespace OPT_LEVEL
                sum.im = sum.im - ( pSrc[j].re * pSrc[j+i].im + pSrc[j].im * pSrc[j+i].re);              
             }
         
-			   pDst[i].re = (FW_REF::Limits<F32>::Sat(sum.re))/srcLen;
-            pDst[i].im = (FW_REF::Limits<F32>::Sat(sum.im))/srcLen;
+			pDst[i].re = sum.re/srcLen;
+            pDst[i].im = sum.im/srcLen;
         
          }
          
@@ -241,8 +246,8 @@ namespace OPT_LEVEL
                sum.im = sum.im - ( pSrc[j].re * pSrc[j+i].im + pSrc[j].im * pSrc[j+i].re);              
             }
             
-            pDst[i].re = (FW_REF::Limits<F32>::Sat(sum.re))/(srcLen - i);
-            pDst[i].im = (FW_REF::Limits<F32>::Sat(sum.im))/(srcLen - i);
+            pDst[i].re = sum.re/(srcLen - i);
+            pDst[i].im = sum.im/(srcLen - i);
             
          }
          
@@ -255,15 +260,18 @@ namespace OPT_LEVEL
          XMM128 sumRe, sumIm;
          __m128 aRe, aIm, bRe, bIm, subRe, prRe, prIm, prReIm, prImRe, sumPrIm;
          Fw32f zero = 0.0;
+         Fw32fc fSum;
          
+         int j;
+         int count = srcLen - (srcLen % 4);
+
          for ( int i = 0; i < dstLen; i++ )
          {
             sumRe.f = _mm_set_ss(zero);
             sumIm.f = _mm_set_ss(zero);
                   
-            int j = 0;
-            int count = srcLen - (srcLen % 4);
-      
+            j = 0;
+                  
             for ( j = 0; j < count && (j+i) < srcLen; j += 4 )
             {  
                aRe = _mm_loadu_ps(&pSrc[j].re);
@@ -284,7 +292,6 @@ namespace OPT_LEVEL
                sumIm.f = _mm_sub_ps(sumIm.f, sumPrIm);                
             }
       
-            Fw32fc fSum;
             fSum.re = sumRe.f32[0] + sumRe.f32[1] + sumRe.f32[2] + sumRe.f32[3];
             fSum.im = sumIm.f32[0] + sumIm.f32[1] + sumIm.f32[2] + sumIm.f32[3];
       
@@ -294,7 +301,7 @@ namespace OPT_LEVEL
                fSum.im = fSum.im - ( (pSrc[j].re * pSrc[j+i].im) + (pSrc[j].im * pSrc[j+i].re) );
 	         }
 	        
-			   pDst[i].re = fSum.re;
+			pDst[i].re = fSum.re;
             pDst[i].im = fSum.im;
             
          }
@@ -307,15 +314,16 @@ namespace OPT_LEVEL
         XMM128 sumRe, sumIm;
          __m128 aRe, aIm, bRe, bIm, subRe, prRe, prIm, prReIm, prImRe, sumPrIm;
          Fw32f zero = 0.0;
+         Fw32fc fSum;
+         
+         int j;
+         int count = srcLen - (srcLen % 4);
          
          for ( int i = 0; i < dstLen; i++ )
          {
             sumRe.f = _mm_set_ss(zero);
             sumIm.f = _mm_set_ss(zero);
                   
-            int j = 0;
-            int count = srcLen - (srcLen % 4);
-      
             for ( j = 0; j < count && (j+i) < srcLen; j += 4 )
             {  
                aRe = _mm_loadu_ps(&pSrc[j].re);
@@ -336,7 +344,6 @@ namespace OPT_LEVEL
                sumIm.f = _mm_sub_ps(sumIm.f, sumPrIm);                
             }
       
-            Fw32fc fSum;
             fSum.re = sumRe.f32[0] + sumRe.f32[1] + sumRe.f32[2] + sumRe.f32[3];
             fSum.im = sumIm.f32[0] + sumIm.f32[1] + sumIm.f32[2] + sumIm.f32[3];
       
@@ -359,15 +366,16 @@ namespace OPT_LEVEL
          XMM128 sumRe, sumIm;
          __m128 aRe, aIm, bRe, bIm, subRe, prRe, prIm, prReIm, prImRe, sumPrIm;
          Fw32f zero = 0.0;
+         Fw32fc fSum;
          
+         int j;
+         int count = srcLen - (srcLen % 4);
+            
          for ( int i = 0; i < dstLen; i++ )
          {
             sumRe.f = _mm_set_ss(zero);
             sumIm.f = _mm_set_ss(zero);
                   
-            int j = 0;
-            int count = srcLen - (srcLen % 4);
-      
             for ( j = 0; j < count && (j+i) < srcLen; j += 4 )
             {  
                aRe = _mm_loadu_ps(&pSrc[j].re);
@@ -388,7 +396,6 @@ namespace OPT_LEVEL
                sumIm.f = _mm_sub_ps(sumIm.f, sumPrIm);                
             }
       
-            Fw32fc fSum;
             fSum.re = sumRe.f32[0] + sumRe.f32[1] + sumRe.f32[2] + sumRe.f32[3];
             fSum.im = sumIm.f32[0] + sumIm.f32[1] + sumIm.f32[2] + sumIm.f32[3];
       
@@ -398,7 +405,7 @@ namespace OPT_LEVEL
                fSum.im = fSum.im - ( (pSrc[j].re * pSrc[j+i].im) + (pSrc[j].im * pSrc[j+i].re) );
 	         }
 	         
-	          pDst[i].re = fSum.re/(srcLen-i);
+	         pDst[i].re = fSum.re/(srcLen-i);
              pDst[i].im = fSum.im/(srcLen-i);
             
          }
@@ -467,14 +474,14 @@ namespace OPT_LEVEL
       {
 		 XMM128 sum;
          __m128d a, b, pr;
-         Fw64f zero = 0.0;
+         Fw64f zero = 0.0, fSum;
          
+         int j;
+         int count = srcLen - (srcLen % 2);
+            
          for ( int i = 0; i < dstLen; i++ )
          {
             sum.d = _mm_set_sd(zero);
-            
-            int j = 0;
-            int count = srcLen - (srcLen % 2);
             
             for ( j = 0; j < count && (j+i) < srcLen; j += 2 )
             {  
@@ -483,7 +490,7 @@ namespace OPT_LEVEL
                sum.d = _mm_add_pd(sum.d, pr);         
             }
             
-            F64 fSum = sum.f64[0] + sum.f64[1];
+            fSum = sum.f64[0] + sum.f64[1];
             
             for( ; j < srcLen && (j+i) < srcLen; j++)
 	         {
@@ -499,14 +506,14 @@ namespace OPT_LEVEL
       {
 		 XMM128 sum;
          __m128d a, b, pr;
-         Fw64f zero = 0.0;
+         Fw64f zero = 0.0, fSum;
          
+         int j;
+         int count = srcLen - (srcLen % 2);
+            
          for ( int i = 0; i < dstLen; i++ )
          {
             sum.d = _mm_set_sd(zero);
-            
-            int j = 0;
-            int count = srcLen - (srcLen % 2);
             
             for ( j = 0; j < count && (j+i) < srcLen; j += 2 )
             {  
@@ -515,7 +522,7 @@ namespace OPT_LEVEL
                sum.d = _mm_add_pd(sum.d, pr);         
             }
             
-            F64 fSum = sum.f64[0] + sum.f64[1];
+            fSum = sum.f64[0] + sum.f64[1];
             
             for( ; j < srcLen && (j+i) < srcLen; j++)
 	         {
@@ -533,14 +540,14 @@ namespace OPT_LEVEL
       {
 		 XMM128 sum;
          __m128d a, b, pr;
-         Fw64f zero = 0.0;
+         Fw64f zero = 0.0, fSum;
+         
+         int j;
+         int count = srcLen - (srcLen % 2);
          
          for ( int i = 0; i < dstLen; i++ )
          {
             sum.d = _mm_set_sd(zero);
-            
-            int j = 0;
-            int count = srcLen - (srcLen % 2);
             
             for ( j = 0; j < count && (j+i) < srcLen; j += 2 )
             {  
@@ -549,7 +556,7 @@ namespace OPT_LEVEL
                sum.d = _mm_add_pd(sum.d, pr);         
             }
             
-            F64 fSum = sum.f64[0] + sum.f64[1];
+            fSum = sum.f64[0] + sum.f64[1];
             
             for( ; j < srcLen && (j+i) < srcLen; j++)
 	         {
@@ -637,15 +644,16 @@ namespace OPT_LEVEL
          XMM128 sumRe, sumIm;
          __m128d aRe, aIm, bRe, bIm, subRe, prRe, prIm, prReIm, prImRe, sumPrIm;
          Fw64f zero = 0.0;
-         
+         Fw64fc fSum;
+            
+         int j;
+         int count = srcLen - (srcLen % 2);
+
          for ( int i = 0; i < dstLen; i++ )
          {
             sumRe.d = _mm_set_sd(zero);
             sumIm.d = _mm_set_sd(zero);
                   
-            int j = 0;
-            int count = srcLen - (srcLen % 2);
-      
             for ( j = 0; j < count && (j+i) < srcLen; j += 2 )
             {  
                aRe = _mm_loadu_pd(&pSrc[j].re);
@@ -666,7 +674,6 @@ namespace OPT_LEVEL
                sumIm.d = _mm_sub_pd(sumIm.d, sumPrIm);                
             }
       
-            Fw64fc fSum;
             fSum.re = sumRe.f64[0] + sumRe.f64[1];
             fSum.im = sumIm.f64[0] + sumIm.f64[1];
       
@@ -689,15 +696,16 @@ namespace OPT_LEVEL
          XMM128 sumRe, sumIm;
          __m128d aRe, aIm, bRe, bIm, subRe, prRe, prIm, prReIm, prImRe, sumPrIm;
          Fw64f zero = 0.0;
+         Fw64fc fSum;
+            
+         int j;
+         int count = srcLen - (srcLen % 2);
          
          for ( int i = 0; i < dstLen; i++ )
          {
             sumRe.d = _mm_set_sd(zero);
             sumIm.d = _mm_set_sd(zero);
                   
-            int j = 0;
-            int count = srcLen - (srcLen % 2);
-      
             for ( j = 0; j < count && (j+i) < srcLen; j += 2 )
             {  
                aRe = _mm_loadu_pd(&pSrc[j].re);
@@ -718,7 +726,6 @@ namespace OPT_LEVEL
                sumIm.d = _mm_sub_pd(sumIm.d, sumPrIm);                
             }
       
-            Fw64fc fSum;
             fSum.re = sumRe.f64[0] + sumRe.f64[1];
             fSum.im = sumIm.f64[0] + sumIm.f64[1];
       
@@ -741,15 +748,16 @@ namespace OPT_LEVEL
          XMM128 sumRe, sumIm;
          __m128d aRe, aIm, bRe, bIm, subRe, prRe, prIm, prReIm, prImRe, sumPrIm;
          Fw64f zero = 0.0;
-         
+         Fw64fc fSum;
+            
+         int j;
+         int count = srcLen - (srcLen % 2);
+      
          for ( int i = 0; i < dstLen; i++ )
          {
             sumRe.d = _mm_set_sd(zero);
             sumIm.d = _mm_set_sd(zero);
                   
-            int j = 0;
-            int count = srcLen - (srcLen % 2);
-      
             for ( j = 0; j < count && (j+i) < srcLen; j += 2 )
             {  
                aRe = _mm_loadu_pd(&pSrc[j].re);
@@ -770,7 +778,6 @@ namespace OPT_LEVEL
                sumIm.d = _mm_sub_pd(sumIm.d, sumPrIm);                
             }
       
-            Fw64fc fSum;
             fSum.re = sumRe.f64[0] + sumRe.f64[1];
             fSum.im = sumIm.f64[0] + sumIm.f64[1];
       
