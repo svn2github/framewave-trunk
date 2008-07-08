@@ -149,6 +149,9 @@ This software is subject to the Apache v2.0 License.
 #undef CBL_LIBRARY
 #endif // CBL_LIBRARY
 #define CBL_LIBRARY CBL_LIB_REFR
+#define __INTRIN_H_
+#include "SSEPLus_MAP_REF.h"
+#include "SSEPlus_REF.h"
 #endif // OPT_LEVEL == REFR
 
 #if defined (OPT_SSE2)
@@ -156,6 +159,9 @@ This software is subject to the Apache v2.0 License.
 #undef CBL_LIBRARY
 #endif // CBL_LIBRARY
 #define CBL_LIBRARY CBL_LIB_SSE2
+#include "SSEPlus_UNMAP_ALL.h"
+#include "SSEPlus_MAP_SSE2.h"
+#include "SSEPlus_SSE2.h"
 #endif // defined (OPT_SSE2)
 
 #if defined (OPT_SSE3)
@@ -163,6 +169,9 @@ This software is subject to the Apache v2.0 License.
 #undef CBL_LIBRARY
 #endif // CBL_LIBRARY
 #define CBL_LIBRARY CBL_LIB_SSE3
+#include "SSEPlus_UNMAP_ALL.h"
+#include "SSEPlus_MAP_SSE3.h"
+#include "SSEPlus.h"
 #endif // defined (OPT_SSE3)
 
 #if defined (OPT_F10H)
@@ -170,6 +179,9 @@ This software is subject to the Apache v2.0 License.
 #undef CBL_LIBRARY
 #endif // CBL_LIBRARY
 #define CBL_LIBRARY CBL_LIB_F10H
+#include "map/SSEPlus_UNMAP_ALL.h"
+#include "map/SSEPlus_MAP_SSE3.h"
+#include "SSEPlus.h"
 #endif // defined (OPT_F10H)
 
 #include <math.h>
