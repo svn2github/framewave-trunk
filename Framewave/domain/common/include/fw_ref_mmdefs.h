@@ -17,6 +17,10 @@ This software is subject to the Apache v2.0 License.
 
 #ifdef FW_MSVC
 	#ifdef BLD_REF_ONLY
+   
+   // SSEPlus Integration
+   #define _INCLUDED_MM2   
+   #define _INCLUDED_EMM  
 	typedef union __m64
 	{
 	    unsigned __int64    m64_u64;
@@ -37,6 +41,13 @@ This software is subject to the Apache v2.0 License.
 	#include <intrin.h>
 	#endif
 #else
+    // SSEPlus integration
+   #define _XMMINTRIN_H_INCLUDED
+   #define _EMMINTRIN_H_INCLUDED
+    
+   #define __SYS_XMMINTRIN_INTRIN_H
+   #define __SYS_EMMINTRIN_INTRIN_H
+    
 	#ifdef BLD_REF_ONLY
 	typedef union __m64 {
 	    int                  m64_i32[2];
