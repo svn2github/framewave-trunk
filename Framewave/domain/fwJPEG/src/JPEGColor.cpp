@@ -37,11 +37,9 @@ This software is subject to the Apache v2.0 License.
 //	fwiYCCK411ToCMYKLS_MCU_16s8u_P4C4R
 
 //************************************************************************* 
-
 #include "fwdev.h"
 #include "fwJPEG.h"
 #include "FwSharedCode_SSE2.h"
-//#include "system.h"
 
 using namespace OPT_LEVEL;
 
@@ -310,7 +308,8 @@ namespace OPT_LEVEL
                             cbTemp.i = _mm_packs_epi32(cbTemp.i, xmm2.i );
                             crTemp.i = _mm_packs_epi32(crTemp.i, cbVal.i );
 
-                            CBL_SSE2::Convert_3P_to_3C_16bit(yTemp.i, cbTemp.i, crTemp.i);
+                            // CBL_SSE2::Convert_3P_to_3C_16bit(yTemp.i, cbTemp.i, crTemp.i);
+                            ssp_convert_3p_3c_epi16(&yTemp.i, &cbTemp.i, &crTemp.i);
 
                             yTemp.i = _mm_packus_epi16 (yTemp.i, cbTemp.i);
                             crTemp.i = _mm_packus_epi16 (crTemp.i, crTemp.i);
@@ -464,8 +463,10 @@ namespace OPT_LEVEL
                             crTemp.i = _mm_packs_epi32(crTemp.i, cbVal.i );
 
                             //CBL_SSE2::Convert_3P_to_3C_16bit(yTemp.i, cbTemp.i, crTemp.i);
+                            ssp_convert_3p_3c_epi16(&yTemp.i, &cbTemp.i, &crTemp.i);
 
-                            CBL_SSE2::Convert_3P_to_3C_16bit(crTemp.i, cbTemp.i, yTemp.i);
+                            // CBL_SSE2::Convert_3P_to_3C_16bit(crTemp.i, cbTemp.i, yTemp.i);
+                            ssp_convert_3p_3c_epi16(&crTemp.i, &cbTemp.i, &yTemp.i);
 
                             yTemp.i = _mm_packus_epi16 (crTemp.i, cbTemp.i);
                             crTemp.i = _mm_packus_epi16 (yTemp.i, yTemp.i);
@@ -774,7 +775,8 @@ namespace OPT_LEVEL
                     b = _mm_packs_epi32(b1,b2);
                     b = _mm_adds_epi16		( b, y			);		// B = Y + 1.772*Cb + 128.5
 
-                    CBL_SSE2::Convert_3P_to_3C_16bit( r, g, b);
+                    // CBL_SSE2::Convert_3P_to_3C_16bit( r, g, b);
+                    ssp_convert_3p_3c_epi16( &r, &g, &b);
                     // r = {g2,r2,b1,g1,r1,b0,g0,r0}
                     // g = {r5,b4,g4,r4,b3,g3,r3,b2}
                     // b = {b7,g7,r7,b6,g6,r6,b5,g5}
@@ -855,7 +857,8 @@ SYS_INLINE	static FwStatus iYCbCr444ToBGRLS_MCU_16s8u_P3C3R_SSE2(const Fw16s *pS
                     b = _mm_packs_epi32(b1,b2);
                     b = _mm_adds_epi16		( b, y			);		// B = Y + 1.772*Cb + 128.5
 
-                    CBL_SSE2::Convert_3P_to_3C_16bit( b, g, r);
+                    // CBL_SSE2::Convert_3P_to_3C_16bit( b, g, r);
+                    ssp_convert_3p_3c_epi16( &b, &g, &r);
                     // r = {g2,r2,b1,g1,r1,b0,g0,r0}
                     // g = {r5,b4,g4,r4,b3,g3,r3,b2}
                     // b = {b7,g7,r7,b6,g6,r6,b5,g5}
@@ -953,7 +956,8 @@ SYS_INLINE static void YCbCr422ToRGBLS_MCU_16s8u_P3C3R_Conv(const __m128i &y,__m
                     cr1 = _mm_slli_si128(cr,4);
 
                     YCbCr422ToRGBLS_MCU_16s8u_P3C3R_Conv(y,cb1,cr1,r,g,b);
-                    CBL_SSE2::Convert_3P_to_3C_16bit( b, g, r);
+                    // CBL_SSE2::Convert_3P_to_3C_16bit( b, g, r);
+                    ssp_convert_3p_3c_epi16( &b, &g, &r);
 
                     b = _mm_packus_epi16 (b, g);			// r = {r5,b4,g4,r4,b3,g3,r3,b2,g2,r2,b1,g1,r1,b0,g0,r0}
                     _mm_storeu_si128 ((__m128i*)pDst, b);
@@ -965,7 +969,8 @@ SYS_INLINE static void YCbCr422ToRGBLS_MCU_16s8u_P3C3R_Conv(const __m128i &y,__m
                     cr1 = _mm_srli_si128(cr,4);
 
                     YCbCr422ToRGBLS_MCU_16s8u_P3C3R_Conv(y1,cb1,cr1,r1,g1,b1);
-                    CBL_SSE2::Convert_3P_to_3C_16bit( b1, g1, r1);
+                    // CBL_SSE2::Convert_3P_to_3C_16bit( b1, g1, r1);
+                    ssp_convert_3p_3c_epi16( &b1, &g1, &r1);
 
                     r = _mm_packus_epi16 (r, b1);			
                     _mm_storeu_si128 ( ((__m128i*)pDst+1), r );
@@ -1004,7 +1009,9 @@ SYS_INLINE static FwStatus iYCbCr422ToRGBLS_MCU_16s8u_P3C3R_SSE2(const Fw16s *pS
                     
                     YCbCr422ToRGBLS_MCU_16s8u_P3C3R_Conv(y,cb1,cr1,r,g,b);
 
-                    CBL_SSE2::Convert_3P_to_3C_16bit( r, g, b);
+                    // CBL_SSE2::Convert_3P_to_3C_16bit( r, g, b);
+                    ssp_convert_3p_3c_epi16( &r, &g, &b);
+                    
                     r = _mm_packus_epi16 (r, g);			// r = {r5,b4,g4,r4,b3,g3,r3,b2,g2,r2,b1,g1,r1,b0,g0,r0}
                     _mm_storeu_si128 ((__m128i*)pDst, r);
 
@@ -1016,7 +1023,8 @@ SYS_INLINE static FwStatus iYCbCr422ToRGBLS_MCU_16s8u_P3C3R_SSE2(const Fw16s *pS
                     cr1 = _mm_srli_si128(cr,4);
 
                     YCbCr422ToRGBLS_MCU_16s8u_P3C3R_Conv(y1,cb1,cr1,r1,g1,b1);
-                    CBL_SSE2::Convert_3P_to_3C_16bit( r1, g1, b1);
+                    // CBL_SSE2::Convert_3P_to_3C_16bit( r1, g1, b1);
+                    ssp_convert_3p_3c_epi16( &r1, &g1, &b1);
 
 
                     b = _mm_packus_epi16 (b, r1);			
@@ -1606,10 +1614,14 @@ SYS_INLINE static FwStatus iYCbCr422ToRGBLS_MCU_16s8u_P3C3R_SSE2(const Fw16s *pS
                 __m128i regR1 = _mm_loadu_si128((__m128i*) pSrcBGR);
                 pSrcBGR+= srcStep-32;
 
-               CBL_SSE2::Convert_3C_to_3P_8bit(regB,regG,regR);
-               CBL_SSE2::Convert_3C_to_3P_8bit(regB1,regG1,regR1);
-
-                __m128i s1 = regB,s2=regG,s3=regR,s4=regB1,s5=regG1,s6=regR1;
+               // SSEPLUS Begin
+               // CBL_SSE2::Convert_3C_to_3P_8bit(regB,regG,regR);
+               // CBL_SSE2::Convert_3C_to_3P_8bit(regB1,regG1,regR1);
+               
+               ssp_convert_3c_3p_epi8(&regB, &regG, &regR);
+               ssp_convert_3c_3p_epi8(&regB1, &regG1, &regR1);
+               
+               __m128i s1 = regB,s2=regG,s3=regR,s4=regB1,s5=regG1,s6=regR1;
                Add8u_to_16s(s1,s2,s3,s4,s5,s6);
                s4 = s1,s5 = s2,s6 = s3;
                MulCbCr_Coef(s1,s2,s3,coeffCb);                
@@ -1654,9 +1666,11 @@ SYS_INLINE static FwStatus iYCbCr422ToRGBLS_MCU_16s8u_P3C3R_SSE2(const Fw16s *pS
                 __m128i regR1 = _mm_loadu_si128((__m128i*) pSrcBGR);
                 pSrcBGR+= srcStep-32;
 
-               CBL_SSE2::Convert_3C_to_3P_8bit(regB,regG,regR);
-               CBL_SSE2::Convert_3C_to_3P_8bit(regB1,regG1,regR1);
-
+               // CBL_SSE2::Convert_3C_to_3P_8bit(regB,regG,regR);
+               // CBL_SSE2::Convert_3C_to_3P_8bit(regB1,regG1,regR1);
+               ssp_convert_3c_3p_epi8(&regB, &regG, &regR);
+               ssp_convert_3c_3p_epi8(&regB1, &regG1, &regR1);
+               
                 __m128i s1 = regB,s2=regG,s3=regR,s4=regB1,s5=regG1,s6=regR1;
                Add8u_to_16s(s1,s2,s3,s4,s5,s6);
                s4 = s1,s5 = s2,s6 = s3;
@@ -1722,10 +1736,12 @@ SYS_INLINE STATIC void fwiRGBToYCbCr411LS_MCU_8u16s_C3P3R_SSE (const Fw8u *pSrcB
                 __m128i regR1 = _mm_loadu_si128((__m128i*) pSrcBGR);
                 pSrcBGR+= srcStep-32;
 
-               CBL_SSE2::Convert_3C_to_3P_8bit(regB,regG,regR);
-               CBL_SSE2::Convert_3C_to_3P_8bit(regB1,regG1,regR1);
-
-                __m128i s1 = regB,s2=regG,s3=regR,s4=regB1,s5=regG1,s6=regR1;
+               // CBL_SSE2::Convert_3C_to_3P_8bit(regB,regG,regR);
+               // CBL_SSE2::Convert_3C_to_3P_8bit(regB1,regG1,regR1);
+               ssp_convert_3c_3p_epi8(&regB, &regG, &regR);
+               ssp_convert_3c_3p_epi8(&regB1, &regG1, &regR1);
+               
+               __m128i s1 = regB,s2=regG,s3=regR,s4=regB1,s5=regG1,s6=regR1;
                Add8u_to_16s(s1,s2,s3,s4,s5,s6);
                s4 = s1,s5 = s2,s6 = s3;
                MulCbCr_Coef(s1,s2,s3,coeffCb);                
@@ -1770,10 +1786,12 @@ SYS_INLINE STATIC void fwiRGBToYCbCr411LS_MCU_8u16s_C3P3R_SSE (const Fw8u *pSrcB
                 __m128i regR1 = _mm_loadu_si128((__m128i*) pSrcBGR);
                 pSrcBGR+= srcStep-32;
 
-               CBL_SSE2::Convert_3C_to_3P_8bit(regB,regG,regR);
-               CBL_SSE2::Convert_3C_to_3P_8bit(regB1,regG1,regR1);
-
-                __m128i s1 = regB,s2=regG,s3=regR,s4=regB1,s5=regG1,s6=regR1;
+               // CBL_SSE2::Convert_3C_to_3P_8bit(regB,regG,regR);
+               // CBL_SSE2::Convert_3C_to_3P_8bit(regB1,regG1,regR1);
+               ssp_convert_3c_3p_epi8(&regB, &regG, &regR);
+               ssp_convert_3c_3p_epi8(&regB1, &regG1, &regR1);
+               
+               __m128i s1 = regB,s2=regG,s3=regR,s4=regB1,s5=regG1,s6=regR1;
                Add8u_to_16s(s1,s2,s3,s4,s5,s6);
                s4 = s1,s5 = s2,s6 = s3;
                MulCbCr_Coef(s1,s2,s3,coeffCb);                
@@ -1839,10 +1857,12 @@ SYS_INLINE STATIC void fwiRGBToYCbCr411LS_MCU_8u16s_C3P3R_SSE (const Fw8u *pSrcB
                 __m128i regR1 = _mm_loadu_si128((__m128i*) pSrcBGR);
                 pSrcBGR+= srcStep-32;
 
-               CBL_SSE2::Convert_3C_to_3P_8bit(regB,regG,regR);
-               CBL_SSE2::Convert_3C_to_3P_8bit(regB1,regG1,regR1);
-
-                __m128i s1 = regB,s2=regG,s3=regR,s4=regB1,s5=regG1,s6=regR1;
+               // CBL_SSE2::Convert_3C_to_3P_8bit(regB,regG,regR);
+               // CBL_SSE2::Convert_3C_to_3P_8bit(regB1,regG1,regR1);
+               ssp_convert_3c_3p_epi8(&regB, &regG, &regR);
+               ssp_convert_3c_3p_epi8(&regB1, &regG1, &regR1);
+               
+               __m128i s1 = regB,s2=regG,s3=regR,s4=regB1,s5=regG1,s6=regR1;
                
                Add4228u_to_16s(s1,s2,s3,s4,s5,s6);
                __m128i ts1 = s1,ts2 = s2, ts3 = s3, ts4  = s4 , ts5 = s5, ts6 = s6;
@@ -1910,8 +1930,9 @@ SYS_INLINE STATIC void fwiRGBToYCbCr411LS_MCU_8u16s_C3P3R_SSE (const Fw8u *pSrcB
                 regG.d  = _mm_loadl_pd(regG.d,(double*) (pSrcBGR + 16));
                 pSrcBGR+=srcStep;
 
-                CBL_SSE2::Convert_3C_to_3P_8bit(regB.i,regG.i,regR.i);
-
+                // CBL_SSE2::Convert_3C_to_3P_8bit(regB.i,regG.i,regR.i);
+                ssp_convert_3c_3p_epi8(&regB.i, &regG.i, &regR.i);
+                
                 __m128i s1 = regB.i,s2=regG.i,s3=regR.i,s4=regB.i,s5=regG.i,s6=regR.i;
 
                MulCbCr_CoefLo(s1,s2,s3,coeffCb);                
