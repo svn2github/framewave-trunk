@@ -140,7 +140,9 @@ namespace ColorToGray
 
                 s1lo.i = src[0].i, s2lo.i = src[1].i, s3lo.i = src[2].i;
 
-                CBL_SSE2::Convert_3C_to_3P_16bit( s1lo.i,s2lo.i,s3lo.i);
+                // Replace CBL with SSEPlus
+                // CBL_SSE2::Convert_3C_to_3P_16bit( s1lo.i,s2lo.i,s3lo.i);
+                ssp_convert_3c_3p_epi16(&s1lo.i, &s2lo.i, &s3lo.i);
                 dst.i = MulRGB_Coef(s1lo,s2lo,s3lo,mCoef);
 
             }
@@ -194,7 +196,9 @@ namespace ColorToGray
 
                 s1lo.i = src[0].i, s2lo.i = src[1].i, s3lo.i = src[2].i;
 
-                CBL_SSE2::Convert_3C_to_3P_16bit( s1lo.i,s2lo.i,s3lo.i);
+                // Replace CBL with SSEPlus
+                // CBL_SSE2::Convert_3C_to_3P_16bit( s1lo.i,s2lo.i,s3lo.i);
+                ssp_convert_3c_3p_epi16(&s1lo.i, &s2lo.i, &s3lo.i);
                 dst.i = MulRGB_Coef(s1lo,s2lo,s3lo,mCoef);
 
             }
@@ -213,7 +217,9 @@ namespace ColorToGray
 
                 s1.f = src[0].f, s2.f = src[1].f, s3.f = src[2].f;
 
-                CBL_SSE2::Convert_3C_to_3P_32bit( s1.i,s2.i,s3.i);
+                // Replace CBL with SSEPlus
+                // CBL_SSE2::Convert_3C_to_3P_32bit( s1.i,s2.i,s3.i);
+                ssp_convert_3c_3p_epi32(&s1.i, &s2.i, &s3.i);
 
                 s1.f = _mm_mul_ps(s1.f,mCoef[0].f);
                 s2.f = _mm_mul_ps(s2.f,mCoef[1].f);
@@ -241,7 +247,9 @@ namespace ColorToGray
             {
                 __m128i s1lo  = src[0].i,s2lo = src[1].i, s3lo = src[2].i,s4lo = src[3].i;
 
-                CBL_SSE2::Convert_4C_to_4P_8bit( s1lo,s2lo,s3lo,s4lo);
+                // CBL_SSE2::Convert_4C_to_4P_8bit( s1lo,s2lo,s3lo,s4lo);
+                ssp_convert_4c_4p_epi8( &s1lo, &s2lo, &s3lo, &s4lo);
+                
                 dst.i = C3C1::Impl<U8>::MulRGB_Coef(s1lo,s2lo,s3lo,mCoef);
 
             }
@@ -259,7 +267,9 @@ namespace ColorToGray
                 XMM128 s1lo,s2lo,s3lo,s4lo;
 
                 s1lo.i = src[0].i, s2lo.i = src[1].i, s3lo.i = src[2].i,s4lo.i=src[3].i ;
-                CBL_SSE2::Convert_4C_to_4P_16bit( s1lo.i,s2lo.i,s3lo.i,s4lo.i);
+                // CBL_SSE2::Convert_4C_to_4P_16bit( s1lo.i,s2lo.i,s3lo.i,s4lo.i);
+                ssp_convert_4c_4p_epi16( &s1lo.i, &s2lo.i, &s3lo.i, &s4lo.i);
+                
                 dst.i = C3C1::Impl<U16>::MulRGB_Coef(s1lo,s2lo,s3lo,mCoef);
             }
         };
@@ -277,7 +287,9 @@ namespace ColorToGray
                 XMM128 s1lo,s2lo,s3lo,s4lo;
 
                 s1lo.i = src[0].i, s2lo.i = src[1].i, s3lo.i = src[2].i,s4lo.i=src[3].i ;
-                CBL_SSE2::Convert_4C_to_4P_16bit( s1lo.i,s2lo.i,s3lo.i,s4lo.i);
+                // CBL_SSE2::Convert_4C_to_4P_16bit( s1lo.i,s2lo.i,s3lo.i,s4lo.i);
+                ssp_convert_4c_4p_epi16( &s1lo.i, &s2lo.i, &s3lo.i, &s4lo.i);
+                
                 dst.i = C3C1::Impl<S16>::MulRGB_Coef(s1lo,s2lo,s3lo,mCoef);
 
             }
@@ -296,7 +308,8 @@ namespace ColorToGray
 
                 s1.f = src[0].f, s2.f = src[1].f, s3.f = src[2].f,s4.f=src[3].f;
 
-                CBL_SSE2::Convert_4C_to_4P_32bit( s1.i,s2.i,s3.i,s4.i);
+                // CBL_SSE2::Convert_4C_to_4P_32bit( s1.i,s2.i,s3.i,s4.i);
+                ssp_convert_4c_4p_epi32( &s1.i, &s2.i, &s3.i, &s4.i);
 
                 s1.f = _mm_mul_ps(s1.f,mCoef[0].f);
                 s2.f = _mm_mul_ps(s2.f,mCoef[1].f);

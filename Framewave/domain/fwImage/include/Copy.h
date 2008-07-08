@@ -324,7 +324,11 @@ ISV Copy_C3MR_SSE2_I(RegFile &reg, const __m128i &data, const A8U &)			// 8U
     __m128i mask_temp0,mask_temp1,mask_temp2;
 
     mask_temp1 = mask_temp2 = mask_temp0 = _mm_cmpeq_epi8(reg.src1[0].i,data);	// just opposite mask
-    CBL_SSE2::Convert_3P_to_3C_8bit(mask_temp0, mask_temp1, mask_temp2);
+    
+    // Replace CBL with SSEPlus
+    // CBL_SSE2::Convert_3P_to_3C_8bit(mask_temp0, mask_temp1, mask_temp2);
+    ssp_convert_3p_3c_epi8(&mask_temp0, &mask_temp1, &mask_temp2);
+    
     Copy_With_Mask( reg.src2[0].i, reg.dst[0].i, mask_temp0);
     Copy_With_Mask( reg.src2[1].i, reg.dst[1].i, mask_temp1);
     Copy_With_Mask( reg.src2[2].i, reg.dst[2].i, mask_temp2);
@@ -989,7 +993,9 @@ ISV Copy_P3C3R_Custom_SSE2_I(const A8U *s1, const A8U *s2, const A8U *s3, A8U *d
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&g, (const void*)s2);
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&b, (const void*)s3);
 
-        CBL_SSE2::Convert_3P_to_3C_8bit(r.i,g.i,b.i);
+        // Replace CBL with SSEPlus
+        // CBL_SSE2::Convert_3P_to_3C_8bit(r.i,g.i,b.i);
+        ssp_convert_3p_3c_epi8(&r.i, &g.i, &b.i);
 
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&r, (void*)d);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&g, (void*)(d+16));
@@ -1010,7 +1016,8 @@ ISV Copy_P3C3R_Custom_SSE2_I(const A16S *s1, const A16S *s2, const A16S *s3, A16
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&g, (const void*)s2);
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&b, (const void*)s3);
 
-        CBL_SSE2::Convert_3P_to_3C_16bit(r.i,g.i,b.i);
+        // CBL_SSE2::Convert_3P_to_3C_16bit(r.i,g.i,b.i);
+        ssp_convert_3p_3c_epi16(&r.i, &g.i, &b.i);
 
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&r, (void*)d);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&g, (void*)(d+8));
@@ -1031,7 +1038,8 @@ ISV Copy_P3C3R_Custom_SSE2_I(const TSD *s1, const TSD *s2, const TSD *s3, TSD *d
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&g, (const void*)s2);
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&b, (const void*)s3);
 
-        CBL_SSE2::Convert_3P_to_3C_32bit(r.i,g.i,b.i);
+        // CBL_SSE2::Convert_3P_to_3C_32bit(r.i,g.i,b.i);
+        ssp_convert_3p_3c_epi32(&r.i, &g.i, &b.i);
 
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&r, (void*)d);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&g, (void*)(d+4));
@@ -1054,7 +1062,8 @@ ISV Copy_P4C4R_Custom_SSE2_I(const A8U *s1, const A8U *s2, const A8U *s3, const 
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&b, (const void*)s3);
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&a, (const void*)s4);
 
-        CBL_SSE2::Convert_4P_to_4C_8bit(r.i,g.i,b.i,a.i);
+        // CBL_SSE2::Convert_4P_to_4C_8bit(r.i,g.i,b.i,a.i);
+        ssp_convert_4p_4c_epi8(&r.i, &g.i, &b.i, &a.i);        
 
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&r, (void*)d);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&g, (void*)(d+16));
@@ -1097,7 +1106,8 @@ ISV Copy_P4C4R_Custom_SSE2_I(const A16S *s1, const A16S *s2, const A16S *s3, con
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&b, (const void*)s3);
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&a, (const void*)s4);
 
-        CBL_SSE2::Convert_4P_to_4C_16bit(r.i,g.i,b.i,a.i);
+        // CBL_SSE2::Convert_4P_to_4C_16bit(r.i,g.i,b.i,a.i);
+        ssp_convert_4p_4c_epi16(&r.i, &g.i, &b.i, &a.i);
 
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&r, (void*)d);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&g, (void*)(d+8));
@@ -1132,7 +1142,8 @@ ISV Copy_P4C4R_Custom_SSE2_I(const TSD *s1, const TSD *s2, const TSD *s3, const 
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&b, (const void*)s3);
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&a, (const void*)s4);
 
-        CBL_SSE2::Convert_4P_to_4C_32bit(r.i,g.i,b.i,a.i);
+        // CBL_SSE2::Convert_4P_to_4C_32bit(r.i,g.i,b.i,a.i);
+        ssp_convert_4p_4c_epi32(&r.i, &g.i, &b.i, &a.i);
 
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&r, (void*)d);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&g, (void*)(d+4));
@@ -1186,7 +1197,9 @@ ISV Copy_C3P3R_Custom_SSE2_I(const A16S *s, A16S *d1, A16S *d2, A16S *d3, U32 &p
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&rgb2, (const void*)(src+1));
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&rgb3, (const void*)(src+2));
 
-        CBL_SSE2::Convert_3C_to_3P_16bit(rgb1.i,rgb2.i,rgb3.i);
+        // Replace CBL with SSEPlus
+        // CBL_SSE2::Convert_3C_to_3P_16bit(rgb1.i,rgb2.i,rgb3.i);
+        ssp_convert_3c_3p_epi16(&rgb1.i, &rgb2.i, &rgb3.i);
 
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgb1, (void*)d1);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgb2, (void*)d2);
@@ -1208,7 +1221,9 @@ ISV Copy_C3P3R_Custom_SSE2_I(const TSD *s, TSD *d1, TSD *d2, TSD *d3, U32 &pixCo
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&rgb2, (const void*)(src+1));
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&rgb3, (const void*)(src+2));
 
-        CBL_SSE2::Convert_3C_to_3P_32bit(rgb1.i,rgb2.i,rgb3.i);
+        // Replace CBL with SSEPlus
+        // CBL_SSE2::Convert_3C_to_3P_32bit(rgb1.i,rgb2.i,rgb3.i);
+        ssp_convert_3c_3p_epi32(&rgb1.i, &rgb2.i, &rgb3.i);
 
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgb1, (void*)d1);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgb2, (void*)d2);
@@ -1231,7 +1246,8 @@ ISV Copy_C4P4R_Custom_SSE2_I(const A8U *s, A8U *d1, A8U *d2, A8U *d3, A8U *d4, U
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&rgba3, (const void*)(s+32));
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&rgba4, (const void*)(s+48));
 
-        CBL_SSE2::Convert_4C_to_4P_8bit(rgba1.i,rgba2.i,rgba3.i,rgba4.i);
+        // CBL_SSE2::Convert_4C_to_4P_8bit(rgba1.i,rgba2.i,rgba3.i,rgba4.i);
+        ssp_convert_4c_4p_epi8(&rgba1.i, &rgba2.i, &rgba3.i, &rgba4.i);
 
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgba1, (void*)d1);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgba2, (void*)d2);
@@ -1274,7 +1290,8 @@ ISV Copy_C4P4R_Custom_SSE2_I(const A16S *s, A16S *d1, A16S *d2, A16S *d3, A16S *
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&rgba3, (const void*)(s+16));
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&rgba4, (const void*)(s+24));
 
-        CBL_SSE2::Convert_4C_to_4P_16bit(rgba1.i,rgba2.i,rgba3.i,rgba4.i);
+        // CBL_SSE2::Convert_4C_to_4P_16bit(rgba1.i,rgba2.i,rgba3.i,rgba4.i);
+        ssp_convert_4c_4p_epi16(&rgba1.i, &rgba2.i, &rgba3.i, &rgba4.i);
 
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgba1, (void*)d1);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgba2, (void*)d2);
@@ -1309,7 +1326,8 @@ ISV Copy_C4P4R_Custom_SSE2_I(const TSD *s, TSD *d1, TSD *d2, TSD *d3, TSD *d4, U
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&rgba3, (const void*)(s+8)); 
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&rgba4, (const void*)(s+12));
 
-        CBL_SSE2::Convert_4C_to_4P_32bit(rgba1.i,rgba2.i,rgba3.i,rgba4.i);
+        // CBL_SSE2::Convert_4C_to_4P_32bit(rgba1.i, rgba2.i, rgba3.i, rgba4.i);
+        ssp_convert_4c_4p_epi32(&rgba1.i, &rgba2.i, &rgba3.i, &rgba4.i);
 
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgba1, (void*)d1);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgba2, (void*)d2);
