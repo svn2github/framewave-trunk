@@ -71,7 +71,8 @@ namespace ColorToGray
             {
                 __m128i s1lo  = src[0].i,s2lo = src[1].i, s3lo = src[2].i;
 
-                CBL_SSE2::Convert_3C_to_3P_8bit(s1lo,s2lo,s3lo);
+                ssp_convert_3c_3p_epi8(&s1lo,&s2lo,&s3lo);
+
                 dst.i = MulRGB_Coef(s1lo,s2lo,s3lo,mCoef);
             }
 	    };

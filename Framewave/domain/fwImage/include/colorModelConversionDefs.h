@@ -78,7 +78,7 @@ namespace OPT_LEVEL
             static SYS_INLINE void Process( RegFile &r )
             {
                 // Transpose 24-bit data from Channel format to Planar format.
-                CBL_SSE2::Convert_3C_to_3P_8bit( r.src1[0].i, r.src1[1].i, r.src1[2].i );
+                ssp_convert_3c_3p_epi8( &r.src1[0].i, &r.src1[1].i, &r.src1[2].i);
 
                 r.dst[0].i  = Pixel<fn, X, prc,mp1>::Process( r.src1[0], r.src1[1], r.src1[2] );
                 r.dst2[0].i = Pixel<fn, Y, prc,mp2>::Process( r.src1[0], r.src1[1], r.src1[2] );

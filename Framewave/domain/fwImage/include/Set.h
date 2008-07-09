@@ -392,7 +392,8 @@ ISV Set_C3MR_SSE2_I(RegFile &reg, const __m128i &value1, const __m128i &value2, 
 	__m128i mask_temp0,mask_temp1,mask_temp2;
 	mask_temp1 = mask_temp2 = mask_temp0 = _mm_cmpeq_epi8(reg.src1[0].i,zero);// just opposite mask
 	
-	CBL_SSE2::Convert_3P_to_3C_8bit(mask_temp0, mask_temp1, mask_temp2);
+	ssp_convert_3p_3c_epi8(&mask_temp0, &mask_temp1, &mask_temp2);
+
 	Copy_With_Mask(value1, reg.dst[0].i, mask_temp0);
 	Copy_With_Mask(value2, reg.dst[1].i, mask_temp1);
 	Copy_With_Mask(value3, reg.dst[2].i, mask_temp2);

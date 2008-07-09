@@ -1175,7 +1175,8 @@ ISV Copy_C3P3R_Custom_SSE2_I(const A8U *s, A8U *d1, A8U *d2, A8U *d3, U32 &pixCo
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&rgb2, (const void*)(src+1));
         LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&rgb3, (const void*)(src+2));
 
-        CBL_SSE2::Convert_3C_to_3P_8bit(rgb1.i,rgb2.i,rgb3.i);
+        ssp_convert_3c_3p_epi8(&rgb1.i,&rgb2.i,&rgb3.i);
+
 
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgb1, (void*)d1);
         LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&rgb2, (void*)d2);
