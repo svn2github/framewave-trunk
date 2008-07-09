@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framewave", "Framewave", "{E46A0D9E-4FEC-407C-934F-8877F2BCA6DF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fwSignal", "Framewave\domain\fwSignal\fwSignal.vcproj", "{E337A654-D3C6-47F3-83F2-D14F8411D847}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fwSignal", "Framewave\domain\fwSignal\fwSignal_VC9.vcproj", "{E337A654-D3C6-47F3-83F2-D14F8411D847}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fwImage", "Framewave\domain\fwImage\fwImage.vcproj", "{A8AD178A-CDC3-46C5-9207-FC55AAB99706}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fwImage", "Framewave\domain\fwImage\fwImage_VC9.vcproj", "{A8AD178A-CDC3-46C5-9207-FC55AAB99706}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fwBase", "Framewave\domain\fwBase\fwBase.vcproj", "{3CB173F0-BA27-4631-9DED-8E64BF24D0AB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fwBase", "Framewave\domain\fwBase\fwBase_VC9.vcproj", "{3CB173F0-BA27-4631-9DED-8E64BF24D0AB}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fwVideo", "Framewave\domain\fwVideo\fwVideo.vcproj", "{345F29FB-2120-446E-864D-77D784C3514F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fwVideo", "Framewave\domain\fwVideo\fwVideo_VC9.vcproj", "{345F29FB-2120-446E-864D-77D784C3514F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fwJPEG", "Framewave\domain\fwJPEG\fwJPEG.vcproj", "{B63057DB-919A-45B9-B806-6220A3AD725A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fwJPEG", "Framewave\domain\fwJPEG\fwJPEG_VC9.vcproj", "{B63057DB-919A-45B9-B806-6220A3AD725A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common", "Framewave\domain\common\common.vcproj", "{505E7C0B-5A63-488A-A6DD-C9026AA18134}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common", "Framewave\domain\common\common_VC9.vcproj", "{505E7C0B-5A63-488A-A6DD-C9026AA18134}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
