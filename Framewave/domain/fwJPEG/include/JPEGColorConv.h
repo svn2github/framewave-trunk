@@ -266,7 +266,7 @@ public:
 		alpha.i = r.src1[3].i;
 
 
-        ssp_convert_4c_4p_epi8(&r.dst[0].i,&regG.i,&regB.i,alpha.i);
+        ssp_convert_4c_4p_epi8(&r.dst[0].i,&regG.i,&regB.i,&alpha.i);
 		r.dst[0].i = _mm_andnot_si128(r.dst[0].i,mMask.i);
 		regG.i = _mm_andnot_si128(regG.i,mMask.i);
 		regB.i = _mm_andnot_si128(regB.i,mMask.i);
