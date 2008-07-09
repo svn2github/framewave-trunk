@@ -87,19 +87,19 @@ namespace OPT_LEVEL
             {  
                a = _mm_loadu_ps(&pSrc[j]);
                b = _mm_loadu_ps(&pSrc[j+i]);
-               pr = _mm_mul_ps(a, b);
                
+               pr = _mm_mul_ps(a, b);
                sum.f = _mm_add_ps(sum.f, pr);         
             }
       
             //Horizontal ADD
             fSum = sum.f32[0] + sum.f32[1] + sum.f32[2] + sum.f32[3];
       
-            for( ; j < srcLen && (j+i) < srcLen; j++)
-	         {     
-		         fSum += (pSrc[j] * pSrc[j + i]);
-		      }
-			
+            for( ; j+i < srcLen; j++)
+	        {     
+		        fSum += (pSrc[j] * pSrc[j + i]);
+		    }
+            
 			pDst[i] = fSum;
          }
          
@@ -131,7 +131,7 @@ namespace OPT_LEVEL
       
             fSum = sum.f32[0] + sum.f32[1] + sum.f32[2] + sum.f32[3];
       
-            for( ; j < srcLen && (j+i) < srcLen; j++)
+            for( ; j+i < srcLen; j++)
 	         {     
 		         fSum += (pSrc[j] * pSrc[j + i]);
 		      }
@@ -169,7 +169,7 @@ namespace OPT_LEVEL
       
             fSum = sum.f32[0] + sum.f32[1] + sum.f32[2] + sum.f32[3];
       
-            for( ; j < srcLen && (j+i) < srcLen; j++)
+            for( ; j+i < srcLen; j++)
 	         {     
 		         fSum += (pSrc[j] * pSrc[j + i]);
 		      }
@@ -295,7 +295,7 @@ namespace OPT_LEVEL
             fSum.re = sumRe.f32[0] + sumRe.f32[1] + sumRe.f32[2] + sumRe.f32[3];
             fSum.im = sumIm.f32[0] + sumIm.f32[1] + sumIm.f32[2] + sumIm.f32[3];
       
-            for( ; j < srcLen && (j+i) < srcLen; j++)
+            for( ; j+i < srcLen; j++)
             {
 	           fSum.re += (pSrc[j].re * pSrc[j+i].re) - (pSrc[j].im * pSrc[j+i].im);
                fSum.im = fSum.im - ( (pSrc[j].re * pSrc[j+i].im) + (pSrc[j].im * pSrc[j+i].re) );
@@ -347,7 +347,7 @@ namespace OPT_LEVEL
             fSum.re = sumRe.f32[0] + sumRe.f32[1] + sumRe.f32[2] + sumRe.f32[3];
             fSum.im = sumIm.f32[0] + sumIm.f32[1] + sumIm.f32[2] + sumIm.f32[3];
       
-            for( ; j < srcLen && (j+i) < srcLen; j++)
+            for( ; j+i < srcLen; j++)
             {
 	           fSum.re += (pSrc[j].re * pSrc[j+i].re) - (pSrc[j].im * pSrc[j+i].im);
                fSum.im = fSum.im - ( (pSrc[j].re * pSrc[j+i].im) + (pSrc[j].im * pSrc[j+i].re) );
@@ -399,7 +399,7 @@ namespace OPT_LEVEL
             fSum.re = sumRe.f32[0] + sumRe.f32[1] + sumRe.f32[2] + sumRe.f32[3];
             fSum.im = sumIm.f32[0] + sumIm.f32[1] + sumIm.f32[2] + sumIm.f32[3];
       
-            for( ; j < srcLen && (j+i) < srcLen; j++)
+            for( ; j+i < srcLen; j++)
             {
 	           fSum.re += (pSrc[j].re * pSrc[j+i].re) - (pSrc[j].im * pSrc[j+i].im);
                fSum.im = fSum.im - ( (pSrc[j].re * pSrc[j+i].im) + (pSrc[j].im * pSrc[j+i].re) );
@@ -492,7 +492,7 @@ namespace OPT_LEVEL
             
             fSum = sum.f64[0] + sum.f64[1];
             
-            for( ; j < srcLen && (j+i) < srcLen; j++)
+            for( ; j+i < srcLen; j++)
 	         {
 		            fSum += (pSrc[j] * pSrc[j + i]);
 		      }
@@ -524,7 +524,7 @@ namespace OPT_LEVEL
             
             fSum = sum.f64[0] + sum.f64[1];
             
-            for( ; j < srcLen && (j+i) < srcLen; j++)
+            for( ; j+i < srcLen; j++)
 	         {
 		            fSum += (pSrc[j] * pSrc[j + i]);
 		      }
@@ -558,7 +558,7 @@ namespace OPT_LEVEL
             
             fSum = sum.f64[0] + sum.f64[1];
             
-            for( ; j < srcLen && (j+i) < srcLen; j++)
+            for( ; j+i < srcLen; j++)
 	         {
 		            fSum += (pSrc[j] * pSrc[j + i]);
 		      }
@@ -677,9 +677,9 @@ namespace OPT_LEVEL
             fSum.re = sumRe.f64[0] + sumRe.f64[1];
             fSum.im = sumIm.f64[0] + sumIm.f64[1];
       
-            for( ; j < srcLen && (j+i) < srcLen; j++)
+            for( ; j+i < srcLen; j++)
             {
-	            fSum.re += (pSrc[j].re * pSrc[j+i].re) - (pSrc[j].im * pSrc[j+i].im);
+	           fSum.re += (pSrc[j].re * pSrc[j+i].re) - (pSrc[j].im * pSrc[j+i].im);
                fSum.im = fSum.im - ( (pSrc[j].re * pSrc[j+i].im) + (pSrc[j].im * pSrc[j+i].re) );
 	         }
 			 
@@ -729,7 +729,7 @@ namespace OPT_LEVEL
             fSum.re = sumRe.f64[0] + sumRe.f64[1];
             fSum.im = sumIm.f64[0] + sumIm.f64[1];
       
-            for( ; j < srcLen && (j+i) < srcLen; j++)
+            for( ; j+i < srcLen; j++)
             {
 	            fSum.re += (pSrc[j].re * pSrc[j+i].re) - (pSrc[j].im * pSrc[j+i].im);
                fSum.im = fSum.im - ( (pSrc[j].re * pSrc[j+i].im) + (pSrc[j].im * pSrc[j+i].re) );
@@ -781,9 +781,9 @@ namespace OPT_LEVEL
             fSum.re = sumRe.f64[0] + sumRe.f64[1];
             fSum.im = sumIm.f64[0] + sumIm.f64[1];
       
-            for( ; j < srcLen && (j+i) < srcLen; j++)
+            for( ; j+i < srcLen; j++)
             {
-	            fSum.re += (pSrc[j].re * pSrc[j+i].re) - (pSrc[j].im * pSrc[j+i].im);
+	           fSum.re += (pSrc[j].re * pSrc[j+i].re) - (pSrc[j].im * pSrc[j+i].im);
                fSum.im = fSum.im - ( (pSrc[j].re * pSrc[j+i].im) + (pSrc[j].im * pSrc[j+i].re) );
 	         }
 	         
