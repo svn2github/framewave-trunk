@@ -136,7 +136,8 @@ public:
         regG.i = r.src1[1].i;
         regB.i = r.src1[2].i;
 
-        CBL_SSE2::Convert_3C_to_3P_8bit(r.dst[0].i,regG.i,regB.i);
+        ssp_convert_3c_3p_epi8(&r.dst[0].i,&regG.i,&regB.i);
+
         r.dst2[0].i = r.dst[0].i; 
         r.dst3[0].i = r.dst[0].i; 
 
@@ -265,7 +266,7 @@ public:
 		alpha.i = r.src1[3].i;
 
 
-        CBL_SSE2::Convert_4C_to_4P_8bit(r.dst[0].i,regG.i,regB.i,alpha.i);
+        ssp_convert_4c_4p_epi8(&r.dst[0].i,&regG.i,&regB.i,alpha.i);
 		r.dst[0].i = _mm_andnot_si128(r.dst[0].i,mMask.i);
 		regG.i = _mm_andnot_si128(regG.i,mMask.i);
 		regB.i = _mm_andnot_si128(regB.i,mMask.i);
@@ -392,7 +393,7 @@ public:
         r.dst[0].i = r.src1[0].i;
 		regG.i = r.src1[1].i;
 		regB.i = r.src1[2].i;
-        CBL_SSE2::Convert_3C_to_3P_8bit(r.dst[0].i,regG.i,regB.i);
+        ssp_convert_3c_3p_epi8(&r.dst[0].i,&regG.i,&regB.i);
         MulY_RGB(r.dst[0].i,regG.i,regB.i,mCoeffy);
 
     }  
@@ -554,7 +555,7 @@ public:
         __m128i bV1= Compute_B(Y1.i,Cb1.i);
         r.dst[2].i = _mm_packus_epi16(bV,bV1);  
 
-        CBL_SSE2::Convert_3P_to_3C_8bit(r.dst[0].i,r.dst[1].i,r.dst[2].i);
+        ssp_convert_3p_3c_epi8(&r.dst[0].i,&r.dst[1].i,&r.dst[2].i);
     }  
 
    IV SSE_32(const Fw8u *Y,const Fw8u *Cb,const Fw8u *Cr,int srcstep,Fw8u *pDst,int dststep)
@@ -741,7 +742,7 @@ public:
 		r.dst[2].i = _mm_andnot_si128(r.dst[2].i,mMask.i);
 		r.dst[3].i = r.src4[0].i;
 
-        CBL_SSE2::Convert_4P_to_4C_8bit(r.dst[0].i,r.dst[1].i,r.dst[2].i,r.dst[3].i);
+        ssp_convert_4p_4c_epi8(&r.dst[0].i,&r.dst[1].i,&r.dst[2].i,&r.dst[3].i);
 
 
     }  
