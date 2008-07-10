@@ -47,6 +47,9 @@ lenFind - Length of the substring.
 pFind - Pointer to the substring.
 pIndex - Pointer to the index of the result.
 valFind - Value of the element to be found.
+dstLen - Specifies the number of elements in destination buffer(this will be the length of auto-correlation)
+srcLen - Specifies the number of elements in source buffer
+
 
 */
 

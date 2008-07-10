@@ -144,6 +144,15 @@ uVLCSelect - Predictor on number of CoeffToken table.
 weight1 - Weighting factor.
 weight2 - Weighting factor.
 width - Block width.
+cubeDimensions[3] - dimensions of the 3D-LUT cube in x, y and z directions .(eg. (17,17,17), (33,33,33) etc)
+cubeMax[3] - The maximum values that can occur in 3D-LUT cube in x, y and z directions.(eg. (1023,1023,1023),4095,4095,4095) for 10 bit and 12 bit outputs respectively)
+pCube - Pointer to the 3d_LUT cube. The pixel values in the table should be filled along z-axis first, then along y-axis and finally along x-axis
+pLUTSpec - pointer to the FwiLUTSpec structure
+ppLUTSpec - pointer to a pointer to FwiLUTSpec structure
+
+#DataStructures
+
+FwiLUTSpec - Internal data structure for 3D-LUT table.
 
 #Enumerators
 

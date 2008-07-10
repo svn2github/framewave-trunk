@@ -434,6 +434,7 @@ file in the installation package for the most recent information.</Paragraph>
 <ParagraphIndent>Threshold and Compare</ParagraphIndent>
 <ParagraphIndent>Morphologic Operations</ParagraphIndent>
 <ParagraphIndent>Geometric Operations</ParagraphIndent>
+<ParagraphIndent>3D - LUT functions</ParagraphIndent>
 
 <Paragraph><Bold>fwVideo.h </Bold>contains function declarations for video processing.</Paragraph>
 
