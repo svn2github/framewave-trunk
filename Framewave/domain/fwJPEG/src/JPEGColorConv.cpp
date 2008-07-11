@@ -877,12 +877,13 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK_JPEG_8u_C4P4R)(const Fw8u * const 
 {
 
     CMYKToYCCK_JPEG_8u_C4P4R  data;
-    if(roiSize.width>32)
-    {
-        return OPT_LEVEL::fec1S4D< CMYKToYCCK_JPEG_8u_C4P4R >( data, pSrcCMYK, srcStep, pDstYCCK[0], dstStep, pDstYCCK[1], dstStep, pDstYCCK[2], dstStep, pDstYCCK[3], dstStep,roiSize ); 
-    }
-    else
-    {
+    //if(roiSize.width>32)
+    //{
+    //    //return OPT_LEVEL::fec1S4D< CMYKToYCCK_JPEG_8u_C4P4R >( data, pSrcCMYK, srcStep, pDstYCCK[0], dstStep, pDstYCCK[1], dstStep, pDstYCCK[2], dstStep, pDstYCCK[3], dstStep,roiSize ); 
+    //    
+    //}
+    //else
+    //{
 	  	if (pSrcCMYK == 0 || pDstYCCK == 0) return fwStsNullPtrErr;
 		if (pDstYCCK[0] == 0 || pDstYCCK[1] == 0 || pDstYCCK[2] == 0 ||
 			pDstYCCK[3] == 0)
@@ -900,6 +901,10 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK_JPEG_8u_C4P4R)(const Fw8u * const 
                 {
                     data.SSE_32(pSrcCMYK,srcStep,pDstYCCK[0],pDstYCCK[1],pDstYCCK[2],pDstYCCK[3], dstStep);
                 }
+                else if( roiSize.width > 32)
+                {
+                    data.SSE_CODE(pSrcCMYK,srcStep,pDstYCCK[0],pDstYCCK[1],pDstYCCK[2],pDstYCCK[3], dstStep, roiSize);
+                }
                 else
                     data.REF_CODE(pSrcCMYK,srcStep,pDstYCCK,dstStep,roiSize);
             break;
@@ -909,7 +914,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiCMYKToYCCK_JPEG_8u_C4P4R)(const Fw8u * const 
             }
         }
 	    return fwStsNoErr;
-    }
+    //}
 
 }
 

@@ -365,6 +365,78 @@ public:
 	            }
    }
 
+   //IV SSE_CODE(const Fw8u * const pSrcCMYK,int srcStep,Fw8u * const pDstYCCK[3], int dstStep,const FwiSize &roiSize)
+   IV SSE_CODE(const Fw8u *src,int srcStep,Fw8u *pDstY,Fw8u *pDstCb,Fw8u *pDstCr,Fw8u *alpha, int dstStep,const FwiSize &roiSize)
+   {
+	            //DEV code use shift 8 bit data for coeffcients
+	            //0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
+	            //We use 77, 150, 29 as the modified coeff, and then shift the result
+	            //-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
+	            //0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
+	            //The final answer is equal to nearest neighbor rounding
+	            //SEE2 should use 16 bit data shift
+                RegFile r;
+                SSE2_Init();
+
+	            unsigned short result, RVal, GVal, BVal;
+	            int x, y;
+	            //int srcPos, dstPos;
+
+	            for (y=0;y<roiSize.height; y++) {
+		            //srcPos = y*srcStep;
+		           // dstPos = y*dstStep;
+                    const Fw8u* pSrc = src + y*srcStep;
+                    Fw8u* tmpDstY = pDstY + y*dstStep;;
+                    Fw8u* tmpDstCb = pDstCb + y*dstStep;;
+                    Fw8u* tmpDstCr =    pDstCr + y*dstStep;
+                    Fw8u* tmpAlpha =    alpha + y*dstStep;
+		            for (x=0;x<roiSize.width-16;x=x+16) {
+					//	RVal = ~(pSrcCMYK[srcPos++]);//R=255-C
+					//	GVal = ~(pSrcCMYK[srcPos++]);//G=255-M
+					//	BVal = ~(pSrcCMYK[srcPos++]);//B=255-Y
+     //       			
+					////add 0.5 for nearest neighbor rounding
+					//result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+					//pDstYCCK [0][dstPos] = (Fw8u)(result>>8);
+					//result = -43 * RVal - 85 * GVal + 128 * BVal + 128;
+					//pDstYCCK [1][dstPos] = (Fw8u)((result>>8)+128);
+					//result = 128 * RVal - 107 * GVal - 21 * BVal + 128;
+					//pDstYCCK [2][dstPos] = (Fw8u)((result>>8)+128);
+					//pDstYCCK [3][dstPos++] = pSrcCMYK[srcPos++];
+                        r.src1[0].i= _mm_loadu_si128((__m128i*)pSrc);
+                        r.src1[1].i= _mm_loadu_si128((__m128i*)(pSrc+16));
+                        r.src1[2].i= _mm_loadu_si128((__m128i*)(pSrc+32));
+			            r.src1[3].i= _mm_loadu_si128((__m128i*)(pSrc+48));
+                        SSE2(r);
+                        _mm_storeu_si128((__m128i*)tmpDstY,r.dst[0].i);
+                        _mm_storeu_si128((__m128i*)tmpDstCb,r.dst2[0].i);
+                        _mm_storeu_si128((__m128i*)tmpDstCr,r.dst3[0].i);
+                        _mm_storeu_si128((__m128i*)tmpAlpha,r.dst4[0].i);
+
+                        pSrc+=64;
+                        tmpDstY +=16;
+                        tmpDstCb +=16;
+                        tmpDstCr +=16;
+                        tmpAlpha +=16;
+		            }
+
+                    for (;x<roiSize.width;x++) {
+						RVal = ~(*pSrc++);//R=255-C
+						GVal = ~(*pSrc++);//G=255-M
+						BVal = ~(*pSrc++);//B=255-Y
+            			
+					//add 0.5 for nearest neighbor rounding
+					    result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+					    *tmpDstY++ = (Fw8u)(result>>8);
+					    result = -43 * RVal - 85 * GVal + 128 * BVal + 128;
+					    *tmpDstCb++ = (Fw8u)((result>>8)+128);
+					    result = 128 * RVal - 107 * GVal - 21 * BVal + 128;
+					    *tmpDstCr++ = (Fw8u)((result>>8)+128);
+					    *tmpAlpha++ = *pSrc++;
+		            }
+	            }
+   }
+
 };
 
 
