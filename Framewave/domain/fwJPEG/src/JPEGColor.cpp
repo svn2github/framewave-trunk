@@ -197,6 +197,101 @@ namespace OPT_LEVEL
 	//	return fwStsNoErr;
 	//}
 
+
+  static  SYS_INLINE void  Mul_16s(__m128i const &s1,__m128i const &s2,__m128i &d1,__m128i &d2)
+    {
+        __m128i temp1;
+        d1 = _mm_mullo_epi16(s1,s2);
+        d2 = _mm_mulhi_epi16(s1,s2);
+        temp1    = _mm_unpacklo_epi16(d1,d2); 
+        d2    = _mm_unpackhi_epi16(d2,d2); 
+		d1 = temp1;
+
+        
+    }
+
+static SYS_INLINE void YCbCrToRGBConv(__m128i &y,__m128i &cb,__m128i &cr)
+{
+                    __m128i r, g, b;
+                    static const __m128i constant = CONST_SET1_32I((S16)(128*64.0));
+                    static const __m128i val90 = CONST_SET1_16I		( (S16)90		);		// R = ( 1.402*2^6 )
+                    static const __m128i val46 = CONST_SET1_16I		( (S16)(-46)	);		// G = ( -.71414*2^6 )
+                    static const __m128i val22 = CONST_SET1_16I		( (S16)(-22)	);		// cr= ( -0.34414*(2^6) )
+                    static const __m128i val113 = CONST_SET1_16I( (S16)(113)	);		// B = ( 1.772*(2^6) )
+
+
+                    // RED
+                    __m128i r1,r2;
+                    Mul_16s( val90, cr,r1,r2);		// R = ( 1.402*Cr )*(2^6)
+                    r1 = _mm_add_epi32		( r1, constant	);		// R = ( 128.5 + 1.402*Cr )*(2^6)
+                    r2 = _mm_add_epi32		( r2, constant	);		// R = ( 128.5 + 1.402*Cr )*(2^6)
+
+                    r1 = _mm_srai_epi32		( r1, 6			);		// R = ((128.5 + 1.402*Cr )*(2^6)) / (2^6)
+                    r2 = _mm_srai_epi32		( r2, 6			);		// R = ((128.5 + 1.402*Cr )*(2^6)) / (2^6)
+                    r  = _mm_packs_epi32    (r1,r2);
+                    r  = _mm_adds_epi16		( r, y			);		// R = Y + 128.5 + 1.402*Cr
+
+                    // GREEN
+                    __m128i g1,g2,g3,g4;
+                    Mul_16s( val46, cr,g1,g2);		// G = ( -.71414*Cr )*(2^6)
+                    g1 = _mm_add_epi32		( g1, constant	);		// G = ( -.71414*Cr + 128.5 )*(2^6)
+                    g2 = _mm_add_epi32		( g2, constant	);		// G = ( -.71414*Cr + 128.5 )*(2^6)
+
+                    Mul_16s( val22, cb,g3,g4);		// cr= ( -0.34414*Cb )*(2^6)
+
+
+                    g1 = _mm_add_epi32		( g1, g3			);		// G = ( -.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)
+                    g2 = _mm_add_epi32		( g2, g4			);		// G = ( -.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)
+                    g1 = _mm_srai_epi32		( g1, 6			);		// G = ((-.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)) / (2^6)
+                    g2 = _mm_srai_epi32		( g2, 6			);		// G = ((-.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)) / (2^6)
+        
+                    __m128i y1=y,y2;
+
+                    CBL_SSE2::Unpack16STo32S(y1,y2);
+                    g1 = _mm_add_epi32		( g1, y1			);		// G = Y - 0.34414*Cb - 0.71414*Cr + 128.5 
+                    g2 = _mm_add_epi32		( g2, y2			);		// G = Y - 0.34414*Cb - 0.71414*Cr + 128.5 
+
+                    g = _mm_packs_epi32(g1,g2);
+
+                    // BLUE
+                    __m128i b1,b2;
+                    Mul_16s		( val113, cb,b1,b2			);		// B = ( 1.772*Cb )*(2^6)
+                    b1 = _mm_add_epi32		( b1, constant	);		// B = ( 1.772*Cb + 128.5 )*(2^6)
+                    b2 = _mm_add_epi32		( b2, constant	);		// B = ( 1.772*Cb + 128.5 )*(2^6)
+
+                    b1 = _mm_srai_epi16		( b1, 6			);		// B = ((1.772*Cb + 128.5 )*(2^6)) / (2^6)
+                    b2 = _mm_srai_epi16		( b2, 6			);		// B = ((1.772*Cb + 128.5 )*(2^6)) / (2^6)
+                    b = _mm_packs_epi32(b1,b2);
+                    b = _mm_adds_epi16		( b, y			);		// B = Y + 1.772*Cb + 128.5
+
+                    // CBL_SSE2::Convert_3P_to_3C_16bit( r, g, b);
+                   ssp_convert_3p_3c_epi16( &r, &g, &b);
+                    // r = {g2,r2,b1,g1,r1,b0,g0,r0}
+                    // g = {r5,b4,g4,r4,b3,g3,r3,b2}
+                    // b = {b7,g7,r7,b6,g6,r6,b5,g5}
+					y = r;
+					cb= g;
+					cr = b;
+
+}
+
+static SYS_INLINE void YCbCrToRGB(__m128i &y,__m128i &cb,__m128i &cr)
+{
+					YCbCrToRGBConv(y,cb,cr);
+
+                    y = _mm_packus_epi16 (y, cb);			// r = {r5,b4,g4,r4,b3,g3,r3,b2,g2,r2,b1,g1,r1,b0,g0,r0}
+                    cb = _mm_packus_epi16 (cr, cr);			// b = {b7,g7,r7,b6,g6,r6,b5,g5,b7,g7,r7,b6,g6,r6,b5,g5}
+}
+
+static SYS_INLINE void YCbCrToBGR(__m128i &y,__m128i &cb,__m128i &cr)
+{
+					YCbCrToRGBConv(y,cb,cr);
+
+                    cr = _mm_packus_epi16 (cr, cb);			// r = {r5,b4,g4,r4,b3,g3,r3,b2,g2,r2,b1,g1,r1,b0,g0,r0}
+                    cb = _mm_packus_epi16 (y, y);			// b = {b7,g7,r7,b6,g6,r6,b5,g5,b7,g7,r7,b6,g6,r6,b5,g5}
+					y = cr;
+}
+
 	static SYS_INLINE void fwiYCbCr411ToRGBLS_MCU_16s8u_P3C3R_8x8Block (Fw16s *pSrcY, Fw16s *pSrcCb, Fw16s *pSrcCr, Fw8u *pDstRGB, int dstStep)
 	{
 		A32S y, x;
@@ -208,116 +303,28 @@ namespace OPT_LEVEL
 	    case DT_SSE3:
 	    case DT_SSE2:
             {    
-                XMM128 yVal, cbVal, crVal, yTemp, cbTemp, crTemp;
-                XMM128 xmm1, xmm2;
-                const __m128 xmm128 = _mm_set1_ps((float)128.5);
-                const __m128i zero = _mm_setzero_si128();
-                const __m128 xmmC1 = _mm_set1_ps((float)-0.34414);
-                const __m128 xmmC2 = _mm_set1_ps((float)-0.71414);
-                const __m128 xmmC3 = _mm_set1_ps((float)1.402);
-                const __m128 xmmC4 = _mm_set1_ps((float)1.772);
+                XMM128 yVal, cbVal, crVal;
 		        for (y=0; y<8; ++y)
 		            {
                         
 			            dstPos = y*dstStep;
 			            srcCPos = (y>>1)<<3; //(y>>1)*8;
 			                yVal.i = _mm_loadu_si128((__m128i*)(pSrcY+srcYPos));
-                            cbVal.s64[0] = *((Fw64s*)(pSrcCb+srcCPos));
-                            crVal.s64[0] = *((Fw64s*)(pSrcCr+srcCPos));
-                            
-                            cbVal.i = _mm_unpacklo_epi16(cbVal.i, cbVal.i);
+							cbVal.d = _mm_setzero_pd();
+							crVal.d = _mm_setzero_pd();
+							cbVal.d  = _mm_loadl_pd(cbVal.d,(double*) (pSrcCb+srcCPos));
+							crVal.d  = _mm_loadl_pd(crVal.d,(double*) (pSrcCr+srcCPos));
+
+                          //  cbVal.s64[0] = *((Fw64s*)(pSrcCb+srcCPos));
+                          //  crVal.s64[0] = *((Fw64s*)(pSrcCr+srcCPos));
+
+							cbVal.i = _mm_unpacklo_epi16(cbVal.i, cbVal.i);
                             crVal.i = _mm_unpacklo_epi16(crVal.i, crVal.i);
-
-                            yTemp.i = _mm_unpacklo_epi16( yVal.i, zero);
-                            cbTemp.i = _mm_unpacklo_epi16( cbVal.i, zero);
-                            crTemp.i = _mm_unpacklo_epi16( crVal.i, zero);
-
-                            yTemp.i = _mm_slli_epi32(yTemp.i, 16);
-                            cbTemp.i = _mm_slli_epi32(cbTemp.i, 16);
-                            crTemp.i = _mm_slli_epi32(crTemp.i, 16);
-
-                            yTemp.i = _mm_srai_epi32(yTemp.i, 16);
-                            cbTemp.i = _mm_srai_epi32(cbTemp.i, 16);
-                            crTemp.i = _mm_srai_epi32(crTemp.i, 16);
-
-
-                            yTemp.f = _mm_cvtepi32_ps( yTemp.i);
-                            cbTemp.f = _mm_cvtepi32_ps( cbTemp.i);
-                            crTemp.f = _mm_cvtepi32_ps( crTemp.i);
-
-				            // Compute RGB
-
-                            xmm1.f = _mm_mul_ps(xmmC1, cbTemp.f);
-                            xmm2.f = _mm_mul_ps(xmmC2, crTemp.f);
-                            xmm2.f = _mm_add_ps(xmm2.f, xmm1.f);
-                            xmm2.f = _mm_add_ps(xmm2.f, yTemp.f);
-                            xmm2.f = _mm_add_ps(xmm2.f, xmm128);
-                            
-                            xmm1.f = _mm_mul_ps(xmmC3, crTemp.f);
-                            xmm1.f = _mm_add_ps(xmm1.f, yTemp.f);
-                            xmm1.f = _mm_add_ps(xmm1.f, xmm128);
-
-                            cbTemp.f = _mm_mul_ps(cbTemp.f, xmmC4);
-                            cbTemp.f = _mm_add_ps(cbTemp.f, yTemp.f);
-                            cbTemp.f = _mm_add_ps(cbTemp.f, xmm128);
-
-                            yTemp.i = _mm_cvtps_epi32( xmm1.f);
-                            crTemp.i = _mm_cvtps_epi32( cbTemp.f);
-                            cbTemp.i = _mm_cvtps_epi32( xmm2.f);
-                            
-
-                            //higher bytes
-
-                            yVal.i = _mm_unpackhi_epi16( yVal.i, zero);
-                            cbVal.i = _mm_unpackhi_epi16( cbVal.i, zero);
-                            crVal.i = _mm_unpackhi_epi16( crVal.i, zero);
-
-                            yVal.i = _mm_slli_epi32(yVal.i, 16);
-                            cbVal.i = _mm_slli_epi32(cbVal.i, 16);
-                            crVal.i = _mm_slli_epi32(crVal.i, 16);
-
-                            yVal.i = _mm_srai_epi32(yVal.i, 16);
-                            cbVal.i = _mm_srai_epi32(cbVal.i, 16);
-                            crVal.i = _mm_srai_epi32(crVal.i, 16);
-
-                            yVal.f = _mm_cvtepi32_ps( yVal.i);
-                            cbVal.f = _mm_cvtepi32_ps( cbVal.i);
-                            crVal.f = _mm_cvtepi32_ps( crVal.i);
-
-				            // Compute RGB
-
-                            xmm1.f = _mm_mul_ps(xmmC1, cbVal.f);
-                            xmm2.f = _mm_mul_ps(xmmC2, crVal.f);
-                            xmm2.f = _mm_add_ps(xmm2.f, xmm1.f);
-                            xmm2.f = _mm_add_ps(xmm2.f, yVal.f);
-                            xmm2.f = _mm_add_ps(xmm2.f, xmm128);
-                            
-                            xmm1.f = _mm_mul_ps(xmmC3, crVal.f);
-                            xmm1.f = _mm_add_ps(xmm1.f, yVal.f);
-                            xmm1.f = _mm_add_ps(xmm1.f, xmm128);
-                            
-                            cbVal.f = _mm_mul_ps(cbVal.f, xmmC4);
-                            cbVal.f = _mm_add_ps(cbVal.f, yVal.f);
-                            cbVal.f = _mm_add_ps(cbVal.f, xmm128);
-
-                            xmm1.i = _mm_cvtps_epi32( xmm1.f);
-                            xmm2.i = _mm_cvtps_epi32( xmm2.f);
-                            cbVal.i = _mm_cvtps_epi32( cbVal.f);
-
-                            yTemp.i = _mm_packs_epi32(yTemp.i , xmm1.i );
-                            cbTemp.i = _mm_packs_epi32(cbTemp.i, xmm2.i );
-                            crTemp.i = _mm_packs_epi32(crTemp.i, cbVal.i );
-
-                            // CBL_SSE2::Convert_3P_to_3C_16bit(yTemp.i, cbTemp.i, crTemp.i);
-                            ssp_convert_3p_3c_epi16(&yTemp.i, &cbTemp.i, &crTemp.i);
-
-                            yTemp.i = _mm_packus_epi16 (yTemp.i, cbTemp.i);
-                            crTemp.i = _mm_packus_epi16 (crTemp.i, crTemp.i);
-
-
-                            _mm_storeu_si128((__m128i*) (pDstRGB + dstPos),yTemp.i);
-
-                            *((Fw64s*)(pDstRGB + dstPos + 16)) = crTemp.s64[0];
+							
+							YCbCrToRGB(yVal.i,cbVal.i,crVal.i);
+                            _mm_storeu_si128((__m128i*) (pDstRGB + dstPos),yVal.i);
+                           // *((Fw64s*)(pDstRGB + dstPos + 16)) = cbVal.s64[0];
+							 _mm_storel_epi64 ( ((__m128i*)(pDstRGB + dstPos + 16)), cbVal.i );
 
                              srcYPos = srcYPos + 8;
 
@@ -355,126 +362,33 @@ namespace OPT_LEVEL
 	{
 		A32S y, x;
 		A32S dstPos, srcYPos=0, srcCPos;
-		A16S yVal, crVal, cbVal;
+		
 
         switch( Dispatch::Type<DT_SSE2>() )
 	    {
 	    case DT_SSE3:
 	    case DT_SSE2:
             {    
-                XMM128 yVal, cbVal, crVal, yTemp, cbTemp, crTemp;
-                XMM128 xmm1, xmm2;
-                const __m128 xmm128 = _mm_set1_ps((float)128.5);
-                const __m128i zero = _mm_setzero_si128();
-                const __m128 xmmC1 = _mm_set1_ps((float)-0.34414);
-                const __m128 xmmC2 = _mm_set1_ps((float)-0.71414);
-                const __m128 xmmC3 = _mm_set1_ps((float)1.402);
-                const __m128 xmmC4 = _mm_set1_ps((float)1.772);
+                
+
 		        for (y=0; y<8; ++y)
 		            {
-                        
+                        XMM128 yVal, cbVal, crVal;
 			            dstPos = y*dstStep;
 			            srcCPos = (y>>1)<<3; //(y>>1)*8;
 			                yVal.i = _mm_loadu_si128((__m128i*)(pSrcY+srcYPos));
-                            cbVal.s64[0] = *((Fw64s*)(pSrcCb+srcCPos));
-                            crVal.s64[0] = *((Fw64s*)(pSrcCr+srcCPos));
-                            
-                            cbVal.i = _mm_unpacklo_epi16(cbVal.i, cbVal.i);
+							cbVal.d = _mm_setzero_pd();
+							crVal.d = _mm_setzero_pd();
+							cbVal.d  = _mm_loadl_pd(cbVal.d,(double*) (pSrcCb+srcCPos));
+							crVal.d  = _mm_loadl_pd(crVal.d,(double*) (pSrcCr+srcCPos));
+
+							cbVal.i = _mm_unpacklo_epi16(cbVal.i, cbVal.i);
                             crVal.i = _mm_unpacklo_epi16(crVal.i, crVal.i);
-
-                            yTemp.i = _mm_unpacklo_epi16( yVal.i, zero);
-                            cbTemp.i = _mm_unpacklo_epi16( cbVal.i, zero);
-                            crTemp.i = _mm_unpacklo_epi16( crVal.i, zero);
-
-                            yTemp.i = _mm_slli_epi32(yTemp.i, 16);
-                            cbTemp.i = _mm_slli_epi32(cbTemp.i, 16);
-                            crTemp.i = _mm_slli_epi32(crTemp.i, 16);
-
-                            yTemp.i = _mm_srai_epi32(yTemp.i, 16);
-                            cbTemp.i = _mm_srai_epi32(cbTemp.i, 16);
-                            crTemp.i = _mm_srai_epi32(crTemp.i, 16);
-
-
-                            yTemp.f = _mm_cvtepi32_ps( yTemp.i);
-                            cbTemp.f = _mm_cvtepi32_ps( cbTemp.i);
-                            crTemp.f = _mm_cvtepi32_ps( crTemp.i);
-
-				            // Compute RGB
-
-                            xmm1.f = _mm_mul_ps(xmmC1, cbTemp.f);
-                            xmm2.f = _mm_mul_ps(xmmC2, crTemp.f);
-                            xmm2.f = _mm_add_ps(xmm2.f, xmm1.f);
-                            xmm2.f = _mm_add_ps(xmm2.f, yTemp.f);
-                            xmm2.f = _mm_add_ps(xmm2.f, xmm128);
-                            
-                            xmm1.f = _mm_mul_ps(xmmC3, crTemp.f);
-                            xmm1.f = _mm_add_ps(xmm1.f, yTemp.f);
-                            xmm1.f = _mm_add_ps(xmm1.f, xmm128);
-
-                            cbTemp.f = _mm_mul_ps(cbTemp.f, xmmC4);
-                            cbTemp.f = _mm_add_ps(cbTemp.f, yTemp.f);
-                            cbTemp.f = _mm_add_ps(cbTemp.f, xmm128);
-
-                            yTemp.i = _mm_cvtps_epi32( xmm1.f);
-                            crTemp.i = _mm_cvtps_epi32( cbTemp.f);
-                            cbTemp.i = _mm_cvtps_epi32( xmm2.f);
-                            
-
-                            //higher bytes
-
-                            yVal.i = _mm_unpackhi_epi16( yVal.i, zero);
-                            cbVal.i = _mm_unpackhi_epi16( cbVal.i, zero);
-                            crVal.i = _mm_unpackhi_epi16( crVal.i, zero);
-
-                            yVal.i = _mm_slli_epi32(yVal.i, 16);
-                            cbVal.i = _mm_slli_epi32(cbVal.i, 16);
-                            crVal.i = _mm_slli_epi32(crVal.i, 16);
-
-                            yVal.i = _mm_srai_epi32(yVal.i, 16);
-                            cbVal.i = _mm_srai_epi32(cbVal.i, 16);
-                            crVal.i = _mm_srai_epi32(crVal.i, 16);
-
-                            yVal.f = _mm_cvtepi32_ps( yVal.i);
-                            cbVal.f = _mm_cvtepi32_ps( cbVal.i);
-                            crVal.f = _mm_cvtepi32_ps( crVal.i);
-
-				            // Compute RGB
-
-                            xmm1.f = _mm_mul_ps(xmmC1, cbVal.f);
-                            xmm2.f = _mm_mul_ps(xmmC2, crVal.f);
-                            xmm2.f = _mm_add_ps(xmm2.f, xmm1.f);
-                            xmm2.f = _mm_add_ps(xmm2.f, yVal.f);
-                            xmm2.f = _mm_add_ps(xmm2.f, xmm128);
-                            
-                            xmm1.f = _mm_mul_ps(xmmC3, crVal.f);
-                            xmm1.f = _mm_add_ps(xmm1.f, yVal.f);
-                            xmm1.f = _mm_add_ps(xmm1.f, xmm128);
-                            
-                            cbVal.f = _mm_mul_ps(cbVal.f, xmmC4);
-                            cbVal.f = _mm_add_ps(cbVal.f, yVal.f);
-                            cbVal.f = _mm_add_ps(cbVal.f, xmm128);
-
-                            xmm1.i = _mm_cvtps_epi32( xmm1.f);
-                            xmm2.i = _mm_cvtps_epi32( xmm2.f);
-                            cbVal.i = _mm_cvtps_epi32( cbVal.f);
-
-                            yTemp.i = _mm_packs_epi32(yTemp.i , xmm1.i );
-                            cbTemp.i = _mm_packs_epi32(cbTemp.i, xmm2.i );
-                            crTemp.i = _mm_packs_epi32(crTemp.i, cbVal.i );
-
-                            //CBL_SSE2::Convert_3P_to_3C_16bit(yTemp.i, cbTemp.i, crTemp.i);
-                            ssp_convert_3p_3c_epi16(&yTemp.i, &cbTemp.i, &crTemp.i);
-
-                            // CBL_SSE2::Convert_3P_to_3C_16bit(crTemp.i, cbTemp.i, yTemp.i);
-                            ssp_convert_3p_3c_epi16(&crTemp.i, &cbTemp.i, &yTemp.i);
-
-                            yTemp.i = _mm_packus_epi16 (crTemp.i, cbTemp.i);
-                            crTemp.i = _mm_packus_epi16 (yTemp.i, yTemp.i);
-
-
-                            _mm_storeu_si128((__m128i*) (pDstRGB + dstPos),crTemp.i);
-
-                            *((Fw64s*)(pDstRGB + dstPos + 16)) = yTemp.s64[0];
+							
+							YCbCrToBGR(yVal.i,cbVal.i,crVal.i);
+                            _mm_storeu_si128((__m128i*) (pDstRGB + dstPos),yVal.i);
+                           // *((Fw64s*)(pDstRGB + dstPos + 16)) = cbVal.s64[0];
+							_mm_storel_epi64 ( ((__m128i*)(pDstRGB + dstPos + 16)), cbVal.i );
 
                              srcYPos = srcYPos + 8;
 
@@ -485,6 +399,7 @@ namespace OPT_LEVEL
 	    default:
 		        for (y=0; y<8; ++y)
 		        {
+					A16S yVal, crVal, cbVal;
 			        dstPos = y*dstStep;
 			        srcCPos = (y>>1)<<3; //(y>>1)*8;
 			        for (x=0; x<8; x+=2)
@@ -702,16 +617,7 @@ namespace OPT_LEVEL
 		return fwStsNoErr;
 	}
 
-    SYS_INLINE STATIC void  Mul_16s(__m128i const &s1,__m128i const &s2,__m128i &d1,__m128i &d2)
-    {
-        __m128i temp1,temp2;
-        temp1 = _mm_mullo_epi16(s1,s2);
-        temp2 = _mm_mulhi_epi16(s1,s2);
-        d1    = _mm_unpacklo_epi16(temp1,temp2); 
-        d2    = _mm_unpackhi_epi16(temp1,temp2); 
 
-        
-    }
 	SYS_INLINE static FwStatus iYCbCr444ToRGBLS_MCU_16s8u_P3C3R_SSE2(const Fw16s *pSrcMCU[3], Fw8u *pDstRGB, int dstStep)
 	{
 		Fw16s *pSrcY=(Fw16s*)pSrcMCU[0], *pSrcCb=(Fw16s*)pSrcMCU[1], *pSrcCr=(Fw16s*)pSrcMCU[2];
