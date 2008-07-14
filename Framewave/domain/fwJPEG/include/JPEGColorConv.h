@@ -67,10 +67,10 @@ SYS_INLINE STATIC void MulCbCr_RGB(__m128i &s1lo,__m128i &s2lo,__m128i &s3lo,con
 
 }
 
-SYS_INLINE STATIC void MulY_RGB(__m128i &s1lo,__m128i &s2lo,__m128i &s3lo,const XMM128 mCoef[3])
+SYS_INLINE STATIC  void MulY_RGB(__m128i &s1lo,__m128i &s2lo,__m128i &s3lo,const XMM128 mCoef[3])
 {
     __m128i s1hi,s2hi,s3hi;
-    const __m128i val128 = CONST_SET1_16I(128);     
+    static const __m128i val128 = CONST_SET1_16I(128);     
     CBL_SSE2::Unpack8UTo16U(s1lo,s1hi);
     CBL_SSE2::Unpack8UTo16U(s2lo,s2hi);
     CBL_SSE2::Unpack8UTo16U(s3lo,s3hi);
@@ -446,7 +446,7 @@ class RGBToY_JPEG_8u_C3C1 : public fe2<Fw8u,C3,Fw8u,C1>
 public:
     FE_SSE2_REF
     S16 coey[3];
-    XMM128 mCoeffy[3];
+    XMM128 coeffR,coeffG,coeffB;
     RGBToY_JPEG_8u_C3C1()
     {
        //Y = 77*R + 150*G + 29*B
@@ -454,9 +454,9 @@ public:
     }
     IV SSE2_Init()
     {
-        mCoeffy[0].i = _mm_set1_epi16(coey[0]);
-        mCoeffy[1].i = _mm_set1_epi16(coey[1]);
-        mCoeffy[2].i = _mm_set1_epi16(coey[2]);
+        coeffR.i  = _mm_set1_epi16(coey[0]);
+        coeffG.i  = _mm_set1_epi16(coey[1]);
+        coeffB.i = _mm_set1_epi16(coey[2]);
     }
 
     IV SSE2( RegFile & r ) const									// SSE2 Pixel function
@@ -465,8 +465,40 @@ public:
         r.dst[0].i = r.src1[0].i;
 		regG.i = r.src1[1].i;
 		regB.i = r.src1[2].i;
+
         ssp_convert_3c_3p_epi8(&r.dst[0].i,&regG.i,&regB.i);
-        MulY_RGB(r.dst[0].i,regG.i,regB.i,mCoeffy);
+
+		__m128i s1hi,s2hi,s3hi;  
+
+		CBL_SSE2::Unpack8UTo16U(r.dst[0].i,s1hi);
+		CBL_SSE2::Unpack8UTo16U(regG.i,s2hi);
+		CBL_SSE2::Unpack8UTo16U(regB.i,s3hi);
+
+		r.dst[0].i = _mm_mullo_epi16(r.dst[0].i,coeffR.i);
+		regG.i = _mm_mullo_epi16(regG.i,coeffG.i);
+		regB.i = _mm_mullo_epi16(regB.i,coeffB.i);
+
+		s1hi = _mm_mullo_epi16(s1hi,coeffR.i);
+		s2hi = _mm_mullo_epi16(s2hi,coeffG.i);
+		s3hi = _mm_mullo_epi16(s3hi,coeffB.i);
+
+		r.dst[0].i = _mm_add_epi16(r.dst[0].i,regG.i);
+		r.dst[0].i = _mm_add_epi16(r.dst[0].i,regB.i);
+
+		__m128i val128 = _mm_srli_epi16(coeffR.i,7);
+		val128 = _mm_slli_epi16(val128,7);
+
+		r.dst[0].i = _mm_add_epi16(r.dst[0].i,val128);
+
+		s1hi = _mm_add_epi16(s1hi,s2hi);
+		s1hi = _mm_add_epi16(s1hi,s3hi);
+		s1hi = _mm_add_epi16(s1hi,val128);
+
+		r.dst[0].i = _mm_srli_epi16(r.dst[0].i,8);
+		s1hi = _mm_srli_epi16(s1hi,8);
+
+		r.dst[0].i = _mm_packus_epi16(r.dst[0].i,s1hi);
+
 
     }  
 
