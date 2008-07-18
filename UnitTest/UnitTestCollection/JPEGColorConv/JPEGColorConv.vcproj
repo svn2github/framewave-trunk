@@ -19,8 +19,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)bin\$(ConfigurationName)_32"
-			IntermediateDirectory="$(SolutionDir)tmp\$(ConfigurationName)_32\$(ProjectName)"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -38,17 +38,18 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
+				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\UnitTestFramework\UnitTestFramework;..\..\..\Framewave\build\include;..\BaseObjects"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LOGICALFUNCTEST_EXPORTS"
-				MinimalRebuild="true"
+				PreprocessorDefinitions="WIN64;_DEBUG;_WINDOWS;_USRDLL;LOGICALFUNCTEST_EXPORTS"
+				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -140,9 +141,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="UnitTestFramework.lib fwBase.lib fwImage.lib"
+				AdditionalDependencies="UnitTestFramework.lib fwBase.lib fwImage.lib fwJPEG.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\bin\$(ConfigurationName)_64&quot;;&quot;$(FW_BIN_PATH)\$(ConfigurationName)_shared_64&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\bin\$(ConfigurationName)_64&quot;;&quot;..\..\..\Framewave\build\bin\$(ConfigurationName)_shared_64&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="17"
@@ -174,8 +175,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)bin\$(ConfigurationName)_32"
-			IntermediateDirectory="$(SolutionDir)tmp\$(ConfigurationName)_32\$(ProjectName)"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -194,6 +195,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
+				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -293,9 +295,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="UnitTestFramework.lib fwBase.lib fwImage.lib"
+				AdditionalDependencies="UnitTestFramework.lib fwBase.lib fwImage.lib fwJPEG.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)bin\$(ConfigurationName)_64&quot;;&quot;$(FW_BIN_PATH)\$(ConfigurationName)_shared_64&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)bin\$(ConfigurationName)_64&quot;;&quot;..\..\..\Framewave\build\bin\$(ConfigurationName)_shared_64&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"

@@ -141,7 +141,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="UnitTestFramework.lib fwBase.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\bin\$(ConfigurationName)_64&quot;;&quot;$(FW_BIN_PATH)\$(ConfigurationName)_shared_64&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\bin\$(ConfigurationName)_64&quot;;&quot;..\..\..\Framewave\build\bin\$(ConfigurationName)_shared_64&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="1"
@@ -291,7 +291,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="UnitTestFramework.lib fwBase.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\bin\$(ConfigurationName)_64&quot;;&quot;$(FW_BIN_PATH)\$(ConfigurationName)_shared_64&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\bin\$(ConfigurationName)_64&quot;;&quot;..\..\..\Framewave\build\bin\$(ConfigurationName)_shared_64&quot;"
 				SubSystem="1"
 				TargetMachine="17"
 			/>
