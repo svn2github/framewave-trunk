@@ -60,7 +60,7 @@ for ol in oOptimizationLevels[:maxImplementedOptimizationLevel]:
 
 dctLDFlags = {}
 
-dctLDFlags[r'-lpthread -Wl,-soname,lib${PROJECTNAME}.so.1'] = [shr, lin]
+
 dctLDFlags[r'-lrt -pthread -lm -Wl -hlib${PROJECTNAME}.so.1'] = [shr, sol]
 dctLDFlags[r'-m32']          = [b32]
 dctLDFlags[r'-m64']          = [b64]
@@ -75,9 +75,12 @@ class fwFlags_gcc(fwFlagsBase):
     def __init__ (self, oEnv, lstBuildFactors, sObjectType):
         # Call constructor for base class
         fwFlagsBase.__init__(self, oEnv)
-        
+
         # Select flags to setup based on what kind of
         # build object are we setting up flags for
+        dctFwVars = oEnv['FWVARS']
+
+        dctLDFlags[r'-l' + dctFwVars['thread'] + ' -Wl,-soname,lib${PROJECTNAME}.so.1'] = [shr, lin]
         if sObjectType=='library':
             self.lstLDFlags = self.determineFlags(lstBuildFactors, dctLDFlags)
             self.lstLDFlags = self.translateFlags(self.lstLDFlags)

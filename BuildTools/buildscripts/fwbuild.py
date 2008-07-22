@@ -37,6 +37,11 @@ class fwBuildRoot:
         self.dctFwVars['debuginfo']      = ARGUMENTS.get('debuginfo', '---')
         self.dctFwVars['toolset']        = ARGUMENTS.get('toolset',   '---')
         self.dctFwVars['wincrt']         = ARGUMENTS.get('wincrt',    '---')
+        self.dctFwVars['thread']         = ARGUMENTS.get('thread',    'pthread')
+
+
+        if self.dctFwVars['thread'] == 'systemboost':
+        	self.dctFwVars['thread'] = 'boost_thread-mt'
 
         # Set correct default wincrt
         if self.dctFwVars['wincrt'] == '---':
