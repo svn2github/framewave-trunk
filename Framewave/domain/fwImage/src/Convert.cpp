@@ -294,5 +294,95 @@ ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32s8s_C4R )( cA32S *s, int sStep, A8S *d
     return OPT_LEVEL::fe< Convert_32s8s_Custom<A32S,A8S,C4> > ( dat, s, sStep, d, dStep, roi);
     }
 
+// 32F8U
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f8u_C1R )( cA32F *s, int sStep, A8U *d, int dStep, ASZ roi )
+    { 
+    Convert_32f8u_Custom<A32F,A8U,C1> dat;
+    return OPT_LEVEL::fe< Convert_32f8u_Custom<A32F,A8U,C1> > ( dat, s, sStep, d, dStep, roi);
+    }
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f8u_C3R )( cA32F *s, int sStep, A8U *d, int dStep, ASZ roi )
+    {
+    Convert_32f8u_Custom<A32F,A8U,C3> dat;
+    return OPT_LEVEL::fe< Convert_32f8u_Custom<A32F,A8U,C3> > ( dat, s, sStep, d, dStep, roi);
+    }
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f8u_AC4R)( cA32F *s, int sStep, A8U *d, int dStep, ASZ roi )
+    {
+    Convert_32f8uAC4_Custom<A32F,A8U,AC4> dat;
+    return OPT_LEVEL::fe< Convert_32f8uAC4_Custom<A32F,A8U,AC4> > ( dat, s, sStep, d, dStep, roi);
+    }
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f8u_C4R )( cA32F *s, int sStep, A8U *d, int dStep, ASZ roi )
+    {
+    Convert_32f8u_Custom<A32F,A8U,C4> dat;
+    return OPT_LEVEL::fe< Convert_32f8u_Custom<A32F,A8U,C4> > ( dat, s, sStep, d, dStep, roi);
+    }
+
+
+// 32F8S
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f8s_C1R )( cA32F *s, int sStep, A8S *d, int dStep, ASZ roi )
+    { 
+    Convert_32f8s_Custom<A32F,A8S,C1> dat;
+    return OPT_LEVEL::fe< Convert_32f8s_Custom<A32F,A8S,C1> > ( dat, s, sStep, d, dStep, roi);
+    }
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f8s_C3R )( cA32F *s, int sStep, A8S *d, int dStep, ASZ roi )
+    {
+    Convert_32f8s_Custom<A32F,A8S,C3> dat;
+    return OPT_LEVEL::fe< Convert_32f8s_Custom<A32F,A8S,C3> > ( dat, s, sStep, d, dStep, roi);
+    }
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f8s_AC4R)( cA32F *s, int sStep, A8S *d, int dStep, ASZ roi )
+    {
+    Convert_32f8sAC4_Custom<A32F,A8S,AC4> dat;
+    return OPT_LEVEL::fe< Convert_32f8sAC4_Custom<A32F,A8S,AC4> > ( dat, s, sStep, d, dStep, roi);
+    }
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f8s_C4R )( cA32F *s, int sStep, A8S *d, int dStep, ASZ roi )
+    {
+    Convert_32f8s_Custom<A32F,A8S,C4> dat;
+    return OPT_LEVEL::fe< Convert_32f8s_Custom<A32F,A8S,C4> > ( dat, s, sStep, d, dStep, roi);
+    }
+
+
+// 32F16S
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f16s_C1R )( cA32F *s, int sStep, A16S *d, int dStep, ASZ roi )
+    { 
+    Convert_32f16s_Custom<A32F,A16S,C1> dat;
+    return OPT_LEVEL::fe< Convert_32f16s_Custom<A32F,A16S,C1> > ( dat, s, sStep, d, dStep, roi);
+    }
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f16s_C3R )( cA32F *s, int sStep, A16S *d, int dStep, ASZ roi )
+    {
+    Convert_32f16s_Custom<A32F,A16S,C3> dat;
+    return OPT_LEVEL::fe< Convert_32f16s_Custom<A32F,A16S,C3> > ( dat, s, sStep, d, dStep, roi);
+    }
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f16s_AC4R)( cA32F *s, int sStep, A16S *d, int dStep, ASZ roi )
+    {
+    Convert_32f16sAC4_Custom<A32F,A16S,AC4> dat;
+    return OPT_LEVEL::fe< Convert_32f16sAC4_Custom<A32F,A16S,AC4> > ( dat, s, sStep, d, dStep, roi);
+    }
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f16s_C4R )( cA32F *s, int sStep, A16S *d, int dStep, ASZ roi )
+    {
+    Convert_32f16s_Custom<A32F,A16S,C4> dat;
+    return OPT_LEVEL::fe< Convert_32f16s_Custom<A32F,A16S,C4> > ( dat, s, sStep, d, dStep, roi);
+    }
+
+
+// 32F16U
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f16u_C1R )( cA32F *s, int sStep, A16U *d, int dStep, ASZ roi )
+    { 
+    Convert_32f16u_Custom<A32F,A16U,C1> dat;
+    return OPT_LEVEL::fe< Convert_32f16u_Custom<A32F,A16U,C1> > ( dat, s, sStep, d, dStep, roi);
+    }
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f16u_C3R )( cA32F *s, int sStep, A16U *d, int dStep, ASZ roi )
+    {
+    Convert_32f16u_Custom<A32F,A16U,C3> dat;
+    return OPT_LEVEL::fe< Convert_32f16u_Custom<A32F,A16U,C3> > ( dat, s, sStep, d, dStep, roi);
+    }
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f16u_AC4R)( cA32F *s, int sStep, A16U *d, int dStep, ASZ roi )
+    {
+    Convert_32f16uAC4_Custom<A32F,A16U,AC4> dat;
+    return OPT_LEVEL::fe< Convert_32f16uAC4_Custom<A32F,A16U,AC4> > ( dat, s, sStep, d, dStep, roi);
+    }
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiConvert_32f16u_C4R )( cA32F *s, int sStep, A16U *d, int dStep, ASZ roi )
+    {
+    Convert_32f16u_Custom<A32F,A16U,C4> dat;
+    return OPT_LEVEL::fe< Convert_32f16u_Custom<A32F,A16U,C4> > ( dat, s, sStep, d, dStep, roi);
+    }
 // Please do NOT remove the above line for CPP files that need to be multipass compiled
 // OREFR OSSE2 OF10H 

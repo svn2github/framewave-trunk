@@ -41,6 +41,13 @@ ISV ConvertTo8u_SETUP_I(__m128i &mask)
     mask = _mm_srli_epi32(mask, 8);		
     }
 
+ISV ConvertTo16s_SETUP_I(__m128i &mask)
+    {  
+    mask = _mm_setzero_si128();									//set to zeros
+    mask = _mm_cmpeq_epi32(mask,mask);							//set to ones
+    mask = _mm_srli_epi64(mask, 16);		
+    }
+
 /////////////////////////////////////// SSE2 FUNCTIONS  ////////////////////////////////////////////
 
 ISV Convert_8u16_C1R_SSE2_I(RegFile &reg, const __m128i &zero)
@@ -739,7 +746,376 @@ ISV Convert_32s8sAC4_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount, const __m
         }
     }
 
+// 32S8U C1R, C3R, C4R
+template<IsAlign ia>
+ISV convert_32f8u_Helper(__m128i *src1, __m128i *src2, __m128i *src3, __m128i *src4, __m128i &dst)
+    {
+    XMM128 reg1, reg2, reg3, reg4;   
+    __m128 max_8u = _mm_set1_ps(255.0);
+    LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&reg1, (const void*)src1);
+    LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&reg2, (const void*)src2);
+    LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&reg3, (const void*)src3);
+    LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&reg4, (const void*)src4);
+
+    reg1.f = _mm_min_ps(reg1.f, max_8u);
+    reg2.f = _mm_min_ps(reg2.f, max_8u);
+    reg3.f = _mm_min_ps(reg3.f, max_8u);
+    reg4.f = _mm_min_ps(reg4.f, max_8u);
+
+    reg1.i = _mm_cvtps_epi32(reg1.f);
+    reg2.i = _mm_cvtps_epi32(reg2.f);
+    reg3.i = _mm_cvtps_epi32(reg3.f);
+    reg4.i = _mm_cvtps_epi32(reg4.f);
+
+
+    __m128i temp = _mm_packs_epi32 (reg1.i,reg2.i);
+    __m128i temp1 = _mm_packs_epi32 (reg3.i,reg4.i);
+
+    dst = _mm_packus_epi16(temp, temp1);
+    }
+
+
+template <class TS, class TD, CH cs, IsAlign ia>
+ISV Convert_32f8u_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount)
+    {
+    __m128i *src	= (__m128i*)s;
+    __m128i *dst	= (__m128i*)d;
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
+    XMM128 dstReg;
+    
+    dstReg.i = _mm_setzero_si128();
+    for( ; (src+3) < end; src+= 4, dst+=1)
+        {
+        convert_32f8u_Helper<ia>(src,src+1,src+2,src+3,dstReg.i);
+        LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&dstReg, (void*)dst);
+        }	
+
+    TD *ds = (TD*) dst;
+    TS *sc = (TS*) src;
+    const TS *srcEnd = s + pixCount * ChannelCount(cs);
+#define TMP_INC (ChannelCount(cs) - 1)
+    for( ; (sc + TMP_INC) < srcEnd; sc+=ChannelCount(cs), ds+=ChannelCount(cs))
+        {
+        ConvertDown<TS,TD,cs>(sc,ds);
+        }
+#undef TMP_INC
+    for(; sc < srcEnd; sc+=1, ds+=1)
+        {
+        *ds = FW_REF::Limits<TD>::Sat( *sc);
+        }	
+    }
+
+    // 32f8U AC4R
+    template <class TS, class TD, CH cs, IsAlign ia>
+    ISV Convert_32f8uAC4_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount, const __m128i &mask)
+    {
+    __m128i *src	= (__m128i*)s;
+    __m128i *dst	= (__m128i*)d;
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
+    XMM128 dstReg;
+    
+    dstReg.i = _mm_setzero_si128();
+
+    for( ; (src+3) < end; src+= 4, dst+=1)
+        {
+        convert_32f8u_Helper<ia>(src,src+1,src+2,src+3,dstReg.i);
+        dstReg.i = _mm_and_si128 (dstReg.i,mask);
+        LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&dstReg, (void*)dst);
+        }	
+
+    TD *ds = (TD*) dst;
+    TS *sc = (TS*) src;
+    const TS *scEnd = s + pixCount * ChannelCount(cs);
+
+    int nChannels = ChannelCount(cs);
+    int nCmp = nChannels-1;
+
+    for( ; (sc + nCmp) < scEnd; sc+=nChannels, ds+=nChannels)
+        {
+        ConvertDown<TS,TD,C3>(sc,ds);
+        }
+    }
+
+
+
+
+
+    // 32F8S C1R, C3R, C4R
+template<IsAlign ia>
+ISV convert_32f8s_Helper(__m128i *src1, __m128i *src2, __m128i *src3, __m128i *src4, __m128i &dst)
+    {
+    XMM128 reg1, reg2, reg3, reg4;   
+    __m128 max_8s = _mm_set1_ps(255.0);
+    LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&reg1, (const void*)src1);
+    LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&reg2, (const void*)src2);
+    LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&reg3, (const void*)src3);
+    LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&reg4, (const void*)src4);
+
+    reg1.f = _mm_min_ps(reg1.f, max_8s);
+    reg2.f = _mm_min_ps(reg2.f, max_8s);
+    reg3.f = _mm_min_ps(reg3.f, max_8s);
+    reg4.f = _mm_min_ps(reg4.f, max_8s);
+
+    reg1.i = _mm_cvtps_epi32(reg1.f);
+    reg2.i = _mm_cvtps_epi32(reg2.f);
+    reg3.i = _mm_cvtps_epi32(reg3.f);
+    reg4.i = _mm_cvtps_epi32(reg4.f);
+
+
+    __m128i temp = _mm_packs_epi32 (reg1.i,reg2.i);
+    __m128i temp1 = _mm_packs_epi32 (reg3.i,reg4.i);
+
+    dst = _mm_packs_epi16(temp, temp1);
+    }
+
+
+template <class TS, class TD, CH cs, IsAlign ia>
+ISV Convert_32f8s_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount)
+    {
+    __m128i *src	= (__m128i*)s;
+    __m128i *dst	= (__m128i*)d;
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
+    XMM128 dstReg;
+    
+    dstReg.i = _mm_setzero_si128();
+    for( ; (src+3) < end; src+= 4, dst+=1)
+        {
+        convert_32f8s_Helper<ia>(src,src+1,src+2,src+3,dstReg.i);
+        LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&dstReg, (void*)dst);
+        }	
+
+    TD *ds = (TD*) dst;
+    TS *sc = (TS*) src;
+    const TS *srcEnd = s + pixCount * ChannelCount(cs);
+#define TMP_INC (ChannelCount(cs) - 1)
+    for( ; (sc + TMP_INC) < srcEnd; sc+=ChannelCount(cs), ds+=ChannelCount(cs))
+        {
+        ConvertDown<TS,TD,cs>(sc,ds);
+        }
+#undef TMP_INC
+    for(; sc < srcEnd; sc+=1, ds+=1)
+        {
+        *ds = FW_REF::Limits<TD>::Sat( *sc);
+        }	
+    }
+
+    // 32f8s AC4R
+    template <class TS, class TD, CH cs, IsAlign ia>
+    ISV Convert_32f8sAC4_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount, const __m128i &mask)
+    {
+    __m128i *src	= (__m128i*)s;
+    __m128i *dst	= (__m128i*)d;
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
+    XMM128 dstReg;
+    
+    dstReg.i = _mm_setzero_si128();
+
+    for( ; (src+3) < end; src+= 4, dst+=1)
+        {
+        convert_32f8s_Helper<ia>(src,src+1,src+2,src+3,dstReg.i);
+        dstReg.i = _mm_and_si128 (dstReg.i,mask);
+        LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&dstReg, (void*)dst);
+        }	
+
+    TD *ds = (TD*) dst;
+    TS *sc = (TS*) src;
+    const TS *scEnd = s + pixCount * ChannelCount(cs);
+
+    int nChannels = ChannelCount(cs);
+    int nCmp = nChannels-1;
+
+    for( ; (sc + nCmp) < scEnd; sc+=nChannels, ds+=nChannels)
+        {
+        ConvertDown<TS,TD,C3>(sc,ds);
+        }
+    }
+
+
+    //32f16s
+
+    template<IsAlign ia>
+ISV convert_32f16s_Helper(__m128i *src1, __m128i *src2, __m128i &dst)
+    {
+    XMM128 reg1, reg2;   
+    __m128 max_16s = _mm_set1_ps(32767.0);
+    LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&reg1, (const void*)src1);
+    LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&reg2, (const void*)src2);
+    
+    reg1.f = _mm_min_ps(reg1.f, max_16s);
+    reg2.f = _mm_min_ps(reg2.f, max_16s);
+   
+    reg1.i = _mm_cvtps_epi32(reg1.f);
+    reg2.i = _mm_cvtps_epi32(reg2.f);
+    
+    dst = _mm_packs_epi32 (reg1.i,reg2.i);
+   }
+
+    template <class TS, class TD, CH cs, IsAlign ia>
+ISV Convert_32f16s_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount)
+    {
+    __m128i *src	= (__m128i*)s;
+    __m128i *dst	= (__m128i*)d;
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
+    XMM128 dstReg;
+    
+    dstReg.i = _mm_setzero_si128();
+    for( ; (src+1) < end; src+= 2, dst+=1)
+        {
+        convert_32f16s_Helper<ia>(src,src+1,dstReg.i);
+        LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&dstReg, (void*)dst);
+        }	
+
+    TD *ds = (TD*) dst;
+    TS *sc = (TS*) src;
+    const TS *srcEnd = s + pixCount * ChannelCount(cs);
+#define TMP_INC (ChannelCount(cs) - 1)
+    for( ; (sc + TMP_INC) < srcEnd; sc+=ChannelCount(cs), ds+=ChannelCount(cs))
+        {
+        ConvertDown<TS,TD,cs>(sc,ds);
+        }
+#undef TMP_INC
+    for(; sc < srcEnd; sc+=1, ds+=1)
+        {
+        *ds = FW_REF::Limits<TD>::Sat( *sc);
+        }	
+    }
+
+    // 32f16S AC4R
+    template <class TS, class TD, CH cs, IsAlign ia>
+    ISV Convert_32f16sAC4_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount, const __m128i &mask)
+    {
+    __m128i *src	= (__m128i*)s;
+    __m128i *dst	= (__m128i*)d;
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
+    XMM128 dstReg;
+    
+    dstReg.i = _mm_setzero_si128();
+
+    for( ; (src+1) < end; src+= 2, dst+=1)
+        {
+        convert_32f16s_Helper<ia>(src,src+1,dstReg.i);
+        dstReg.i = _mm_and_si128 (dstReg.i,mask);
+        LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&dstReg, (void*)dst);
+        }	
+
+    TD *ds = (TD*) dst;
+    TS *sc = (TS*) src;
+    const TS *scEnd = s + pixCount * ChannelCount(cs);
+
+    int nChannels = ChannelCount(cs);
+    int nCmp = nChannels-1;
+
+    for( ; (sc + nCmp) < scEnd; sc+=nChannels, ds+=nChannels)
+        {
+        ConvertDown<TS,TD,C3>(sc,ds);
+        }
+    }
+
+
+//32f16u
+ISV Pack32Sto16U(XMM128 &temp_f_l_1,XMM128 &temp_f_h_1,__m128i &dest)
+	{
+
+		XMM128 dest1,dest2;
+		
+		dest1.i = _mm_shufflelo_epi16(temp_f_l_1.i,_MM_SHUFFLE(3,2,2,0));
+		dest1.i = _mm_shufflehi_epi16(dest1.i,_MM_SHUFFLE(3,2,2,0));
+		
+		dest2.i = _mm_shufflelo_epi16(temp_f_h_1.i,_MM_SHUFFLE(3,2,2,0));
+		dest2.i = _mm_shufflehi_epi16(dest2.i,_MM_SHUFFLE(3,2,2,0));
+
+        dest1.f =  _mm_shuffle_ps(dest1.f,dest2.f,_MM_SHUFFLE(2,0,2,0));
+        dest = dest1.i;
+
+	}
+    template<IsAlign ia>
+ISV convert_32f16u_Helper(__m128i *src1, __m128i *src2, __m128i &dst)
+    {
+    XMM128 reg1, reg2;   
+    __m128 max_16u = _mm_set1_ps(65535.0);
+    __m128 zero = _mm_setzero_ps();
+
+    LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&reg1, (const void*)src1);
+    LoadStoreModules::LOAD<16, DT_SSE2, ia, STREAM_FLSE>(&reg2, (const void*)src2);
+    
+    reg1.f = _mm_min_ps(reg1.f, max_16u);
+    reg2.f = _mm_min_ps(reg2.f, max_16u);
+
+    reg1.f = _mm_max_ps(reg1.f, zero);
+    reg2.f = _mm_max_ps(reg2.f, zero);
+   
+    reg1.i = _mm_cvtps_epi32(reg1.f);
+    reg2.i = _mm_cvtps_epi32(reg2.f);
+    
+    Pack32Sto16U(reg1, reg2, dst);
+   }
+
+    template <class TS, class TD, CH cs, IsAlign ia>
+ISV Convert_32f16u_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount)
+    {
+    __m128i *src	= (__m128i*)s;
+    __m128i *dst	= (__m128i*)d;
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
+    XMM128 dstReg;
+    
+    dstReg.i = _mm_setzero_si128();
+    for( ; (src+1) < end; src+= 2, dst+=1)
+        {
+        convert_32f16u_Helper<ia>(src,src+1,dstReg.i);
+        LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&dstReg, (void*)dst);
+        }	
+
+    TD *ds = (TD*) dst;
+    TS *sc = (TS*) src;
+    const TS *srcEnd = s + pixCount * ChannelCount(cs);
+#define TMP_INC (ChannelCount(cs) - 1)
+    for( ; (sc + TMP_INC) < srcEnd; sc+=ChannelCount(cs), ds+=ChannelCount(cs))
+        {
+        ConvertDown<TS,TD,cs>(sc,ds);
+        }
+#undef TMP_INC
+    for(; sc < srcEnd; sc+=1, ds+=1)
+        {
+        *ds = FW_REF::Limits<TD>::Sat( *sc);
+        }	
+    }
+
+    // 32f16S AC4R
+    template <class TS, class TD, CH cs, IsAlign ia>
+    ISV Convert_32f16uAC4_Custom_SSE2_I (const TS *s, TD *d, U32 &pixCount, const __m128i &mask)
+    {
+    __m128i *src	= (__m128i*)s;
+    __m128i *dst	= (__m128i*)d;
+    __m128i *end	= (__m128i *) (s + pixCount * ChannelCount(cs));
+    XMM128 dstReg;
+    
+    dstReg.i = _mm_setzero_si128();
+
+    for( ; (src+1) < end; src+= 2, dst+=1)
+        {
+        convert_32f16u_Helper<ia>(src,src+1,dstReg.i);
+        dstReg.i = _mm_and_si128 (dstReg.i,mask);
+        LoadStoreModules::STORE<16, DT_SSE2, ia, STREAM_TRUE>(&dstReg, (void*)dst);
+        }	
+
+    TD *ds = (TD*) dst;
+    TS *sc = (TS*) src;
+    const TS *scEnd = s + pixCount * ChannelCount(cs);
+
+    int nChannels = ChannelCount(cs);
+    int nCmp = nChannels-1;
+
+    for( ; (sc + nCmp) < scEnd; sc+=nChannels, ds+=nChannels)
+        {
+        ConvertDown<TS,TD,C3>(sc,ds);
+        }
+    }
+
 }; // OPT_LEVEL
+
+
+
+
 
 #endif
 

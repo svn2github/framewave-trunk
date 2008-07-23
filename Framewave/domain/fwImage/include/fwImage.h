@@ -251,6 +251,27 @@ FwStatus STDCALL fwiConvert_32s8s_C3R     ( const Fw32s *pSrc, int srcStep, Fw8s
 FwStatus STDCALL fwiConvert_32s8s_C4R     ( const Fw32s *pSrc, int srcStep, Fw8s  *pDst, int dstStep, FwiSize roiSize );
 FwStatus STDCALL fwiConvert_32s8s_AC4R    ( const Fw32s *pSrc, int srcStep, Fw8s  *pDst, int dstStep, FwiSize roiSize );
 
+FwStatus STDCALL fwiConvert_32f8u_C1R     ( const Fw32f *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize roiSize );
+FwStatus STDCALL fwiConvert_32f8u_C3R     ( const Fw32f *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize roiSize );
+FwStatus STDCALL fwiConvert_32f8u_C4R     ( const Fw32f *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize roiSize );
+FwStatus STDCALL fwiConvert_32f8u_AC4R    ( const Fw32f *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize roiSize );
+
+FwStatus STDCALL fwiConvert_32f8s_C1R     ( const Fw32f *pSrc, int srcStep, Fw8s  *pDst, int dstStep, FwiSize roiSize );
+FwStatus STDCALL fwiConvert_32f8s_C3R     ( const Fw32f *pSrc, int srcStep, Fw8s  *pDst, int dstStep, FwiSize roiSize );
+FwStatus STDCALL fwiConvert_32f8s_C4R     ( const Fw32f *pSrc, int srcStep, Fw8s  *pDst, int dstStep, FwiSize roiSize );
+FwStatus STDCALL fwiConvert_32f8s_AC4R    ( const Fw32f *pSrc, int srcStep, Fw8s  *pDst, int dstStep, FwiSize roiSize );
+
+FwStatus STDCALL fwiConvert_32f16s_C1R     ( const Fw32f *pSrc, int srcStep, Fw16s  *pDst, int dstStep, FwiSize roiSize );
+FwStatus STDCALL fwiConvert_32f16s_C3R     ( const Fw32f *pSrc, int srcStep, Fw16s  *pDst, int dstStep, FwiSize roiSize );
+FwStatus STDCALL fwiConvert_32f16s_C4R     ( const Fw32f *pSrc, int srcStep, Fw16s  *pDst, int dstStep, FwiSize roiSize );
+FwStatus STDCALL fwiConvert_32f16s_AC4R    ( const Fw32f *pSrc, int srcStep, Fw16s  *pDst, int dstStep, FwiSize roiSize );
+
+FwStatus STDCALL fwiConvert_32f16u_C1R     ( const Fw32f *pSrc, int srcStep, Fw16u  *pDst, int dstStep, FwiSize roiSize );
+FwStatus STDCALL fwiConvert_32f16u_C3R     ( const Fw32f *pSrc, int srcStep, Fw16u  *pDst, int dstStep, FwiSize roiSize );
+FwStatus STDCALL fwiConvert_32f16u_C4R     ( const Fw32f *pSrc, int srcStep, Fw16u  *pDst, int dstStep, FwiSize roiSize );
+FwStatus STDCALL fwiConvert_32f16u_AC4R    ( const Fw32f *pSrc, int srcStep, Fw16u  *pDst, int dstStep, FwiSize roiSize );
+
+
 /*#FunctionBlock - Copy
 TODO: publish
 #Short - Copy values

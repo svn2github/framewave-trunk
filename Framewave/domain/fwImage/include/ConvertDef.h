@@ -557,6 +557,171 @@ struct Convert_32s8sAC4_Custom : fe2<TS, CSD, TD, CSD>
         }
     };
 
+
+template<class TS, class TD, CH CSD>
+struct Convert_32f8u_Custom : fe2<TS, CSD, TD, CSD>
+    {
+	FE_CUSTOM_SSE2_REF
+    IV SSE2_Init() { }
+
+
+        template<IsAlign ia>
+        IV Custom1D_sse2(const TS *s, TD *d, U32 pixCount)
+        {			
+        Convert_32f8u_Custom_SSE2_I<TS, TD, CSD, ia> (s, d, pixCount);
+        }
+    IV REFR(const TS *s, TD *d ) const								
+        {			
+        ConvertDown<TS,TD,CSD>(s, d);
+        }
+    };
+
+// 32f8U AC4R
+template<class TS, class TD, CH CSD>
+struct Convert_32f8uAC4_Custom : fe2<TS, CSD, TD, CSD>
+    {
+    XMM128 mask;
+	FE_CUSTOM_SSE2_REF
+        IV SSE2_Init()
+        {
+        ConvertTo8u_SETUP_I(mask.i);
+        }
+    template<IsAlign ia>
+    IV Custom1D_sse2(const TS *s, TD *d, U32 pixCount)
+        {			
+        Convert_32f8uAC4_Custom_SSE2_I<TS, TD, CSD, ia> (s, d, pixCount, mask.i);
+        }
+    IV REFR(const TS *s, TD *d ) const								
+        {			
+        ConvertDown<TS,TD,C3>(s, d);
+        }
+    };
+
+
+
+
+
+template<class TS, class TD, CH CSD>
+struct Convert_32f8s_Custom : fe2<TS, CSD, TD, CSD>
+    {
+	FE_CUSTOM_SSE2_REF
+    IV SSE2_Init() { }
+
+
+        template<IsAlign ia>
+        IV Custom1D_sse2(const TS *s, TD *d, U32 pixCount)
+        {			
+        Convert_32f8s_Custom_SSE2_I<TS, TD, CSD, ia> (s, d, pixCount);
+        }
+    IV REFR(const TS *s, TD *d ) const								
+        {			
+        ConvertDown<TS,TD,CSD>(s, d);
+        }
+    };
+
+// 32f8s AC4R
+template<class TS, class TD, CH CSD>
+struct Convert_32f8sAC4_Custom : fe2<TS, CSD, TD, CSD>
+    {
+    XMM128 mask;
+	FE_CUSTOM_SSE2_REF
+        IV SSE2_Init()
+        {
+        ConvertTo8u_SETUP_I(mask.i);
+        }
+    template<IsAlign ia>
+    IV Custom1D_sse2(const TS *s, TD *d, U32 pixCount)
+        {			
+        Convert_32f8sAC4_Custom_SSE2_I<TS, TD, CSD, ia> (s, d, pixCount, mask.i);
+        }
+    IV REFR(const TS *s, TD *d ) const								
+        {			
+        ConvertDown<TS,TD,C3>(s, d);
+        }
+    };
+
+
+
+template<class TS, class TD, CH CSD>
+struct Convert_32f16s_Custom : fe2<TS, CSD, TD, CSD>
+    {
+	FE_CUSTOM_SSE2_REF
+    IV SSE2_Init() { }
+
+
+        template<IsAlign ia>
+        IV Custom1D_sse2(const TS *s, TD *d, U32 pixCount)
+        {			
+        Convert_32f16s_Custom_SSE2_I<TS, TD, CSD, ia> (s, d, pixCount);
+        }
+    IV REFR(const TS *s, TD *d ) const								
+        {			
+        ConvertDown<TS,TD,CSD>(s, d);
+        }
+    };
+
+// 32f8U AC4R
+template<class TS, class TD, CH CSD>
+struct Convert_32f16sAC4_Custom : fe2<TS, CSD, TD, CSD>
+    {
+    XMM128 mask;
+	FE_CUSTOM_SSE2_REF
+        IV SSE2_Init()
+        {
+        ConvertTo16s_SETUP_I(mask.i);
+        }
+    template<IsAlign ia>
+    IV Custom1D_sse2(const TS *s, TD *d, U32 pixCount)
+        {			
+        Convert_32f16sAC4_Custom_SSE2_I<TS, TD, CSD, ia> (s, d, pixCount, mask.i);
+        }
+    IV REFR(const TS *s, TD *d ) const								
+        {			
+        ConvertDown<TS,TD,C3>(s, d);
+        }
+    };
+
+template<class TS, class TD, CH CSD>
+struct Convert_32f16u_Custom : fe2<TS, CSD, TD, CSD>
+    {
+	FE_CUSTOM_SSE2_REF
+    IV SSE2_Init() { }
+
+
+        template<IsAlign ia>
+        IV Custom1D_sse2(const TS *s, TD *d, U32 pixCount)
+        {			
+        Convert_32f16u_Custom_SSE2_I<TS, TD, CSD, ia> (s, d, pixCount);
+        }
+    IV REFR(const TS *s, TD *d ) const								
+        {			
+        ConvertDown<TS,TD,CSD>(s, d);
+        }
+    };
+
+// 32f16u AC4R
+template<class TS, class TD, CH CSD>
+struct Convert_32f16uAC4_Custom : fe2<TS, CSD, TD, CSD>
+    {
+    XMM128 mask;
+	FE_CUSTOM_SSE2_REF
+        IV SSE2_Init()
+        {
+        ConvertTo16s_SETUP_I(mask.i);
+        }
+    template<IsAlign ia>
+    IV Custom1D_sse2(const TS *s, TD *d, U32 pixCount)
+        {			
+        Convert_32f16uAC4_Custom_SSE2_I<TS, TD, CSD, ia> (s, d, pixCount, mask.i);
+        }
+    IV REFR(const TS *s, TD *d ) const								
+        {			
+        ConvertDown<TS,TD,C3>(s, d);
+        }
+    };
+
+
+
 }; // OPT_LEVEL
 
 #endif
