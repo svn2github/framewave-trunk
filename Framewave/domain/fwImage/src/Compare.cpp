@@ -1016,7 +1016,7 @@ class CompareEqualEpsC_AC4 :  public fe2< Fw32f, AC4,  Fw8u, C1  >
 public:
     FE_SSE2_REF
     CompareEqualEpsC_AC4(const Fw32f value[3], const Fw32f eps):eps(eps){
-        val[0] = value[0], val[1] = value[1], val[2] = value[3];
+        val[0] = value[0], val[1] = value[1], val[2] = value[2];
     }
     IV SSE2_Init()
     {
