@@ -88,147 +88,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="debug_shared|x64"
-			OutputDirectory="..\..\build\bin\$(ConfigurationName)_64"
-			IntermediateDirectory="..\..\build\tmp\$(ProjectName)_$(ConfigurationName)_64"
-			ConfigurationType="1"
-			ExcludeBuckets="2;3;4;5;6;7;8;9;10;11;12;13;14;15;16"
-			>
-			<Tool
-				Name="VCCustomBuildTool"
-				Description="..\..\..\build_VC90.bat ..\.. $(TargetName) $(PlatformName) $(ConfigurationName)"
-				CommandLine="..\..\..\build_VC90.bat ..\.. $(TargetName) $(PlatformName) $(ConfigurationName)&#x0D;&#x0A;"
-				Outputs="$(OutDir)\$(ProjectName).dll"
-				ExecutionBucket="1"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				ExecutionBucket="2"
-				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\$(ProjectName)\include;$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				ExecutionBucket="3"
-			/>
-			<Tool
-				Name="VCPreBuildEventTool"
-				ExecutionBucket="3"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-		</Configuration>
-		<Configuration
 			Name="release_shared|Win32"
 			OutputDirectory="..\..\build\bin\$(ConfigurationName)_32"
 			IntermediateDirectory="..\..\build\tmp\$(ProjectName)_$(ConfigurationName)_32"
-			ConfigurationType="1"
-			ExcludeBuckets="2;3;4;5;6;7;8;9;10;11;12;13;14;15;16"
-			>
-			<Tool
-				Name="VCCustomBuildTool"
-				Description="..\..\..\build_VC90.bat ..\.. $(TargetName) $(PlatformName) $(ConfigurationName)"
-				CommandLine="..\..\..\build_VC90.bat ..\.. $(TargetName) $(PlatformName) $(ConfigurationName)&#x0D;&#x0A;"
-				Outputs="$(OutDir)\$(ProjectName).dll"
-				ExecutionBucket="1"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				ExecutionBucket="2"
-				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\$(ProjectName)\include;$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				ExecutionBucket="3"
-			/>
-			<Tool
-				Name="VCPreBuildEventTool"
-				ExecutionBucket="3"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="release_shared|x64"
-			OutputDirectory="..\..\build\bin\$(ConfigurationName)_64"
-			IntermediateDirectory="..\..\build\tmp\$(ProjectName)_$(ConfigurationName)_64"
 			ConfigurationType="1"
 			ExcludeBuckets="2;3;4;5;6;7;8;9;10;11;12;13;14;15;16"
 			>
@@ -364,9 +226,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="debug_static|x64"
-			OutputDirectory="..\..\build\bin\$(ConfigurationName)_64"
-			IntermediateDirectory="..\..\build\tmp\$(ProjectName)_$(ConfigurationName)_64"
+			Name="release_static|Win32"
+			OutputDirectory="..\..\build\bin\$(ConfigurationName)_32"
+			IntermediateDirectory="..\..\build\tmp\$(ProjectName)_$(ConfigurationName)_32"
 			ConfigurationType="1"
 			ExcludeBuckets="2;3;4;5;6;7;8;9;10;11;12;13;14;15;16"
 			>
@@ -433,9 +295,147 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="release_static|Win32"
-			OutputDirectory="..\..\build\bin\$(ConfigurationName)_32"
-			IntermediateDirectory="..\..\build\tmp\$(ProjectName)_$(ConfigurationName)_32"
+			Name="debug_shared|x64"
+			OutputDirectory="..\..\build\bin\$(ConfigurationName)_64"
+			IntermediateDirectory="..\..\build\tmp\$(ProjectName)_$(ConfigurationName)_64"
+			ConfigurationType="1"
+			ExcludeBuckets="2;3;4;5;6;7;8;9;10;11;12;13;14;15;16"
+			>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="..\..\..\build_VC90.bat ..\.. $(TargetName) $(PlatformName) $(ConfigurationName)"
+				CommandLine="..\..\..\build_VC90.bat ..\.. $(TargetName) $(PlatformName) $(ConfigurationName)&#x0D;&#x0A;"
+				Outputs="$(OutDir)\$(ProjectName).dll"
+				ExecutionBucket="1"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="2"
+				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\$(ProjectName)\include;$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				ExecutionBucket="3"
+			/>
+			<Tool
+				Name="VCPreBuildEventTool"
+				ExecutionBucket="3"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="release_shared|x64"
+			OutputDirectory="..\..\build\bin\$(ConfigurationName)_64"
+			IntermediateDirectory="..\..\build\tmp\$(ProjectName)_$(ConfigurationName)_64"
+			ConfigurationType="1"
+			ExcludeBuckets="2;3;4;5;6;7;8;9;10;11;12;13;14;15;16"
+			>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="..\..\..\build_VC90.bat ..\.. $(TargetName) $(PlatformName) $(ConfigurationName)"
+				CommandLine="..\..\..\build_VC90.bat ..\.. $(TargetName) $(PlatformName) $(ConfigurationName)&#x0D;&#x0A;"
+				Outputs="$(OutDir)\$(ProjectName).dll"
+				ExecutionBucket="1"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				ExecutionBucket="2"
+				AdditionalIncludeDirectories="$(SolutionDir)\Framewave\domain\$(ProjectName)\include;$(SolutionDir)\Framewave\domain\common\include;$(SolutionDir)\Framewave\sdk\cbl;$(SolutionDir)\Framewave\domain\fwBase\include"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				ExecutionBucket="3"
+			/>
+			<Tool
+				Name="VCPreBuildEventTool"
+				ExecutionBucket="3"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="debug_static|x64"
+			OutputDirectory="..\..\build\bin\$(ConfigurationName)_64"
+			IntermediateDirectory="..\..\build\tmp\$(ProjectName)_$(ConfigurationName)_64"
 			ConfigurationType="1"
 			ExcludeBuckets="2;3;4;5;6;7;8;9;10;11;12;13;14;15;16"
 			>
@@ -629,6 +629,10 @@
 			</File>
 			<File
 				RelativePath=".\src\LogicalS.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Malloc.cpp"
 				>
 			</File>
 			<File
