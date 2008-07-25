@@ -1920,6 +1920,39 @@ FwStatus STDCALL fwsAutoCorr_64fc(const Fw64fc* pSrc, int srcLen, Fw64fc* pDst, 
 FwStatus STDCALL fwsAutoCorr_NormA_64fc(const Fw64fc* pSrc, int srcLen, Fw64fc* pDst, int dstLen);
 FwStatus STDCALL fwsAutoCorr_NormB_64fc(const Fw64fc* pSrc, int srcLen, Fw64fc* pDst, int dstLen);
 
+/*#FunctionBlock - fwsMalloc Functions
+TODO:edit
+#Technologies - REF
+#Short - Allocates memory aligned to 32-byte boundary.
+#Long -  <Text> Allocates memory block aligned to a 32-byte boundary for elements of different data types.</Text>
+		 <Text> The return value of fwsMalloc is a pointer to an aligned memory block. If no memory is available in the system, then the NULL value is returned.</Text>
+		 <Text> To free this block, use the function fwsFree.</Text>
+#ReturnValues - a pointer to the corresponding data-type, NULL
+*/
+Fw8u*   fwsMalloc_8u(int len);
+Fw16u*  fwsMalloc_16u(int len);
+Fw32u*  fwsMalloc_32u(int len);
+Fw8s*   fwsMalloc_8s(int len);
+Fw16s*  fwsMalloc_16s(int len);
+Fw32s*  fwsMalloc_32s(int len);
+Fw64s*  fwsMalloc_64s(int len);
+Fw32f*  fwsMalloc_32f(int len);
+Fw64f*  fwsMalloc_64f(int len);
+Fw16sc* fwsMalloc_16sc(int len);
+Fw32sc* fwsMalloc_32sc(int len);
+Fw64sc* fwsMalloc_64sc(int len);
+Fw32fc* fwsMalloc_32fc(int len);
+Fw64fc* fwsMalloc_64fc(int len);
+
+/*#FunctionBlock - fwsFree Functions
+TODO:edit
+#Technologies - REF
+#Short - Frees memory allocated by the function fwsMalloc.
+#Long -  Frees the aligned memory block allocated by the function fwsMalloc.
+#ReturnValues - NONE
+*/
+void fwsFree(void* ptr);
+
 #ifdef __cplusplus
 }
 #endif
