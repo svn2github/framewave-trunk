@@ -140,6 +140,7 @@
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\bin\$(ConfigurationName)_64&quot;;&quot;..\..\..\Framewave\build\bin\$(ConfigurationName)_shared_64&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -288,6 +289,7 @@
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\bin\$(ConfigurationName)_64&quot;;&quot;..\..\..\Framewave\build\bin\$(ConfigurationName)_shared_64&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"

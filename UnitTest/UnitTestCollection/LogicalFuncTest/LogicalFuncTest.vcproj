@@ -19,8 +19,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)bin\$(ConfigurationName)_32"
-			IntermediateDirectory="$(SolutionDir)tmp\$(ConfigurationName)_32\$(ProjectName)"
+			OutputDirectory="$(SolutionDir)\bin\$(ConfigurationName)_32"
+			IntermediateDirectory="$(SolutionDir)\tmp\$(ConfigurationName)_32\$(ProjectName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -96,8 +96,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)bin\$(ConfigurationName)_64"
-			IntermediateDirectory="$(SolutionDir)tmp\$(ConfigurationName)_64\$(ProjectName)"
+			OutputDirectory="$(SolutionDir)\bin\$(ConfigurationName)_64"
+			IntermediateDirectory="$(SolutionDir)\tmp\$(ConfigurationName)_64\$(ProjectName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -174,8 +174,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)bin\$(ConfigurationName)_32"
-			IntermediateDirectory="$(SolutionDir)tmp\$(ConfigurationName)_32\$(ProjectName)"
+			OutputDirectory="$(SolutionDir)\bin\$(ConfigurationName)_32"
+			IntermediateDirectory="$(SolutionDir)\tmp\$(ConfigurationName)_32\$(ProjectName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"

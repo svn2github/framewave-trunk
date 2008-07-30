@@ -20,8 +20,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)bin\$(ConfigurationName)_32"
-			IntermediateDirectory="$(SolutionDir)tmp\$(ConfigurationName)_32\$(ProjectName)"
+			OutputDirectory="$(SolutionDir)\bin\$(ConfigurationName)_32"
+			IntermediateDirectory="$(SolutionDir)\tmp\$(ConfigurationName)_32\$(ProjectName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -98,8 +98,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)\bin\$(ConfigurationName)_64"
+			IntermediateDirectory="$(SolutionDir)\tmp\$(ConfigurationName)_64\$(ProjectName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			>
@@ -177,8 +177,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)bin\$(ConfigurationName)_32"
-			IntermediateDirectory="$(SolutionDir)tmp\$(ConfigurationName)_32\$(ProjectName)"
+			OutputDirectory="$(SolutionDir)\bin\$(ConfigurationName)_32"
+			IntermediateDirectory="$(SolutionDir)\tmp\$(ConfigurationName)_32\$(ProjectName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -255,8 +255,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)\bin\$(ConfigurationName)_64"
+			IntermediateDirectory="$(SolutionDir)\tmp\$(ConfigurationName)_64\$(ProjectName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -300,7 +300,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="UnitTestFramework.lib fwBase.lib fwImage.lib fwSignal.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)bin\$(ConfigurationName)64&quot;;&quot;..\..\..\Framewave\build\bin\$(ConfigurationName)_shared_64&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)bin\$(ConfigurationName)_64&quot;;&quot;..\..\..\Framewave\build\bin\$(ConfigurationName)_shared_64&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
