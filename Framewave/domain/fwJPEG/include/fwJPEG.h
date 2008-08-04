@@ -63,7 +63,7 @@ const FwLibraryVersion* STDCALL fwjGetLibVersion ();
 
 /*#FunctionBlock - RGBToY_JPEG
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Convert RGB to grayscale
 #Long - <Text>These functions step through an ROI in a source buffer, convert the source data from RGB to grayscale luminance values, and write the converted data to a destination buffer.</Text>
 <Text>The following formula is used to convert red, green, and blue values to luminance values.</Text>
@@ -109,7 +109,7 @@ FwStatus STDCALL fwiRGBToYCbCr_JPEG_8u_C3P3R          ( const Fw8u *pSrcRGB     
 
 /*#FunctionBlock - YCbCrToRGB_JPEG
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Convert YCbCr to RGB (JPEG)
 #Long - <Text>These functions step through an ROI in a source buffer, convert the source data from the YCbCr color space to the RGB color model, and write the converted data to a destination buffer.</Text>
 <Text>The following formulas are used to convert luminance and chrominance values to red, green, and blue values.</Text>
@@ -240,7 +240,7 @@ FwStatus STDCALL fwiYCbCrToBGR555_JPEG_8u16u_P3C3R    ( const Fw8u  *pSrcYCbCr[3
 
 /*#FunctionBlock - CMYKToYCCK_JPEG
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Convert CMYK to YCCK (JPEG)
 #Long - <Text>These function step through an ROI in a source buffer, convert source data from the CMYK color model to the YCCK color space, and write the converted data to a destination buffer.</Text>
 <Text>The following formulas are used to convert cyan, magenta, and yellow values to red, green, and blue values.</Text>
@@ -266,7 +266,7 @@ FwStatus STDCALL  fwiCMYKToYCCK_JPEG_8u_C4P4R         ( const Fw8u * const pSrcC
 
 /*#FunctionBlock - YCCKToCMYK_JPEG
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Convert YCCK to CMYK (JPEG)
 #Long - <Text>These function step through an ROI in a source buffer, convert source data from the YCCK color space to the CMYK color model, and write the converted data to a destination buffer.</Text>
 <Text>The following formulas are used to convert luminance and chrominance values to red, green, and blue values.</Text>
@@ -1126,7 +1126,7 @@ FwStatus STDCALL fwiDecodeHuffmanStateFree_JPEG_8u        ( FwiDecodeHuffmanStat
 
 /*#FunctionBlock - DecodeHuffman8X8
 TODO:publish
-#Technologies - REF
+#Technologies - REF, SSE2
 #Short - Decode data block
 #Long - <Text>This function decodes an 8X8 data block of Huffman-encoded quantized DCT coefficients.</Text>
 <Text>The decoding process follows CCITT Rec. T.81, Annex F.2.2.</Text>

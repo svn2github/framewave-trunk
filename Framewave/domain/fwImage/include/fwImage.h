@@ -7024,17 +7024,40 @@ FwStatus STDCALL fwiGetBilinearTransform  ( FwiRect srcRoi, const double quad[4]
 <Paragraph>This<ChaptDesc> chapter describes functions for 3D look-up with trilinear interpolation.</ChaptDesc></Paragraph>
 */
 
-/*#FunctionBlock - LUT
-todo:edit
+/*#FunctionBlock - LookUp3DSpecInitAlloc
+TODO:edit
 #Technologies - REF, SSE2
-#Short - 
-#Long - 
-#ReturnValues
+#Short - initialises the FwiLUTSpec structure
+#Long - <Text>The function allocates memory for the <Bold>FwiLUTSpec</Bold> structure and initialises it.</Text>
+#ReturnValues - fwStsNullPtrErr, fwStsNoErr
 */
+
 FwStatus STDCALL fwiLookUp3DSpecInitAlloc(const Fw16u cubeDimensions[3], const Fw16u cubeMax[3], FwiLUTSpec** ppLUTSpec);
+
+/*#FunctionBlock - LookUp3DSpecInitAlloc
+TODO:edit
+#Technologies - REF, SSE2
+#Short - Convert the image from one color space to another by using 3D-Lookup with trilinear interpolation
+#Long - <Text>The functions run through all the pixels in an ROI and and convert them from one color space to another. The R, G and B values 
+of each pixel are taken up and a 3D look-up is performed using the <Bold>pCube</Bold> table to find it's 8 neighbouring vertices in the new color space. 
+Then a trilinear interpolation is done using the R, G and B values of the 8 vertices(in the new color space) to get the R, G and B values for the current 
+pixel in the new color space. <Bold>pCube</Bold>points to a 3 dimensional cube. The contents of the table are the R, G and B values(in new color space) of each vertex in the cube.</Text>
+#ReturnValues - fwStsNullPtrErr, fwStsNoErr
+*/
+
 FwStatus STDCALL fwiLookUp3D_16u_C3R(const Fw16u *pSrc, int srcStep, Fw16u *pDst, int dstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec);
 FwStatus STDCALL fwiLookUp3D_16u_C3IR(Fw16u *pSrcDst, int srcDstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec);
+
+/*#FunctionBlock - LookUp3DSpecFree 
+TODO:edit
+#Technologies - REF, SSE2
+#Short - free the memory allocated to <Bold>FwiLUTSpec</Bold> structure
+#Long - The function frees the memory allocated to <Bold>FwiLUTSpec</Bold> structure
+#ReturnValues - fwStsNullPtrErr, fwStsNoErr
+*/
+
 FwStatus STDCALL fwiLookUp3DSpecFree(FwiLUTSpec* pLUTSpec);
+
 /*#Documentation
 
 </Chapter>
