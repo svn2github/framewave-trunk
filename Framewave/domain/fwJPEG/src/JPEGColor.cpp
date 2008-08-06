@@ -204,7 +204,7 @@ namespace OPT_LEVEL
         d1 = _mm_mullo_epi16(s1,s2);
         d2 = _mm_mulhi_epi16(s1,s2);
         temp1    = _mm_unpacklo_epi16(d1,d2); 
-        d2    = _mm_unpackhi_epi16(d2,d2); 
+        d2    = _mm_unpackhi_epi16(d1,d2); 
 		d1 = temp1;
 
         
