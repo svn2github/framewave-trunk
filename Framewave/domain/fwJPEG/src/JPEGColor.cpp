@@ -1805,6 +1805,85 @@ SYS_INLINE STATIC void fwiRGBToYCbCr411LS_MCU_8u16s_C3P3R_SSE (const Fw8u *pSrcB
         }
 }
 
+  SYS_INLINE STATIC void fwiRGBToYCbCr422LS_MCU_8u16s_C3P3R_SSE (const Fw8u *pSrcRGB,int srcStep,Fw16s *pDstMCU[3])
+    {
+        XMM128 coeffY[3],coeffCb[3],coeffCr[3];
+        coeffY[0].i = _mm_set1_epi16(77);
+        coeffY[1].i = _mm_set1_epi16(150);
+        coeffY[2].i = _mm_set1_epi16(29);
+
+        //elementCb[x1] += -43 * RVal - 85 * GVal + 128 * BVal;
+        coeffCb[0].i = _mm_set1_epi16(-43);
+        coeffCb[1].i = _mm_set1_epi16(-85);
+        coeffCb[2].i = _mm_set1_epi16(128);
+        //elementCr[x1] += 128 * RVal - 107 * GVal - 21 * BVal;
+        coeffCr[0].i = _mm_set1_epi16(128);
+        coeffCr[1].i = _mm_set1_epi16(-107);
+        coeffCr[2].i = _mm_set1_epi16(-21);
+
+        const __m128i val127 = _mm_set1_epi16(127);
+        int dstYPos = 0;
+        int cbcrpos = 0;
+
+        for(int height = 0;height < 8; height+=2)
+        {
+                __m128i colR = _mm_loadu_si128((__m128i*) pSrcRGB);
+                pSrcRGB+=16;
+                __m128i colG = _mm_loadu_si128((__m128i*) pSrcRGB);
+                pSrcRGB+=16;
+                __m128i colB = _mm_loadu_si128((__m128i*) pSrcRGB);
+                pSrcRGB+= srcStep-32; 
+
+                __m128i colR1 = _mm_loadu_si128((__m128i*) pSrcRGB);
+                pSrcRGB+=16;
+                __m128i colG1 = _mm_loadu_si128((__m128i*) pSrcRGB);
+                pSrcRGB+=16;
+                __m128i colB1 = _mm_loadu_si128((__m128i*) pSrcRGB);
+                pSrcRGB+= srcStep-32;
+
+               // CBL_SSE2::Convert_3C_to_3P_8bit(colR,colG,colB);
+               // CBL_SSE2::Convert_3C_to_3P_8bit(colR1,colG1,colB1);
+               ssp_convert_3c_3p_epi8(&colR, &colG, &colB);
+               ssp_convert_3c_3p_epi8(&colR1, &colG1, &colB1);
+               
+               __m128i s1 = colR,s2=colG,s3=colB,s4=colR1,s5=colG1,s6=colB1;
+               
+               Add4228u_to_16s(s1,s2,s3,s4,s5,s6);
+               __m128i ts1 = s1,ts2 = s2, ts3 = s3, ts4  = s4 , ts5 = s5, ts6 = s6;
+
+               MulCbCr422_Coef(s1,s2,s3,coeffCb);      
+               MulCbCr422_Coef(s4,s5,s6,coeffCb);  
+
+               MulCbCr422_Coef(ts1,ts2,ts3,coeffCr);
+               MulCbCr422_Coef(ts4,ts5,ts6,coeffCr);
+               
+               _mm_storeu_si128((__m128i*) (pDstMCU[1] + cbcrpos),s1);
+               _mm_storeu_si128((__m128i*) (pDstMCU[1] + cbcrpos + 8),s4);
+
+               _mm_storeu_si128((__m128i*) (pDstMCU[2] + cbcrpos),ts1);
+               _mm_storeu_si128((__m128i*) (pDstMCU[2] + cbcrpos + 8),ts4);
+
+                cbcrpos+=16;
+                //Y = 77 * RVal + 150 * GVal + 29 * BVal + 128;
+                MulBGR_Coef(colR,colG,colB,coeffY);
+                MulBGR_Coef(colR1,colG1,colB1,coeffY);
+
+                colR = _mm_sub_epi16(colR,val127);
+                colG = _mm_sub_epi16(colG,val127);
+
+                colR1 = _mm_sub_epi16(colR1,val127);
+                colG1 = _mm_sub_epi16(colG1,val127);
+
+               _mm_storeu_si128((__m128i*) (pDstMCU[0] + dstYPos),colR);
+               _mm_storeu_si128((__m128i*) (pDstMCU[0] + dstYPos + 64),colG);
+                dstYPos+=8;
+               _mm_storeu_si128((__m128i*) (pDstMCU[0] + dstYPos),colR1);
+               _mm_storeu_si128((__m128i*) (pDstMCU[0] + dstYPos + 64),colG1);
+                dstYPos+=8;
+        }
+}
+
+
    SYS_INLINE STATIC void fwiBGRToYCbCr444LS_MCU_8u16s_C3P3R_SSE (const Fw8u *pSrcBGR,int srcStep,Fw16s *pDstMCU[3])
     {
         XMM128 coeffY[3],coeffCb[3],coeffCr[3];
@@ -2112,124 +2191,6 @@ SYS_INLINE STATIC void fwiRGBToYCbCr411LS_MCU_8u16s_C3P3R_SSE (const Fw8u *pSrcB
 		//We use 77, 150, 29 as the modified coeff, and then shift the result
 		//-0.16874*256 = -43.19744, -0.33126*256=-84.80256, 0.5*256=128
 		//0.5*256=128, -0.41869*256 = -107.18464, -0.08131*256=-20.81536
-    switch( Dispatch::Type<DT_SSE2>() )
-	    {
-	    case DT_SSE3:
-	    case DT_SSE2:
-		    //SSE Code goes here
-             {      
-                    
-                XMM128 rVal = {0} , gVal = {0}, bVal = {0};
-                XMM128 xmm1, xmm2, xmm3, accumulator;
-		        for (y=0;y<8; y++) {
-			        srcPos = y*srcStep + srcOffset;
-			        dstCPos = y*8 + dstCOffset;
-			        for (x=0;x<8;x++) {
-				        rVal.u16[x] = pSrcRGB[srcPos++];
-				        gVal.u16[x] = pSrcRGB[srcPos++];
-				        bVal.u16[x] = pSrcRGB[srcPos++];
-                    }
-
-                    xmm1.i = _mm_set1_epi16(77);
-                    xmm2.i = _mm_set1_epi16(150);
-                    xmm3.i = _mm_set1_epi16(29);
-
-                    xmm1.i = _mm_mullo_epi16(xmm1.i, rVal.i);
-                    xmm2.i = _mm_mullo_epi16(xmm2.i, gVal.i);
-
-                    xmm3.i = _mm_mullo_epi16(xmm3.i, bVal.i);
-                    xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);
-                    xmm3.i = _mm_set1_epi16(128);
-                    xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);//adding 128
-                    xmm1.i = _mm_srli_epi16(xmm1.i, 4);
-                    xmm2.i = _mm_srli_epi16(xmm2.i, 4);
-
-                    xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
-                    xmm1.i = _mm_srli_epi16(xmm1.i, 4);
-
-                    xmm1.i = _mm_sub_epi16(xmm1.i, xmm3.i);
-
-                    _mm_storeu_si128  ((__m128i *)(&pDstMCU[0][dstYPos]),xmm1.i);	
-
-
-			        //result = 77 * RVal + 150 * GVal + 29 * BVal + 128;
-			        //pDstMCU [0][dstYPos++] = (Fw16s)((result>>8)-128);
-
-                    accumulator.i = _mm_srli_epi32(rVal.i, 16);
-                    rVal.i = _mm_slli_epi32(rVal.i, 16);
-                    rVal.i = _mm_srli_epi32(rVal.i, 16);
-                    rVal.i = _mm_add_epi16(accumulator.i, rVal.i);
-
-
-                    accumulator.i = _mm_srli_epi32(gVal.i, 16);
-                    gVal.i = _mm_slli_epi32(gVal.i, 16);
-                    gVal.i = _mm_srli_epi32(gVal.i, 16);
-                    gVal.i = _mm_add_epi16(accumulator.i, gVal.i);
-
-                    accumulator.i = _mm_srli_epi32(bVal.i, 16);
-                    bVal.i = _mm_slli_epi32(bVal.i, 16);
-                    bVal.i = _mm_srli_epi32(bVal.i, 16);
-                    bVal.i = _mm_add_epi16(accumulator.i, bVal.i);
-
-
-                    rVal.i = _mm_packs_epi32( rVal.i, rVal.i);
-                    gVal.i = _mm_packs_epi32( gVal.i, gVal.i);
-                    bVal.i = _mm_packs_epi32( bVal.i, bVal.i);
-
-                    xmm1.i = _mm_set1_epi16(-43);
-                    xmm2.i = _mm_set1_epi16(-85);
-                    xmm3.i = _mm_set1_epi16(128);
-
-                    xmm1.i = _mm_mullo_epi16(xmm1.i, rVal.i);
-                    xmm2.i = _mm_mullo_epi16(xmm2.i, gVal.i);
-                    xmm3.i = _mm_mullo_epi16(xmm3.i, bVal.i);
-                    
-                    xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
-                    xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);
-
-                    xmm2.i = _mm_set1_epi16(256);
-                    xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
-                    xmm1.i = _mm_srai_epi16(xmm1.i, 9);
-
-                    *((Fw64f *)(&pDstMCU[1][dstCPos])) = xmm1.f64[0];
-                    //_mm_storeu_si128  ((__m128i *)(&pDstMCU[1][dstCPos]),xmm1.i);	
-
-                    
-                    xmm1.i = _mm_set1_epi16(128);
-                    xmm2.i = _mm_set1_epi16(-107);
-                    xmm3.i = _mm_set1_epi16(-21);
-
-                    xmm1.i = _mm_mullo_epi16(xmm1.i, rVal.i);
-                    xmm2.i = _mm_mullo_epi16(xmm2.i, gVal.i);
-                    xmm3.i = _mm_mullo_epi16(xmm3.i, bVal.i);
-                    
-                    xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
-                    xmm1.i = _mm_add_epi16(xmm1.i, xmm3.i);
-
-                    xmm2.i = _mm_set1_epi16(256);
-                    xmm1.i = _mm_add_epi16(xmm1.i, xmm2.i);
-                    xmm1.i = _mm_srai_epi16(xmm1.i, 9);
-
-                    *((Fw64f *)(&pDstMCU[2][dstCPos])) = xmm1.f64[0];
-
-                    dstYPos += 8;
-                    dstCPos += 4;
-
-			       /* if (!(x&1)){
-				        elementCb = -43 * RVal - 85 * GVal + 128 * BVal;
-				        elementCr = 128 * RVal - 107 * GVal - 21 * BVal;
-			        } else {
-				        result = -43 * RVal - 85 * GVal + 128 * BVal + elementCb + 256;
-				        pDstMCU [1][dstCPos] = (Fw16s)(result>>9);
-				        result = 128 * RVal - 107 * GVal - 21 * BVal + elementCr + 256;
-				        pDstMCU [2][dstCPos++] = (Fw16s)(result>>9);
-			        }*/	
-			        
-		        }
-            }
-            break;
-            
-	    default:
 		    for (y=0;y<8; y++) {
 			    srcPos = y*srcStep + srcOffset;
 			    dstCPos = y*8 + dstCOffset;
@@ -2251,7 +2212,6 @@ SYS_INLINE STATIC void fwiRGBToYCbCr411LS_MCU_8u16s_C3P3R_SSE (const Fw8u *pSrcB
 				    }	
 			    }
 		    }
-        }
 		return;
 	}
 
@@ -2485,9 +2445,16 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToYCbCr422LS_MCU_8u16s_C3P3R)(const Fw8u *
 	//					  ----------
 	// Proces each block independently
 
+	switch( Dispatch::Type<DT_SSE2>() )
+	{
+	case DT_SSE3:
+	case DT_SSE2:
+		fwiRGBToYCbCr422LS_MCU_8u16s_C3P3R_SSE(pSrcRGB, srcStep, pDstMCU);
+            break;
+    default:
 	fwiRGBToYCbCr422LS_MCU_8u16s_C3P3R_8x8Block (pSrcRGB, srcStep, pDstMCU, 0);
 	fwiRGBToYCbCr422LS_MCU_8u16s_C3P3R_8x8Block (pSrcRGB, srcStep, pDstMCU, 1);
-
+    }
 	return fwStsNoErr;
 }
 
