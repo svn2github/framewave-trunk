@@ -42,26 +42,11 @@ This software is subject to the Apache v2.0 License.
 
 #include "fwdev.h"
 #include "fwJPEG.h"
-//#include "FwSharedCode_SSE2.h"
+#include "JPEG-HuffCodec.h"
 
 using namespace OPT_LEVEL;
 
 #if BUILD_NUM_AT_LEAST( 102 )
-
-struct EncodeHuffmanSpec 
-{
-	Fw16u symcode[256];	// symbol code
-	Fw16u symlen[256];	    // symbol code length
-};
-
-struct EncodeHuffmanState 
-{
-	Fw32u accbuf;	    //accumulated buffer
-	int accbitnum;	    //bit number for accumulated buffer
-	int EOBRUN;		    //EOB run length
-	int BE;		        //count of buffered correction bits at the start of coding of the block
-	Fw8u cor_AC[1024];  //Correction bit for AC refine
-};
 
 //extra data in the array to prevent table overrun
 extern const Fw8u zigZagFwdOrder[80];// =
@@ -230,6 +215,8 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeHuffmanSpecGetBufSize_JPEG_8u)(int* siz
 //This function creates Huffman table of codes and code length for Encoder.
 //It follows Annex C.1,C.2,C.3 from CCITT Rec. T.81(1992 E) page 50
 //-----------------------------------------------------------------------
+namespace OPT_LEVEL
+    {
 SYS_INLINE STATIC FwStatus MyFW_HuffmanSpecInit(const Fw8u *pListBits, const Fw8u *pListVals, 
 								Fw16u ehufco[256], Fw16u ehufsi[256])
 {
@@ -258,7 +245,7 @@ SYS_INLINE STATIC FwStatus MyFW_HuffmanSpecInit(const Fw8u *pListBits, const Fw8
         }
     return fwStsNoErr;
 }
-
+    }//namespace OPT_LEVEL
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeHuffmanSpecInit_JPEG_8u)(
 	const Fw8u *pListBits, const Fw8u *pListVals,  FwiEncodeHuffmanSpec *pEncHuffSpec) 
 {
@@ -354,6 +341,9 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeHuffmanStateFree_JPEG_8u)(FwiEncodeHuff
 //-----------------------------------------------------------------------
 //This internal function put the bits to destination buffer
 //size 0 will do nothing
+namespace OPT_LEVEL
+    {
+
 bool SYS_INLINE EncStuffbits (FwiEncodeHuffmanState * pEncHuffState, Fw16u code, int size, 
 					Fw8u *pDst, int dstLenBytes, int *pDstCurrPos)
 
@@ -481,103 +471,14 @@ int SYS_INLINE LeadBit (int ssss)
 	return numbit;
 }
 
+}//namespace OPT_LEVEL
+
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeHuffman8x8_JPEG_16s1u_C1)(
 	const Fw16s *pSrc, Fw8u *pDst, int dstLenBytes, int *pDstCurrPos, 
 	Fw16s *pLastDC, const FwiEncodeHuffmanSpec *pDcTable, const 
 	FwiEncodeHuffmanSpec *pAcTable, FwiEncodeHuffmanState *pEncHuffState, int bFlushState)
 {
-	if (pDst == 0 || pDstCurrPos==0 ||pEncHuffState == 0 ) 
-		return fwStsNullPtrErr;
-
-	if (dstLenBytes < 2 || *pDstCurrPos <0 || *pDstCurrPos > dstLenBytes)
-		return fwStsBadArgErr;
-
-	//When pSrc is 0 and bFlushstate is set, we flush the bits
-	if (bFlushState) {
-		EncStateFlush(pEncHuffState, pDst, dstLenBytes, pDstCurrPos);
-		//final check range
-		if (*pDstCurrPos > dstLenBytes) return fwStsSizeErr;
-		return fwStsNoErr;
-	} else {
-		if (pSrc == 0)
-			return fwStsNullPtrErr;
-	}
-
-	if (pLastDC == 0 || pDcTable ==0 || pAcTable==0)
-		return fwStsNullPtrErr;
-
-	int diff, loworder;
-	int ssss;
-
-	//Encode DC coefficient following JPEG standard F.1.2.1
-	//When DIFF is positive, the SSSS low order bits of DIFF
-	//are appended. When DIFF is negative, the SSSS low order bits of 
-	//(DIFF – 1) are appended.
-	diff = pSrc[0] - (*pLastDC);
-	*pLastDC = pSrc[0];
-
-	if (diff < 0) { 
-		loworder = diff-1;
-		diff  = - diff;    
-	} else loworder = diff;
-
-	//check nonzero bits
-	ssss = LeadBit(diff);
-	if (ssss > 11) return fwStsJPEGDCTRangeErr;
-
-	EncStuffbits(pEncHuffState, pDcTable->symcode[ssss], pDcTable->symlen[ssss],
-		pDst, dstLenBytes, pDstCurrPos);
-
-	//For each category, except SSSS = 0, an additional bits field is appended to the code 
-	//word to uniquely identify which difference in that category actually occurred
-	if (ssss)	{
-		EncStuffbits(pEncHuffState, (Fw16u)loworder, ssss, pDst, dstLenBytes, pDstCurrPos);
-	}
-
-	// Encode AC coefficient following JPEG standard F.1.2.2
-	int runlen, k, RS;
-	runlen = 0;			
-
-	for (k = 1; k < 64; k++) {
-		diff = pSrc[zigZagFwdOrder[k]];
-		if (diff) {
-			while (runlen >= 16) {
-				EncStuffbits(pEncHuffState, pAcTable->symcode[0xF0], pAcTable->symlen[0xF0], 
-					pDst, dstLenBytes, pDstCurrPos);
-				runlen -= 16;
-			}
-
-			//Encode_R,ZZ(K)
-			if (diff < 0) { 
-				loworder = diff -1;
-				diff  = - diff;
-			} else loworder = diff;
-
-			ssss = LeadBit(diff);
-			if (ssss > 10) return fwStsJPEGDCTRangeErr;
-
-			RS = (runlen << 4) | ssss;
-			EncStuffbits(pEncHuffState, pAcTable->symcode[RS], pAcTable->symlen[RS], 
-				pDst, dstLenBytes, pDstCurrPos);
-
-			EncStuffbits(pEncHuffState, (Fw16u)loworder, ssss, pDst, dstLenBytes, pDstCurrPos);
-
-			//back to count zero coefficients
-			runlen = 0;
-		} else 
-			runlen++;
-	}
-
-	//when all remaining coefficients in the block are zero, 0 is used to code EOB
-	if (runlen > 0) {
-		EncStuffbits(pEncHuffState, pAcTable->symcode[0], pAcTable->symlen[0],
-			pDst, dstLenBytes, pDstCurrPos);
-	}
-
-	//final check range
-	if (*pDstCurrPos > dstLenBytes) return fwStsSizeErr;
-
-	return fwStsNoErr;
+return EncodeHuffman8x8_JPEG_16s1u_C1(pSrc, pDst, dstLenBytes, pDstCurrPos, pLastDC, pDcTable, pAcTable, pEncHuffState, bFlushState);
 }
 
 //-----------------------------------------------------------------------
@@ -735,6 +636,8 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeHuffman8x8_DCRefine_JPEG_16s1u_C1)(
 //accmulate these bits. User can set the bFlashState to be 1 to force to add
 //the accmulated bits for the last 8*8 block or restart encoded interval.
 //-----------------------------------------------------------------------
+namespace OPT_LEVEL
+    {
 bool EncStuff_EOBRUN (FwiEncodeHuffmanState *pEncHuffState, Fw8u *pDst, 
 					  int dstLenBytes, int *pDstCurrPos, const FwiEncodeHuffmanSpec *pAcTable)
 {
@@ -759,7 +662,7 @@ bool EncStuff_EOBRUN (FwiEncodeHuffmanState *pEncHuffState, Fw8u *pDst,
 
 	return true;
 }
-
+    }//namespace OPT_LEVEL
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeHuffman8x8_ACFirst_JPEG_16s1u_C1)(
 	const Fw16s *pSrc, Fw8u *pDst, int dstLenBytes, int *pDstCurrPos, 
 	int Ss, int Se, int Al, const FwiEncodeHuffmanSpec *pAcTable, 
@@ -1024,6 +927,8 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiEncodeHuffman8x8_ACRefine_JPEG_16s1u_C1)(
 //-----------------------------------------------------------------------
 //This functions computes the statistics for the baseline encoding.
 //-----------------------------------------------------------------------
+namespace OPT_LEVEL
+    {
 static int MSB_lookup[16]= {
 	0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4 
 };
@@ -1047,7 +952,7 @@ int MSB_pos_16s(const Fw16s number)
 
 	return pos+MSB_lookup[u16];
 }
-
+    }//namespace OPT_LEVEL
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiGetHuffmanStatistics8x8_JPEG_16s_C1)(
 	const Fw16s *pSrc, int pDcStatistics[256], int pAcStatistics[256], Fw16s *pLastDC)
 {
@@ -1365,6 +1270,8 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiDecodeHuffmanStateFree_JPEG_8u)(FwiDecodeHuff
 //-----------------------------------------------------------------------
 //Internal functions for helping decoders
 //-----------------------------------------------------------------------
+namespace OPT_LEVEL
+    {
 bool SYS_INLINE dec_receivebits (FwiDecodeHuffmanState * pDecHuffState, Fw32u accbuf, 
 					  int accbitnum, int ssss)
 {
@@ -1493,6 +1400,7 @@ bool SYS_INLINE FW_HUFF_DECODE(int *result, FwiDecodeHuffmanState *pDecHuffState
 	return true;
 }
 
+}//namespace OPT_LEVEL
 //-----------------------------------------------------------------------
 //This function handles the Huffman Baseline decoding for a 8*8 block of the
 //quantized DCT coefficients. The decoding procedure follows CCITT Rec. T.81

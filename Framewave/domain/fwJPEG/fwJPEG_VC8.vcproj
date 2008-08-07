@@ -645,6 +645,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\JPEG-HuffCodec.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\JPEGColorConv.h"
 				>
 			</File>
