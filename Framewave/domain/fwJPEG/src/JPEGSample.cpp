@@ -213,26 +213,88 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiSampleDownRowH2V2_Box_JPEG_8u_C1)(const Fw8u 
 		return fwStsNullPtrErr;
 	if (srcWidth <=0) return fwStsSizeErr;
 	
-	int x;
-	unsigned short result, round;
-	Fw8u *pSrcPtr, *srcPtr1;
-	Fw8u *pDstPtr;
-
 	if ((srcWidth&1)==1) srcWidth--;
 
-	pSrcPtr = (Fw8u *)pSrc1;
-	srcPtr1 = (Fw8u *)pSrc2;
-	pDstPtr = pDst;
-	round=1;
+ switch( Dispatch::Type<DT_SSE2>() )
+	    {
+	    case DT_SSE3:
+	    case DT_SSE2:
+            {
+                int size = srcWidth>>4;
+                int rem = srcWidth % 16;
 
-	for (x=0;x<(srcWidth>>1);x++) {
-		result = pSrcPtr[0]+pSrcPtr[1]+srcPtr1[0]+srcPtr1[1]+round;
-		*(pDstPtr++) = FW_REF::Limits<U8>::Sat(result>>2);
-		round ^=3; //alternate rounding
-		pSrcPtr+=2;
-		srcPtr1+=2;
-	}
+				while(size)
+                {
+                        __m128i src1 = _mm_loadu_si128((__m128i *)pSrc1);
+                        __m128i src2 = _mm_loadu_si128((__m128i *)pSrc2);
+                        static __m128i const val21 = _mm_set1_epi32(0x00020001);
 
+                         __m128i src1_h = _mm_srli_epi16(src1,8);
+
+                         src1 = _mm_slli_epi16(src1,8);
+                         src1 = _mm_srli_epi16(src1,8);
+                         
+                         src1 = _mm_add_epi16(src1,src1_h);
+                         src1 = _mm_add_epi16(src1,val21);
+
+                         __m128i src2_h = _mm_srli_epi16(src2,8);
+
+                         src2 = _mm_slli_epi16(src2,8);
+                         src2 = _mm_srli_epi16(src2,8);
+
+                         src2 = _mm_add_epi16(src2,src2_h);
+
+                         src1 = _mm_add_epi16(src1,src2);
+
+                         src1 = _mm_srli_epi16(src1,2);
+
+                         src1 = _mm_packus_epi16 (src1,src1); 
+
+                        _mm_storel_epi64 ( ((__m128i*)pDst), src1 );
+
+                        pDst+=8;
+                        pSrc1+=16;
+                        pSrc2+=16;
+                        size--;
+                }
+
+	            unsigned short round=1,result;
+
+	            for (int x=0;x<(rem>>1);x++) 
+                {
+		            result = pSrc1[0]+pSrc1[1]+pSrc2[0]+pSrc2[1]+round;
+					result = FW_REF::Limits<U8>::Sat(result>>2);
+		            *(pDst++) = (U8)result ;
+		            round ^=3; //alternate rounding
+		            pSrc1+=2;
+		            pSrc2+=2;
+	            }
+            }
+
+            break;
+        default:
+            {
+	            int x;
+	            unsigned short result, round;
+	            Fw8u *pSrcPtr, *srcPtr1;
+	            Fw8u *pDstPtr;
+
+
+
+	            pSrcPtr = (Fw8u *)pSrc1;
+	            srcPtr1 = (Fw8u *)pSrc2;
+	            pDstPtr = pDst;
+	            round=1;
+
+	            for (x=0;x<(srcWidth>>1);x++) {
+		            result = pSrcPtr[0]+pSrcPtr[1]+srcPtr1[0]+srcPtr1[1]+round;
+		            *(pDstPtr++) = FW_REF::Limits<U8>::Sat(result>>2);
+		            round ^=3; //alternate rounding
+		            pSrcPtr+=2;
+		            srcPtr1+=2;
+	            }
+            }
+        }
 	return fwStsNoErr;
 }
 
