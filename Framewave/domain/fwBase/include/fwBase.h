@@ -429,7 +429,8 @@ typedef enum
     fwStsStreamEnd                     = 34   ,
     fwStsDoubleSize                    = 35   ,
     fwStsNotSupportedCpu               = 36   ,
-    fwStsUnknownCacheSize              = 37
+    fwStsUnknownCacheSize              = 37   ,
+    fwStsJPEGMarkerWarn                = 38
 } FwStatus;
 
 #define fwStsOk fwStsNoErr
