@@ -612,6 +612,81 @@ SYS_INLINE static __m128i Compute_B(__m128i &Y,__m128i &Cb)//,const __m128i &mCo
 
 }
 
+
+
+static SYS_INLINE void YCbCrToRGBConv(__m128i &y,__m128i &cb,__m128i &cr)
+{
+                    __m128i r, g, b;
+                    static const __m128i val180 = CONST_SET1_32I((S16)(180*64.0));
+					static const __m128i val135 = CONST_SET1_32I((S16)(135*64.0));
+					static const __m128i val226 = CONST_SET1_32I((S16)(226*64.0));
+
+                    static const __m128i val90 = CONST_SET1_16I		( (S16)90		);		// R = ( 1.402*2^6 )
+                    static const __m128i val46 = CONST_SET1_16I		( (S16)(-46)	);		// G = ( -.71414*2^6 )
+                    static const __m128i val22 = CONST_SET1_16I		( (S16)(-22)	);		// cr= ( -0.34414*(2^6) )
+                    static const __m128i val113 = CONST_SET1_16I( (S16)(113)	);		// B = ( 1.772*(2^6) )
+
+					//R = Y + 1.402*Cr - 179,456
+					//G = Y - 0.34414*Cb - 0.71414*Cr + 135.45984
+					//B = Y + 1.772*Cb - 226.816
+					//90, 22, 46,113;
+                    // RED
+                    __m128i r1,r2;
+                    Mul_16s( val90, cr,r1,r2);		// R = ( 1.402*Cr )*(2^6)
+                    r1 = _mm_sub_epi32		( r1, val180	);		// R = ( 1.402*Cr - 180)*(2^6)
+                    r2 = _mm_sub_epi32		( r2, val180	);		// R = ( 128.5 + 1.402*Cr )*(2^6)
+
+                    r1 = _mm_srai_epi32		( r1, 6			);		// R = ((128.5 + 1.402*Cr )*(2^6)) / (2^6)
+                    r2 = _mm_srai_epi32		( r2, 6			);		// R = ((128.5 + 1.402*Cr )*(2^6)) / (2^6)
+                    r  = _mm_packs_epi32    (r1,r2);
+                    r  = _mm_adds_epi16		( r, y			);		// R = Y + 128.5 + 1.402*Cr
+
+                    // GREEN
+                    __m128i g1,g2,g3,g4;
+                    Mul_16s( val46, cr,g1,g2);		// G = ( -.71414*Cr )*(2^6)
+                    g1 = _mm_add_epi32		( g1, val135	);		// G = ( -.71414*Cr + 128.5 )*(2^6)
+                    g2 = _mm_add_epi32		( g2, val135	);		// G = ( -.71414*Cr + 128.5 )*(2^6)
+
+                    Mul_16s( val22, cb,g3,g4);		// cr= ( -0.34414*Cb )*(2^6)
+
+
+                    g1 = _mm_add_epi32		( g1, g3			);		// G = ( -.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)
+                    g2 = _mm_add_epi32		( g2, g4			);		// G = ( -.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)
+                    g1 = _mm_srai_epi32		( g1, 6			);		// G = ((-.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)) / (2^6)
+                    g2 = _mm_srai_epi32		( g2, 6			);		// G = ((-.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)) / (2^6)
+        
+                    __m128i y1=y,y2;
+
+                    CBL_SSE2::Unpack16STo32S(y1,y2);
+                    g1 = _mm_add_epi32		( g1, y1			);		// G = Y - 0.34414*Cb - 0.71414*Cr + 128.5 
+                    g2 = _mm_add_epi32		( g2, y2			);		// G = Y - 0.34414*Cb - 0.71414*Cr + 128.5 
+
+                    g = _mm_packs_epi32(g1,g2);
+
+                    // BLUE
+                    __m128i b1,b2;
+                    Mul_16s		( val113, cb,b1,b2			);		// B = ( 1.772*Cb )*(2^6)
+                    b1 = _mm_sub_epi32		( b1, val226	);		// B = ( 1.772*Cb + 128.5 )*(2^6)
+                    b2 = _mm_sub_epi32		( b2, val226	);		// B = ( 1.772*Cb + 128.5 )*(2^6)
+
+                    b1 = _mm_srai_epi16		( b1, 6			);		// B = ((1.772*Cb + 128.5 )*(2^6)) / (2^6)
+                    b2 = _mm_srai_epi16		( b2, 6			);		// B = ((1.772*Cb + 128.5 )*(2^6)) / (2^6)
+                    b = _mm_packs_epi32(b1,b2);
+                    b = _mm_adds_epi16		( b, y			);		// B = Y + 1.772*Cb + 128.5
+
+                    // CBL_SSE2::Convert_3P_to_3C_16bit( r, g, b);
+//                   ssp_convert_3p_3c_epi16( &r, &g, &b);
+                    // r = {g2,r2,b1,g1,r1,b0,g0,r0}
+                    // g = {r5,b4,g4,r4,b3,g3,r3,b2}
+                    // b = {b7,g7,r7,b6,g6,r6,b5,g5}
+					y = r;
+					cb= g;
+					cr = b;
+
+}
+
+
+
 class YCbCrToRGB_JPEG_8u_P3C3R : public fe4<Fw8u,C1,Fw8u,C1,Fw8u,C1,Fw8u,C3>
 {
 public:
@@ -633,33 +708,26 @@ public:
 
     IV SSE2( RegFile & r ) const									// SSE2 Pixel function
     {
-        XMM128 Y,Cb,Cr,Y1,Cb1,Cr1;
+ 		XMM128 Y,Cb,Cr,Y1,Cb1,Cr1;
 
         Y.i = r.src1[0].i;
         Cb.i = r.src2[0].i;
         Cr.i = r.src3[0].i;
 
-        CBL_SSE2::Unpack8UTo16U(Y.i,Y1.i);
+	    CBL_SSE2::Unpack8UTo16U(Y.i,Y1.i);
         CBL_SSE2::Unpack8UTo16U(Cb.i,Cb1.i);
         CBL_SSE2::Unpack8UTo16U(Cr.i,Cr1.i);
 
 
-       // R = Y + 1.402*Cr - 179.456
-        __m128i rV = Compute_R(Y.i,Cr.i);
-        __m128i rV1 = Compute_R(Y1.i,Cr1.i);
-        r.dst[0].i = _mm_packus_epi16(rV,rV1);  
+		YCbCrToRGBConv(Y.i,Cb.i,Cr.i);
+		YCbCrToRGBConv(Y1.i,Cb1.i,Cr1.i);
 
-       // G = Y - 0.34414*Cb - 0.71414*Cr + 135.45984
-        __m128i gV = Compute_G(Y.i,Cb.i,Cr.i);
-        __m128i gV1 = Compute_G(Y1.i,Cb1.i,Cr1.i);
-        r.dst[1].i = _mm_packus_epi16(gV,gV1);  
-       
-        // B = Y + 1.772*Cb - 226.816
-        __m128i bV = Compute_B(Y.i,Cb.i);
-        __m128i bV1= Compute_B(Y1.i,Cb1.i);
-        r.dst[2].i = _mm_packus_epi16(bV,bV1);  
 
-        ssp_convert_3p_3c_epi8(&r.dst[0].i,&r.dst[1].i,&r.dst[2].i);
+		r.dst[0].i = _mm_packus_epi16(Y.i,Y1.i);  
+		r.dst[1].i = _mm_packus_epi16(Cb.i,Cb1.i);  
+		r.dst[2].i = _mm_packus_epi16(Cr.i,Cr1.i);  
+		ssp_convert_3p_3c_epi8(&r.dst[0].i,&r.dst[1].i,&r.dst[2].i);
+
     }  
 
    IV SSE_32(const Fw8u *Y,const Fw8u *Cb,const Fw8u *Cr,int srcstep,Fw8u *pDst,int dststep)
