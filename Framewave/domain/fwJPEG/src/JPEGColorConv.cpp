@@ -129,32 +129,35 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToY_JPEG_8u_C3C1R)(const Fw8u *pSrcRGB, in
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiBGRToY_JPEG_8u_C3C1R)(const Fw8u *pSrcBGR, int srcStep,
 								   Fw8u *pDstY, int dstStep, FwiSize roiSize)
 {
-	if (pSrcBGR == 0 || pDstY == 0) return fwStsNullPtrErr;
-	STEPCHECK(srcStep, dstStep);
-	ROISIZECHECK(roiSize);
+    BGRToY_JPEG_8u_C3C1  data;
+    if(roiSize.width>32)
+    {
+        return OPT_LEVEL::fe< BGRToY_JPEG_8u_C3C1 >( data, pSrcBGR, srcStep, pDstY, dstStep, roiSize ); 
+    }
+    else
+    {
+		if (pSrcBGR == 0 || pDstY == 0) return fwStsNullPtrErr;
+		STEPCHECK(srcStep, dstStep);
+		ROISIZECHECK(roiSize);
 
-	//DEV code use shift 8 bit data for coeffcients
-	//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
-	//We use 77, 150, 29 as the modified coeff, and then shift the result
-	//The final answer is equal to nearest neighbor rounding
-	//SEE2 should use 16 bit data shift
-	unsigned short result;
-	int x, y;
-	int srcPos, dstPos;
-
-	for (y=0;y<roiSize.height; y++) {
-		srcPos = y*srcStep;
-		dstPos = y*dstStep;
-		for (x=0;x<roiSize.width;x++) {
-			//add 0.5 for nearest neighbor rounding
-			result = 29 * pSrcBGR[srcPos] + 150 * pSrcBGR[srcPos+1]
-				+ 77 * pSrcBGR[srcPos+2] + 128;
-			srcPos += 3;
-			pDstY [dstPos++] = (Fw8u)(result>>8);
-		}
-	}
-
-	return fwStsNoErr;
+        switch( Dispatch::Type<DT_SSE2>() )
+        {
+        case DT_SSE3:
+        case DT_SSE2:
+                if(roiSize.width ==32 && roiSize.height == 32)
+                {
+                    data.SSE_32(pSrcBGR,srcStep,pDstY, dstStep);
+                }
+                else
+                    data.REF_CODE(pSrcBGR,srcStep,pDstY,dstStep,roiSize);
+            break;
+        default:
+            {
+                    data.REF_CODE(pSrcBGR,srcStep,pDstY,dstStep,roiSize);
+            }
+        }
+	    return fwStsNoErr;
+    }
 }
 
 //-----------------------------------------------------------------------
