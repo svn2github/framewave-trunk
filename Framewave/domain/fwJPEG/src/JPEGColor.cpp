@@ -678,61 +678,15 @@ SYS_INLINE	static FwStatus iYCbCr444ToBGRLS_MCU_16s8u_P3C3R_SSE2(const Fw16s *pS
 
 SYS_INLINE static void YCbCr422ToRGBLS_MCU_16s8u_P3C3R_Conv(const __m128i &y,__m128i &cb,__m128i &cr,__m128i &r,__m128i &g,__m128i &b)
 {
-                    static const __m128i constant = CONST_SET1_32I((S16)(128*64.0));
-                    static const __m128i val90 = CONST_SET1_16I		( (S16)90		);		// R = ( 1.402*2^6 )
-                    static const __m128i val46 = CONST_SET1_16I		( (S16)(-46)	);		// G = ( -.71414*2^6 )
-                    static const __m128i val22 = CONST_SET1_16I		( (S16)(-22)	);		// cr= ( -0.34414*(2^6) )
-                    static const __m128i val113 = CONST_SET1_16I( (S16)(113)	);		// B = ( 1.772*(2^6) )
 
                     cb = _mm_shufflelo_epi16(cb,_MM_SHUFFLE(3, 3, 2, 2));
-                    cb = _mm_shufflehi_epi16(cb,_MM_SHUFFLE(1, 1, 0, 0));
+                    g = _mm_shufflehi_epi16(cb,_MM_SHUFFLE(1, 1, 0, 0));
 
                     cr = _mm_shufflelo_epi16(cr,_MM_SHUFFLE(3, 3, 2, 2));
-                    cr = _mm_shufflehi_epi16(cr,_MM_SHUFFLE(1, 1, 0, 0));
+                    b = _mm_shufflehi_epi16(cr,_MM_SHUFFLE(1, 1, 0, 0));
 
-                    // RED
-                    __m128i r1,r2;
-                    Mul_16s( val90, cr,r1,r2);		// R = ( 1.402*Cr )*(2^6)
-                    r1 = _mm_add_epi32		( r1, constant	);		// R = ( 128.5 + 1.402*Cr )*(2^6)
-                    r2 = _mm_add_epi32		( r2, constant	);		// R = ( 128.5 + 1.402*Cr )*(2^6)
-
-                    r1 = _mm_srai_epi32		( r1, 6			);		// R = ((128.5 + 1.402*Cr )*(2^6)) / (2^6)
-                    r2 = _mm_srai_epi32		( r2, 6			);		// R = ((128.5 + 1.402*Cr )*(2^6)) / (2^6)
-                    r  = _mm_packs_epi32    (r1,r2);
-                    r  = _mm_adds_epi16		( r, y			);		// R = Y + 128.5 + 1.402*Cr
-
-                    // GREEN
-                    __m128i g1,g2,g3,g4;
-                    Mul_16s( val46, cr,g1,g2);		// G = ( -.71414*Cr )*(2^6)
-                    g1 = _mm_add_epi32		( g1, constant	);		// G = ( -.71414*Cr + 128.5 )*(2^6)
-                    g2 = _mm_add_epi32		( g2, constant	);		// G = ( -.71414*Cr + 128.5 )*(2^6)
-
-                    Mul_16s( val22, cb,g3,g4);		// cr= ( -0.34414*Cb )*(2^6)
-
-
-                    g1 = _mm_add_epi32		( g1, g3			);		// G = ( -.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)
-                    g2 = _mm_add_epi32		( g2, g4			);		// G = ( -.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)
-                    g1 = _mm_srai_epi32		( g1, 6			);		// G = ((-.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)) / (2^6)
-                    g2 = _mm_srai_epi32		( g2, 6			);		// G = ((-.71414*Cr + 128.5 + (-0.34414*Cb) )*(2^6)) / (2^6)
-        
-                    __m128i y1=y,y2;
-
-                    CBL_SSE2::Unpack16STo32S(y1,y2);
-                    g1 = _mm_add_epi32		( g1, y1			);		// G = Y - 0.34414*Cb - 0.71414*Cr + 128.5 
-                    g2 = _mm_add_epi32		( g2, y2			);		// G = Y - 0.34414*Cb - 0.71414*Cr + 128.5 
-
-                    g = _mm_packs_epi32(g1,g2);
-
-                    // BLUE
-                    __m128i b1,b2;
-                    Mul_16s		( val113, cb,b1,b2			);		// B = ( 1.772*Cb )*(2^6)
-                    b1 = _mm_add_epi32		( b1, constant	);		// B = ( 1.772*Cb + 128.5 )*(2^6)
-                    b2 = _mm_add_epi32		( b2, constant	);		// B = ( 1.772*Cb + 128.5 )*(2^6)
-
-                    b1 = _mm_srai_epi16		( b1, 6			);		// B = ((1.772*Cb + 128.5 )*(2^6)) / (2^6)
-                    b2 = _mm_srai_epi16		( b2, 6			);		// B = ((1.772*Cb + 128.5 )*(2^6)) / (2^6)
-                    b = _mm_packs_epi32(b1,b2);
-                    b = _mm_adds_epi16		( b, y			);		// B = Y + 1.772*Cb + 128.5
+                    r = y;
+                    YCbCrToRGBConv(r,g,b);
 
 }
 
@@ -756,8 +710,6 @@ SYS_INLINE static void YCbCr422ToRGBLS_MCU_16s8u_P3C3R_Conv(const __m128i &y,__m
                     cr1 = _mm_slli_si128(cr,4);
 
                     YCbCr422ToRGBLS_MCU_16s8u_P3C3R_Conv(y,cb1,cr1,r,g,b);
-                    // CBL_SSE2::Convert_3P_to_3C_16bit( b, g, r);
-                    ssp_convert_3p_3c_epi16( &b, &g, &r);
 
                     b = _mm_packus_epi16 (b, g);			// r = {r5,b4,g4,r4,b3,g3,r3,b2,g2,r2,b1,g1,r1,b0,g0,r0}
                     _mm_storeu_si128 ((__m128i*)pDst, b);
@@ -769,8 +721,6 @@ SYS_INLINE static void YCbCr422ToRGBLS_MCU_16s8u_P3C3R_Conv(const __m128i &y,__m
                     cr1 = _mm_srli_si128(cr,4);
 
                     YCbCr422ToRGBLS_MCU_16s8u_P3C3R_Conv(y1,cb1,cr1,r1,g1,b1);
-                    // CBL_SSE2::Convert_3P_to_3C_16bit( b1, g1, r1);
-                    ssp_convert_3p_3c_epi16( &b1, &g1, &r1);
 
                     r = _mm_packus_epi16 (r, b1);			
                     _mm_storeu_si128 ( ((__m128i*)pDst+1), r );
@@ -809,9 +759,6 @@ SYS_INLINE static FwStatus iYCbCr422ToRGBLS_MCU_16s8u_P3C3R_SSE2(const Fw16s *pS
                     
                     YCbCr422ToRGBLS_MCU_16s8u_P3C3R_Conv(y,cb1,cr1,r,g,b);
 
-                    // CBL_SSE2::Convert_3P_to_3C_16bit( r, g, b);
-                    ssp_convert_3p_3c_epi16( &r, &g, &b);
-                    
                     r = _mm_packus_epi16 (r, g);			// r = {r5,b4,g4,r4,b3,g3,r3,b2,g2,r2,b1,g1,r1,b0,g0,r0}
                     _mm_storeu_si128 ((__m128i*)pDst, r);
 
@@ -823,9 +770,6 @@ SYS_INLINE static FwStatus iYCbCr422ToRGBLS_MCU_16s8u_P3C3R_SSE2(const Fw16s *pS
                     cr1 = _mm_srli_si128(cr,4);
 
                     YCbCr422ToRGBLS_MCU_16s8u_P3C3R_Conv(y1,cb1,cr1,r1,g1,b1);
-                    // CBL_SSE2::Convert_3P_to_3C_16bit( r1, g1, b1);
-                    ssp_convert_3p_3c_epi16( &r1, &g1, &b1);
-
 
                     b = _mm_packus_epi16 (b, r1);			
                     _mm_storeu_si128 ( ((__m128i*)pDst+1), b );
