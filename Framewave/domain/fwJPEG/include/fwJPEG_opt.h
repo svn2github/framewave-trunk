@@ -10,7 +10,7 @@ This software is subject to the Apache v2.0 License.
 #include "fwdev.h"
 #include "fwJPEG.h"
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRGBToY_JPEG_8u_P3C1R)(const Fw8u* const pSrcRGB[3], int srcStep, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRGBToY_JPEG_8u_P3C1R)(const Fw8u* const pSrcRGB[3], int srcStep, 
 							Fw8u* pDstY, int dstStep, FwiSize roiSize);
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRGBToY_JPEG_8u_C3C1R)(const Fw8u* pSrcRGB, int srcStep,
 							Fw8u* pDstY, int dstStep, FwiSize roiSize);

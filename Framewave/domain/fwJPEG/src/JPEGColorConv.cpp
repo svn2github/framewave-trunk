@@ -59,30 +59,35 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToY_JPEG_8u_P3C1R)(const Fw8u * const pSrc
 	if (pSrcRGB[0] == 0 || pSrcRGB[1] == 0 || pSrcRGB[2] == 0 )
 		return fwStsNullPtrErr;
 
-	STEPCHECK(srcStep, dstStep);
-	ROISIZECHECK(roiSize);
+    RGBToY_JPEG_8u_P3C1R  data;
+    if(roiSize.width>32)
+    {
+        return OPT_LEVEL::fe< RGBToY_JPEG_8u_P3C1R >( data, pSrcRGB[0],srcStep,pSrcRGB[1],srcStep,pSrcRGB[2], srcStep, pDstY, dstStep, roiSize ); 
+    }
+    else
+    {
+		if (pSrcRGB == 0 || pDstY == 0) return fwStsNullPtrErr;
+		STEPCHECK(srcStep, dstStep);
+		ROISIZECHECK(roiSize);
 
-	//DEV code use shift 8 bit data for coeffcients
-	//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
-	//We use 77, 150, 29 as the modified coeff, and then shift the result
-	//The final answer is equal to nearest neighbor rounding
-	//SEE2 should use 16 bit data shift
-	unsigned short result;
-	int x, y;
-	int srcPos, dstPos;
-
-	for (y=0;y<roiSize.height; y++) {
-		srcPos = y*srcStep;
-		dstPos = y*dstStep;
-		for (x=0;x<roiSize.width;x++) {
-			//add 0.5 for nearest neighbor rounding
-			result = 77 * pSrcRGB[0][srcPos] + 150 * pSrcRGB[1][srcPos]
-				+ 29 * pSrcRGB[2][srcPos++] + 128;
-			pDstY [dstPos++] = (Fw8u)(result>>8);
-		}
-	}
-
-	return fwStsNoErr;
+        switch( Dispatch::Type<DT_SSE2>() )
+        {
+        case DT_SSE3:
+        case DT_SSE2:
+                if(roiSize.width ==32 && roiSize.height == 32)
+                {
+                    data.SSE_32(pSrcRGB[0],pSrcRGB[1],pSrcRGB[2],srcStep,pDstY, dstStep);
+                }
+                else
+                    data.REF_CODE(pSrcRGB[0],pSrcRGB[1],pSrcRGB[2],srcStep,pDstY,dstStep,roiSize);
+            break;
+        default:
+            {
+                    data.REF_CODE(pSrcRGB[0],pSrcRGB[1],pSrcRGB[2],srcStep,pDstY,dstStep,roiSize);
+            }
+        }
+	    return fwStsNoErr;
+    }
 }
 
 FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToY_JPEG_8u_C3C1R)(const Fw8u *pSrcRGB, int srcStep,

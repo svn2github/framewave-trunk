@@ -561,6 +561,133 @@ public:
 
 
 
+/////////////////
+
+class RGBToY_JPEG_8u_P3C1R : public fe4<Fw8u,C1,Fw8u,C1,Fw8u,C1,Fw8u,C1>
+{
+public:
+    FE_SSE2_REF
+    S16 coey[3];
+    XMM128 coeffR,coeffG,coeffB;
+    RGBToY_JPEG_8u_P3C1R()
+    {
+       //Y = 77*R + 150*G + 29*B
+       coey[0] = 77, coey[1] = 150, coey[2] = 29;
+    }
+    IV SSE2_Init()
+    {
+        coeffR.i  = _mm_set1_epi16(coey[0]);
+        coeffG.i  = _mm_set1_epi16(coey[1]);
+        coeffB.i = _mm_set1_epi16(coey[2]);
+    }
+
+    IV SSE2( RegFile & r ) const									// SSE2 Pixel function
+    {
+        XMM128  regG,regB;
+        r.dst[0].i = r.src1[0].i;
+		regG.i = r.src2[0].i;
+		regB.i = r.src3[0].i;
+
+ 
+		__m128i s1hi,s2hi,s3hi;  
+
+		CBL_SSE2::Unpack8UTo16U(r.dst[0].i,s1hi);
+		CBL_SSE2::Unpack8UTo16U(regG.i,s2hi);
+		CBL_SSE2::Unpack8UTo16U(regB.i,s3hi);
+
+		r.dst[0].i = _mm_mullo_epi16(r.dst[0].i,coeffR.i);
+		regG.i = _mm_mullo_epi16(regG.i,coeffG.i);
+		regB.i = _mm_mullo_epi16(regB.i,coeffB.i);
+
+		s1hi = _mm_mullo_epi16(s1hi,coeffR.i);
+		s2hi = _mm_mullo_epi16(s2hi,coeffG.i);
+		s3hi = _mm_mullo_epi16(s3hi,coeffB.i);
+
+		r.dst[0].i = _mm_add_epi16(r.dst[0].i,regG.i);
+		r.dst[0].i = _mm_add_epi16(r.dst[0].i,regB.i);
+
+		__m128i val128 = _mm_srli_epi16(coeffR.i,7);
+		val128 = _mm_slli_epi16(val128,7);
+
+		r.dst[0].i = _mm_add_epi16(r.dst[0].i,val128);
+
+		s1hi = _mm_add_epi16(s1hi,s2hi);
+		s1hi = _mm_add_epi16(s1hi,s3hi);
+		s1hi = _mm_add_epi16(s1hi,val128);
+
+		r.dst[0].i = _mm_srli_epi16(r.dst[0].i,8);
+		s1hi = _mm_srli_epi16(s1hi,8);
+
+		r.dst[0].i = _mm_packus_epi16(r.dst[0].i,s1hi);
+
+
+    }  
+
+    IV REFR( const Fw8u *r,const Fw8u *g,const Fw8u *b, Fw8u *d1) const
+    {
+        d1[0] = FW_REF::Limits<Fw8u>::Sat((r[0] * coey[0] + g[0] * coey[1] + b[0] * coey[2]+ 128)>>8);
+    }
+
+   IV SSE_32(const Fw8u *src1,const Fw8u *src2,const Fw8u *src3,int srcstep,Fw8u *pDstY,int dststep)
+    {
+        RegFile r;
+        SSE2_Init();
+
+		for(int h=0;h<32;h++)
+        {
+            r.src1[0].i= _mm_loadu_si128((__m128i*)src1);
+            r.src2[0].i= _mm_loadu_si128((__m128i*)(src2));
+            r.src3[0].i= _mm_loadu_si128((__m128i*)(src3));
+            SSE2(r);
+            _mm_storeu_si128((__m128i*)pDstY,r.dst[0].i);
+
+            r.src1[0].i= _mm_loadu_si128((__m128i*)(src1+16));
+            r.src2[0].i= _mm_loadu_si128((__m128i*)(src2+16));
+            r.src3[0].i= _mm_loadu_si128((__m128i*)(src3+16));
+            SSE2(r);
+            _mm_storeu_si128((__m128i*)(pDstY+16),r.dst[0].i);
+            
+            src1+=srcstep;
+            src2+=srcstep;
+            src3+=srcstep;
+            pDstY +=dststep;
+        }
+
+    }
+
+   IV REF_CODE(const Fw8u *pSrc1,const Fw8u *pSrc2,const Fw8u *pSrc3,int srcStep,Fw8u *pDstY, int dstStep, FwiSize roiSize)
+   {
+				//DEV code use shift 8 bit data for coeffcients
+				//0.299*256=76.544, 0.587*256=150.272, 0.114*256=29.184
+				//We use 77, 150, 29 as the modified coeff, and then shift the result
+				//The final answer is equal to nearest neighbor rounding
+				//SEE2 should use 16 bit data shift
+				unsigned short result;
+				int x, y;
+				int srcPos, dstPos;
+
+				for (y=0;y<roiSize.height; y++) {
+					srcPos = y*srcStep;
+					dstPos = y*dstStep;
+					for (x=0;x<roiSize.width;x++) {
+						//add 0.5 for nearest neighbor rounding
+						result = 77 * pSrc1[srcPos] + 150 * pSrc2[srcPos]
+							+ 29 * pSrc3[srcPos] + 128;
+						srcPos ++;
+						pDstY [dstPos++] = (Fw8u)(result>>8);
+					}
+				}
+   }
+
+};
+
+
+
+
+/////////////////
+
+
+
 class BGRToY_JPEG_8u_C3C1 : public fe2<Fw8u,C3,Fw8u,C1>
 {
 public:
