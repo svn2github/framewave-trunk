@@ -2,7 +2,7 @@
 Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
 This software is subject to the Apache v2.0 License.
 */
-
+ 
 // this extern "C" is needed to activate documentation - kludge
 extern "C" {
 
@@ -88,8 +88,8 @@ fwStsLengthErr - Invalid string length.
 
 /*#Documentation
 
-<VersionNumber>1.1.0</VersionNumber>
-<VersionDate>May, 2008</VersionDate>
+<VersionNumber>1.2.0</VersionNumber>
+<VersionDate>Aug, 2008</VersionDate>
 <FrameMaster></FrameMaster>
 <HeaderMaster></HeaderMaster>
 <NavBar></NavBar>
@@ -281,6 +281,69 @@ fwStsLengthErr - Invalid string length.
 </ChangeItem>
 
 </ChangeDescription>
+
+</ChangeEntry>
+
+<ChangeEntry>
+
+<ChangeDate>08/2008</ChangeDate>
+<ChangeVersion>1.2.0</ChangeVersion>
+<ChangeDescription>New functions:
+
+<ChangeItem>3D-Lookup based Color Space Conversion
+
+<ChangeSubItem>fwiLookUp3D_16u_C3R</ChangeSubItem>
+
+<ChangeSubItem>fwiLookUp3D_16u_C3IR</ChangeSubItem>
+</ChangeItem>
+
+<ChangeItem>Auto-Correlation functions
+
+<ChangeSubItem>fwsAutoCorr_32f</ChangeSubItem>
+<ChangeSubItem>fwsAutoCorr_NormA_32f</ChangeSubItem>
+<ChangeSubItem>fwsAutoCorr_NormB_32f</ChangeSubItem>
+
+<ChangeSubItem>fwsAutoCorr_64f</ChangeSubItem>
+<ChangeSubItem>fwsAutoCorr_NormA_64f</ChangeSubItem>
+<ChangeSubItem>fwsAutoCorr_NormB_64f</ChangeSubItem>
+
+<ChangeSubItem>fwsAutoCorr_32fc</ChangeSubItem>
+<ChangeSubItem>fwsAutoCorr_NormA_32fc</ChangeSubItem>
+<ChangeSubItem>fwsAutoCorr_NormB_32fc</ChangeSubItem>
+
+<ChangeSubItem>fwsAutoCorr_64fc</ChangeSubItem>
+<ChangeSubItem>fwsAutoCorr_NormA_64fc</ChangeSubItem>
+<ChangeSubItem>fwsAutoCorr_NormB_64fc</ChangeSubItem>
+
+</ChangeItem>
+
+</ChangeDescription>
+
+<ChangeDescription>Optimized functions:
+
+<ChangeItem>JPEG Functions
+
+<ChangeSubItem>fwiRGBToY_JPEG_8u_C3C1R </ChangeSubItem>
+<ChangeSubItem>fwiYCCKToCMYK_JPEG_8u_P4C4R </ChangeSubItem>
+<ChangeSubItem>fwiYCbCrToRGB_JPEG_8u_P3C3R </ChangeSubItem>
+<ChangeSubItem>fwiCMYKToYCCK_JPEG_8u_C4P4R  </ChangeSubItem>
+<ChangeSubItem>fwiDCTQuantInv8x8LS_JPEG_16s8u_C1R </ChangeSubItem>
+<ChangeSubItem>fwiYCbCr411ToBGRLS_MCU_16s8u_P3C3R </ChangeSubItem>
+<ChangeSubItem>fwiBGRToYCbCr422LS_MCU_8u16s_C3P3R </ChangeSubItem>
+<ChangeSubItem>fwiYCbCr422ToRGBLS_MCU_16s8u_P3C3R </ChangeSubItem>
+<ChangeSubItem>fwiYCbCr422ToBGRLS_MCU_16s8u_P3C3R </ChangeSubItem>
+
+</ChangeItem>
+
+</ChangeDescription>
+
+<ChangeDescription>Other new features:
+
+<ChangeItem>Framewave re-factored to use SSEPlus project (http://sourceforge.net/projects/SSEPlus)</ChangeItem>
+<ChangeItem>Framewave is now tested on Visual Studio 2008 for Windows and GCC 4.3 on Linux </ChangeItem>
+
+</ChangeDescription>
+
 
 </ChangeEntry>
 
