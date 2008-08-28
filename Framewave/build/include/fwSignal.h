@@ -1319,26 +1319,26 @@ FwStatus STDCALL fwsAutoCorr_NormB_64fc(const Fw64fc* pSrc, int srcLen, Fw64fc* 
 //                        fwsMalloc
 ////////////////////////////////////////////////////////////////
 
-Fw8u*   fwsMalloc_8u(int len);
-Fw16u*  fwsMalloc_16u(int len);
-Fw32u*  fwsMalloc_32u(int len);
-Fw8s*   fwsMalloc_8s(int len);
-Fw16s*  fwsMalloc_16s(int len);
-Fw32s*  fwsMalloc_32s(int len);
-Fw64s*  fwsMalloc_64s(int len);
-Fw32f*  fwsMalloc_32f(int len);
-Fw64f*  fwsMalloc_64f(int len);
-Fw16sc* fwsMalloc_16sc(int len);
-Fw32sc* fwsMalloc_32sc(int len);
-Fw64sc* fwsMalloc_64sc(int len);
-Fw32fc* fwsMalloc_32fc(int len);
-Fw64fc* fwsMalloc_64fc(int len);
+Fw8u*   STDCALL fwsMalloc_8u(int len);
+Fw16u*  STDCALL fwsMalloc_16u(int len);
+Fw32u*  STDCALL fwsMalloc_32u(int len);
+Fw8s*   STDCALL fwsMalloc_8s(int len);
+Fw16s*  STDCALL fwsMalloc_16s(int len);
+Fw32s*  STDCALL fwsMalloc_32s(int len);
+Fw64s*  STDCALL fwsMalloc_64s(int len);
+Fw32f*  STDCALL fwsMalloc_32f(int len);
+Fw64f*  STDCALL fwsMalloc_64f(int len);
+Fw16sc* STDCALL fwsMalloc_16sc(int len);
+Fw32sc* STDCALL fwsMalloc_32sc(int len);
+Fw64sc* STDCALL fwsMalloc_64sc(int len);
+Fw32fc* STDCALL fwsMalloc_32fc(int len);
+Fw64fc* STDCALL fwsMalloc_64fc(int len);
 
 ////////////////////////////////////////////////////////////////
 //                        fwsFree
 ////////////////////////////////////////////////////////////////
 
-void fwsFree(void* ptr);
+void STDCALL fwsFree(void* ptr);
 
 #ifdef __cplusplus
 }
