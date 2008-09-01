@@ -8,10 +8,10 @@ This software is subject to the Apache v2.0 License.
 #ifndef __BUILDNUM_H__
 #define __BUILDNUM_H__
 
-#define FW_MAJOR   2
-#define FW_MINOR   0
-#define FW_VERSION 1.2
-#define FW_VERSTR "FW 1.2" // Framewave version 1.2 release
+#define FW_MAJOR   1
+#define FW_MINOR   3
+#define FW_VERSION 1.3
+#define FW_VERSTR "FW 1.3" // Framewave version 1.2 release
 
 
 //---------------------------------------
