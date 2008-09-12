@@ -7,7 +7,7 @@ This software is subject to the Apache v2.0 License.
 #define __CONVERSION_H__
 
 #include "SSE2Intrinsic.h"
-
+#include "cbl_common_primitives.h"
 
 namespace OPT_LEVEL
 {
@@ -165,19 +165,34 @@ namespace
 		srcDest = _mm_setzero_si128();
 	}
 
+
+	SYS_INLINE STATIC void Convert1(const Fw32u *s,  Fw16s * d )
+	{											
+        Fw32s dst = (((Fw32u)*s >> 31) | *s ) & 0x7FFFFFFF;	
+		// *s				= 0x8000FFFF   0x80FFFFFF  0x0000FFFF  0x0F00FFFF  0x00003214
+		// (*s >>31)		= 0xFFFFFFFF   0xFFFFFFFF  0x00000000  0x00000000  0x00000000		
+		// (*s >>31 | *s)	= 0xFFFFFFFF   0xFFFFFFFF  0x0000FFFF  0x0F00FFFF  0x00003214
+		// dst				= 0x7FFFFFFF   0x7FFFFFFF  0x0000FFFF  0x0F00FFFF  0x00003214
+		// *d				= 0x7FFF       0x7FFF      0x7FFF      0x7FFF      0x3214
+		*d = FW_REF::Limits<Fw16s>::Sat(dst);
+	}
+
 	// Convert reference functions
 	template< class TS, class TD >
 	SYS_INLINE STATIC void Convert(const TS *s,  TD * d )
 	{
 		*d = FW_REF::Limits<TD>::Sat(*s);
 	}
+	
 
+	SYS_INLINE STATIC void Convert32u32f(const Fw32u *s,  Fw32f * d )
+	{
+		*d = (Fw32f) (*s);
+	}
 	SYS_INLINE STATIC void Convert32f64f(const Fw32f *s,  Fw64f * d )
 	{
 		*d = (Fw64f) (*s);
 	}
-
-
 	SYS_INLINE STATIC void Convert16u32f(const Fw16u *s,  Fw32f * d )
 	{
 		*d =(Fw32f)(*s);
@@ -189,9 +204,13 @@ namespace
 			    *d = (Fw32f) MAX(val,-3.4028235e+38);	
 	}
 
-
-
 	SYS_INLINE STATIC void ConvertScale16s32f(const Fw16s *s,  Fw32f * d, int scale)
+	{
+		*d = (Fw32f)*s;
+		*d = FW_REF::Scale(*d,  scale);	
+	}
+
+	SYS_INLINE STATIC void ConvertScale16u32f(const Fw16u *s,  Fw32f * d, int scale)
 	{
 		*d = (Fw32f)*s;
 		*d = FW_REF::Scale(*d,  scale);	
@@ -315,6 +334,12 @@ namespace
 		dest = _mm_unpacklo_epi8(src, mask);
 	}
 
+	SYS_INLINE void sConvert_8u16s_sse2_S(const __m128i &src,__m128i &dest)
+	{
+		const __m128i zero =  CONST_SETZERO_8I();
+		dest = _mm_unpacklo_epi8( src, zero );
+	}
+
 	SYS_INLINE void sConvert_8s32f_sse2_S(const __m128i &src,__m128 &dest )
 	{
 		__m128i mask = _mm_cmplt_epi8(src, _mm_setzero_si128());
@@ -339,6 +364,13 @@ namespace
 		__m128i signExt = _mm_cmplt_epi16(src,zero);
 		dest = _mm_unpacklo_epi16(src,signExt);	// unpack to 32 bit (sign extend)
 	}
+
+	SYS_INLINE void sConvert_16u32s_sse2_S(const __m128i &src,__m128i &dest )
+	{
+		const __m128i zero = _mm_setzero_si128();
+		dest = _mm_unpacklo_epi16(src,zero);	// unpack to 32 bit (sign extend)
+	}
+
 	SYS_INLINE void sConvert_16s32f_sse2_S(const __m128i &src,__m128 &dest )
 	{
 		const __m128i zero = _mm_setzero_si128();
@@ -355,13 +387,41 @@ namespace
 	{
 		dest = _mm_packs_epi32(src, src);	// Upper half will be ignored
 	}
+	SYS_INLINE STATIC void sConvert_32u16s_sse2_S(const __m128i &src,__m128i &dest, const __m128i &shiftone,const __m128i &shift31)
+	{												// src = 0x8000FFFF   0x80FFFFFF  0x00003214  0x0F00FFFF   
+		__m128i dst = _mm_sra_epi32(src,shift31);	// dst = 0xFFFFFFFF   0xFFFFFFFF  0x00000000  0x00000000  
+		dst = _mm_or_si128(dst,src);				// dst = 0xFFFFFFFF   0xFFFFFFFF  0x00003214  0x0F00FFFF  
+		dst = _mm_sll_epi32(dst,shiftone);			
+		dst = _mm_srl_epi32(dst,shiftone);			// dst = 0x7FFFFFFF   0x7FFFFFFF  0x00003214  0x0F00FFFF  
+		dest = _mm_packs_epi32(dst, dst);			//dest = 0x7FFF7FFF   0x32147FFF  0x7FFF7FFF  0x32147FFF 
+											        // Upper half will be ignored
+	}
 	SYS_INLINE STATIC void sConvert_32s32f_sse2_S(const __m128i &src,__m128 &dest )
 	{
 		dest = _mm_cvtepi32_ps(src);
 	}
+	SYS_INLINE STATIC void sConvert_32u32f_sse2_S(const __m128i &src,__m128 &dest )
+	{
+		XMM128 temp,dst;
+		temp.i = src; 
+		dst.f32[0] = (F32)temp.u32[0];
+		dst.f32[1] = (F32)temp.u32[1];
+		dst.f32[2] = (F32)temp.u32[2];
+		dst.f32[3] = (F32)temp.u32[3];
+		dest = dst.f;
+	}	
 	SYS_INLINE STATIC void sConvert_32s64f_sse2_S(const __m128i &src,__m128d &dest )
 	{
 		dest = _mm_cvtepi32_pd(src);
+	}
+	SYS_INLINE STATIC void sConvert_32u64f_sse2_S(const __m128i &src,__m128d &dest )
+	{
+		dest = _mm_cvtepi32_pd(src);
+		XMM128 temp,dst;
+		temp.i = src;
+		dst.f64[0] = (F64)temp.u32[0];
+		dst.f64[1] = (F64)temp.u32[1];
+		dest = dst.d;
 	}
 	SYS_INLINE STATIC void sConvert_32f64f_sse2_S(const __m128 &src,__m128d &dest )
 	{
@@ -396,6 +456,13 @@ namespace
 		dest = _mm_mul_ps(dstf,scale);	// scale it
 	}
 
+	SYS_INLINE void sConvert_16u32f_Sfs_sse2_S(const __m128i &src,__m128 &dest,const __m128 &scale )
+	{
+		__m128i zero = _mm_setzero_si128();
+		__m128i dst  = _mm_unpacklo_epi16(src,zero);	// unpack to 32 bit (sign extend)
+		__m128 dstf = _mm_cvtepi32_ps(dst);
+		dest = _mm_mul_ps(dstf,scale);	// scale it
+	}
 
 	SYS_INLINE STATIC void sConvert_16s64f_Sfs_setup_S(__m128d &iscale,const int &scale)
 	{

@@ -65,6 +65,11 @@ using namespace OPT_LEVEL;
 		Convert_8s16s data;
 		return OPT_LEVEL::fe<Convert_8s16s>( data,pSrc, pDst, len );
 	}
+	FwStatus PREFIX_OPT(OPT_PREFIX, fwsConvert_8u16s)(const Fw8u* pSrc,Fw16s* pDst, int len)
+	{
+		Convert_8u16s data;
+		return OPT_LEVEL::fe<Convert_8u16s>( data,pSrc, pDst, len );
+	}
 	FwStatus PREFIX_OPT(OPT_PREFIX, fwsConvert_8s32f)(const Fw8s* pSrc, Fw32f* pDst, int len)
 	{
 		Convert_8s32f data;
@@ -79,6 +84,11 @@ using namespace OPT_LEVEL;
 	{
 		Convert_16s32s data;
 		return OPT_LEVEL::fe<Convert_16s32s>(data, pSrc, pDst, len );
+	}
+	FwStatus PREFIX_OPT(OPT_PREFIX, fwsConvert_16u32s)(const Fw16u* pSrc, Fw32s* pDst, int len)
+	{
+		Convert_16u32s data;
+		return OPT_LEVEL::fe<Convert_16u32s>(data, pSrc, pDst, len );
 	}
 	FwStatus PREFIX_OPT(OPT_PREFIX, fwsConvert_16s32f)(const Fw16s* pSrc, Fw32f* pDst, int len)
 	{
@@ -98,15 +108,30 @@ using namespace OPT_LEVEL;
 		Convert_32s16s data;
 		return OPT_LEVEL::fe<Convert_32s16s>(data, pSrc, pDst, len );
 	}
+	FwStatus PREFIX_OPT(OPT_PREFIX, fwsConvert_32u16s)(const Fw32u* pSrc, Fw16s* pDst, int len)
+	{
+		Convert_32u16s data;
+		return OPT_LEVEL::fe<Convert_32u16s>(data, pSrc, pDst, len );
+	}
 	FwStatus PREFIX_OPT(OPT_PREFIX, fwsConvert_32s32f)(const Fw32s* pSrc, Fw32f* pDst, int len)
 	{
 		Convert_32s32f data;
 		return OPT_LEVEL::fe<Convert_32s32f>(data, pSrc, pDst, len );
 	}
+	FwStatus PREFIX_OPT(OPT_PREFIX, fwsConvert_32u32f)(const Fw32u* pSrc, Fw32f* pDst, int len)
+	{
+		Convert_32u32f data;
+		return OPT_LEVEL::fe<Convert_32u32f>(data, pSrc, pDst, len );
+	}
 	FwStatus PREFIX_OPT(OPT_PREFIX, fwsConvert_32s64f)(const Fw32s* pSrc, Fw64f* pDst, int len)
 	{
 		Convert_32s64f data;
 		return OPT_LEVEL::fe<Convert_32s64f>(data, pSrc, pDst, len );
+	}
+	FwStatus PREFIX_OPT(OPT_PREFIX, fwsConvert_32u64f)(const Fw32u* pSrc, Fw64f* pDst, int len)
+	{
+		Convert_32u64f data;
+		return OPT_LEVEL::fe<Convert_32u64f>(data, pSrc, pDst, len );
 	}
 	FwStatus PREFIX_OPT(OPT_PREFIX, fwsConvert_32f64f)(const Fw32f* pSrc, Fw64f* pDst, int len)
 	{
@@ -123,6 +148,11 @@ using namespace OPT_LEVEL;
 	{
 		Convert_16s32f_Sfs data(scaleFactor);
 		return OPT_LEVEL::fe<Convert_16s32f_Sfs>( data,pSrc, pDst, len );
+	}
+	FwStatus PREFIX_OPT(OPT_PREFIX, fwsConvert_16u32f_Sfs)(const Fw16u* pSrc, Fw32f* pDst, int len, int scaleFactor)
+	{
+		Convert_16u32f_Sfs data(scaleFactor);
+		return OPT_LEVEL::fe<Convert_16u32f_Sfs>( data,pSrc, pDst, len );
 	}
 	FwStatus PREFIX_OPT(OPT_PREFIX, fwsConvert_16s64f_Sfs)(const Fw16s* pSrc, Fw64f* pDst, int len, int scaleFactor)
 	{

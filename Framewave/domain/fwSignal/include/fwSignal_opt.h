@@ -429,19 +429,26 @@ OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsMagnitude_16s_Sfs)(
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsMagnitude_16sc_Sfs)(const Fw16sc* pSrc, Fw16s* pDst, int len, int scaleFactor);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsMagnitude_32sc_Sfs)(const Fw32sc* pSrc, Fw32s* pDst, int len, int scaleFactor);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_8s16s)(const Fw8s* pSrc,Fw16s* pDst, int len);
+OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_8u16s)(const Fw8u* pSrc,Fw16s* pDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_8s32f)(const Fw8s* pSrc, Fw32f* pDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_8u32f)(const Fw8u* pSrc, Fw32f* pDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_16s32s)(const Fw16s* pSrc, Fw32s* pDst, int len);
+OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_16u32s)(const Fw16u* pSrc, Fw32s* pDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_16s32f)(const Fw16s* pSrc, Fw32f* pDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_16u32f)(const Fw16u* pSrc, Fw32f* pDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_32s16s)(const Fw32s* pSrc, Fw16s* pDst, int len);
+OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_32u16s)(const Fw32u* pSrc, Fw16s* pDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_32s32f)(const Fw32s* pSrc, Fw32f* pDst, int len);
+OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_32u32f)(const Fw32u* pSrc, Fw32f* pDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_32s64f)(const Fw32s* pSrc, Fw64f* pDst, int len);
+OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_32u64f)(const Fw32u* pSrc, Fw64f* pDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_32f64f)(const Fw32f* pSrc, Fw64f* pDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_64f32f)(const Fw64f* pSrc, Fw32f* pDst, int len);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_16s32f_Sfs)(const Fw16s* pSrc, Fw32f* pDst, int len, int scaleFactor);
+OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_16u32f_Sfs)(const Fw16u* pSrc, Fw32f* pDst, int len, int scaleFactor);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_16s64f_Sfs)(const Fw16s* pSrc, Fw64f* pDst, int len, int scaleFactor);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_32s16s_Sfs)(const Fw32s* pSrc, Fw16s* pDst, int len, int scaleFactor);
+
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_32s32f_Sfs)(const Fw32s* pSrc, Fw32f* pDst, int len, int scaleFactor);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_32s64f_Sfs)(const Fw32s* pSrc, Fw64f* pDst, int len, int scaleFactor);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwsConvert_32f8s_Sfs)(const Fw32f* pSrc, Fw8s* pDst, int len, FwRoundMode rndMode, int scaleFactor);

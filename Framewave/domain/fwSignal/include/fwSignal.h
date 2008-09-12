@@ -1010,18 +1010,24 @@ TODO:publish
 #ReturnValues - fwStsNoErr, fwStsNullPtrErr, fwStsStepErr, fwStsSizeErr
 */
 FwStatus STDCALL fwsConvert_8s16s         ( const Fw8s  *pSrc, Fw16s *pDst, int len );
+FwStatus STDCALL fwsConvert_8u16s         ( const Fw8s  *pSrc, Fw16s *pDst, int len );
 FwStatus STDCALL fwsConvert_8s32f         ( const Fw8s  *pSrc, Fw32f *pDst, int len );
 FwStatus STDCALL fwsConvert_8u32f         ( const Fw8u  *pSrc, Fw32f *pDst, int len );
 FwStatus STDCALL fwsConvert_16s32s        ( const Fw16s *pSrc, Fw32s *pDst, int len );
+FwStatus STDCALL fwsConvert_16u32s        ( const Fw16u *pSrc, Fw32s *pDst, int len );
 FwStatus STDCALL fwsConvert_16s32f        ( const Fw16s *pSrc, Fw32f *pDst, int len );
 FwStatus STDCALL fwsConvert_16u32f        ( const Fw16u *pSrc, Fw32f *pDst, int len );
 FwStatus STDCALL fwsConvert_32s16s        ( const Fw32s *pSrc, Fw16s *pDst, int len );
+FwStatus STDCALL fwsConvert_32u16s        ( const Fw32u *pSrc, Fw16s *pDst, int len );
 FwStatus STDCALL fwsConvert_32s32f        ( const Fw32s *pSrc, Fw32f *pDst, int len );
+FwStatus STDCALL fwsConvert_32u32f        ( const Fw32u *pSrc, Fw32f *pDst, int len );
 FwStatus STDCALL fwsConvert_32s64f        ( const Fw32s *pSrc, Fw64f *pDst, int len );
+FwStatus STDCALL fwsConvert_32u64f        ( const Fw32u *pSrc, Fw64f *pDst, int len );
 FwStatus STDCALL fwsConvert_32f64f        ( const Fw32f *pSrc, Fw64f *pDst, int len );
 FwStatus STDCALL fwsConvert_64f32f        ( const Fw64f *pSrc, Fw32f *pDst, int len );
 
 FwStatus STDCALL fwsConvert_16s32f_Sfs    ( const Fw16s *pSrc, Fw32f *pDst, int len, int scaleFactor );
+FwStatus STDCALL fwsConvert_16u32f_Sfs    ( const Fw16u *pSrc, Fw32f *pDst, int len, int scaleFactor );
 FwStatus STDCALL fwsConvert_16s64f_Sfs    ( const Fw16s *pSrc, Fw64f *pDst, int len, int scaleFactor );
 FwStatus STDCALL fwsConvert_32s16s_Sfs    ( const Fw32s *pSrc, Fw16s *pDst, int len, int scaleFactor );
 FwStatus STDCALL fwsConvert_32s32f_Sfs    ( const Fw32s *pSrc, Fw32f *pDst, int len, int scaleFactor );

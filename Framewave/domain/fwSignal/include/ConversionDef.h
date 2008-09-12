@@ -28,6 +28,21 @@ struct Convert_8s16s: public fe2<Fw8s, C1,Fw16s,C1>
 	}  
 };
 
+struct Convert_8u16s: public fe2<Fw8u, C1,Fw16s,C1>
+{
+	FE_SSE2_REF
+	IV SSE2_Init(){}
+
+	IV SSE2( RegFile & r ) const                        // SSE2 Pixel function
+	{         
+		sConvert_8u16s_sse2_S(r.src1[0].i,r.dst[0].i);
+	}      
+	IV REFR(const Fw8u *s,Fw16s *d) const                        // REFR Pixel function
+	{         
+		Convert(s,d);
+	}  
+};
+
 struct Convert_8s32f: public fe2<Fw8s, C1,Fw32f,C1>
 {
 	FE_SSE2_REF
@@ -75,7 +90,20 @@ struct Convert_16s32s: public fe2<Fw16s, C1,Fw32s,C1>
 	}  
 };
 
+struct Convert_16u32s: public fe2<Fw16u, C1,Fw32s,C1>
+{
+	FE_SSE2_REF
+	IV SSE2_Init(){}
 
+	IV SSE2( RegFile & r ) const                        // SSE2 Pixel function
+	{         
+		sConvert_16u32s_sse2_S(r.src1[0].i,r.dst[0].i);
+	}      
+	IV REFR(const Fw16u *s,Fw32s *d) const                        // REFR Pixel function
+	{         
+		Convert(s,d);
+	}  
+};
 
 struct Convert_16s32f: public fe2<Fw16s, C1,Fw32f,C1>
 {
@@ -125,6 +153,26 @@ struct Convert_32s16s: public fe2<Fw32s, C1,Fw16s,C1>
 	}  
 };
 
+struct Convert_32u16s: public fe2<Fw32u, C1,Fw16s,C1>
+{
+	FE_SSE2_REF
+	__m128i shiftone;
+	__m128i shift31;
+	IV SSE2_Init(){
+		shiftone = _mm_set_epi32(0,0,0,1);
+		shift31 = _mm_set_epi32(0,0,0,31);
+	}
+
+	IV SSE2( RegFile & r ) const                        // SSE2 Pixel function
+	{         
+		sConvert_32u16s_sse2_S(r.src1[0].i,r.dst[0].i,shiftone,shift31);
+	}      
+	IV REFR(const Fw32u *s,Fw16s *d) const                        // REFR Pixel function
+	{   
+		Convert1(s,d);
+	}  
+};
+
 struct Convert_32s32f: public fe2<Fw32s, C1,Fw32f,C1>
 {
 	FE_SSE2_REF
@@ -137,9 +185,23 @@ struct Convert_32s32f: public fe2<Fw32s, C1,Fw32f,C1>
 	IV REFR(const Fw32s *s,Fw32f *d) const                        // REFR Pixel function
 	{         
 		Convert(s,d);
-	}  
+	}
 };
 
+struct Convert_32u32f: public fe2<Fw32u, C1,Fw32f,C1>
+{
+	FE_SSE2_REF
+	IV SSE2_Init(){}
+
+	IV SSE2( RegFile & r ) const                        // SSE2 Pixel function
+	{         
+		sConvert_32u32f_sse2_S(r.src1[0].i,r.dst[0].f);
+	}      
+	IV REFR(const Fw32u *s,Fw32f *d) const                        // REFR Pixel function
+	{         
+		Convert32u32f(s,d);
+	}  
+};
 
 struct Convert_32s64f: public fe2<Fw32s, C1,Fw64f,C1>
 {
@@ -156,6 +218,20 @@ struct Convert_32s64f: public fe2<Fw32s, C1,Fw64f,C1>
 	}  
 };
 
+struct Convert_32u64f: public fe2<Fw32u, C1,Fw64f,C1>
+{
+	FE_SSE2_REF
+	IV SSE2_Init(){}
+
+	IV SSE2( RegFile & r ) const                        // SSE2 Pixel function
+	{         
+		sConvert_32u64f_sse2_S(r.src1[0].i,r.dst[0].d);
+	}      
+	IV REFR(const Fw32u *s,Fw64f *d) const                        // REFR Pixel function
+	{         
+		Convert(s,d);
+	}  
+};
 
 struct Convert_32f64f: public fe2<Fw32f, C1,Fw64f,C1>
 {
@@ -227,7 +303,25 @@ struct Convert_16s32f_Sfs: public ConvertGen<Fw16s,Fw32f>
 	}
 };
 	
+struct Convert_16u32f_Sfs: public ConvertGen<Fw16u,Fw32f>
+{
+	Convert_16u32f_Sfs(int s) : ConvertGen<Fw16u,Fw32f>(s){}
 
+	FE_SSE2_REF
+	IV SSE2_Init()
+	{
+		sConvert_16s32f_Sfs_setup_S(iscale.f,scale); //same as 16s
+	}
+
+	IV SSE2( RegFile & r ) const                        // SSE2 Pixel function
+	{         
+		sConvert_16u32f_Sfs_sse2_S(r.src1[0].i,r.dst[0].f,iscale.f);
+	}      
+	IV REFR(const Fw16u *s,Fw32f *d) const                        // REFR Pixel function
+	{         
+		ConvertScale16u32f(s,d,scale);
+	}
+};
 
 
 struct Convert_16s64f_Sfs: public ConvertGen<Fw16s,Fw64f>
