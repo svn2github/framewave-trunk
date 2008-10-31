@@ -7032,7 +7032,7 @@ TODO:edit
 #ReturnValues - fwStsNullPtrErr, fwStsNoErr
 */
 
-FwStatus STDCALL fwiLookUp3DSpecInitAlloc(const Fw16u cubeDimensions[3], const Fw16u cubeMax[3], FwiLUTSpec** ppLUTSpec);
+FwStatus STDCALL fwiLookUp3DSpecInitAlloc(const Fw16u cubeDimensions, const Fw16u cubeMax, FwiLUTSpec** ppLUTSpec);
 
 /*#FunctionBlock - LookUp3DSpecInitAlloc
 TODO:edit
@@ -7045,8 +7045,8 @@ pixel in the new color space. <Bold>pCube</Bold>points to a 3 dimensional cube. 
 #ReturnValues - fwStsNullPtrErr, fwStsNoErr
 */
 
-FwStatus STDCALL fwiLookUp3D_16u_C3R(const Fw16u *pSrc, int srcStep, Fw16u *pDst, int dstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec);
-FwStatus STDCALL fwiLookUp3D_16u_C3IR(Fw16u *pSrcDst, int srcDstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec);
+FwStatus STDCALL fwiLookUp3D_16u_C3R(const Fw16u *pSrc, int srcStep, Fw16u *pDst, int dstStep, FwiSize roiSize, const Fw16u *pCube, FwiLUTSpec* pLUTSpec);
+FwStatus STDCALL fwiLookUp3D_16u_C3IR(Fw16u *pSrcDst, int srcDstStep, FwiSize roiSize, const Fw16u *pCube, FwiLUTSpec* pLUTSpec);
 
 /*#FunctionBlock - LookUp3DSpecFree 
 TODO:edit

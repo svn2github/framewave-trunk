@@ -7,17 +7,17 @@ This software is subject to the Apache v2.0 License.
 
 using namespace OPT_LEVEL;
 
-ASTAT PREFIX_OPT(OPT_PREFIX, fwiLookUp3DSpecInitAlloc)(const Fw16u cubeDimensions[3], const Fw16u cubeMax[3], FwiLUTSpec** ppLUTSpec)
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiLookUp3DSpecInitAlloc)(const Fw16u cubeDimensions, const Fw16u cubeMax, FwiLUTSpec** ppLUTSpec)
     {
     return LookUp3DSpecInitAlloc(cubeDimensions, cubeMax, ppLUTSpec);
     }
 
-ASTAT PREFIX_OPT(OPT_PREFIX, fwiLookUp3D_16u_C3R)(const Fw16u *pSrc, int srcStep, Fw16u *pDst, int dstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec)
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiLookUp3D_16u_C3R)(const Fw16u *pSrc, int srcStep, Fw16u *pDst, int dstStep, FwiSize roiSize, const Fw16u *pCube, FwiLUTSpec* pLUTSpec)
     {
     return LookUp3D_16u_C3R(pSrc, srcStep, pDst, dstStep, roiSize, pCube, pLUTSpec);
     }
 
-ASTAT PREFIX_OPT(OPT_PREFIX, fwiLookUp3D_16u_C3IR)(Fw16u *pSrcDst, int srcDstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec)
+ASTAT PREFIX_OPT(OPT_PREFIX, fwiLookUp3D_16u_C3IR)(Fw16u *pSrcDst, int srcDstStep, FwiSize roiSize, const Fw16u *pCube, FwiLUTSpec* pLUTSpec)
     {
     return LookUp3D_16u_C3IR(pSrcDst, srcDstStep, roiSize, pCube, pLUTSpec);
     }
