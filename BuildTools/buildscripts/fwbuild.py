@@ -38,6 +38,7 @@ class fwBuildRoot:
         self.dctFwVars['toolset']        = ARGUMENTS.get('toolset',   '---')
         self.dctFwVars['wincrt']         = ARGUMENTS.get('wincrt',    '---')
         self.dctFwVars['thread']         = ARGUMENTS.get('thread',    'pthread')
+        self.dctFwVars['CCFLAGS']         = ARGUMENTS.get('CCFLAGS',    '')
 
 
         if self.dctFwVars['thread'] == 'systemboost':
@@ -84,7 +85,7 @@ class fwBuildRoot:
             self.dctFwVars['debuginfo'] = 'off'
 
         curEnviron = createEnviron()
-        self.oEnv = Environment( toolpath=buildtoolspath, tools=buildtools, ENV=curEnviron, FWVARS=self.dctFwVars )
+        self.oEnv = Environment( CCFLAGS = self.dctFwVars['CCFLAGS'] , toolpath=buildtoolspath, tools=buildtools, ENV=curEnviron, FWVARS=self.dctFwVars )
 
 		# fixup paths back to what they were before scons messed them up [BUGBUG: SCons issue, this is the workaround]
         if ((sys.platform=='win32') and (self.dctFwVars['bitness']!='32')):
