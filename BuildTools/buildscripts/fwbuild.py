@@ -40,6 +40,10 @@ class fwBuildRoot:
         self.dctFwVars['thread']         = ARGUMENTS.get('thread',    'pthread')
         self.dctFwVars['CCFLAGS']         = ARGUMENTS.get('CCFLAGS',    '')
 
+        self.dctFwVars['REF_CCFLAGS']         = ARGUMENTS.get('REF_CCFLAGS',    '')
+        self.dctFwVars['SSE2_CCFLAGS']         = ARGUMENTS.get('SSE2_CCFLAGS',    '')
+        self.dctFwVars['F10H_CCFLAGS']         = ARGUMENTS.get('F10H_CCFLAGS',    '')
+
 
         if self.dctFwVars['thread'] == 'systemboost':
         	self.dctFwVars['thread'] = 'boost_thread-mt'

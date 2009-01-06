@@ -56,7 +56,12 @@ class fwFlags_suncc(fwFlagsBase):
     def __init__ (self, oEnv, lstBuildFactors, sObjectType):
         # Call constructor for base class
         fwFlagsBase.__init__(self, oEnv)
-        
+
+        dctFwVars =  oEnv['FWVARS']
+        dctCCFlags[dctFwVars['REF_CCFLAGS']]   = [ref]
+        dctCCFlags[dctFwVars['SSE2_CCFLAGS']]  = [ss2]
+        dctCCFlags[dctFwVars['F10H_CCFLAGS']]  = [f10]
+
         # Select flags to setup based on what kind of
         # build object are we setting up flags for
         if sObjectType=='library':

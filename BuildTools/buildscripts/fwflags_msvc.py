@@ -26,6 +26,9 @@ dctCCFlags[r'/O2']           = [rel]
 dctCCFlags[r'/Od']           = [dbg]
 dctCCFlags[r'/favor:AMD64']  = [rel, b64, [ss2, ss3, f10]]
 
+
+
+
 dctCCFlags[r'/GS-']          = []
 dctCCFlags[r'/EHa']          = []
 dctCCFlags[r'/RTC1']         = [dbg]
@@ -64,6 +67,7 @@ dctCCFlags[r'/FD']           = [rel]
 dctCCFlags[r'/errorReport:prompt'] = []
 
 
+
 # Multipass flag
 for ol in oOptimizationLevels[:maxImplementedOptimizationLevel]:
     # For every flag, set the requirement to be its corresponding path
@@ -93,7 +97,12 @@ class fwFlags_msvc(fwFlagsBase):
     def __init__ (self, oEnv, lstBuildFactors, sObjectType):
         # Call constructor for base class
         fwFlagsBase.__init__(self, oEnv)
-        
+
+        dctFwVars =  oEnv['FWVARS']
+        dctCCFlags[dctFwVars['REF_CCFLAGS']]   = [ref]
+        dctCCFlags[dctFwVars['SSE2_CCFLAGS']]  = [ss2]
+        dctCCFlags[dctFwVars['F10H_CCFLAGS']]  = [f10]
+
         # Select flags to setup based on what kind of
         # build object are we setting up flags for
         if sObjectType=='library':

@@ -78,7 +78,14 @@ class fwFlags_gcc(fwFlagsBase):
 
         # Select flags to setup based on what kind of
         # build object are we setting up flags for
+
+
+
         dctFwVars = oEnv['FWVARS']
+
+        dctCCFlags[dctFwVars['REF_CCFLAGS']]   = [ref]
+        dctCCFlags[dctFwVars['SSE2_CCFLAGS']]  = [ss2]
+        dctCCFlags[dctFwVars['F10H_CCFLAGS']]  = [f10]
 
         dctLDFlags[r'-l' + dctFwVars['thread'] + ' -Wl,-soname,lib${PROJECTNAME}.so.1'] = [shr, lin]
         if sObjectType=='library':
