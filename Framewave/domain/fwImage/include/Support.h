@@ -19,7 +19,7 @@ namespace{
 		
 		// Determine how many bytes to pad at the end of each line
 		int pad = *pStepBytes%4;
-		if(pad > 0) pad = pad-4;
+		if(pad > 0) pad = 4-pad;
 
 		// Calculate size, and allocate!
 		*pStepBytes += pad;
