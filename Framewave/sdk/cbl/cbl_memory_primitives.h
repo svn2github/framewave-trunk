@@ -601,7 +601,7 @@ CBL_INLINE void CBL_REF::LUT_8u( __m128i & reg, U8* table )
 {
     XMM128 & r = reinterpret_cast<XMM128&>(reg);
 	for (int i = 0; i < 16; i++)
-		r.u8[0] = table[r.u8[0]];
+		r.u8[i] = table[r.u8[i]];
 }
 
 #endif // __CBL_MEMORY_PRIMITIVES_H__
