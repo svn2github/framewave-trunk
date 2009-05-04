@@ -471,7 +471,7 @@ OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDivC_16sc_AC4IRSfs	
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDivC_16sc_C1RSfs		)( const Fw16sc *pSrc, int srcStep,       Fw16sc value,    Fw16sc *pDst, int dstStep, FwiSize roiSize, int scaleFactor );
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDivC_16sc_C3RSfs		)( const Fw16sc *pSrc, int srcStep, const Fw16sc value[3], Fw16sc *pDst, int dstStep, FwiSize roiSize, int scaleFactor );
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDivC_16sc_AC4RSfs		)( const Fw16sc *pSrc, int srcStep, const Fw16sc value[3], Fw16sc *pDst, int dstStep, FwiSize roiSize, int scaleFactor );
-OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDivC_32sc_C1IRSfs		)(       Fw32sc value,    Fw32sc *pSrcDst, int srcDstStep, FwiSize roiSize, int scaleFactor );	
+OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDivC_32sc_C1IRSfs		)(       Fw32sc value,    Fw32sc *pSrcDst, int srcDstStep, FwiSize roiSize, int scaleFactor );
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDivC_32sc_C3IRSfs 		)( const Fw32sc value[3], Fw32sc *pSrcDst, int srcDstStep, FwiSize roiSize, int scaleFactor );
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDivC_32sc_AC4IRSfs		)( const Fw32sc value[3], Fw32sc *pSrcDst, int srcDstStep, FwiSize roiSize, int scaleFactor );
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDivC_32sc_C1RSfs		)( const Fw32sc *pSrc, int srcStep, Fw32sc value, Fw32sc *pDst, int dstStep, FwiSize roiSize, int scaleFactor );
@@ -818,13 +818,13 @@ OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiAndC_32s_C3R 			)( 
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiAndC_32s_AC4R 			)( const Fw32s  *pSrc, int srcStep, const Fw32s value[3], Fw32s *pDst, int dstStep, FwiSize roiSize );
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiAndC_32s_C4R 			)( const Fw32s  *pSrc, int srcStep, const Fw32s value[4], Fw32s *pDst, int dstStep, FwiSize roiSize );
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiComplement_32s_C1IR		)(Fw32s* pSrcDst, int srcDstStep,FwiSize roiSize );
-OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiNot_8u_C1IR  			)( Fw8u *pSrcDst, int srcDstStep, FwiSize roiSize);	
+OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiNot_8u_C1IR  			)( Fw8u *pSrcDst, int srcDstStep, FwiSize roiSize);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiNot_8u_C3IR				)( Fw8u *pSrcDst, int srcDstStep, FwiSize roiSize);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiNot_8u_AC4IR			)( Fw8u *pSrcDst, int srcDstStep, FwiSize roiSize);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiNot_8u_C4IR				)( Fw8u *pSrcDst, int srcDstStep, FwiSize roiSize);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiNot_8u_C1R  			)( const Fw8u   *pSrc, int srcStep,    Fw8u *pDst, int dstStep, FwiSize roiSize);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiNot_8u_C3R  			)( const Fw8u   *pSrc, int srcStep,    Fw8u *pDst, int dstStep, FwiSize roiSize);
-OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiNot_8u_AC4R  			)( const Fw8u   *pSrc, int srcStep,    Fw8u *pDst, int dstStep, FwiSize roiSize); 
+OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiNot_8u_AC4R  			)( const Fw8u   *pSrc, int srcStep,    Fw8u *pDst, int dstStep, FwiSize roiSize);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiNot_8u_C4R  			)( const Fw8u   *pSrc, int srcStep,    Fw8u *pDst, int dstStep, FwiSize roiSize);
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiOr_8u_C1IR 				)( const Fw8u	*pSrc,  int srcStep,        Fw8u *pSrcDst, int srcDstStep, FwiSize roiSize );
 OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiOr_8u_C3IR 				)( const Fw8u	*pSrc,  int srcStep,        Fw8u *pSrcDst, int srcDstStep, FwiSize roiSize );
@@ -1274,380 +1274,380 @@ OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Fwd_16s_C1I )(Fw16s
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_16s_C1 )(const Fw16s* pSrc, Fw16s* pDst);
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiDCT8x8Inv_16s_C1I )(Fw16s* pSrcDst);
 
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_8u_C1R )( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_8u_C1R )( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw8u* pDst, int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_8u_C3R )( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_8u_C3R )( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw8u* pDst, int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_8u_C4R )( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_8u_C4R )( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw8u* pDst, int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw8u* pDst, int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_16u_C1R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_16u_C1R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw16u* pDst, int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_16u_C3R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_16u_C3R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw16u* pDst, int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_16u_C4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_16u_C4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw16u* pDst, int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_16u_AC4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_16u_AC4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							  Fw16u* pDst, int dstStep, FwiSize dstRoiSize,
 							  double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw32f* pDst, int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw32f* pDst, int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw32f* pDst, int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							  Fw32f* pDst, int dstStep, FwiSize dstRoiSize,
 							  double xFactor, double yFactor, int interpolation );
 
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_8u_P3R )( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_8u_P3R )( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw8u* const pDst[3], int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_16u_P3R)( const Fw16u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_16u_P3R)( const Fw16u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw16u* const pDst[3], int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw32f* const pDst[3], int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_8u_P4R )( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_8u_P4R )( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw8u* const pDst[4], int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_16u_P4R)( const Fw16u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_16u_P4R)( const Fw16u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw16u* const pDst[4], int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResize_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 							 Fw32f* const pDst[4], int dstStep, FwiSize dstRoiSize,
 							 double xFactor, double yFactor, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_8u_C1R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_8u_C1R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw8u* pDst, int dstStep, FwiSize dstRoiSize,
 								  double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_8u_C3R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_8u_C3R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw8u* pDst, int dstStep, FwiSize dstRoiSize,
 								  double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_8u_C4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_8u_C4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw8u* pDst, int dstStep, FwiSize dstRoiSize,
 							      double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								   Fw8u* pDst, int dstStep, FwiSize dstRoiSize,
 								   double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_16u_C1R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_16u_C1R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								   Fw16u* pDst, int dstStep, FwiSize dstRoiSize,
 								   double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_16u_C3R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_16u_C3R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								   Fw16u* pDst, int dstStep, FwiSize dstRoiSize,
 								   double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_16u_C4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_16u_C4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								   Fw16u* pDst, int dstStep, FwiSize dstRoiSize,
 								   double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_16u_AC4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_16u_AC4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								    Fw16u* pDst, int dstStep, FwiSize dstRoiSize,
 								    double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								   Fw32f* pDst, int dstStep, FwiSize dstRoiSize,
 								   double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								   Fw32f* pDst, int dstStep, FwiSize dstRoiSize,
 								   double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								   Fw32f* pDst, int dstStep, FwiSize dstRoiSize,
 								   double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								   Fw32f* pDst, int dstStep, FwiSize dstRoiSize,
 								   double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
 
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_8u_P3R)( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_8u_P3R)( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw8u* const pDst[3], int dstStep, FwiSize dstRoiSize,
 								  double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_16u_P3R)( const Fw16u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_16u_P3R)( const Fw16u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								   Fw16u* const pDst[3], int dstStep, FwiSize dstRoiSize,
 								   double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								   Fw32f* const pDst[3], int dstStep, FwiSize dstRoiSize,
 								   double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_8u_P4R)( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_8u_P4R)( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw8u* const pDst[4], int dstStep, FwiSize dstRoiSize,
 								  double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_16u_P4R)( const Fw16u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_16u_P4R)( const Fw16u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								   Fw16u* const pDst[4], int dstStep, FwiSize dstRoiSize,
 								   double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeCenter_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								   Fw32f* const pDst[4], int dstStep, FwiSize dstRoiSize,
 								   double xFactor, double yFactor, double xCenter, double yCenter, int interpolation );
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiGetResizeFract)(FwiSize srcSize, FwiRect srcRoi, double xFactor, double yFactor,
 							 double* xFr, double* yFr, int interpolation );
 
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_8u_C1R )( const Fw8u * pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
-								  Fw8u * pDst, int dstStep, FwiSize dstRoiSize,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_8u_C1R )( const Fw8u * pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
+								  Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
 								  double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_8u_C3R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_8u_C3R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								 Fw8u* pDst, int dstStep, FwiSize dstRoiSize,
 								 double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_8u_C4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_8u_C4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								 Fw8u* pDst, int dstStep, FwiSize dstRoiSize,
 								 double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw8u* pDst, int dstStep, FwiSize dstRoiSize,
 								  double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_16u_C1R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_16u_C1R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw16u* pDst, int dstStep, FwiSize dstRoiSize,
 								  double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_16u_C3R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_16u_C3R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw16u* pDst, int dstStep, FwiSize dstRoiSize,
 								  double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_16u_C4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_16u_C4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw16u* pDst, int dstStep, FwiSize dstRoiSize,
 								  double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_16u_AC4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_16u_AC4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								   Fw16u* pDst, int dstStep, FwiSize dstRoiSize,
 								   double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw32f* pDst, int dstStep, FwiSize dstRoiSize,
 								  double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw32f* pDst, int dstStep, FwiSize dstRoiSize,
 								  double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw32f* pDst, int dstStep, FwiSize dstRoiSize,
 								  double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								   Fw32f* pDst, int dstStep, FwiSize dstRoiSize,
 								   double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_8u_P3R)( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_8u_P3R)( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								 Fw8u* const pDst[3], int dstStep, FwiSize dstRoiSize,
 								 double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_16u_P3R)( const Fw16u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_16u_P3R)( const Fw16u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw16u* const pDst[3], int dstStep, FwiSize dstRoiSize,
 								  double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw32f* const pDst[3], int dstStep, FwiSize dstRoiSize,
 								  double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_8u_P4R)( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_8u_P4R)( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								 Fw8u* const pDst[4], int dstStep, FwiSize dstRoiSize,
 								 double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_16u_P4R)( const Fw16u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_16u_P4R)( const Fw16u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw16u* const pDst[4], int dstStep, FwiSize dstRoiSize,
 								  double xFr, double yFr, double xShift, double yShift, int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,	
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeShift_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
 								  Fw32f* const pDst[4], int dstStep, FwiSize dstRoiSize,
 								  double xFr, double yFr, double xShift, double yShift, int interpolation );
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixelGetBufSize)(FwiSize dstSize, int nChannel,int interpolation, int* pBufferSize);
 
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_C1R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw8u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw8u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_C3R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw8u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw8u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_C4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw8u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw8u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_AC4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw8u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw8u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_16u_C1R)(const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw16u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw16u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_16u_C3R)(const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw16u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw16u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_16u_C4R)(const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw16u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw16u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_16u_AC4R)(const Fw16u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw16u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw16u* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_32f_C1R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw32f* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw32f* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_32f_C3R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw32f* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw32f* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_32f_C4R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw32f* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw32f* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_32f_AC4R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw32f* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw32f* pDst, int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_P3R)(const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw8u* const pDst[3], int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw8u* const pDst[3], int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_8u_P4R)(const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw8u* const pDst[4], int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw8u* const pDst[4], int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_16u_P3R)(const Fw16u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw16u* const pDst[3], int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw16u* const pDst[3], int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_16u_P4R)(const Fw16u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw16u* const pDst[4], int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw16u* const pDst[4], int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_32f_P3R)(const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw32f* const pDst[3], int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw32f* const pDst[3], int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeSqrPixel_32f_P4R)(const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-			Fw32f* const pDst[4], int dstStep, FwiRect dstRoi, double xFactor, double yFactor, 
+			Fw32f* const pDst[4], int dstStep, FwiRect dstRoi, double xFactor, double yFactor,
 			double xShift, double yShift, int interpolation, Fw8u* pBuffer);
 
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeYUV422_8u_C2R)( const Fw8u* pSrc, FwiSize srcSize, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiResizeYUV422_8u_C2R)( const Fw8u* pSrc, FwiSize srcSize,
 								  int srcStep, FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiSize dstRoiSize,
 								  double xFactor, double yFactor, int interpolation );
 
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_8u_C1R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_8u_C1R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_8u_C3R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_8u_C3R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_8u_C4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_8u_C4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_16u_C1R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_16u_C1R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_16u_C3R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_16u_C3R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_16u_C4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_16u_C4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_16u_AC4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_16u_AC4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_8u_P3R)( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* const pDst[3], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_8u_P3R)( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* const pDst[3], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_8u_P4R)( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* const pDst[4], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_8u_P4R)( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* const pDst[4], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_16u_P3R)( const Fw16u* const pSrc[3], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw16u* const pDst[3], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_16u_P3R)( const Fw16u* const pSrc[3], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw16u* const pDst[3], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_16u_P4R)( const Fw16u* const pSrc[4], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw16u* const pDst[4], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_16u_P4R)( const Fw16u* const pSrc[4], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw16u* const pDst[4], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* const pDst[3], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* const pDst[3], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* const pDst[4], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffine_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* const pDst[4], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_8u_C1R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_8u_C1R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_8u_C3R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_8u_C3R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_8u_C4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_8u_C4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_16u_C1R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_16u_C1R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_16u_C3R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_16u_C3R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_16u_C4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_16u_C4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_16u_AC4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_16u_AC4R)( const Fw16u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_8u_P3R)( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* const pDst[3], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_8u_P3R)( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* const pDst[3], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_8u_P4R)( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* const pDst[4], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_8u_P4R)( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* const pDst[4], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_16u_P3R)( const Fw16u* const pSrc[3], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw16u* const pDst[3], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_16u_P3R)( const Fw16u* const pSrc[3], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw16u* const pDst[3], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_16u_P4R)( const Fw16u* const pSrc[4], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw16u* const pDst[4], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_16u_P4R)( const Fw16u* const pSrc[4], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw16u* const pDst[4], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* const pDst[3], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* const pDst[3], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* const pDst[4], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineBack_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* const pDst[4], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][3], int interpolation );
 
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineQuad_8u_C1R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineQuad_8u_C3R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineQuad_8u_C4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineQuad_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineQuad_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineQuad_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineQuad_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineQuad_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineQuad_8u_P3R)( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* const pDst[3], int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* const pDst[3], int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineQuad_8u_P4R)( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* const pDst[4], int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* const pDst[4], int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineQuad_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* const pDst[3], int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* const pDst[3], int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpAffineQuad_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* const pDst[4], int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* const pDst[4], int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiGetAffineQuad)(FwiRect srcRoi, double quad[4][2], const double coeffs[2][3]);
@@ -1656,115 +1656,115 @@ OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiGetAffineBound)(FwiRect s
 
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiGetAffineTransform)(FwiRect srcRoi, const double quad[4][2],double coeffs[2][3]);
 
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_8u_C1R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_8u_C1R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_8u_C3R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_8u_C3R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_8u_C4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_8u_C4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_8u_P3R)( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* const pDst[3], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_8u_P3R)( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* const pDst[3], int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_8u_P4R)( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* const pDst[4], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_8u_P4R)( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* const pDst[4], int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* const pDst[3], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* const pDst[3], int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* const pDst[4], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspective_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* const pDst[4], int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
 
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_8u_C1R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_8u_C1R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_8u_C3R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_8u_C3R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_8u_C4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_8u_C4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_8u_P3R)( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* const pDst[3], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_8u_P3R)( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* const pDst[3], int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_8u_P4R)( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* const pDst[4], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_8u_P4R)( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* const pDst[4], int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* const pDst[3], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* const pDst[3], int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
-OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* const pDst[4], int dstStep, FwiRect dstRoi, 
+OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveBack_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* const pDst[4], int dstStep, FwiRect dstRoi,
 								const double coeffs[3][3], int interpolation );
 
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveQuad_8u_C1R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveQuad_8u_C3R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveQuad_8u_C4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveQuad_8u_AC4R)( const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveQuad_32f_C1R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveQuad_32f_C3R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveQuad_32f_C4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveQuad_32f_AC4R)( const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveQuad_8u_P3R)( const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* const pDst[3], int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* const pDst[3], int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveQuad_8u_P4R)( const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* const pDst[4], int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* const pDst[4], int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveQuad_32f_P3R)( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* const pDst[3], int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* const pDst[3], int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpPerspectiveQuad_32f_P4R)( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* const pDst[4], int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* const pDst[4], int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation );
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiGetPerspectiveQuad)(FwiRect srcRoi, double quad[4][2], const double coeffs[3][3]);
@@ -1773,115 +1773,115 @@ OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiGetPerspectiveBound)(FwiR
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiGetPerspectiveTransform)(FwiRect srcRoi, const double quad[4][2],double coeffs[3][3]);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_8u_C1R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_8u_C1R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_8u_C3R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_8u_C3R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_8u_C4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_8u_C4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_8u_AC4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_8u_AC4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_32f_C1R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_32f_C1R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_32f_C3R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_32f_C3R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_32f_C4R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_32f_C4R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_32f_AC4R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_32f_AC4R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_8u_P3R)(const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* const pDst[3], int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_8u_P3R)(const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* const pDst[3], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_8u_P4R)(const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* const pDst[4], int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_8u_P4R)(const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* const pDst[4], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_32f_P3R)(const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* const pDst[3], int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_32f_P3R)(const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* const pDst[3], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_32f_P4R)(const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* const pDst[4], int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinear_32f_P4R)(const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* const pDst[4], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
 
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_8u_C1R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_8u_C1R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_8u_C3R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_8u_C3R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_8u_C4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_8u_C4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_8u_AC4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_8u_AC4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_32f_C1R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_32f_C1R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_32f_C3R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_32f_C3R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_32f_C4R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_32f_C4R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_32f_AC4R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_32f_AC4R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_8u_P3R)(const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* const pDst[3], int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_8u_P3R)(const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* const pDst[3], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_8u_P4R)(const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw8u* const pDst[4], int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_8u_P4R)(const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw8u* const pDst[4], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_32f_P3R)(const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* const pDst[3], int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_32f_P3R)(const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* const pDst[3], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
-OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_32f_P4R)(const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, 
-								FwiRect srcRoi, Fw32f* const pDst[4], int dstStep, FwiRect dstRoi, 
+OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearBack_32f_P4R)(const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep,
+								FwiRect srcRoi, Fw32f* const pDst[4], int dstStep, FwiRect dstRoi,
 								const double coeffs[2][4], int interpolation);
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearQuad_8u_C1R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearQuad_8u_C3R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearQuad_8u_C4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearQuad_8u_AC4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearQuad_32f_C1R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearQuad_32f_C3R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearQuad_32f_C4R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearQuad_32f_AC4R)(const Fw32f* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* pDst, int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearQuad_8u_P3R)(const Fw8u* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* const pDst[3], int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* const pDst[3], int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearQuad_8u_P4R)(const Fw8u* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw8u* const pDst[4], int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw8u* const pDst[4], int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearQuad_32f_P3R)(const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* const pDst[3], int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* const pDst[3], int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation);
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiWarpBilinearQuad_32f_P4R)(const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi,
-							        const double srcQuad[4][2], Fw32f* const pDst[4], int dstStep, FwiRect dstRoi, 
+							        const double srcQuad[4][2], Fw32f* const pDst[4], int dstStep, FwiRect dstRoi,
 									const double dstQuad[4][2], int interpolation);
 
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiGetBilinearQuad)(FwiRect srcRoi, double quad[4][2], const double coeffs[2][4]);
@@ -1956,15 +1956,15 @@ OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiGetRotateShift)(dou
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiAddRotateShift)(double xCenter, double yCenter, double angle, double* xShift, double* yShift);
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiGetRotateQuad )(FwiRect srcRoi, double quad[4][2], double angle, double xShift, double yShift);
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiGetRotateBound)(FwiRect srcRoi, double bound[2][2], double angle, double xShift, double yShift);
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_8u_C1R)( const Fw8u* pSrc,FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );	
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_8u_C1R)( const Fw8u* pSrc,FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_8u_C3R)( const Fw8u* pSrc,FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_8u_C4R)( const Fw8u* pSrc,FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_8u_AC4R)( const Fw8u* pSrc,FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_16u_C1R)( const Fw16u* pSrc,FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );	
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_16u_C1R)( const Fw16u* pSrc,FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_16u_C3R)( const Fw16u* pSrc,FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_16u_C4R)( const Fw16u* pSrc,FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_16u_AC4R)( const Fw16u* pSrc,FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw16u* pDst, int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_32f_C1R)( const Fw32f* pSrc,FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );	
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_32f_C1R)( const Fw32f* pSrc,FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_32f_C3R)( const Fw32f* pSrc,FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_32f_C4R)( const Fw32f* pSrc,FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_32f_AC4R)( const Fw32f* pSrc,FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw32f* pDst, int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );
@@ -1974,7 +1974,7 @@ OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_16u_P3
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_16u_P4R)( const Fw16u* const pSrc[4],FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw16u* const pDst[4], int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_32f_P3R)( const Fw32f* const pSrc[3],FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw32f* const pDst[3], int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiRotateCenter_32f_P4R)( const Fw32f* const pSrc[4],FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw32f* const pDst[4], int dstStep, FwiRect dstRoi, double angle, double xCenter, double yCenter, int interpolation );
-	        
+
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiShear_8u_C1R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, double xShear, double yShear, double xShift, double yShift, int interpolation );
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiShear_8u_C3R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, double xShear, double yShear, double xShift, double yShift, int interpolation );
 OREFR       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiShear_8u_C4R)(const Fw8u* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi, Fw8u* pDst, int dstStep, FwiRect dstRoi, double xShear, double yShear, double xShift, double yShift, int interpolation );
@@ -2008,8 +2008,8 @@ OREFR OSSE2 FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterSharpen_32f_AC4R)( 
 //@NEW FUNCTIONS BLOCK START
 //OREFR OSSE2 OF10H FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiConvert_8u16u_C1R 		)( const Fw8u *pSrc, int srcStep, Fw16u *pDst, int dstStep, FwiSize roiSize );
 
-OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterBox_8u_C1R)( const Fw8u * pSrc, int srcStep, 
-                                        Fw8u * pDst, int dstStep, FwiSize dstRoiSize, 
+OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterBox_8u_C1R)( const Fw8u * pSrc, int srcStep,
+                                        Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
                                         FwiSize maskSize, FwiPoint anchor );
 OREFR OSSE2       FwStatus STDCALL PREFIX_OPT(OPT_PREFIX, fwiFilterBox_8u_C3R)( const Fw8u * pSrc, int srcStep,
                                Fw8u * pDst, int dstStep, FwiSize dstRoiSize,
@@ -2787,7 +2787,7 @@ OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiHLSToBGR_8u_P3R        )(
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiHLSToBGR_8u_AP4C4R     )(const A8U* const pSrc[4], int srcStep, A8U* pDst, int dstStep, FwiSize roiSize );
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiHLSToBGR_8u_P3C3R      )(const A8U* const pSrc[3], int srcStep, A8U* pDst, int dstStep, FwiSize roiSize );
 
-OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToHSV_8u_C3R        )( const Fw8u *pSrc, int srcStep, Fw8u *pDst, int dstStep, FwiSize roiSize );        
+OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToHSV_8u_C3R        )( const Fw8u *pSrc, int srcStep, Fw8u *pDst, int dstStep, FwiSize roiSize );
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToHSV_8u_AC4R       )( const Fw8u *pSrc, int srcStep, Fw8u *pDst, int dstStep, FwiSize roiSize );
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToHSV_16u_C3R       )( const Fw16u* pSrc, int srcStep, Fw16u* pDst, int dstStep, FwiSize roiSize );
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiRGBToHSV_16u_AC4R      )( const Fw16u* pSrc, int srcStep, Fw16u* pDst, int dstStep, FwiSize roiSize );
@@ -2910,6 +2910,8 @@ OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr422_8u_P3C2R        
 OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiCbYCr422ToYCbCr420_8u_C2P3R    )( const Fw8u* pSrc, int srcStep, Fw8u* pDst[3], int dstStep[3], FwiSize roiSize );
 
 OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_8u_C1R                     )( const Fw8u* pSrc, int srcStep, FwiSize roiSize, Fw64f* pSum );
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_8u_C3R                     )(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3]);
+
 OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_16s_C1R                    )(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f* pSum);
 
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr422ToYCbCr420_8u_P3R      )( const Fw8u* pSrc[3], int srcStep[3], Fw8u* pDst[3], int dstStep[3], FwiSize roiSize);
