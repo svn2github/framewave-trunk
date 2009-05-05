@@ -49,6 +49,19 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_8u_C3R) (const Fw8u* pSrc, int srcStep,Fw
 	return retStatus;
 }    
 
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_16s_C3R) (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3])
+{
+
+	FwStatus retStatus = fwStsNoErr;
+	StatISum_16sC3 data;
+	retStatus = OPT_LEVEL::fex<StatISum_16sC3>(data,pSrc,srcStep,roiSize);
+	sum[0] = data.sum[0];
+    sum[1] = data.sum[1];
+    sum[2] = data.sum[2];
+
+	return retStatus;
+}    
+
 
 // Please do NOT remove the above line for CPP files that need to be multipass compiled
 // OREFR OSSE2

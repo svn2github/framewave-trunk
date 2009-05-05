@@ -230,6 +230,110 @@ struct StatISum_8uC3: public fe1St<Fw8u,C3>
 };
 
 
+
+struct StatISum_16sC3: public fe1St<Fw16s,C3>
+{
+
+
+	mutable  Fw64f sum[3];
+	mutable XMM128 mSum[2];
+
+	FEX_SSE2_REF
+
+	StatISum_16sC3()
+    { 
+        sum[0] = 0;
+        sum[1]=0;
+        sum[2]=0;
+    }
+	IV REFR_Init() 
+    { 
+        sum[0] = 0;
+        sum[1]=0;
+        sum[2]=0; 
+    }
+
+	template<class FE>
+	IV REFR_Post(FE &feData)
+	{
+		sum[0] += feData.sum[0];
+        sum[1] += feData.sum[1];
+        sum[2] += feData.sum[2];
+	}
+
+	template<class FE>
+	IV SSE2_Post(FE &feData)
+	{
+		sum[0] += feData.sum[0];
+        sum[1] += feData.sum[1];
+        sum[2] += feData.sum[2];
+
+      
+		sum[0] +=  feData.mSum[1].s64[1];
+        sum[1] +=  feData.mSum[0].s64[1];
+        sum[2] +=  feData.mSum[1].s64[0];
+
+    }
+
+	IV SSE2_Init()
+	{
+		sum[0]=sum[1]=sum[2] = 0;
+		mSum[0].i = _mm_setzero_si128();
+		mSum[1].i = _mm_setzero_si128();
+	}
+
+	IV REFR(const Fw16s *s1 ) const           // REFR Pixel function
+	{
+		sum[0] = (sum[0] + s1[0]);
+		sum[1] = (sum[1] + s1[1]);
+		sum[2] = (sum[2] + s1[2]);
+	}
+
+	IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+	{
+        XMM128 src1,src2,src3,src1h,src2h,src3h;
+        src1.i = r.src1[0].i;
+        src2.i = r.src1[1].i;
+        src3.i = r.src1[2].i;
+
+
+
+        CBL_SSE2::Unpack16STo32S(src1.i,src1h.i);
+        CBL_SSE2::Unpack16STo32S(src2.i,src2h.i);
+        CBL_SSE2::Unpack16STo32S(src3.i,src3h.i);
+
+        src1.i = _mm_add_epi32(src1.i,src2h.i);  //start  with   r b g r 
+        src3.i = _mm_add_epi32(src1h.i,src3.i);  //              g r b g
+        src2.i = _mm_add_epi32(src2.i,src3h.i);  //              b g r b  
+
+
+
+        src2h.i = _mm_srli_si128(src2.i,8);  //              0 0 b g 
+
+        src2.i = _mm_slli_si128(src2.i,8);  //              b r  00
+
+        src3.i = _mm_add_epi32(src2h.i,src3.i);  //              0 0 b g   +  g r b g
+
+        src2.i = _mm_add_epi32(src2.i,src1.i);  //              r b 00   +  r b g r 
+
+        src1.i = _mm_slli_si128(src3.i,4);  //          r b g 0  
+        src1.i =  _mm_add_epi32( src1.i, src2.i);
+        src3.i = _mm_srli_si128(src3.i,8);  //          r b g 0  
+
+        src2.i =  _mm_slli_si128( src1.i, 12); //
+        src1.i =  _mm_add_epi32( src1.i, src3.i); //
+
+        src1.i =  _mm_add_epi32( src1.i, src2.i); //  // r b g x
+
+        CBL_SSE2::Unpack32STo64S(src1.i,src2.i);
+        mSum[0].i = _mm_add_epi64(src1.i, mSum[0].i);// g x
+        mSum[1].i = _mm_add_epi64(src2.i, mSum[1].i);// r b
+
+	}
+};
+
+
+
 }
 
 #endif // __STATISUM_H__

@@ -2911,6 +2911,7 @@ OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiCbYCr422ToYCbCr420_8u_C2P
 
 OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_8u_C1R                     )( const Fw8u* pSrc, int srcStep, FwiSize roiSize, Fw64f* pSum );
 OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_8u_C3R                     )(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3]);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_16s_C3R                     )(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3]);
 
 OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_16s_C1R                    )(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f* pSum);
 
