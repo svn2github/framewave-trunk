@@ -16,7 +16,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_8u_C1R)(const Fw8u* pSrc, int srcStep,Fwi
 
 	FwStatus retStatus = fwStsNoErr;
 	StatISum_8u data;
-	retStatus = OPT_LEVEL::fex<StatISum_8u>(data,pSrc,srcStep,roiSize,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatISum_8u>(data,pSrc,srcStep,roiSize);
 	*pSum = (Fw64f)data.sum;
 
 	return retStatus;
@@ -27,7 +27,7 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_16s_C1R)(const Fw16s* pSrc, int srcStep,F
 
 	FwStatus retStatus = fwStsNoErr;
 	StatISum_16s data;
-	retStatus = OPT_LEVEL::fex<StatISum_16s>(data,pSrc,srcStep,roiSize,THREAD_SW_OFF);
+	retStatus = OPT_LEVEL::fex<StatISum_16s>(data,pSrc,srcStep,roiSize);
 	*pSum = (Fw64f)data.sum;
 
 	return retStatus;
@@ -61,6 +61,66 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_16s_C3R) (const Fw16s* pSrc, int srcStep,
 
 	return retStatus;
 }    
+
+
+
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_8u_AC4R)(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3])
+{
+
+	FwStatus retStatus = fwStsNoErr;
+	StatISum_8u_AC4 data;
+	retStatus = OPT_LEVEL::fex<StatISum_8u_AC4>(data,pSrc,srcStep,roiSize);
+	sum[0] = data.sum[0];
+    sum[1] = data.sum[1];
+    sum[2] = data.sum[2];
+
+	return retStatus;
+}
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_16s_AC4R)(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3])
+{
+
+	FwStatus retStatus = fwStsNoErr;
+	StatISum_16s_AC4 data;
+	retStatus = OPT_LEVEL::fex<StatISum_16s_AC4>(data,pSrc,srcStep,roiSize);
+	sum[0] = data.sum[0];
+    sum[1] = data.sum[1];
+    sum[2] = data.sum[2];
+
+	return retStatus;
+}
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_8u_C4R)(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[4])
+{
+
+    FwStatus retStatus = fwStsNoErr;
+	StatISum_8u_C4R data;
+	retStatus = OPT_LEVEL::fex<StatISum_8u_C4R>(data,pSrc,srcStep,roiSize);
+	sum[0] = data.sum[0];
+    sum[1] = data.sum[1];
+    sum[2] = data.sum[2];
+    sum[3] = data.sum[3];
+
+	return retStatus;
+
+}
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_16s_C4R)(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[4])
+{
+
+    FwStatus retStatus = fwStsNoErr;
+	StatISum_16s_C4R data;
+	retStatus = OPT_LEVEL::fex<StatISum_16s_C4R>(data,pSrc,srcStep,roiSize);
+	sum[0] = data.sum[0];
+    sum[1] = data.sum[1];
+    sum[2] = data.sum[2];
+    sum[3] = data.sum[3];
+
+	return retStatus;
+
+}
+
+
 
 
 // Please do NOT remove the above line for CPP files that need to be multipass compiled

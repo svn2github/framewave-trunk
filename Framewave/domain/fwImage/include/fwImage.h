@@ -3254,6 +3254,10 @@ FwStatus STDCALL fwiSum_8u_C1R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, F
 FwStatus STDCALL fwiSum_16s_C1R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f* pSum);
 FwStatus STDCALL fwiSum_8u_C3R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3]);
 FwStatus STDCALL fwiSum_16s_C3R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3]);
+FwStatus STDCALL fwiSum_8u_AC4R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3]);
+FwStatus STDCALL fwiSum_16s_AC4R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3]);
+FwStatus STDCALL fwiSum_8u_C4R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[4]);
+FwStatus STDCALL fwiSum_16s_C4R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[4]);
 
 /*#Documentation
 
