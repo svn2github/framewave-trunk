@@ -2920,6 +2920,10 @@ OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_16s_AC4R             
 OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_8u_C4R                     )(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[4]);
 OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_16s_C4R                    )(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[4]);
 
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_32f_C3R                    )(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3], FwHintAlgorithm hint);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_32f_AC4R                   )(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3], FwHintAlgorithm hint);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX, fwiSum_32f_C4R                    )(const Fw32f* pSrc, int srcStep, FwiSize roiSize, Fw64f sum[4], FwHintAlgorithm hint);
+
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr422ToYCbCr420_8u_P3R      )( const Fw8u* pSrc[3], int srcStep[3], Fw8u* pDst[3], int dstStep[3], FwiSize roiSize);
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr422ToYCbCr420_8u_C2P3R    )(const Fw8u* pSrc, int srcStep, Fw8u* pDst[3], int dstStep[3], FwiSize roiSize);
 
