@@ -10,6 +10,7 @@ This software is subject to the Apache v2.0 License.
 
 namespace OPT_LEVEL
 {
+
 template<typename TS1,CH cs1>
 struct StatIMinGen: public fe1St<TS1,cs1>
 {
@@ -56,11 +57,13 @@ struct StatIMinGen: public fe1St<TS1,cs1>
     }
 };
 
+
+
 struct StatIMin_8u_C1R: public StatIMinGen<Fw8u,C1>
 {
 
     const static U32 nPIX_SSE = 16 * 2; // Load two registers
-    class SRC1: public RegDesc< Fw8s, C1, nPIX_SSE > {};
+    class SRC1: public RegDesc< Fw8u, C1, nPIX_SSE > {};
 
     FEX_SSE2_REF
     IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
@@ -69,7 +72,6 @@ struct StatIMin_8u_C1R: public StatIMinGen<Fw8u,C1>
         mMin.i = _mm_min_epu8 (mMin.i,sign1);
     }
 };
-
 
 
 struct StatIMin_16s_C1R: public StatIMinGen<Fw16s,C1>
@@ -100,6 +102,102 @@ struct StatIMin_32f_C1R: public StatIMinGen<Fw32f,C1>
     }
 };
 
+
+
+template<typename TS1,CH cs1>
+struct StatIMinAC4: public fe1St<TS1,cs1>
+{
+    mutable TS1 min[3];
+    mutable XMM128 mMin;
+    
+    StatIMinAC4(){
+        min[0] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        min[1] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        min[2] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+    }
+    IV REFR_Init() {
+        min[0] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        min[1] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        min[2] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+    }
+
+    IV SSE2_Init()
+    {
+        min[0] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        min[1] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        min[2] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+
+        TS1 *p_mMin = (TS1*)&mMin;
+        for (int i =0; i < (XMMREGSIZE/ sizeof(TS1)) ; i++)
+        {
+            p_mMin[i] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        }
+    }
+
+    template<class FE>
+    IV REFR_Post(FE &feData)
+    {
+        min[0] = MIN<TS1>(min[0],feData.min[0]);
+        min[1] = MIN<TS1>(min[1],feData.min[1]);
+        min[2] = MIN<TS1>(min[2],feData.min[2]);
+    }
+
+    IV REFR(const TS1 *s)     const                    // REFR Pixel function
+    {
+        min[0]= MIN<TS1>(min[0],s[0]);
+        min[1]= MIN<TS1>(min[1],s[1]);
+        min[2]= MIN<TS1>(min[2],s[2]);
+    }
+
+    template<class FE>
+    IV SSE2_Post(FE &feData)
+    {
+        min[0] = MIN<TS1>(min[0],feData.min[0]);
+        min[1] = MIN<TS1>(min[1],feData.min[1]);
+        min[2] = MIN<TS1>(min[2],feData.min[2]);
+
+        TS1 *p_mMin = (TS1*)&feData.mMin;
+        for (int i =0; i < (XMMREGSIZE/ sizeof(TS1)) ; i+=4)
+        {
+            min[0]= MIN<TS1>(min[0],p_mMin[i]);
+            min[1]= MIN<TS1>(min[1],p_mMin[i+1]);
+            min[2]= MIN<TS1>(min[2],p_mMin[i+2]);
+        }
+
+    }
+};
+
+struct StatIMin_8u_AC4R: public StatIMinAC4<Fw8u,AC4>
+{
+
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        mMin.i = _mm_min_epu8 (mMin.i,r.src1[0].i);
+    }
+};
+
+
+
+struct StatIMin_16s_AC4R: public StatIMinAC4<Fw16s,AC4>
+{
+
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        mMin.i = _mm_min_epi16(mMin.i,r.src1[0].i);
+    }
+
+};
+
+struct StatIMin_32f_AC4R: public StatIMinAC4<Fw32f,AC4>
+{
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        mMin.f = _mm_min_ps(mMin.f,r.src1[0].f);
+    }
+};
 
 }
 
