@@ -3263,6 +3263,19 @@ FwStatus STDCALL fwiSum_32f_AC4R (const Fw32f* pSrc, int srcStep,FwiSize roiSize
 FwStatus STDCALL fwiSum_32f_C4R (const Fw32f* pSrc, int srcStep, FwiSize roiSize, Fw64f sum[4], FwHintAlgorithm hint);
 
 
+/*#FunctionBlock - Min
+todo:publish
+#Technologies - REF, SSE2
+#Short - Min of image data
+#Long - <Text>These functions step through an ROI in a source buffer and finds the minimum value in the buffer</Text>
+*/
+
+
+FwStatus STDCALL fwiMin_8u_C1R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u* pMin);
+FwStatus STDCALL fwiMin_16s_C1R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s* pMin);
+FwStatus STDCALL fwiMin_32f_C1R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f* pMin);
+
+
 
 /*#Documentation
 
