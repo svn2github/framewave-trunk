@@ -199,6 +199,114 @@ struct StatIMin_32f_AC4R: public StatIMinAC4<Fw32f,AC4>
     }
 };
 
+
+
+
+
+template<typename TS1,CH cs1>
+struct StatIMinC4: public fe1St<TS1,cs1>
+{
+    mutable TS1 min[4];
+    mutable XMM128 mMin;
+    
+    StatIMinC4(){
+        min[0] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        min[1] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        min[2] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        min[3] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+    }
+    IV REFR_Init() {
+        min[0] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        min[1] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        min[2] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        min[3] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+    }
+
+    IV SSE2_Init()
+    {
+        min[0] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        min[1] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        min[2] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        min[3] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+
+        TS1 *p_mMin = (TS1*)&mMin;
+        for (int i =0; i < (XMMREGSIZE/ sizeof(TS1)) ; i++)
+        {
+            p_mMin[i] = CBL_LIBRARY::Limits<TS1>::MaxValue();
+        }
+    }
+
+    template<class FE>
+    IV REFR_Post(FE &feData)
+    {
+        min[0] = MIN<TS1>(min[0],feData.min[0]);
+        min[1] = MIN<TS1>(min[1],feData.min[1]);
+        min[2] = MIN<TS1>(min[2],feData.min[2]);
+        min[3] = MIN<TS1>(min[3],feData.min[3]);
+    }
+
+    IV REFR(const TS1 *s)     const                    // REFR Pixel function
+    {
+        min[0]= MIN<TS1>(min[0],s[0]);
+        min[1]= MIN<TS1>(min[1],s[1]);
+        min[2]= MIN<TS1>(min[2],s[2]);
+        min[3]= MIN<TS1>(min[3],s[3]);
+    }
+
+    template<class FE>
+    IV SSE2_Post(FE &feData)
+    {
+        min[0] = MIN<TS1>(min[0],feData.min[0]);
+        min[1] = MIN<TS1>(min[1],feData.min[1]);
+        min[2] = MIN<TS1>(min[2],feData.min[2]);
+        min[3] = MIN<TS1>(min[3],feData.min[3]);
+
+        TS1 *p_mMin = (TS1*)&feData.mMin;
+        for (int i =0; i < (XMMREGSIZE/ sizeof(TS1)) ; i+=4)
+        {
+            min[0]= MIN<TS1>(min[0],p_mMin[i]);
+            min[1]= MIN<TS1>(min[1],p_mMin[i+1]);
+            min[2]= MIN<TS1>(min[2],p_mMin[i+2]);
+            min[3]= MIN<TS1>(min[3],p_mMin[i+3]);
+        }
+
+    }
+};
+
+struct StatIMin_8u_C4R: public StatIMinC4<Fw8u,C4>
+{
+
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        mMin.i = _mm_min_epu8 (mMin.i,r.src1[0].i);
+    }
+};
+
+
+
+struct StatIMin_16s_C4R: public StatIMinC4<Fw16s,C4>
+{
+
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        mMin.i = _mm_min_epi16(mMin.i,r.src1[0].i);
+    }
+
+};
+
+struct StatIMin_32f_C4R: public StatIMinC4<Fw32f,C4>
+{
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        mMin.f = _mm_min_ps(mMin.f,r.src1[0].f);
+    }
+};
+
+
+
 }
 
 #endif // __STATIMINMAX_H__
