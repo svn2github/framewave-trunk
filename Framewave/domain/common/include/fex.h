@@ -99,6 +99,20 @@ struct fe2St : public feBaseSt
 
 };
 
+
+template< typename TS1,  CH cs1  >  
+struct fe1St_96 : public fe1St<TS1, cs1>
+{   
+    typedef TS1  TS1_;      
+    const static CH CS1_      = cs1;
+
+    const static U32 nPIX_SSE = PIX_C3_96( TS1 ); 
+
+    class SRC1:  public RegDesc< TS1_,  CS1_,  nPIX_SSE > {};         
+};
+
+
+
 namespace PREFIX_OPT(OPT_PREFIX, FE_PRIVATE)
 {
    template< class FE >                                             // Common data / initialization routines

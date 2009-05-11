@@ -112,6 +112,47 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiMin_32f_C4R) (const Fw32f* pSrc, int srcStep,
 }
 
 
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMin_8u_C3R )(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u min[3])
+{
+
+	FwStatus retStatus = fwStsNoErr;
+	StatIMin_8u_C3R data;
+	retStatus = OPT_LEVEL::fex<StatIMin_8u_C3R>(data,pSrc,srcStep,roiSize);
+	min[0] = data.min[0];
+	min[1] = data.min[1];
+	min[2] = data.min[2];
+
+	return retStatus;
+}
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMin_16s_C3R) (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s min[3])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMin_16s_C3R data;
+	retStatus = OPT_LEVEL::fex<StatIMin_16s_C3R>(data,pSrc,srcStep,roiSize);
+	min[0] = data.min[0];
+	min[1] = data.min[1];
+	min[2] = data.min[2];
+
+	return retStatus;
+}
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMin_32f_C3R) (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f min[3])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMin_32f_C3R data;
+	retStatus = OPT_LEVEL::fex<StatIMin_32f_C3R>(data,pSrc,srcStep,roiSize);
+	min[0] = data.min[0];
+	min[1] = data.min[1];
+	min[2] = data.min[2];
+
+	return retStatus;
+
+}
+
+
+
+
 // Please do NOT remove the above line for CPP files that need to be multipass compiled
 // OREFR OSSE2
 

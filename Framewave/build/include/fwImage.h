@@ -1786,6 +1786,10 @@ FwStatus STDCALL fwiMin_8u_C4R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw
 FwStatus STDCALL fwiMin_16s_C4R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s min[4]);
 FwStatus STDCALL fwiMin_32f_C4R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f min[4]);
 
+FwStatus STDCALL fwiMin_8u_C3R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u min[3]);
+FwStatus STDCALL fwiMin_16s_C3R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s min[3]);
+FwStatus STDCALL fwiMin_32f_C3R (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f min[3]);
+
 ////////////////////////////////////////////////////////////////
 //                        Threshold
 ////////////////////////////////////////////////////////////////
