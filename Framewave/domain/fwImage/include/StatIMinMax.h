@@ -412,6 +412,415 @@ struct StatIMin_32f_C3R: public StatIMinC3<Fw32f,C3>
 
 
 ///////////////////////////////// C3 end
+
+
+
+//////////Max
+
+
+template<typename TS1,CH cs1>
+struct StatIMaxGen: public fe1St<TS1,cs1>
+{
+    mutable TS1 max;
+    mutable XMM128 mMax;
+    
+    StatIMaxGen(){
+        max = CBL_LIBRARY::Limits<TS1>::MinValue();
+    }
+    IV REFR_Init() {
+        max = CBL_LIBRARY::Limits<TS1>::MinValue();
+    }
+
+    IV SSE2_Init()
+    {
+        max = CBL_LIBRARY::Limits<TS1>::MinValue();
+        TS1 *p_mMax = (TS1*)&mMax;
+        for (int i =0; i < (XMMREGSIZE/ sizeof(TS1)) ; i++)
+        {
+            p_mMax[i] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        }
+    }
+
+    template<class FE>
+    IV REFR_Post(FE &feData)
+    {
+        max = MAX<TS1>(max,feData.max);
+    }
+
+    IV REFR(const TS1 *s)     const                    // REFR Pixel function
+    {
+        max= MAX<TS1>(max,*s);
+    }
+
+    template<class FE>
+    IV SSE2_Post(FE &feData)
+    {
+        max = MAX<TS1>(max,feData.max);
+        TS1 *p_mMax = (TS1*)&feData.mMax;
+        for (int i =0; i < (XMMREGSIZE/ sizeof(TS1)) ; i++)
+        {
+            max = MAX<TS1>(max,p_mMax[i]);
+        }
+    }
+};
+
+
+
+struct StatIMax_8u_C1R: public StatIMaxGen<Fw8u,C1>
+{
+
+    const static U32 nPIX_SSE = 16 * 2; // Load two registers
+    class SRC1: public RegDesc< Fw8u, C1, nPIX_SSE > {};
+
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        __m128i sign1 = _mm_max_epu8 (r.src1[0].i,r.src1[1].i);
+        mMax.i = _mm_max_epu8 (mMax.i,sign1);
+    }
+};
+
+
+struct StatIMax_16s_C1R: public StatIMaxGen<Fw16s,C1>
+{
+
+    const static U32 nPIX_SSE = 8 * 2; // Load two registers
+    class SRC1: public RegDesc< Fw16s, C1, nPIX_SSE > {};
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        __m128i max1 = _mm_max_epi16(r.src1[0].i,r.src1[1].i);
+        mMax.i = _mm_max_epi16(mMax.i,max1);
+    }
+
+};
+
+
+struct StatIMax_32f_C1R: public StatIMaxGen<Fw32f,C1>
+{
+    const static U32 nPIX_SSE = 4 * 3; // Load three registers
+    class SRC1: public RegDesc< Fw32f, C1, nPIX_SSE > {};
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        __m128 max1 = _mm_max_ps(r.src1[0].f,r.src1[1].f);
+        max1 = _mm_max_ps(max1,r.src1[2].f);
+        mMax.f = _mm_max_ps(mMax.f,max1);
+    }
+};
+
+
+
+template<typename TS1,CH cs1>
+struct StatIMaxAC4: public fe1St<TS1,cs1>
+{
+    mutable TS1 max[3];
+    mutable XMM128 mMax;
+    
+    StatIMaxAC4(){
+        max[0] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[1] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[2] = CBL_LIBRARY::Limits<TS1>::MinValue();
+    }
+    IV REFR_Init() {
+        max[0] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[1] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[2] = CBL_LIBRARY::Limits<TS1>::MinValue();
+    }
+
+    IV SSE2_Init()
+    {
+        max[0] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[1] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[2] = CBL_LIBRARY::Limits<TS1>::MinValue();
+
+        TS1 *p_mMax = (TS1*)&mMax;
+        for (int i =0; i < (XMMREGSIZE/ sizeof(TS1)) ; i++)
+        {
+            p_mMax[i] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        }
+    }
+
+    template<class FE>
+    IV REFR_Post(FE &feData)
+    {
+        max[0] = MAX<TS1>(max[0],feData.max[0]);
+        max[1] = MAX<TS1>(max[1],feData.max[1]);
+        max[2] = MAX<TS1>(max[2],feData.max[2]);
+    }
+
+    IV REFR(const TS1 *s)     const                    // REFR Pixel function
+    {
+        max[0]= MAX<TS1>(max[0],s[0]);
+        max[1]= MAX<TS1>(max[1],s[1]);
+        max[2]= MAX<TS1>(max[2],s[2]);
+    }
+
+    template<class FE>
+    IV SSE2_Post(FE &feData)
+    {
+        max[0] = MAX<TS1>(max[0],feData.max[0]);
+        max[1] = MAX<TS1>(max[1],feData.max[1]);
+        max[2] = MAX<TS1>(max[2],feData.max[2]);
+
+        TS1 *p_mMax = (TS1*)&feData.mMax;
+        for (int i =0; i < (XMMREGSIZE/ sizeof(TS1)) ; i+=4)
+        {
+            max[0]= MAX<TS1>(max[0],p_mMax[i]);
+            max[1]= MAX<TS1>(max[1],p_mMax[i+1]);
+            max[2]= MAX<TS1>(max[2],p_mMax[i+2]);
+        }
+
+    }
+};
+
+struct StatIMax_8u_AC4R: public StatIMaxAC4<Fw8u,AC4>
+{
+
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        mMax.i = _mm_max_epu8 (mMax.i,r.src1[0].i);
+    }
+};
+
+
+
+struct StatIMax_16s_AC4R: public StatIMaxAC4<Fw16s,AC4>
+{
+
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        mMax.i = _mm_max_epi16(mMax.i,r.src1[0].i);
+    }
+
+};
+
+struct StatIMax_32f_AC4R: public StatIMaxAC4<Fw32f,AC4>
+{
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        mMax.f = _mm_max_ps(mMax.f,r.src1[0].f);
+    }
+};
+
+
+
+
+
+template<typename TS1,CH cs1>
+struct StatIMaxC4: public fe1St<TS1,cs1>
+{
+    mutable TS1 max[4];
+    mutable XMM128 mMax;
+    
+    StatIMaxC4(){
+        max[0] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[1] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[2] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[3] = CBL_LIBRARY::Limits<TS1>::MinValue();
+    }
+    IV REFR_Init() {
+        max[0] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[1] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[2] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[3] = CBL_LIBRARY::Limits<TS1>::MinValue();
+    }
+
+    IV SSE2_Init()
+    {
+        max[0] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[1] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[2] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[3] = CBL_LIBRARY::Limits<TS1>::MinValue();
+
+        TS1 *p_mMax = (TS1*)&mMax;
+        for (int i =0; i < (XMMREGSIZE/ sizeof(TS1)) ; i++)
+        {
+            p_mMax[i] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        }
+    }
+
+    template<class FE>
+    IV REFR_Post(FE &feData)
+    {
+        max[0] = MAX<TS1>(max[0],feData.max[0]);
+        max[1] = MAX<TS1>(max[1],feData.max[1]);
+        max[2] = MAX<TS1>(max[2],feData.max[2]);
+        max[3] = MAX<TS1>(max[3],feData.max[3]);
+    }
+
+    IV REFR(const TS1 *s)     const                    // REFR Pixel function
+    {
+        max[0]= MAX<TS1>(max[0],s[0]);
+        max[1]= MAX<TS1>(max[1],s[1]);
+        max[2]= MAX<TS1>(max[2],s[2]);
+        max[3]= MAX<TS1>(max[3],s[3]);
+    }
+
+    template<class FE>
+    IV SSE2_Post(FE &feData)
+    {
+        max[0] = MAX<TS1>(max[0],feData.max[0]);
+        max[1] = MAX<TS1>(max[1],feData.max[1]);
+        max[2] = MAX<TS1>(max[2],feData.max[2]);
+        max[3] = MAX<TS1>(max[3],feData.max[3]);
+
+        TS1 *p_mMax = (TS1*)&feData.mMax;
+        for (int i =0; i < (XMMREGSIZE/ sizeof(TS1)) ; i+=4)
+        {
+            max[0]= MAX<TS1>(max[0],p_mMax[i]);
+            max[1]= MAX<TS1>(max[1],p_mMax[i+1]);
+            max[2]= MAX<TS1>(max[2],p_mMax[i+2]);
+            max[3]= MAX<TS1>(max[3],p_mMax[i+3]);
+        }
+
+    }
+};
+
+struct StatIMax_8u_C4R: public StatIMaxC4<Fw8u,C4>
+{
+
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        mMax.i = _mm_max_epu8 (mMax.i,r.src1[0].i);
+    }
+};
+
+
+
+struct StatIMax_16s_C4R: public StatIMaxC4<Fw16s,C4>
+{
+
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        mMax.i = _mm_max_epi16(mMax.i,r.src1[0].i);
+    }
+
+};
+
+struct StatIMax_32f_C4R: public StatIMaxC4<Fw32f,C4>
+{
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        mMax.f = _mm_max_ps(mMax.f,r.src1[0].f);
+    }
+};
+
+
+//////////////////////////C3 start
+
+template<typename TS1,CH cs1>
+struct StatIMaxC3: public fe1St_96<TS1,cs1>
+{
+    mutable TS1 max[3];
+    mutable XMM128 mMax;
+    
+    StatIMaxC3(){
+        max[0] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[1] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[2] = CBL_LIBRARY::Limits<TS1>::MinValue();
+
+    }
+    IV REFR_Init() {
+        max[0] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[1] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[2] = CBL_LIBRARY::Limits<TS1>::MinValue();
+
+    }
+
+    IV SSE2_Init()
+    {
+        max[0] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[1] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        max[2] = CBL_LIBRARY::Limits<TS1>::MinValue();
+
+
+        TS1 *p_mMax = (TS1*)&mMax;
+        for (int i =0; i < (XMMREGSIZE/ sizeof(TS1)) ; i++)
+        {
+            p_mMax[i] = CBL_LIBRARY::Limits<TS1>::MinValue();
+        }
+    }
+
+    template<class FE>
+    IV REFR_Post(FE &feData)
+    {
+        max[0] = MAX<TS1>(max[0],feData.max[0]);
+        max[1] = MAX<TS1>(max[1],feData.max[1]);
+        max[2] = MAX<TS1>(max[2],feData.max[2]);
+
+    }
+
+    IV REFR(const TS1 *s)     const                    // REFR Pixel function
+    {
+        max[0]= MAX<TS1>(max[0],s[0]);
+        max[1]= MAX<TS1>(max[1],s[1]);
+        max[2]= MAX<TS1>(max[2],s[2]);
+
+    }
+
+    template<class FE>
+    IV SSE2_Post(FE &feData)
+    {
+        max[0] = MAX<TS1>(max[0],feData.max[0]);
+        max[1] = MAX<TS1>(max[1],feData.max[1]);
+        max[2] = MAX<TS1>(max[2],feData.max[2]);
+
+
+        TS1 *p_mMax = (TS1*)&feData.mMax;
+        for (int i =0; i < ((XMMREGSIZE-4)/ sizeof(TS1)) ; i+= 3)
+        {
+            max[0]= MAX<TS1>(max[0],p_mMax[i]);
+            max[1]= MAX<TS1>(max[1],p_mMax[i+1]);
+            max[2]= MAX<TS1>(max[2],p_mMax[i+2]);
+        }
+
+    }
+};
+
+
+struct StatIMax_8u_C3R: public StatIMaxC3<Fw8u,C3>
+{
+
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        mMax.i = _mm_max_epu8 (mMax.i,r.src1[0].i);
+    }
+};
+
+
+
+struct StatIMax_16s_C3R: public StatIMaxC3<Fw16s,C3>
+{
+
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        mMax.i = _mm_max_epi16(mMax.i,r.src1[0].i);
+    }
+
+};
+
+struct StatIMax_32f_C3R: public StatIMaxC3<Fw32f,C3>
+{
+    FEX_SSE2_REF
+    IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+    {
+        mMax.f = _mm_max_ps(mMax.f,r.src1[0].f);
+    }
+};
+
+
+///////////////////////////////// C3 end
+
+/////////// Max end
 }
 
 #endif // __STATIMINMAX_H__

@@ -150,6 +150,151 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiMin_32f_C3R) (const Fw32f* pSrc, int srcStep,
 
 }
 
+////// Max
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMax_8u_C1R)(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u* pMax)
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMax_8u_C1R data;
+	retStatus = OPT_LEVEL::fex<StatIMax_8u_C1R>(data,pSrc,srcStep,roiSize);
+	*pMax = data.max;
+
+	return retStatus;
+
+}
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMax_16s_C1R)(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s* pMax)
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMax_16s_C1R data;
+	retStatus = OPT_LEVEL::fex<StatIMax_16s_C1R>(data,pSrc,srcStep,roiSize);
+	*pMax = data.max;
+
+	return retStatus;
+
+}
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMax_32f_C1R)(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f* pMax)
+{
+
+	FwStatus retStatus = fwStsNoErr;
+	StatIMax_32f_C1R data;
+	retStatus = OPT_LEVEL::fex<StatIMax_32f_C1R>(data,pSrc,srcStep,roiSize);
+	*pMax = data.max;
+
+	return retStatus;
+
+}
+
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMax_8u_AC4R) (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u max[3])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMax_8u_AC4R data;
+	retStatus = OPT_LEVEL::fex<StatIMax_8u_AC4R>(data,pSrc,srcStep,roiSize);
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+
+	return retStatus;
+}
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMax_16s_AC4R )(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s max[3])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMax_16s_AC4R data;
+	retStatus = OPT_LEVEL::fex<StatIMax_16s_AC4R>(data,pSrc,srcStep,roiSize);
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+
+	return retStatus;
+}
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMax_32f_AC4R) (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f max[3])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMax_32f_AC4R data;
+	retStatus = OPT_LEVEL::fex<StatIMax_32f_AC4R>(data,pSrc,srcStep,roiSize);
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+
+	return retStatus;
+}
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMax_8u_C4R) (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u max[4])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMax_8u_C4R data;
+	retStatus = OPT_LEVEL::fex<StatIMax_8u_C4R>(data,pSrc,srcStep,roiSize);
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+	max[3] = data.max[3];
+	return retStatus;
+}
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMax_16s_C4R )(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s max[4])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMax_16s_C4R data;
+	retStatus = OPT_LEVEL::fex<StatIMax_16s_C4R>(data,pSrc,srcStep,roiSize);
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+	max[3] = data.max[3];
+	return retStatus;
+}
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMax_32f_C4R) (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f max[4])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMax_32f_C4R data;
+	retStatus = OPT_LEVEL::fex<StatIMax_32f_C4R>(data,pSrc,srcStep,roiSize);
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+	max[3] = data.max[3];
+	return retStatus;
+}
+
+
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMax_8u_C3R )(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u max[3])
+{
+
+	FwStatus retStatus = fwStsNoErr;
+	StatIMax_8u_C3R data;
+	retStatus = OPT_LEVEL::fex<StatIMax_8u_C3R>(data,pSrc,srcStep,roiSize);
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+
+	return retStatus;
+}
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMax_16s_C3R) (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s max[3])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMax_16s_C3R data;
+	retStatus = OPT_LEVEL::fex<StatIMax_16s_C3R>(data,pSrc,srcStep,roiSize);
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+
+	return retStatus;
+}
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMax_32f_C3R) (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f max[3])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMax_32f_C3R data;
+	retStatus = OPT_LEVEL::fex<StatIMax_32f_C3R>(data,pSrc,srcStep,roiSize);
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+
+	return retStatus;
+
+}
+
+////  Max end
 
 
 
