@@ -3313,6 +3313,26 @@ FwStatus STDCALL fwiMax_16s_C3R (const Fw16s* pSrc, int srcStep,FwiSize roiSize,
 FwStatus STDCALL fwiMax_32f_C3R (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f max[3]);
 
 
+/*#FunctionBlock - Min Max
+todo:publish
+#Technologies - REF, SSE2
+#Short - Min Max of image data
+#Long - <Text>These functions step through an ROI in a source buffer and finds the maximum  and minumum value in the buffer</Text>
+*/
+
+FwStatus STDCALL fwiMinMax_8u_C1R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u* pMin,Fw8u* pMax);
+FwStatus STDCALL fwiMinMax_16s_C1R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s* pMin, Fw16s* pMax);
+FwStatus STDCALL fwiMinMax_32f_C1R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f* pMin, Fw32f* pMax);
+FwStatus STDCALL fwiMinMax_8u_AC4R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u min[3], Fw8u max[3]);
+FwStatus STDCALL fwiMinMax_16s_AC4R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s min[3], Fw16s max[3]);
+FwStatus STDCALL fwiMinMax_32f_AC4R (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f min[3], Fw32f max[3]);
+FwStatus STDCALL fwiMinMax_8u_C4R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u min[4], Fw8u max[4]);
+FwStatus STDCALL fwiMinMax_16s_C4R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s min[4], Fw16s max[4]);
+FwStatus STDCALL fwiMinMax_32f_C4R (const Fw32f* pSrc, int srcStep,FwiSize roiSize,Fw32f min[4],Fw32f max[4]);
+FwStatus STDCALL fwiMinMax_8u_C3R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u min[3], Fw8u max[3]);
+FwStatus STDCALL fwiMinMax_16s_C3R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s min[3], Fw16s max[3]);
+FwStatus STDCALL fwiMinMax_32f_C3R (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f min[3], Fw32f max[3]);
+
 /*#Documentation
 
 </Chapter>

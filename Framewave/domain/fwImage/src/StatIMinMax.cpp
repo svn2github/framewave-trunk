@@ -296,6 +296,195 @@ FwStatus PREFIX_OPT(OPT_PREFIX, fwiMax_32f_C3R) (const Fw32f* pSrc, int srcStep,
 
 ////  Max end
 
+///// Min max
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMinMax_8u_C1R)(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u* pMin,Fw8u* pMax)
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMinMax_8u data;
+	retStatus = OPT_LEVEL::fex<StatIMinMax_8u>(data,pSrc,srcStep,roiSize);
+	*pMin = data.min;
+	*pMax = data.max;
+
+	return retStatus;
+
+}
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMinMax_16s_C1R)(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s* pMin, Fw16s* pMax)
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMinMax_16s data;
+	retStatus = OPT_LEVEL::fex<StatIMinMax_16s>(data,pSrc,srcStep,roiSize);
+	*pMin = data.min;
+	*pMax = data.max;
+	return retStatus;
+
+}
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMinMax_32f_C1R)(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f* pMin, Fw32f* pMax)
+{
+
+	FwStatus retStatus = fwStsNoErr;
+	StatIMinMax_32f data;
+	retStatus = OPT_LEVEL::fex<StatIMinMax_32f>(data,pSrc,srcStep,roiSize);
+	*pMin = data.min;
+	*pMax = data.max;
+	return retStatus;
+
+}
+
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMinMax_8u_AC4R) (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u min[3], Fw8u max[3])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMinMax_8u_AC4R data;
+	retStatus = OPT_LEVEL::fex<StatIMinMax_8u_AC4R>(data,pSrc,srcStep,roiSize);
+	min[0] = data.min[0];
+	min[1] = data.min[1];
+	min[2] = data.min[2];
+
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+
+	return retStatus;
+}
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMinMax_16s_AC4R )(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s min[3], Fw16s max[3])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMinMax_16s_AC4 data;
+	retStatus = OPT_LEVEL::fex<StatIMinMax_16s_AC4>(data,pSrc,srcStep,roiSize);
+	min[0] = data.min[0];
+	min[1] = data.min[1];
+	min[2] = data.min[2];
+
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+
+	return retStatus;
+}
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMinMax_32f_AC4R) (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f min[3], Fw32f max[3])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMinMax_32f_AC4 data;
+	retStatus = OPT_LEVEL::fex<StatIMinMax_32f_AC4>(data,pSrc,srcStep,roiSize);
+	min[0] = data.min[0];
+	min[1] = data.min[1];
+	min[2] = data.min[2];
+
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+
+	return retStatus;
+}
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMinMax_8u_C4R) (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u min[4], Fw8u max[4])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMinMax_8u_C4R data;
+	retStatus = OPT_LEVEL::fex<StatIMinMax_8u_C4R>(data,pSrc,srcStep,roiSize);
+	min[0] = data.min[0];
+	min[1] = data.min[1];
+	min[2] = data.min[2];
+	min[3] = data.min[3];
+
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+	max[3] = data.max[3];
+
+	return retStatus;
+}
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMinMax_16s_C4R )(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s min[4], Fw16s max[4])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMinMax_16s_C4 data;
+	retStatus = OPT_LEVEL::fex<StatIMinMax_16s_C4>(data,pSrc,srcStep,roiSize);
+	min[0] = data.min[0];
+	min[1] = data.min[1];
+	min[2] = data.min[2];
+	min[3] = data.min[3];
+
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+	max[3] = data.max[3];
+	return retStatus;
+}
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMinMax_32f_C4R) (const Fw32f* pSrc, int srcStep,FwiSize roiSize,Fw32f min[4],Fw32f max[4])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMinMax_32f_C4 data;
+	retStatus = OPT_LEVEL::fex<StatIMinMax_32f_C4>(data,pSrc,srcStep,roiSize);
+	min[0] = data.min[0];
+	min[1] = data.min[1];
+	min[2] = data.min[2];
+	min[3] = data.min[3];
+
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+	max[3] = data.max[3];
+
+	return retStatus;
+}
+
+
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMinMax_8u_C3R )(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u min[3], Fw8u max[3])
+{
+
+	FwStatus retStatus = fwStsNoErr;
+	StatIMinMax_8u_C3R data;
+	retStatus = OPT_LEVEL::fex<StatIMinMax_8u_C3R>(data,pSrc,srcStep,roiSize);
+	min[0] = data.min[0];
+	min[1] = data.min[1];
+	min[2] = data.min[2];
+
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+	
+	return retStatus;
+}
+
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMinMax_16s_C3R) (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s min[3], Fw16s max[3])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMinMax_16s_C3R data;
+	retStatus = OPT_LEVEL::fex<StatIMinMax_16s_C3R>(data,pSrc,srcStep,roiSize);
+	min[0] = data.min[0];
+	min[1] = data.min[1];
+	min[2] = data.min[2];
+
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+
+    return retStatus;
+}
+FwStatus PREFIX_OPT(OPT_PREFIX, fwiMinMax_32f_C3R) (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f min[3], Fw32f max[3])
+{
+	FwStatus retStatus = fwStsNoErr;
+	StatIMinMax_32f_C3R data;
+	retStatus = OPT_LEVEL::fex<StatIMinMax_32f_C3R>(data,pSrc,srcStep,roiSize);
+	min[0] = data.min[0];
+	min[1] = data.min[1];
+	min[2] = data.min[2];
+
+	max[0] = data.max[0];
+	max[1] = data.max[1];
+	max[2] = data.max[2];
+
+    return retStatus;
+
+}
+
+
+///// min max
+
 
 
 // Please do NOT remove the above line for CPP files that need to be multipass compiled
