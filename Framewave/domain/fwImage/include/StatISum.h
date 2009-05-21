@@ -121,6 +121,68 @@ struct StatISum_16s: public fe1St<Fw16s,C1>
 };
 
 
+
+
+struct StatIMean_32f_C1R: public fe1St<Fw32f,C1>
+{
+   /* const static U32 nPIX_SSE = (XMMREGSIZE / sizeof(Fw16s))  * 2; // Load two registers
+    class SRC1: public RegDesc< Fw16s, C1, nPIX_SSE > {};*/
+
+	mutable  Fw64f sum;
+	mutable XMM128 mSum;
+	FEX_SSE2_REF
+	StatIMean_32f_C1R(){ sum = 0;}
+	IV REFR_Init() { sum = 0; }
+
+	template<class FE>
+	IV REFR_Post(FE &feData)
+	{
+		sum += feData.sum;
+	}
+
+	template<class FE>
+	IV SSE2_Post(FE &feData)
+	{
+		sum += feData.sum;
+        sum += feData.mSum.f64[0] + feData.mSum.f64[1];
+	}
+
+	IV SSE2_Init()
+	{
+		sum = 0;
+		mSum.d = _mm_setzero_pd();
+	}
+
+	IV REFR(const Fw32f *s1 ) const           // REFR Pixel function
+	{
+		sum = (sum + *s1);
+	}
+
+	IV SSE2( RegFile & r )  const                       // SSE2 Pixel function
+	{
+		XMM128 src1,src2;
+		src1.i = r.src1[0].i;
+        src2.i =r.src1[1].i;
+
+        src1.d = _mm_cvtps_pd(r.src1[0].f);
+        src2.d = _mm_unpackhi_pd(r.src1[0].d,r.src1[0].d);
+        src2.d = _mm_cvtps_pd(src2.f);
+
+        mSum.d = _mm_add_pd(mSum.d,src1.d);
+        mSum.d = _mm_add_pd(mSum.d,src2.d);
+/*
+        src1.d = _mm_cvtps_pd(r.src1[1].f);
+        src2.d = _mm_unpackhi_pd(r.src1[1].d,r.src1[1].d);
+        src2.d = _mm_cvtps_pd(src2.f);
+
+        mSum.d = _mm_add_pd(mSum.d,src1.d);
+        mSum.d = _mm_add_pd(mSum.d,src2.d);*/
+
+	}
+};
+
+
+
 struct StatISum_8uC3: public fe1St<Fw8u,C3>
 {
    // class SRC1: public RegDesc< Fw8u, C3, nPIX_SSE > {};

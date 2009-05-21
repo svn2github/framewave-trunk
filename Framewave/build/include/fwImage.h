@@ -1831,6 +1831,21 @@ FwStatus STDCALL fwiMinMax_16s_C3R (const Fw16s* pSrc, int srcStep,FwiSize roiSi
 FwStatus STDCALL fwiMinMax_32f_C3R (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f min[3], Fw32f max[3]);
 
 ////////////////////////////////////////////////////////////////
+//                        Mean
+////////////////////////////////////////////////////////////////
+
+
+FwStatus STDCALL fwiMean_8u_C1R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f* pMean);
+FwStatus STDCALL fwiMean_16s_C1R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f* pMean);
+FwStatus STDCALL fwiMean_32f_C1R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw64f* pMean, FwHintAlgorithm hint);
+FwStatus STDCALL fwiMean_8u_C3R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f mean[3]);
+FwStatus STDCALL fwiMean_16s_C3R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f mean[3]);
+FwStatus STDCALL fwiMean_8u_AC4R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f mean[3]);
+FwStatus STDCALL fwiMean_16s_AC4R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f mean[3]);
+FwStatus STDCALL fwiMean_8u_C4R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f mean[4]);
+FwStatus STDCALL fwiMean_16s_C4R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f mean[4]);
+
+////////////////////////////////////////////////////////////////
 //                        Threshold
 ////////////////////////////////////////////////////////////////
 
