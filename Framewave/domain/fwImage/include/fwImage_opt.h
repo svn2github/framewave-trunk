@@ -2981,6 +2981,16 @@ OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX,  fwiMean_16s_AC4R           
 OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX,  fwiMean_8u_C4R                   )(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f mean[4]);
 OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX,  fwiMean_16s_C4R                  )(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f mean[4]);
 
+
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX,  fwiCountInRange_8u_C1R          )(const Fw8u* pSrc, int srcStep, FwiSize roiSize, int* counts, Fw8u lowerBound,Fw8u upperBound);
+OREFR OSSE2         FwStatus PREFIX_OPT(OPT_PREFIX,  fwiCountInRange_32f_C1R         )(const Fw32f* pSrc, int srcStep, FwiSize roiSize, int* counts, Fw32f lowerBound,Fw32f upperBound);
+OREFR               FwStatus PREFIX_OPT(OPT_PREFIX,  fwiCountInRange_8u_C3R          )(const Fw8u* pSrc, int srcStep,FwiSize roiSize, int counts[3], Fw8u lowerBound[3],Fw8u upperBound[3]);
+OREFR               FwStatus PREFIX_OPT(OPT_PREFIX,  fwiCountInRange_32f_C3R         )(const Fw32f* pSrc, int srcStep,FwiSize roiSize, int counts[3], Fw32f lowerBound[3],Fw32f upperBound[3]);
+OREFR               FwStatus PREFIX_OPT(OPT_PREFIX,  fwiCountInRange_8u_AC4R         )(const Fw8u* pSrc, int srcStep,FwiSize roiSize, int counts[3], Fw8u lowerBound[3],Fw8u upperBound[3]);
+OREFR               FwStatus PREFIX_OPT(OPT_PREFIX,  fwiCountInRange_32f_AC4R        )(const Fw32f* pSrc, int srcStep,FwiSize roiSize, int counts[3], Fw32f lowerBound[3],Fw32f upperBound[3]);
+
+
+
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr422ToYCbCr420_8u_P3R      )( const Fw8u* pSrc[3], int srcStep[3], Fw8u* pDst[3], int dstStep[3], FwiSize roiSize);
 OREFR               FwStatus PREFIX_OPT(OPT_PREFIX, fwiYCbCr422ToYCbCr420_8u_C2P3R    )(const Fw8u* pSrc, int srcStep, Fw8u* pDst[3], int dstStep[3], FwiSize roiSize);
 

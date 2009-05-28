@@ -3355,6 +3355,21 @@ FwStatus STDCALL fwiMean_16s_C4R(const Fw16s* pSrc, int srcStep,FwiSize roiSize,
 
 
 
+/*#FunctionBlock - Count in Range
+todo:publish
+#Technologies - REF
+#Short -Counts the number of pixels in given range
+#Long - <Text>These functions step through an ROI in a source buffer and counts the number of pixels in given lover and upper range (inclusive) </Text>
+*/
+
+FwStatus  STDCALL fwiCountInRange_8u_C1R(const Fw8u* pSrc, int srcStep, FwiSize roiSize, int* counts, Fw8u lowerBound,Fw8u upperBound);
+FwStatus  STDCALL fwiCountInRange_32f_C1R(const Fw32f* pSrc, int srcStep, FwiSize roiSize, int* counts, Fw32f lowerBound,Fw32f upperBound);
+FwStatus  STDCALL fwiCountInRange_8u_C3R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, int counts[3], Fw8u lowerBound[3],Fw8u upperBound[3]);
+FwStatus  STDCALL fwiCountInRange_32f_C3R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, int counts[3], Fw32f lowerBound[3],Fw32f upperBound[3]);
+FwStatus  STDCALL fwiCountInRange_8u_AC4R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, int counts[3], Fw8u lowerBound[3],Fw8u upperBound[3]);
+FwStatus  STDCALL fwiCountInRange_32f_AC4R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, int counts[3], Fw32f lowerBound[3],Fw32f upperBound[3]);
+
+
 
 /*#Documentation
 

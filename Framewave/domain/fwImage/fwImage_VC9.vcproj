@@ -872,6 +872,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\StatICountinRange.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\StatIMean.cpp"
 				>
 			</File>
@@ -1047,6 +1051,10 @@
 			</File>
 			<File
 				RelativePath=".\include\SetDef.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\StatICountinRange.h"
 				>
 			</File>
 			<File

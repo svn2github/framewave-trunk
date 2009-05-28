@@ -329,6 +329,7 @@ namespace PREFIX_OPT(OPT_PREFIX, FE_PRIVATE)
          for(U32 i=0; i<(this->threads); ++i)
          {
             td[i].pThis   = this; 
+            td[i].fe      = this->fe;
             td[i].s1      = FW_REF::Offset(s1, (T_OFFSET)i*(this->s1Step)*(T_OFFSET)heightTh);
             td[i].size    = heightTh;
             td[i].widthTh = this->width - px_nRef;
@@ -493,6 +494,7 @@ namespace PREFIX_OPT(OPT_PREFIX, FE_PRIVATE)
          for(U32 i=0; i<(this->threads); ++i)
          {
             td[i].pThis   = this;
+            td[i].fe      = this->fe;
             td[i].s1      = FW_REF::Offset(s1, (T_OFFSET)i*(this->s1Step)*(T_OFFSET)heightTh);
             td[i].s2      = FW_REF::Offset(s2, (T_OFFSET)i*(this->s2Step)*(T_OFFSET)heightTh);
             td[i].size    = heightTh;
