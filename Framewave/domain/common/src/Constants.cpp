@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
+Copyright (c) 2006-2009 Advanced Micro Devices, Inc. All Rights Reserved.
 This software is subject to the Apache v2.0 License.
 
 Portions based on work by llcc and visionany (Framewave\sdk\external\dec_cavlc.c). See line number 1207.

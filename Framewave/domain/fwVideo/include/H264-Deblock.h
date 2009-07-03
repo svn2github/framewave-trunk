@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
+Copyright (c) 2006-2009 Advanced Micro Devices, Inc. All Rights Reserved.
 This software is subject to the Apache v2.0 License.
 
 The following Deblock filter code is based on JVT-G050r1 document 27 May 2003 

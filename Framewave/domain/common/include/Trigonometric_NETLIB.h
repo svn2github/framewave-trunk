@@ -1,5 +1,5 @@
 /*
-Portions copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
+Portions copyright (c) 2006-2009 Advanced Micro Devices, Inc. All Rights Reserved.
 */
 
 /*

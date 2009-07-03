@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2006-2008 Advanced Micro Devices, Inc. All Rights Reserved.
+// Copyright (c) 2006-2009 Advanced Micro Devices, Inc. All Rights Reserved.
 // This software is subject to the Apache v2.0 License.
 //
 #ifndef __SSEPLUS_ARITHMETIC_SSE3_H__
