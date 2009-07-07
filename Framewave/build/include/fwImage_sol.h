@@ -296,7 +296,7 @@ FwStatus STDCALL fwiCopy_8u_C1MR          ( const Fw8u  *pSrc, int srcStep, Fw8u
 FwStatus STDCALL fwiCopy_8u_C3MR          ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize roiSize, const Fw8u *pMask, int maskStep );
 FwStatus STDCALL fwiCopy_8u_C4MR          ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize roiSize, const Fw8u *pMask, int maskStep );
 FwStatus STDCALL fwiCopy_8u_AC4MR         ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize roiSize, const Fw8u *pMask, int maskStep );
-
+                                                                                     
 FwStatus STDCALL fwiCopy_16s_C1MR         ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize roiSize, const Fw8u *pMask, int maskStep );
 FwStatus STDCALL fwiCopy_16s_C3MR         ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize roiSize, const Fw8u *pMask, int maskStep );
 FwStatus STDCALL fwiCopy_16s_C4MR         ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize roiSize, const Fw8u *pMask, int maskStep );
@@ -1857,7 +1857,6 @@ FwStatus  STDCALL fwiCountInRange_32f_C3R(const Fw32f* pSrc, int srcStep,FwiSize
 FwStatus  STDCALL fwiCountInRange_8u_AC4R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, int counts[3], Fw8u lowerBound[3],Fw8u upperBound[3]);
 FwStatus  STDCALL fwiCountInRange_32f_AC4R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, int counts[3], Fw32f lowerBound[3],Fw32f upperBound[3]);
 
-
 ////////////////////////////////////////////////////////////////
 //                        Threshold
 ////////////////////////////////////////////////////////////////
@@ -2353,7 +2352,7 @@ FwStatus STDCALL fwiResizeSqrPixelGetBufSize  (FwiSize dstSize, int nChannel,int
 ////////////////////////////////////////////////////////////////
 
 FwStatus STDCALL fwiResizeSqrPixel_8u_C1R             ( const  Fw8u   *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-                                                                 Fw8u   *pDst,                   int dstStep, FwiRect dstRoi,
+                                                                 Fw8u   *pDst,                   int dstStep, FwiRect dstRoi, 
                                                           double xFactor, double yFactor, double xShift, double yShift, int interpolation, Fw8u *pBuffer);
 
 FwStatus STDCALL fwiResizeSqrPixel_8u_C3R             ( const  Fw8u   *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
@@ -2707,7 +2706,7 @@ FwStatus STDCALL fwiRotateCenter_32f_P4R  ( const  Fw32f* const pSrc[4],FwiSize 
 ////////////////////////////////////////////////////////////////
 
 FwStatus STDCALL fwiShear_8u_C1R          ( const  Fw8u *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-                                                     Fw8u *pDst,                   int dstStep, FwiRect dstRoi,
+                                                     Fw8u *pDst,                   int dstStep, FwiRect dstRoi, 
                                               double xShear, double yShear, double xShift, double yShift, int interpolation );
 
 FwStatus STDCALL fwiShear_8u_C3R          ( const  Fw8u *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
@@ -2965,7 +2964,7 @@ FwStatus STDCALL fwiWarpAffineQuad_8u_P4R             ( const Fw8u * const pSrc[
                                                           int interpolation );
 
 FwStatus STDCALL fwiWarpAffineQuad_32f_P3R            ( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
-                                                                Fw32f* const pDst[3],                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2],
+                                                                Fw32f* const pDst[3],                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2], 
                                                           int interpolation );
 
 FwStatus STDCALL fwiWarpAffineQuad_32f_P4R            ( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
@@ -3099,7 +3098,7 @@ FwStatus STDCALL fwiWarpPerspectiveBack_32f_P4R       ( const Fw32f* const pSrc[
 ////////////////////////////////////////////////////////////////
 
 FwStatus STDCALL fwiWarpPerspectiveQuad_8u_C1R        ( const Fw8u  *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
-                                                                Fw8u  *pDst,                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2],
+                                                                Fw8u  *pDst,                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2], 
                                                           int interpolation );
 
 FwStatus STDCALL fwiWarpPerspectiveQuad_8u_C3R        ( const Fw8u  *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
@@ -3298,7 +3297,7 @@ FwStatus STDCALL fwiWarpBilinearQuad_32f_C3R          ( const Fw32f *pSrc, FwiSi
                                                           int interpolation);
 
 FwStatus STDCALL fwiWarpBilinearQuad_32f_C4R          ( const Fw32f *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
-                                                                Fw32f *pDst,                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2],
+                                                                Fw32f *pDst,                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2], 
                                                           int interpolation);
 
 FwStatus STDCALL fwiWarpBilinearQuad_32f_AC4R         ( const Fw32f *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
@@ -3306,7 +3305,7 @@ FwStatus STDCALL fwiWarpBilinearQuad_32f_AC4R         ( const Fw32f *pSrc, FwiSi
                                                           int interpolation);
 
 FwStatus STDCALL fwiWarpBilinearQuad_8u_P3R           ( const Fw8u * const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
-                                                                Fw8u * const pDst[3],                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2],
+                                                                Fw8u * const pDst[3],                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2], 
                                                           int interpolation);
 
 FwStatus STDCALL fwiWarpBilinearQuad_8u_P4R           ( const Fw8u * const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
@@ -3340,12 +3339,25 @@ FwStatus STDCALL fwiGetBilinearBound      ( FwiRect srcRoi, double bound[2][2], 
 FwStatus STDCALL fwiGetBilinearTransform  ( FwiRect srcRoi, const double quad[4][2],double coeffs[2][4]);
 
 ////////////////////////////////////////////////////////////////
-//                        LUT
+//                        LookUp3DSpecInitAlloc
 ////////////////////////////////////////////////////////////////
 
-FwStatus STDCALL fwiLookUp3DSpecInitAlloc(const Fw16u cubeDimensions[3], const Fw16u cubeMax[3], FwiLUTSpec** ppLUTSpec);
-FwStatus STDCALL fwiLookUp3D_16u_C3R(const Fw16u *pSrc, int srcStep, Fw16u *pDst, int dstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec);
-FwStatus STDCALL fwiLookUp3D_16u_C3IR(Fw16u *pSrcDst, int srcDstStep, FwiSize roiSize, const int *pCube, FwiLUTSpec* pLUTSpec);
+
+FwStatus STDCALL fwiLookUp3DSpecInitAlloc(const Fw16u cubeDimensions, const Fw16u cubeMax, FwiLUTSpec** ppLUTSpec);
+
+////////////////////////////////////////////////////////////////
+//                        LookUp3DSpecInitAlloc
+////////////////////////////////////////////////////////////////
+
+
+FwStatus STDCALL fwiLookUp3D_16u_C3R(const Fw16u *pSrc, int srcStep, Fw16u *pDst, int dstStep, FwiSize roiSize, const Fw16u *pCube, FwiLUTSpec* pLUTSpec);
+FwStatus STDCALL fwiLookUp3D_16u_C3IR(Fw16u *pSrcDst, int srcDstStep, FwiSize roiSize, const Fw16u *pCube, FwiLUTSpec* pLUTSpec);
+
+////////////////////////////////////////////////////////////////
+//                        LookUp3DSpecFree
+////////////////////////////////////////////////////////////////
+
+
 FwStatus STDCALL fwiLookUp3DSpecFree(FwiLUTSpec* pLUTSpec);
 
 #ifdef __cplusplus
