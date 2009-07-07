@@ -296,7 +296,7 @@ FwStatus STDCALL fwiCopy_8u_C1MR          ( const Fw8u  *pSrc, int srcStep, Fw8u
 FwStatus STDCALL fwiCopy_8u_C3MR          ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize roiSize, const Fw8u *pMask, int maskStep );
 FwStatus STDCALL fwiCopy_8u_C4MR          ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize roiSize, const Fw8u *pMask, int maskStep );
 FwStatus STDCALL fwiCopy_8u_AC4MR         ( const Fw8u  *pSrc, int srcStep, Fw8u  *pDst, int dstStep, FwiSize roiSize, const Fw8u *pMask, int maskStep );
-                                                                                     
+
 FwStatus STDCALL fwiCopy_16s_C1MR         ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize roiSize, const Fw8u *pMask, int maskStep );
 FwStatus STDCALL fwiCopy_16s_C3MR         ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize roiSize, const Fw8u *pMask, int maskStep );
 FwStatus STDCALL fwiCopy_16s_C4MR         ( const Fw16s *pSrc, int srcStep, Fw16s *pDst, int dstStep, FwiSize roiSize, const Fw8u *pMask, int maskStep );
@@ -1758,6 +1758,105 @@ FwStatus STDCALL fwiCbYCr422ToYCbCr420_8u_C2P3R       ( const Fw8u *pSrc, int sr
 
 FwStatus STDCALL fwiSum_8u_C1R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f* pSum);
 FwStatus STDCALL fwiSum_16s_C1R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f* pSum);
+FwStatus STDCALL fwiSum_8u_C3R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3]);
+FwStatus STDCALL fwiSum_16s_C3R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3]);
+FwStatus STDCALL fwiSum_8u_AC4R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3]);
+FwStatus STDCALL fwiSum_16s_AC4R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3]);
+FwStatus STDCALL fwiSum_8u_C4R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[4]);
+FwStatus STDCALL fwiSum_16s_C4R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[4]);
+FwStatus STDCALL fwiSum_32f_C3R (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3], FwHintAlgorithm hint);
+FwStatus STDCALL fwiSum_32f_AC4R (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw64f sum[3], FwHintAlgorithm hint);
+FwStatus STDCALL fwiSum_32f_C4R (const Fw32f* pSrc, int srcStep, FwiSize roiSize, Fw64f sum[4], FwHintAlgorithm hint);
+
+////////////////////////////////////////////////////////////////
+//                        Min
+////////////////////////////////////////////////////////////////
+
+
+
+FwStatus STDCALL fwiMin_8u_C1R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u* pMin);
+FwStatus STDCALL fwiMin_16s_C1R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s* pMin);
+FwStatus STDCALL fwiMin_32f_C1R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f* pMin);
+
+FwStatus STDCALL fwiMin_8u_AC4R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u min[3]);
+FwStatus STDCALL fwiMin_16s_AC4R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s min[3]);
+FwStatus STDCALL fwiMin_32f_AC4R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f min[3]);
+
+FwStatus STDCALL fwiMin_8u_C4R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u min[4]);
+FwStatus STDCALL fwiMin_16s_C4R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s min[4]);
+FwStatus STDCALL fwiMin_32f_C4R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f min[4]);
+
+FwStatus STDCALL fwiMin_8u_C3R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u min[3]);
+FwStatus STDCALL fwiMin_16s_C3R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s min[3]);
+FwStatus STDCALL fwiMin_32f_C3R (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f min[3]);
+
+////////////////////////////////////////////////////////////////
+//                        Max
+////////////////////////////////////////////////////////////////
+
+
+
+FwStatus STDCALL fwiMax_8u_C1R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u* pMax);
+FwStatus STDCALL fwiMax_16s_C1R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s* pMax);
+FwStatus STDCALL fwiMax_32f_C1R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f* pMax);
+
+FwStatus STDCALL fwiMax_8u_AC4R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u max[3]);
+FwStatus STDCALL fwiMax_16s_AC4R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s max[3]);
+FwStatus STDCALL fwiMax_32f_AC4R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f max[3]);
+
+FwStatus STDCALL fwiMax_8u_C4R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u max[4]);
+FwStatus STDCALL fwiMax_16s_C4R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s max[4]);
+FwStatus STDCALL fwiMax_32f_C4R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f max[4]);
+
+FwStatus STDCALL fwiMax_8u_C3R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u max[3]);
+FwStatus STDCALL fwiMax_16s_C3R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s max[3]);
+FwStatus STDCALL fwiMax_32f_C3R (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f max[3]);
+
+////////////////////////////////////////////////////////////////
+//                        Min
+////////////////////////////////////////////////////////////////
+
+
+FwStatus STDCALL fwiMinMax_8u_C1R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u* pMin,Fw8u* pMax);
+FwStatus STDCALL fwiMinMax_16s_C1R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s* pMin, Fw16s* pMax);
+FwStatus STDCALL fwiMinMax_32f_C1R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f* pMin, Fw32f* pMax);
+FwStatus STDCALL fwiMinMax_8u_AC4R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u min[3], Fw8u max[3]);
+FwStatus STDCALL fwiMinMax_16s_AC4R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s min[3], Fw16s max[3]);
+FwStatus STDCALL fwiMinMax_32f_AC4R (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f min[3], Fw32f max[3]);
+FwStatus STDCALL fwiMinMax_8u_C4R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u min[4], Fw8u max[4]);
+FwStatus STDCALL fwiMinMax_16s_C4R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s min[4], Fw16s max[4]);
+FwStatus STDCALL fwiMinMax_32f_C4R (const Fw32f* pSrc, int srcStep,FwiSize roiSize,Fw32f min[4],Fw32f max[4]);
+FwStatus STDCALL fwiMinMax_8u_C3R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw8u min[3], Fw8u max[3]);
+FwStatus STDCALL fwiMinMax_16s_C3R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw16s min[3], Fw16s max[3]);
+FwStatus STDCALL fwiMinMax_32f_C3R (const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw32f min[3], Fw32f max[3]);
+
+////////////////////////////////////////////////////////////////
+//                        Mean
+////////////////////////////////////////////////////////////////
+
+
+FwStatus STDCALL fwiMean_8u_C1R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f* pMean);
+FwStatus STDCALL fwiMean_16s_C1R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f* pMean);
+FwStatus STDCALL fwiMean_32f_C1R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, Fw64f* pMean, FwHintAlgorithm hint);
+FwStatus STDCALL fwiMean_8u_C3R (const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f mean[3]);
+FwStatus STDCALL fwiMean_16s_C3R (const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f mean[3]);
+FwStatus STDCALL fwiMean_8u_AC4R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f mean[3]);
+FwStatus STDCALL fwiMean_16s_AC4R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f mean[3]);
+FwStatus STDCALL fwiMean_8u_C4R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, Fw64f mean[4]);
+FwStatus STDCALL fwiMean_16s_C4R(const Fw16s* pSrc, int srcStep,FwiSize roiSize, Fw64f mean[4]);
+
+////////////////////////////////////////////////////////////////
+//                        Count
+////////////////////////////////////////////////////////////////
+
+
+FwStatus  STDCALL fwiCountInRange_8u_C1R(const Fw8u* pSrc, int srcStep, FwiSize roiSize, int* counts, Fw8u lowerBound,Fw8u upperBound);
+FwStatus  STDCALL fwiCountInRange_32f_C1R(const Fw32f* pSrc, int srcStep, FwiSize roiSize, int* counts, Fw32f lowerBound,Fw32f upperBound);
+FwStatus  STDCALL fwiCountInRange_8u_C3R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, int counts[3], Fw8u lowerBound[3],Fw8u upperBound[3]);
+FwStatus  STDCALL fwiCountInRange_32f_C3R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, int counts[3], Fw32f lowerBound[3],Fw32f upperBound[3]);
+FwStatus  STDCALL fwiCountInRange_8u_AC4R(const Fw8u* pSrc, int srcStep,FwiSize roiSize, int counts[3], Fw8u lowerBound[3],Fw8u upperBound[3]);
+FwStatus  STDCALL fwiCountInRange_32f_AC4R(const Fw32f* pSrc, int srcStep,FwiSize roiSize, int counts[3], Fw32f lowerBound[3],Fw32f upperBound[3]);
+
 
 ////////////////////////////////////////////////////////////////
 //                        Threshold
@@ -2254,7 +2353,7 @@ FwStatus STDCALL fwiResizeSqrPixelGetBufSize  (FwiSize dstSize, int nChannel,int
 ////////////////////////////////////////////////////////////////
 
 FwStatus STDCALL fwiResizeSqrPixel_8u_C1R             ( const  Fw8u   *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-                                                                 Fw8u   *pDst,                   int dstStep, FwiRect dstRoi, 
+                                                                 Fw8u   *pDst,                   int dstStep, FwiRect dstRoi,
                                                           double xFactor, double yFactor, double xShift, double yShift, int interpolation, Fw8u *pBuffer);
 
 FwStatus STDCALL fwiResizeSqrPixel_8u_C3R             ( const  Fw8u   *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
@@ -2608,7 +2707,7 @@ FwStatus STDCALL fwiRotateCenter_32f_P4R  ( const  Fw32f* const pSrc[4],FwiSize 
 ////////////////////////////////////////////////////////////////
 
 FwStatus STDCALL fwiShear_8u_C1R          ( const  Fw8u *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-                                                     Fw8u *pDst,                   int dstStep, FwiRect dstRoi, 
+                                                     Fw8u *pDst,                   int dstStep, FwiRect dstRoi,
                                               double xShear, double yShear, double xShift, double yShift, int interpolation );
 
 FwStatus STDCALL fwiShear_8u_C3R          ( const  Fw8u *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
@@ -2866,7 +2965,7 @@ FwStatus STDCALL fwiWarpAffineQuad_8u_P4R             ( const Fw8u * const pSrc[
                                                           int interpolation );
 
 FwStatus STDCALL fwiWarpAffineQuad_32f_P3R            ( const Fw32f* const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
-                                                                Fw32f* const pDst[3],                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2], 
+                                                                Fw32f* const pDst[3],                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2],
                                                           int interpolation );
 
 FwStatus STDCALL fwiWarpAffineQuad_32f_P4R            ( const Fw32f* const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
@@ -3000,7 +3099,7 @@ FwStatus STDCALL fwiWarpPerspectiveBack_32f_P4R       ( const Fw32f* const pSrc[
 ////////////////////////////////////////////////////////////////
 
 FwStatus STDCALL fwiWarpPerspectiveQuad_8u_C1R        ( const Fw8u  *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
-                                                                Fw8u  *pDst,                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2], 
+                                                                Fw8u  *pDst,                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2],
                                                           int interpolation );
 
 FwStatus STDCALL fwiWarpPerspectiveQuad_8u_C3R        ( const Fw8u  *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
@@ -3199,7 +3298,7 @@ FwStatus STDCALL fwiWarpBilinearQuad_32f_C3R          ( const Fw32f *pSrc, FwiSi
                                                           int interpolation);
 
 FwStatus STDCALL fwiWarpBilinearQuad_32f_C4R          ( const Fw32f *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
-                                                                Fw32f *pDst,                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2], 
+                                                                Fw32f *pDst,                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2],
                                                           int interpolation);
 
 FwStatus STDCALL fwiWarpBilinearQuad_32f_AC4R         ( const Fw32f *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
@@ -3207,7 +3306,7 @@ FwStatus STDCALL fwiWarpBilinearQuad_32f_AC4R         ( const Fw32f *pSrc, FwiSi
                                                           int interpolation);
 
 FwStatus STDCALL fwiWarpBilinearQuad_8u_P3R           ( const Fw8u * const pSrc[3], FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
-                                                                Fw8u * const pDst[3],                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2], 
+                                                                Fw8u * const pDst[3],                   int dstStep, FwiRect dstRoi, const double dstQuad[4][2],
                                                           int interpolation);
 
 FwStatus STDCALL fwiWarpBilinearQuad_8u_P4R           ( const Fw8u * const pSrc[4], FwiSize srcSize, int srcStep, FwiRect srcRoi, const double srcQuad[4][2],
