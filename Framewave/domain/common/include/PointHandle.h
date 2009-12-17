@@ -30,6 +30,175 @@ namespace OPT_LEVEL
 	};
 
 
+	//General paramter checking with destination ROI fixing
+	template< class TS>
+	FwStatus My_FW_ParaCheck2(const TS* pSrc, FwiSize srcSize, int srcStep, 
+		FwiRect srcRoi, TS* pDst, int dstStep, 
+		FwiRect dstRoi, int channel)
+	{
+		if (pSrc == 0 || pDst == 0) return fwStsNullPtrErr;
+
+		if (srcSize.height <= 0 || srcSize.width <= 0 || 
+			srcRoi.height <= 0 || srcRoi.width<= 0 ||
+			dstRoi.height <= 0 || dstRoi.width<= 0 )	
+			return fwStsSizeErr;	
+
+		if (srcStep < channel || dstStep < channel) //at least one pixel 
+			return fwStsStepErr;	
+
+		//Adjusting source ROI
+		if (srcRoi.x <0 ) {
+			srcRoi.width +=srcRoi.x;
+			srcRoi.x=0;
+		}
+		if (srcRoi.y <0 ) {
+			srcRoi.height +=srcRoi.y;
+			srcRoi.y=0;
+		}
+		if ((srcRoi.x + srcRoi.width ) < 1 || (srcRoi.x >= srcSize.width) || 
+			(srcRoi.y + srcRoi.height) < 1 || (srcRoi.y >= srcSize.height))	
+			return fwStsWrongIntersectROI;
+
+		if (srcRoi.x+srcRoi.width>srcSize.width) srcRoi.width=srcSize.width-srcRoi.x;
+		if (srcRoi.y+srcRoi.height>srcSize.height) srcRoi.height=srcSize.height-srcRoi.y;
+
+		if (srcRoi.width == 1 || srcRoi.height == 1 )
+			return fwStsRectErr;
+
+		//fix dst Roi issues
+		if (dstRoi.x <0 ) {
+			dstRoi.width +=dstRoi.x;
+			dstRoi.x=0;
+		}
+		if (dstRoi.y <0 ) {
+			dstRoi.height +=dstRoi.y;
+			dstRoi.y=0;
+		}
+		if ((dstRoi.x + dstRoi.width ) < 1 || 
+			(dstRoi.y + dstRoi.height) < 1 )	
+			return fwStsWrongIntersectROI;
+
+		return fwStsNoErr;
+	}
+
+
+
+		//handle each point individually
+	template< class TS, DispatchType disp, int interpolation >
+	void My_FW_PointHandle(float xmap, float ymap, int x, int y,
+		const TS* pSrc, int srcStep, FwiRect srcRoi,
+		TS* pDst, int dstStep, int *flag, 
+		int channel, int channel1, Fw32f round)
+	{
+		int k;
+		double result;
+
+		if (xmap < 0 || xmap > srcRoi.width - 1 ||
+			ymap < 0 || ymap > srcRoi.height- 1) {
+				return;
+		}
+
+		xmap += srcRoi.x;
+		ymap += srcRoi.y;
+
+		if (interpolation == FWI_INTER_NN) {
+			// Nearest Neighbor interpolation
+			// Another approach is to add 0.5 for xint and yint calculation
+			int xint = (int)xmap;
+			int yint = (int)ymap;
+
+			for (k=0;k<channel1;k++) {
+				*(pDst+y*dstStep+x*channel+k) = *(pSrc+ yint*srcStep+xint*channel+k); 
+			}
+		} 
+		else if (interpolation == FWI_INTER_LINEAR) {
+			//Linear interpolation
+			int xint = (int) xmap;
+			int yint = (int) ymap;
+
+			int	xint1 = xint+1;
+			if (xint1 >= srcRoi.x + srcRoi.width)  xint1=xint;
+			int	yint1 = yint+1;
+			if (yint1 >= srcRoi.y + srcRoi.height) yint1=yint;
+
+			double  xfraction = xmap-xint;
+			double	yfraction = ymap-yint;					
+
+			for (k=0;k<channel1;k++) {
+				result = (1-xfraction) * (1-yfraction) * (*(pSrc+yint*srcStep+xint*channel+k))
+					+ (1-xfraction) * yfraction * (*(pSrc+yint1*srcStep+xint*channel+k))
+					+ xfraction * (1-yfraction) * (*(pSrc+yint*srcStep+xint1*channel+k))
+					+ xfraction * yfraction * (*(pSrc+yint1*srcStep+xint1*channel+k));
+				
+				//Saturation is needed for the data type
+				*(pDst+y*dstStep+x*channel+k) = FW_REF::Limits<TS>::Sat(result+round);
+			}
+		}
+		else {// FWI_INTER_CUBIC:
+			//Cubic interpolation.
+			//We only support NN, Linear, Cubic for WarpAffine Transformation
+			int xint[4], yint[4], i, j;
+			xint[1] = (int) xmap;
+			yint[1] = (int) ymap;
+			xint[0] = xint[1]-1;
+			if (xint[0] < srcRoi.x) xint[0]++;
+			yint[0] = yint[1]-1;
+			if (yint[0] < srcRoi.y) yint[0]++;
+
+			for (i=2;i<4;i++) {
+				xint[i]= xint[1]+i-1;
+				if (xint[i] >= srcRoi.x + srcRoi.width)  xint[i]=xint[i-1];
+
+				yint[i]= yint[1]+i-1;
+				if (yint[i] >= srcRoi.y + srcRoi.height) yint[i]=yint[i-1];
+			}
+
+			//Cubic factor choose to be -0.5
+			double aA = -0.5;
+			double xfraction = xmap-xint[1];
+			double yfraction = ymap-yint[1];
+			double xfactor[4], yfactor[4];
+
+			//aA*(xx*xx*xx-5.0*xx*xx + 8*xx - 4.0); // 1<= |x| < 2
+			//(aA + 2.0)*xx*xx*xx-(aA+3.0)*xx*xx + 1;	// 0 <= |x| < 1
+			//for xint-1, yint-1
+			xfactor[0] = aA*xfraction*(1-xfraction)*(1-xfraction);
+			yfactor[0] = aA*yfraction*(1-yfraction)*(1-yfraction);
+			//for xint, yint
+			xfactor[1] = (1-xfraction)*(1+xfraction-(aA+2)*xfraction*xfraction);
+			yfactor[1] = (1-yfraction)*(1+yfraction-(aA+2)*yfraction*yfraction);
+			//for xint+1, yint+1
+			xfactor[2] = xfraction * (2-xfraction-(aA+2)*(1-xfraction)*(1-xfraction));
+			yfactor[2] = yfraction * (2-yfraction-(aA+2)*(1-yfraction)*(1-yfraction));
+			//for xint+2, yint+2
+			xfactor[3] = aA*(1-xfraction)*xfraction*xfraction;
+			yfactor[3] = aA*(1-yfraction)*yfraction*yfraction;
+
+			double resultx;
+
+			for (k=0;k<channel1;k++) {
+				result=0;
+				for (j=0;j<4;j++) {
+					resultx=0;
+					for (i=0;i<4;i++) {
+						resultx += xfactor[i] * (*(pSrc+yint[j]*srcStep+xint[i]*channel+k));
+					}
+
+					result += yfactor[j] * resultx;
+				}
+
+				//Saturation is needed for the data type
+				*(pDst+y*dstStep+x*channel+k) = FW_REF::Limits<TS>::Sat(result+round);
+			}
+		}
+
+		//flag for actual point handled
+		*flag=1;
+
+		return;	
+	}
+
+
 	//internal function for WarpAffine transformation
 	template< class TS, CH chSrc, DispatchType disp >
 	FwStatus My_FW_WarpAffine(const TS* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
@@ -185,57 +354,6 @@ namespace OPT_LEVEL
 		return fwStsNoErr;
 	}
 
-
-	//General paramter checking with destination ROI fixing
-	template< class TS>
-	FwStatus My_FW_ParaCheck2(const TS* pSrc, FwiSize srcSize, int srcStep, 
-		FwiRect srcRoi, TS* pDst, int dstStep, 
-		FwiRect dstRoi, int channel)
-	{
-		if (pSrc == 0 || pDst == 0) return fwStsNullPtrErr;
-
-		if (srcSize.height <= 0 || srcSize.width <= 0 || 
-			srcRoi.height <= 0 || srcRoi.width<= 0 ||
-			dstRoi.height <= 0 || dstRoi.width<= 0 )	
-			return fwStsSizeErr;	
-
-		if (srcStep < channel || dstStep < channel) //at least one pixel 
-			return fwStsStepErr;	
-
-		//Adjusting source ROI
-		if (srcRoi.x <0 ) {
-			srcRoi.width +=srcRoi.x;
-			srcRoi.x=0;
-		}
-		if (srcRoi.y <0 ) {
-			srcRoi.height +=srcRoi.y;
-			srcRoi.y=0;
-		}
-		if ((srcRoi.x + srcRoi.width ) < 1 || (srcRoi.x >= srcSize.width) || 
-			(srcRoi.y + srcRoi.height) < 1 || (srcRoi.y >= srcSize.height))	
-			return fwStsWrongIntersectROI;
-
-		if (srcRoi.x+srcRoi.width>srcSize.width) srcRoi.width=srcSize.width-srcRoi.x;
-		if (srcRoi.y+srcRoi.height>srcSize.height) srcRoi.height=srcSize.height-srcRoi.y;
-
-		if (srcRoi.width == 1 || srcRoi.height == 1 )
-			return fwStsRectErr;
-
-		//fix dst Roi issues
-		if (dstRoi.x <0 ) {
-			dstRoi.width +=dstRoi.x;
-			dstRoi.x=0;
-		}
-		if (dstRoi.y <0 ) {
-			dstRoi.height +=dstRoi.y;
-			dstRoi.y=0;
-		}
-		if ((dstRoi.x + dstRoi.width ) < 1 || 
-			(dstRoi.y + dstRoi.height) < 1 )	
-			return fwStsWrongIntersectROI;
-
-		return fwStsNoErr;
-	}
 
 
 
@@ -901,121 +1019,6 @@ namespace OPT_LEVEL
 		return;	
 	}
 
-
-		//handle each point individually
-	template< class TS, DispatchType disp, int interpolation >
-	void My_FW_PointHandle(float xmap, float ymap, int x, int y,
-		const TS* pSrc, int srcStep, FwiRect srcRoi,
-		TS* pDst, int dstStep, int *flag, 
-		int channel, int channel1, Fw32f round)
-	{
-		int k;
-		double result;
-
-		if (xmap < 0 || xmap > srcRoi.width - 1 ||
-			ymap < 0 || ymap > srcRoi.height- 1) {
-				return;
-		}
-
-		xmap += srcRoi.x;
-		ymap += srcRoi.y;
-
-		if (interpolation == FWI_INTER_NN) {
-			// Nearest Neighbor interpolation
-			// Another approach is to add 0.5 for xint and yint calculation
-			int xint = (int)xmap;
-			int yint = (int)ymap;
-
-			for (k=0;k<channel1;k++) {
-				*(pDst+y*dstStep+x*channel+k) = *(pSrc+ yint*srcStep+xint*channel+k); 
-			}
-		} 
-		else if (interpolation == FWI_INTER_LINEAR) {
-			//Linear interpolation
-			int xint = (int) xmap;
-			int yint = (int) ymap;
-
-			int	xint1 = xint+1;
-			if (xint1 >= srcRoi.x + srcRoi.width)  xint1=xint;
-			int	yint1 = yint+1;
-			if (yint1 >= srcRoi.y + srcRoi.height) yint1=yint;
-
-			double  xfraction = xmap-xint;
-			double	yfraction = ymap-yint;					
-
-			for (k=0;k<channel1;k++) {
-				result = (1-xfraction) * (1-yfraction) * (*(pSrc+yint*srcStep+xint*channel+k))
-					+ (1-xfraction) * yfraction * (*(pSrc+yint1*srcStep+xint*channel+k))
-					+ xfraction * (1-yfraction) * (*(pSrc+yint*srcStep+xint1*channel+k))
-					+ xfraction * yfraction * (*(pSrc+yint1*srcStep+xint1*channel+k));
-				
-				//Saturation is needed for the data type
-				*(pDst+y*dstStep+x*channel+k) = FW_REF::Limits<TS>::Sat(result+round);
-			}
-		}
-		else {// FWI_INTER_CUBIC:
-			//Cubic interpolation.
-			//We only support NN, Linear, Cubic for WarpAffine Transformation
-			int xint[4], yint[4], i, j;
-			xint[1] = (int) xmap;
-			yint[1] = (int) ymap;
-			xint[0] = xint[1]-1;
-			if (xint[0] < srcRoi.x) xint[0]++;
-			yint[0] = yint[1]-1;
-			if (yint[0] < srcRoi.y) yint[0]++;
-
-			for (i=2;i<4;i++) {
-				xint[i]= xint[1]+i-1;
-				if (xint[i] >= srcRoi.x + srcRoi.width)  xint[i]=xint[i-1];
-
-				yint[i]= yint[1]+i-1;
-				if (yint[i] >= srcRoi.y + srcRoi.height) yint[i]=yint[i-1];
-			}
-
-			//Cubic factor choose to be -0.5
-			double aA = -0.5;
-			double xfraction = xmap-xint[1];
-			double yfraction = ymap-yint[1];
-			double xfactor[4], yfactor[4];
-
-			//aA*(xx*xx*xx-5.0*xx*xx + 8*xx - 4.0); // 1<= |x| < 2
-			//(aA + 2.0)*xx*xx*xx-(aA+3.0)*xx*xx + 1;	// 0 <= |x| < 1
-			//for xint-1, yint-1
-			xfactor[0] = aA*xfraction*(1-xfraction)*(1-xfraction);
-			yfactor[0] = aA*yfraction*(1-yfraction)*(1-yfraction);
-			//for xint, yint
-			xfactor[1] = (1-xfraction)*(1+xfraction-(aA+2)*xfraction*xfraction);
-			yfactor[1] = (1-yfraction)*(1+yfraction-(aA+2)*yfraction*yfraction);
-			//for xint+1, yint+1
-			xfactor[2] = xfraction * (2-xfraction-(aA+2)*(1-xfraction)*(1-xfraction));
-			yfactor[2] = yfraction * (2-yfraction-(aA+2)*(1-yfraction)*(1-yfraction));
-			//for xint+2, yint+2
-			xfactor[3] = aA*(1-xfraction)*xfraction*xfraction;
-			yfactor[3] = aA*(1-yfraction)*yfraction*yfraction;
-
-			double resultx;
-
-			for (k=0;k<channel1;k++) {
-				result=0;
-				for (j=0;j<4;j++) {
-					resultx=0;
-					for (i=0;i<4;i++) {
-						resultx += xfactor[i] * (*(pSrc+yint[j]*srcStep+xint[i]*channel+k));
-					}
-
-					result += yfactor[j] * resultx;
-				}
-
-				//Saturation is needed for the data type
-				*(pDst+y*dstStep+x*channel+k) = FW_REF::Limits<TS>::Sat(result+round);
-			}
-		}
-
-		//flag for actual point handled
-		*flag=1;
-
-		return;	
-	}
 
 
 
