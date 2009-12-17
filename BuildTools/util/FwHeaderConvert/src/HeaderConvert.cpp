@@ -514,7 +514,7 @@ namespace
 		if(!open)
 		{
 			printf("\n");
-			printf(name);
+			printf("%s",name);
 			printf(" : File could not be opened, exiting..");
 			exit(1);
 		}
