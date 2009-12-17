@@ -7,6 +7,8 @@ This software is subject to the Apache v2.0 License.
 #include "fwImage.h"
 #include "system.h"
 #include "FwSharedCode_SSE2.h"
+#include "PointHandle.h"
+
 
 #if BUILD_NUM_AT_LEAST( 100 )
 
@@ -14,18 +16,6 @@ This software is subject to the Apache v2.0 License.
 
 namespace OPT_LEVEL
 {
-//handle each point individually
-template< class TS, DispatchType disp >
-extern void My_FW_PointHandle(double xmap, double ymap, int x, int y,
-						      const TS* pSrc, int srcStep, FwiRect srcRoi,
-							  TS* pDst, int dstStep, int interpolation, int *flag, 
-							  int channel, int channel1, Fw32f round);
-
-//General paramter checking
-template< class TS>
-extern FwStatus My_FW_ParaCheck(const TS* pSrc, FwiSize srcSize, int srcStep, 
-								 FwiRect srcRoi, TS* pDst, int dstStep, 
-								 FwiSize dstRoiSize, int channel);
 
 //Remap functions provide an arbitrary mapping from source image to destination image
 //User will have to provide the look-up coordinate mapping table for this function.

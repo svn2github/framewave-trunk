@@ -646,6 +646,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\PointHandle.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\shortcuts.h"
 				>
 			</File>

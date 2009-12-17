@@ -6,6 +6,7 @@ This software is subject to the Apache v2.0 License.
 #include "fwdev.h"
 #include "fwImage.h"
 #include "FwSharedCode_SSE2.h"
+#include "PointHandle.h"
 
 #if BUILD_NUM_AT_LEAST( 100 )
 
@@ -14,18 +15,6 @@ using namespace OPT_LEVEL;
 namespace OPT_LEVEL
 {
 
-	//handle each point individually
-	template< class TS, DispatchType disp >
-	extern void My_FW_PointHandle(double xmap, double ymap, int x, int y,
-		const TS* pSrc, int srcStep, FwiRect srcRoi,
-		TS* pDst, int dstStep, int interpolation, int *flag, 
-		int channel, int channel1, Fw32f round);
-
-	//General paramter checking with destination ROI fixing
-	template< class TS>
-	extern FwStatus My_FW_ParaCheck2(const TS* pSrc, FwiSize srcSize, int srcStep, 
-		FwiRect srcRoi, TS* pDst, int dstStep, 
-		FwiRect dstRoi, int channel);
 
 
 	//Description
@@ -41,11 +30,7 @@ namespace OPT_LEVEL
 	//The transformed part of the source image is resampled using the interpolation method specified by
 	//the interpolation parameter, and written to the destination image ROI.
 
-	//internal function for WarpAffine transformation
-	template< class TS, CH chSrc, DispatchType disp >
-	extern FwStatus My_FW_WarpAffine(const TS* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-		TS* pDst, int dstStep, FwiRect dstRoi, 
-		const double coeffs[2][3], int interpolation);
+	
 
 	//internal function for WarpAffine Bilinear transformation
 	template< class TS, CH chSrc, DispatchType disp >

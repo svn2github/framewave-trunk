@@ -6,23 +6,12 @@ This software is subject to the Apache v2.0 License.
 #include "fwdev.h"
 #include "fwImage.h"
 #include "FwSharedCode_SSE2.h"
+#include "PointHandle.h"
 
 #if BUILD_NUM_AT_LEAST( 100 )
 
 namespace OPT_LEVEL
 {
-	//General paramter checking with destination ROI fixing
-	template< class TS>
-	extern FwStatus My_FW_ParaCheck2(const TS* pSrc, FwiSize srcSize, int srcStep, 
-		FwiRect srcRoi, TS* pDst, int dstStep, 
-		FwiRect dstRoi, int channel);
-
-	//handle each point individually
-	template< class TS, DispatchType disp >
-	extern void My_FW_PointHandle(double xmap, double ymap, int x, int y,
-		const TS* pSrc, int srcStep, FwiRect srcRoi,
-		TS* pDst, int dstStep, int interpolation, int *flag, 
-		int channel, int channel1, Fw32f round);
 
 	//Description
 	//The function fwiWarpPerspective is declared in the fwi.h file. This perspective warp

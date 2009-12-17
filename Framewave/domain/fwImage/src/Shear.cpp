@@ -6,17 +6,12 @@ This software is subject to the Apache v2.0 License.
 #include "fwdev.h"
 #include "fwImage.h"
 #include "FwSharedCode_SSE2.h"
+#include "PointHandle.h"
 
 #if BUILD_NUM_AT_LEAST( 100 )
 
 namespace OPT_LEVEL
 {
-	//internal function for WarpAffine transformation
-	template< class TS, CH chSrc, DispatchType disp >
-	extern FwStatus My_FW_WarpAffine(const TS* pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-		TS* pDst, int dstStep, FwiRect dstRoi, 
-		const double coeffs[2][3], int interpolation);
-
 	//Description
 	//The function fwiShear is declared in the fwi.h file. The shearing transform, performed by
 	//this function, maps the source image pixel coordinates (x,y) according to the following formulas:

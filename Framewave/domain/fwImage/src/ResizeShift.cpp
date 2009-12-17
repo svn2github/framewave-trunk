@@ -6,6 +6,7 @@ This software is subject to the Apache v2.0 License.
 #include "fwdev.h"
 #include "fwImage.h"
 #include "FwSharedCode_SSE2.h"
+#include "PointHandle.h"
 
 #if BUILD_NUM_AT_LEAST( 100 )
 
@@ -13,67 +14,19 @@ This software is subject to the Apache v2.0 License.
 
 #ifndef __RESIZE_SHIFT
 #define __RESIZE_SHIFT
-#define	FW_WEIGHT	7	
+
+#if defined( FW_WEIGHT )
+#undef FW_WEIGHT
+#endif
+
+#define  FW_WEIGHT 7
+
 #define	FW_WEIGHT_6	6	
 #endif //__RESIZE_SHIFT guard
 
 namespace OPT_LEVEL
 {
-	struct Linear_Array{
-		int floor;
-		int ceil;
-		short ifraction;
-		short ione_Minus_Val;
-	};
 
-	struct Cubic_Array{
-		int pos[4];
-		short  icoeff[4];
-	};
-
-	//General paramter checking with destination ROI fixing
-	template< class TS>
-	extern FwStatus My_FW_ParaCheck2(const TS*pSrc, FwiSize srcSize, int srcStep, 
-		FwiRect srcRoi, TS*pDst, int dstStep, 
-		FwiRect dstRoi, int channel);
-
-	template< class TS>
-	FwStatus My_FW_ParaCheck(const TS*pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-		TS*pDst, int dstStep, FwiSize dstRoiSize, int channel);
-
-	//General paramter checking
-	template< class TS>
-	FwStatus My_FW_ParaCheck(const TS*pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,
-		TS*pDst, int dstStep, FwiSize dstRoiSize, int channel)
-	{
-		if (pSrc == 0 || pDst == 0) return fwStsNullPtrErr;
-
-		if (srcSize.height <= 0 || srcSize.width <= 0 || 
-			srcRoi.height <= 0 || srcRoi.width<= 0 ||
-			dstRoiSize.height <= 0 || dstRoiSize.width<= 0 )	
-			return fwStsSizeErr;	
-
-		if (srcStep < channel || dstStep < channel) //at least one pixel 
-			return fwStsStepErr;	
-
-		//Adjusting source ROI
-		if (srcRoi.x <0 ) {
-			srcRoi.width +=srcRoi.x;
-			srcRoi.x=0;
-		}
-		if (srcRoi.y <0 ) {
-			srcRoi.height +=srcRoi.y;
-			srcRoi.y=0;
-		}
-		if ((srcRoi.x + srcRoi.width ) < 1 || (srcRoi.x >= srcSize.width) || 
-			(srcRoi.y + srcRoi.height) < 1 || (srcRoi.y >= srcSize.height))	
-			return fwStsWrongIntersectROI;
-
-		if (srcRoi.x+srcRoi.width>srcSize.width) srcRoi.width=srcSize.width-srcRoi.x;
-		if (srcRoi.y+srcRoi.height>srcSize.height) srcRoi.height=srcSize.height-srcRoi.y;
-
-		return fwStsNoErr;
-	}
 
 	template< class TS, CH chSrc, DispatchType disp >
 	extern FwStatus My_FW_Resize(const TS *pSrc, int srcStep, FwiRect srcRoi,	
@@ -438,12 +391,6 @@ namespace OPT_LEVEL
 	//The function requires the external buffer pBuffer, its size can be previously computed by calling
 	//the function fwiResizeSqrPixelGetBufSize.
 
-	//handle each point individually
-	template< class TS, DispatchType disp >
-	extern void My_FW_PointHandle(double xmap, double ymap, int x, int y,
-		const TS*pSrc, int srcStep, FwiRect srcRoi,
-		TS*pDst, int dstStep, int interpolation, int *flag, 
-		int channel, int channel1, Fw32f round);
 
 	template< class TS, CH chSrc, DispatchType disp >
 	FwStatus My_FW_ResizeSqrPixel(const TS *pSrc, FwiSize srcSize, int srcStep, FwiRect srcRoi,

@@ -63,6 +63,7 @@ namespace OPT_LEVEL
 		int channel;
 	};
 
+
 	//Internal structure for recording Linear interpolation with unsigned short coefficient
 	struct Linear_Array {
 		int floor;
@@ -2433,4 +2434,5 @@ namespace OPT_LEVEL
 	}
 
 }
+
 #endif //__RESIZE_H
